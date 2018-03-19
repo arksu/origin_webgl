@@ -1,18 +1,19 @@
 {
   "name": "origin_webgl",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "description": "webgl client for Survival MMO Origin",
+  "author": "arksu",
   "scripts": {
-    "dev": "webpack --progress"
+    "dev": "webpack --progress",
+    "build": "webpack --progress --config webpack.production.config.js",
+    "watch": "webpack --watch"
   },
-  "author": "",
   "license": "MIT",
   "devDependencies": {
-    "exports-loader": "^0.7.0",
-    "imports-loader": "^0.7.1",
-    "three": "^0.90.0",
-    "webpack": "^3.11.0"
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
   },
-  "dependencies": {}
+  "dependencies": {
+    "three": "^0.90.0"
+  }
 }
