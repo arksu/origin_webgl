@@ -4,12 +4,17 @@
   "description": "webgl client for Survival MMO Origin",
   "author": "arksu",
   "scripts": {
-    "dev": "webpack --progress",
-    "build": "webpack --progress --config webpack.production.config.js",
-    "watch": "webpack --watch"
+    "dev": "webpack --progress --watch",
+    "build": "webpack --progress --config webpack.production.config.js"
   },
   "license": "MIT",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "browser-sync": "^2.23.6",
+    "browser-sync-webpack-plugin": "^2.2.2",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.12"
   },
