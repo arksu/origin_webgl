@@ -9,7 +9,7 @@ console.log(test);
 
 console.log(vec3);
 
-let someVar = "sdfdsf1";
+let someVar = "ok ok";
 
 [1,2,3].map(n => n + 1);
 
