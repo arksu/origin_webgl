@@ -1,6 +1,6 @@
 export default class {
     constructor() {
-        this.some1 = 1;
+        this.someValue = new Date().getTime();
     }
 
     start() {
