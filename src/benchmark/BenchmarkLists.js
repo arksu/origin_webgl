@@ -1,4 +1,4 @@
-import LinkedList from "../LinkedList";
+import LinkedList from "./LinkedList";
 import TestClass from "./TestClass";
 
 export default class {
