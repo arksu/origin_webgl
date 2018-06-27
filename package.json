@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "webgl client for Survival MMO Origin",
   "author": "arksu",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/arksu/origin_webgl.git"
+  },
   "scripts": {
     "dev": "webpack --progress --watch",
     "build": "webpack --progress --config webpack.production.config.js"
@@ -19,6 +23,7 @@
     "webpack-cli": "^2.0.12"
   },
   "dependencies": {
+    "pixi.js": "^4.8.1",
     "three": "^0.90.0"
   }
 }
