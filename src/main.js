@@ -68,58 +68,15 @@ function init() {
 }
 
 function start(app) {
-    console.profile('111');
     let texture = PIXI.Texture.fromImage('assets/logo.png');
     let logo = new PIXI.Sprite(texture);
 
-    let renderTexture = PIXI.RenderTexture.create(500, 400);
-    let blur_filter = new PIXI.filters.BlurFilter();
-    blur_filter.blurY = 14;
-    logo.filters = [blur_filter];
+    app.stage.addChild(logo);
 
-    // app.stage.addChild(logo);
-
-    app.renderer.render(logo, renderTexture);
-    app.renderer.flush();
-    // renderTexture.render(logo, null, true);
-    // logo.render(renderTexture);
-
-    // logo.filters = undefined;
-
-    let logo2 = new PIXI.Sprite(renderTexture);
-    app.stage.addChild(logo2);
-
-    console.log(renderTexture);
-    console.log(renderTexture.baseTexture.valid);
-    console.log(logo2);
-
-    logo2.position.x = 10;
-    logo2.position.y = 10;
-
-
-    logo.anchor = {x: 0.5, y: 0.5};
+    logo.anchor.x = 0.5;
+    logo.anchor.y = 0.5;
     logo.position.x = gameWidth / 2;
     logo.position.y = gameHeight / 3;
-
-    console.profileEnd('111');
-
-    let cnt = 1;
-    let f = true;
-    console.log(app);
-    app.ticker.add(function () {
-        cnt--;
-        if (cnt > 0) {
-            let r = app.renderer.render(logo, renderTexture);
-            app.renderer.flush();
-        } else {
-            if (f) {
-                f = false;
-                console.log(renderTexture);
-                console.log(renderTexture.baseTexture.valid);
-            }
-        }
-    });
-
 }
 
 start(init());

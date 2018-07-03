@@ -9,7 +9,7 @@ var mouseX = 0, mouseY = 0;
 let mesh;
 
 function init() {
-    container = document.getElementById( 'container' );
+    container = document.getElementById( 'game' );
 
     camera = new THREE.PerspectiveCamera(20, window.innerWidth / window.innerHeight, 1, 10000);
     camera.position.z = 1800;
@@ -60,7 +60,7 @@ function init() {
     mesh.rotation.x = - 1.87;
     scene.add( mesh );
 
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer = new THREE.WebGLRenderer( { antialias: false } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
