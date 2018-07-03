@@ -1,11 +1,12 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     mode: 'production',
 
     entry: {
-        main: './src/main.js',
-        vendor: ['three']
+        main: './src/main.ts',
+        vendor: ['pixi.js']
     },
 
     module: {
@@ -17,8 +18,17 @@ module.exports = {
                 use: {
                     loader: "babel-loader"
                 }
+            },
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
             }
         ]
+    },
+
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js']
     },
 
     optimization: {
@@ -33,8 +43,17 @@ module.exports = {
         }
     },
 
+    plugins: [
+        new HtmlWebpackPlugin({
+            hash: true,
+            title: 'Origin',
+            template: "./src/index.html",
+            filename: '../dist/index.html'
+        })
+    ],
+
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(path.join(__dirname, "..", "dist")),
     }
 };
