@@ -27,6 +27,8 @@
     "webpack-cli": "^2.0.12"
   },
   "dependencies": {
+    "@types/msgpack-lite": "^0.1.6",
+    "msgpack-lite": "^0.1.26",
     "pixi.js": "^4.8.1"
   }
 }
