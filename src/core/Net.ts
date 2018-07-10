@@ -7,7 +7,12 @@ export class Net {
         let a = {
             i: 334,
             arr: [0, 1, 2, 3],
-            str: "string"
+            str: "string",
+            sub: {
+                some: 123,
+                f: 4.5,
+                s: "foo"
+            }
         };
         this.bin = MsgPack.encode(a);
         // bin.
@@ -26,7 +31,7 @@ export class Net {
 
             setTimeout(() => {
                 socket.send(this.bin);
-            }, 5000);
+            }, 1000);
 
         };
 
