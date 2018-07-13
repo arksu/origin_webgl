@@ -5,12 +5,11 @@ export class Core {
     private gameWidth: number;
     private gameHeight: number;
 
-    private app: PIXI.Application;
+    public readonly app: PIXI.Application;
 
     private net: Net;
 
     constructor() {
-        this.net = new Net();
         this.gameWidth = window.innerWidth;
         this.gameHeight = window.innerHeight;
 
@@ -24,6 +23,8 @@ export class Core {
 
         // disable loading label
         document.getElementById("loadingLabel").style.display = "none";
+
+        this.net = new Net(this);
     }
 
     public start() {
@@ -38,6 +39,10 @@ export class Core {
         logo.position.y = this.gameHeight / 3;
 
         this.net.start();
+
+        this.app.ticker.add((d) => {
+
+        })
     }
 
     // TODO: delete?

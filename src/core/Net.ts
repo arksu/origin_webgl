@@ -1,21 +1,11 @@
-import * as MsgPack from "msgpack-lite";
+import {Core} from "./Core";
 
 export class Net {
-    private bin: Buffer;
 
-    constructor() {
-        let a = {
-            i: 334,
-            arr: [0, 1, 2, 3],
-            str: "string",
-            sub: {
-                some: 123,
-                f: 4.5,
-                s: "foo"
-            }
-        };
-        this.bin = MsgPack.encode(a);
-        // bin.
+    private _core: Core;
+
+    constructor(core: Core) {
+        this._core = core;
     }
 
     public start() {
@@ -23,14 +13,25 @@ export class Net {
         console.log(socket);
         socket.binaryType = "arraybuffer";
 
+        let data = {
+            i: 12,
+            s: "foo",
+            m: {
+                a: 1,
+                b: "33"
+            },
+            arr: [4, 5, 7]
+        };
+
         socket.onopen = () => {
             console.log("ws connected");
 
-            // socket.send("1111");
-            console.log(this.bin);
-
             setTimeout(() => {
-                socket.send(this.bin);
+
+                let s = JSON.stringify(data);
+                let buffer = new Buffer(s, 'utf8');
+                console.log(buffer);
+                socket.send(buffer);
             }, 1000);
 
         };
