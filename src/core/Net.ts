@@ -27,10 +27,8 @@ export class Net {
             console.log("ws connected");
 
             setTimeout(() => {
-
                 let s = JSON.stringify(data);
                 let buffer = new Buffer(s, 'utf8');
-                console.log(buffer);
                 socket.send(buffer);
             }, 1000);
 

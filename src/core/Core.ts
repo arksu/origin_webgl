@@ -7,7 +7,7 @@ export class Core {
 
     public readonly app: PIXI.Application;
 
-    private net: Net;
+    private readonly net: Net;
 
     constructor() {
         this.gameWidth = window.innerWidth;
@@ -44,38 +44,6 @@ export class Core {
 
         })
     }
-
-    // TODO: delete?
-    public sizeHandler() {
-        let w = this.gameWidth;
-        let h = this.gameHeight;
-
-        let maxWidth = window.innerWidth;
-        let maxHeight = window.innerHeight;
-
-        let ratio = maxWidth / w;
-        if (h * ratio > maxHeight) {
-            ratio = maxHeight / h;
-        }
-
-        let aw = w * ratio;
-        let ah = h * ratio;
-        let dx = maxWidth - aw;
-        let dy = maxHeight - ah;
-
-        if (dx > 0) {
-            this.app.renderer.view.style.left = dx / 2 + "px";
-        } else {
-            this.app.renderer.view.style.left = "0";
-        }
-        if (dy > 0) {
-            this.app.renderer.view.style.top = dy / 2 + "px";
-        } else {
-            this.app.renderer.view.style.top = "0";
-        }
-        this.app.renderer.view.style.width = aw + "px";
-        this.app.renderer.view.style.height = ah + "px";
-    };
 
     public changeResolution(w: number, h: number) {
         if (this.gameWidth !== w || this.gameHeight !== h) {
