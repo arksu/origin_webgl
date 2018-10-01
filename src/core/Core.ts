@@ -28,6 +28,41 @@ export class Core {
     }
 
     public start() {
+        let login: string;
+        let password: string;
+
+        login = localStorage.getItem("login");
+        password = localStorage.getItem("password");
+
+        console.log(login);
+        if (login !== null && password !== null) {
+            this.net.login(login, password);
+        } else {
+            // this.startPixi();
+            this.showLogin();
+        }
+    }
+
+    public showLogin() {
+        let authPlug = document.getElementById("auth-plug");
+        authPlug.style.display = "none";
+
+        let loginForm = document.getElementById("login-form");
+        //console.log(loginForm);
+        loginForm.reset();
+
+        let password = document.getElementById("input-password");
+        //console.log(password);
+        password.value = "";
+
+        loginForm.style.display = "block";
+
+        let gamediv = document.getElementById("game");
+        gamediv.style.display = "none";
+    }
+
+    public startPixi() {
+        console.log("start PIXI");
         let texture = PIXI.Texture.fromImage('assets/logo.png');
         let logo = new PIXI.Sprite(texture);
 

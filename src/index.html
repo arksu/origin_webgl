@@ -29,5 +29,22 @@
 
 <script>window.GIT_VERSION = "gitversion";</script>
 
+<!--Заглушка при авторизации -->
+<div id="auth-plug" style="display: none;">
+    <p>In progress<span class="loader__dot">.</span><span class="loader__dot">.</span><span class="loader__dot">.</span>
+    </p>
+</div>
+
+<!-- логин форма -->
+<form id="login-form" style="display: none;">
+    <input id="input-login" type="text" placeholder="login" value="">
+    <br>
+    <input id="input-password" type="password" placeholder="password" value="">
+    <br>
+    <input id="input-cancel" type="button" value="">
+    <input id="input-enter" type="submit" value="">
+</form>
+
+
 </body>
 </html>

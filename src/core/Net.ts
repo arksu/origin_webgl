@@ -11,7 +11,6 @@ export class Net {
     public start() {
         let socket = new WebSocket("ws://localhost:8080");
         console.log(socket);
-        socket.binaryType = "arraybuffer";
 
         let data = {
             i: 12,
@@ -28,11 +27,13 @@ export class Net {
 
             setTimeout(() => {
                 let s = JSON.stringify(data);
-                let buffer = new Buffer(s, 'utf8');
-                socket.send(buffer);
+                socket.send(s);
             }, 1000);
 
         };
+    }
+
+    public login(login: string, password: string): void {
 
     }
 }
