@@ -2,49 +2,9 @@
 <html lang="en">
 <head>
     <title>Origin</title>
-    <style>
-        body {
-            background-color: black;
-            color: gray;
-        }
-
-        #game {
-            margin: 0;
-            left: 0;
-            top: 0;
-            position: absolute;
-            padding: 0;
-            overflow: hidden;
-            /*height: 100%;*/
-            /*width: 100%;*/
-            touch-action: none;
-            cursor: inherit
-        }
-    </style>
 </head>
 <body>
-
-<h1 id="loadingLabel" style="text-align: center; font-family: sans-serif">Loading...</h1>
 <canvas id="game"></canvas>
-
-<script>window.GIT_VERSION = "gitversion";</script>
-
-<!--Заглушка при авторизации -->
-<div id="auth-plug" style="display: none;">
-    <p>In progress<span class="loader__dot">.</span><span class="loader__dot">.</span><span class="loader__dot">.</span>
-    </p>
-</div>
-
-<!-- логин форма -->
-<form id="login-form" style="display: none;">
-    <input id="input-login" type="text" placeholder="login" value="">
-    <br>
-    <input id="input-password" type="password" placeholder="password" value="">
-    <br>
-    <input id="input-cancel" type="button" value="">
-    <input id="input-enter" type="submit" value="">
-</form>
-
 
 </body>
 </html>

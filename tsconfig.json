@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    "noImplicitAny": true,
-    "module": "es6",
     "target": "es6",
-    "jsx": "react",
-    "sourceMap": true,
-    "allowJs": false
+    "lib": ["es6", "dom"],
+    "module": "esnext",
+    "allowJs": false,
+    "outDir": "./dist/"
   }
 }
