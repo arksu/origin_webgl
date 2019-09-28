@@ -1,12 +1,4 @@
-import {Core} from "./Core";
-
 export class Net {
-
-    private _core: Core;
-
-    constructor(core: Core) {
-        this._core = core;
-    }
 
     public start() {
         let socket = new WebSocket("ws://localhost:8080");

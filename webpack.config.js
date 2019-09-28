@@ -8,8 +8,13 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: '/node_modules/'
+                use: {
+                    loader: 'awesome-typescript-loader',
+                    options: {
+                        useCache: true
+                    }
+                },
+                exclude: '/node_modules/',
             },
         ],
     },
@@ -26,6 +31,7 @@ module.exports = {
         path: path.resolve(path.join(__dirname, "..", "dist")),
     },
     devServer: {
+        hot: true,
         compress: true,
         overlay: true
     },
