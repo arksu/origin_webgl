@@ -1,5 +1,8 @@
+import * as _ from "lodash";
 import * as PIXI from "pixi.js";
 import ApplicationOptions = PIXI.ApplicationOptions;
+
+window._ = _;
 
 let opt : ApplicationOptions =  {
     width: 400,
