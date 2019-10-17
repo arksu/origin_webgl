@@ -4,8 +4,7 @@ import ApplicationOptions = PIXI.ApplicationOptions;
 
 window._ = _;
 
-window.onload = function () {
-
+function startPixi() {
     let canvas = <HTMLCanvasElement>document.getElementById("game");
 
     let gameWidth = window.innerWidth;
@@ -33,6 +32,11 @@ window.onload = function () {
     window.onresize = function () {
         app.renderer.resize(window.innerWidth, window.innerHeight);
     };
+}
+
+window.onload = function () {
+    startPixi();
+
 
     console.log("yay!");
 };
