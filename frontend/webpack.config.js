@@ -26,6 +26,10 @@ module.exports = {
             filename: '../dist/index.html'
         })
     ],
+    resolve: {
+        modules: ["node_modules"],
+        extensions: [".js", ".ts", ".tsx"]
+    },
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(path.join(__dirname, "..", "dist")),

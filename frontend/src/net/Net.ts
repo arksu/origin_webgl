@@ -197,7 +197,7 @@ export default class WsNet {
                     this.socket!.send("ping");
                 }, 15000);
             } else {
-                let d = JSON.parse(ev.data);
+                let d: Response = JSON.parse(ev.data);
                 console.log(_.cloneDeep(d.d));
 
                 // пришло сообщение в общий канал (не ответ на запрос серверу)
@@ -210,7 +210,7 @@ export default class WsNet {
                         // удалим из мапы
                         delete this.requests[d.id];
                         // убьем таймер ожидания ответа
-                        clearTimeout(r.timer);
+                        clearTimeout(r.waitTimer);
 
                         // ответ успешен?
                         if (d.s === 1) {
@@ -240,7 +240,7 @@ export default class WsNet {
 
             for (let k in this.requests) {
                 let r = this.requests[k];
-                clearTimeout(r.timer);
+                clearTimeout(r.waitTimer);
             }
 
             setTimeout(() => {
@@ -292,7 +292,7 @@ export default class WsNet {
 
                 setTimeout(() => {
                     // таймер на ожидание ответа сервера
-                    r.timer = setTimeout(() => {
+                    r.waitTimer = setTimeout(() => {
                         this.reconnectTry();
                         // r.reject("timeout");
                     }, r.timeout);
@@ -340,7 +340,7 @@ export default class WsNet {
                 this.requests[id] = {
                     resolve,
                     reject,
-                    timer: t,
+                    waitTimer: t,
                     target,
                     req,
                     timeout
@@ -352,7 +352,7 @@ export default class WsNet {
                 this.requests[this.lastId] = {
                     resolve,
                     reject,
-                    timer: undefined,
+                    waitTimer: undefined,
                     target,
                     req,
                     timeout
@@ -388,8 +388,16 @@ export default class WsNet {
 interface Request {
     resolve: (value?: any) => void;
     reject: (reason?: any) => void;
-    timer?: number;
+    waitTimer?: number;
     timeout: number;
     target: string;
     req: ApiRequest;
+}
+
+interface Response {
+    s: number;
+    id: number;
+    c?: string;
+    d: any;
+    e?: any;
 }

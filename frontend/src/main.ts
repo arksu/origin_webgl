@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import * as PIXI from "pixi.js";
+import Net from "./net/Net";
 import ApplicationOptions = PIXI.ApplicationOptions;
 
 window._ = _;
@@ -35,6 +36,19 @@ function startPixi() {
 }
 
 window.onload = function () {
+    let proto = "https:" === window.location.protocol ? "wss" : "ws";
+    let net = new Net();
+    net.url = proto + "://" + window.location.hostname+":7070";
+    console.log("url: " + net.url);
+    net.connect(() => {
+        let r = {};
+        console.log("connected");
+        net.remoteCall("test", r, 1000);
+    }, () => {
+
+    });
+
+
     startPixi();
 
 

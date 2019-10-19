@@ -1,5 +1,6 @@
-.idea
-.awcache
-dist
-node_modules
+**/.idea
+**/.awcache
+**/dist
+**/node_modules
 *lock*
+**gradle*
