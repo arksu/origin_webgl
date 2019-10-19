@@ -5,7 +5,7 @@ enum State {
     Idle,
     Connecting,
     Connected,
-    Disconnecting,
+    ReconnectWait,
     Reconnecting
 }
 
@@ -17,61 +17,55 @@ export default class WsNet {
     /**
      * сокет
      */
-    socket?: WebSocket;
+    private socket?: WebSocket;
 
     /**
      * текущее состояние
      * @type {State.Idle}
      */
-    state: State = State.Idle;
+    private state: State = State.Idle;
 
     /**
      * url для открытия коннекта
      */
-    url: string;
-
-    /**
-     * каллбаки для коннекта (успешен или с ошибкой)
-     */
-    successConnectCallback?: Callback;
-    errorConnectCallback: (e: string) => void;
-
-    /**
-     * каллбак для явного вызова disconnect извне
-     */
-    disconnectingCallback?: Callback;
+    public url: string;
 
     /**
      * последний ид для отправки сообщений серверу
      */
-    lastId: number = 0;
+    private lastId: number = 0;
+
+    /**
+     * время ожидания ответа сервера на запрос, после превышения считаем что коннект оборвался
+     */
+    private requestTimeout: number = 1000;
 
     /**
      * количество попыток реконнекта в случае обрыва связи
      * @type {number}
      */
-    reconnectTries: number = 10;
+    private reconnectTries: number = 10;
 
     /**
      * время между попытками реконнекта
      * @type {number}
      */
-    reconnectTime: number = 4000;
+    private reconnectTime: number = 4000;
 
     /**
      * счетчит попыток переподключения к севреру
      */
-    reconnectCounter: number;
+    private reconnectCounter: number;
 
     /**
      * обработчик отключения сети (вызывается только если очередь запросов была пуста, иначе там reject)
      */
-    onDisconnect?: Callback;
+    public onDisconnect?: Callback;
 
     /**
      * таймер для отправки пингов
      */
-    pingTimer?: number;
+    private pingTimer?: number;
 
     /**
      * очередь запросов, запоминаем каждый запрос с его ид,
@@ -81,75 +75,24 @@ export default class WsNet {
     private requests: { [id: number]: Request } = {};
 
     /**
-     * подключиться
-     * @param {Callback} successCallback
-     * @param {(e: string) => void} errorCallback
-     */
-    connect(successCallback: Callback, errorCallback: (e: string) => void) {
-        // есть должна быть не активна для старта
-        if (this.state !== State.Idle) {
-            console.log("ws connect [" + this.state + "] unable");
-            return;
-        }
-        console.warn("ws connect...");
-
-        this.lastId = 0;
-        this.requests = {};
-        this.reconnectCounter = this.reconnectTries;
-
-        this.socket = new WebSocket(this.url);
-
-        this.socket.onopen = this.onopen.bind(this);
-        this.socket.onerror = this.onerror.bind(this);
-        this.socket.onclose = this.onclose.bind(this);
-        this.socket.onmessage = this.onmessage.bind(this);
-        this.successConnectCallback = successCallback;
-        this.errorConnectCallback = errorCallback;
-
-        this.state = State.Connecting;
-    }
-
-    /**
-     * отключиться
-     */
-    disconnect(disconnectCallback ?: Callback) {
-        if (this.state !== State.Idle) {
-            this.requests = {};
-            this.state = State.Disconnecting;
-            this.disconnectingCallback = disconnectCallback;
-            this.socket!.close();
-        } else {
-            disconnectCallback!();
-        }
-    }
-
-    /**
      * обработка открытия сокета
      * @param {Event} _ev
      */
     private onopen(_ev: Event) {
         console.warn("ws connected");
 
-        if (this.state !== State.Connecting) {
+        if (this.state !== State.Connecting && this.state !== State.Reconnecting) {
             throw Error("wrong state on open");
         }
 
+        let oldState = this.state;
         this.state = State.Connected;
 
-        // if (this.successConnectCallback !== undefined) {
-        //     this.successConnectCallback();
-        // }
-    }
+        if (oldState === State.Reconnecting) {
+            this.reconnectCounter = this.reconnectTries;
+        }
 
-    /**
-     * обрабтка ошибок сокета
-     * @param {Event} ev
-     */
-    private onerror(ev: Event) {
-        // TODO DEBUG DELETE
-        console.warn("ws error");
-        console.warn(ev);
-
+        this.sendRequests();
     }
 
     /**
@@ -158,7 +101,7 @@ export default class WsNet {
      * @param {CloseEvent} ev
      */
     private onclose(ev: CloseEvent) {
-        console.warn("ws close [" + ev.code + "]");
+        console.warn("ws close [" + ev.code + "] " + this.state);
 
         let oldState = this.state;
         this.state = State.Idle;
@@ -167,21 +110,26 @@ export default class WsNet {
         this.pingTimer = undefined;
 
         switch (oldState) {
+            case State.Reconnecting:
+                this.reconnectTry();
+                break;
+
             case State.Connecting:
-                if (this.errorConnectCallback !== undefined) {
-                    this.errorConnectCallback("connect error");
+                if (this.onDisconnect !== undefined) {
+                    this.onDisconnect();
                 }
                 break;
+
             case State.Connected:
                 // произошел обрыв в подключенном состоянии
                 // надо сделать реконнект
-
                 if (ev.code === 1006 && !ev.wasClean) {
                     this.reconnectTry();
+                } else {
+                    if (this.onDisconnect !== undefined) {
+                        this.onDisconnect();
+                    }
                 }
-                break;
-            case State.Disconnecting:
-                this.disconnectingCallback!();
                 break;
         }
     }
@@ -228,6 +176,37 @@ export default class WsNet {
     }
 
     /**
+     * подключиться
+     */
+    private connect() {
+        // есть должна быть не активна для старта
+        if (this.state !== State.Idle) {
+            console.log("ws connect [" + this.state + "] unable");
+            return;
+        }
+        console.warn("ws connecting...");
+
+        this.lastId = 0;
+        this.requests = {};
+        this.reconnectCounter = this.reconnectTries;
+
+        this.createSocket();
+
+        this.state = State.Connecting;
+    }
+
+    /**
+     * переподключится к серверу
+     */
+    private reconnect() {
+        console.warn("reconnecting...");
+
+        this.createSocket();
+
+        this.state = State.Reconnecting;
+    }
+
+    /**
      * обобщенный код переподключения
      */
     private reconnectTry() {
@@ -236,13 +215,14 @@ export default class WsNet {
         // если еще есть попытки реконнекта
         if (this.reconnectCounter > 0) {
             this.reconnectCounter--;
-            this.state = State.Reconnecting;
+            this.state = State.ReconnectWait;
 
             for (let k in this.requests) {
                 let r = this.requests[k];
                 clearTimeout(r.waitTimer);
             }
 
+            // ждем переподключения
             setTimeout(() => {
                 this.reconnect();
             }, this.reconnectTime);
@@ -265,85 +245,53 @@ export default class WsNet {
     }
 
     /**
-     * переподключится к серверу
-     */
-    private reconnect() {
-        console.warn("reconnecting...");
-        this.socket = new WebSocket(this.url);
-
-        this.socket.onopen = this.onopen.bind(this);
-        this.socket.onerror = this.onerror.bind(this);
-        this.socket.onclose = this.onclose.bind(this);
-        this.socket.onmessage = this.onmessage.bind(this);
-
-        this.successConnectCallback = () => {
-            console.warn("ws reconnected!");
-            let tc = 0;
-
-            // идем по всем запросам в очереди и по новой отправляем
-            for (let k in this.requests) {
-                let r = this.requests[k];
-
-                let data = {
-                    id: k,
-                    t: r.target,
-                    d: r.req
-                };
-
-                setTimeout(() => {
-                    // таймер на ожидание ответа сервера
-                    r.waitTimer = setTimeout(() => {
-                        this.reconnectTry();
-                        // r.reject("timeout");
-                    }, r.timeout);
-                    console.log("resend");
-                    console.log(_.cloneDeep(data));
-                    this.socketSend(data, +k);
-                }, tc);
-
-                tc += 1000;
-            }
-
-            this.reconnectCounter = this.reconnectTries;
-        };
-        this.errorConnectCallback = (_e: string) => {
-            this.reconnectTry();
-        };
-        this.state = State.Connecting;
-    }
-
-    /**
      * послать запрос на сервер
      * @param {string} target
      * @param {ApiRequest} req
      * @param {number} timeout
      * @returns {Promise<any>}
      */
-    // TODO
-    public remoteCall(target: string, req: ApiRequest, timeout: number): Promise<any> {
+    public remoteCall(target: string, req: ApiRequest, timeout?: number): Promise<any> {
+        // если не передали в параметре - берем дефолтный таймаут
+        let t = timeout === undefined ? this.requestTimeout : timeout;
+
         return new Promise((resolve, reject) => {
-            if (this.state == State.Connected) {
+            // не подключены
+            if (this.state === State.Idle) {
+                // подключаемся
+                this.connect();
+
+                // и пихаем в очередь запросов новый запрос
+                this.lastId++;
+                this.requests[this.lastId] = {
+                    resolve,
+                    reject,
+                    waitTimer: undefined,
+                    target,
+                    req,
+                    timeout: t
+                };
+            } else if (this.state === State.Connected) {
                 const id = ++this.lastId;
                 let data = {
                     id,
                     t: target,
                     d: req
                 };
-                this.socketSend(data, id);
+                this.socketSend(data);
 
                 // таймер на ожидание ответа сервера
-                let t: number = setTimeout(() => {
+                let waitTimer: number = t > 0 ? setTimeout(() => {
                     this.reconnectTry();
-                    // reject("timeout");
-                }, timeout);
+                }, t) : undefined;
 
                 this.requests[id] = {
                     resolve,
                     reject,
-                    waitTimer: t,
+                    waitTimer,
                     target,
                     req,
-                    timeout
+                    timeout: t
                 };
             } else if (this.state === State.Reconnecting || this.state === State.Connecting) {
                 console.log("call when disconnected");
@@ -363,12 +311,30 @@ export default class WsNet {
         });
     }
 
-    /**
-     * подключена ли сеть
-     * @returns {boolean}
-     */
-    public isConnected(): boolean {
-        return this.state === State.Connected;
+    private sendRequests(): void {
+        // идем по всем запросам в очереди и по новой отправляем
+        for (let k in this.requests) {
+            let r = this.requests[k];
+
+            let data = {
+                id: k,
+                t: r.target,
+                d: r.req
+            };
+
+            // таймер на ожидание ответа сервера
+            if (r.timeout !== undefined && r.timeout > 0) {
+                r.waitTimer = setTimeout(() => {
+                    this.reconnectTry();
+                    // r.reject("timeout");
+                }, r.timeout);
+            } else {
+                r.waitTimer = undefined;
+            }
+            console.log("resend");
+            console.log(_.cloneDeep(data));
+            this.socketSend(data);
+        }
     }
 
     /**
@@ -379,7 +345,15 @@ export default class WsNet {
     protected onChannelMessage(_channel: string, _data: any) {
     }
 
-    private socketSend(data: any, id: number): void {
+    private createSocket() {
+        this.socket = new WebSocket(this.url);
+
+        this.socket.onopen = this.onopen.bind(this);
+        this.socket.onclose = this.onclose.bind(this);
+        this.socket.onmessage = this.onmessage.bind(this);
+    }
+
+    private socketSend(data: any): void {
         let d = JSON.stringify(data);
         this.socket!.send(d);
     }

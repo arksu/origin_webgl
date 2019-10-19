@@ -38,14 +38,15 @@ function startPixi() {
 window.onload = function () {
     let proto = "https:" === window.location.protocol ? "wss" : "ws";
     let net = new Net();
-    net.url = proto + "://" + window.location.hostname+":7070";
+    net.url = proto + "://" + window.location.hostname + ":7070";
     console.log("url: " + net.url);
-    net.connect(() => {
-        let r = {};
-        console.log("connected");
-        net.remoteCall("test", r, 1000);
-    }, () => {
 
+    net.onDisconnect = () => {
+        console.log("net disconnected");
+    };
+    net.remoteCall("login", {
+        login: "root",
+        password: "root"
     });
 
 
