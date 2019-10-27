@@ -1,4 +1,4 @@
-WebGL client for Origin survival MMO
+WebGL client for Origin survival MMO game
 
 Start local dev version:
 ```sh
