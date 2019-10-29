@@ -15,6 +15,9 @@ public class Launcher
 	{
 		Locale.setDefault(Locale.ROOT);
 
+		ServerConfig.loadConfig();
+		Database.start();
+
 		_log.debug("start ws server...");
 
 		GameServer server = new GameServer(new InetSocketAddress("0.0.0.0", 7070), Runtime.getRuntime().availableProcessors());
