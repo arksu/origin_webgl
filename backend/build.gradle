@@ -13,9 +13,6 @@ sourceSets {
         java.srcDir 'src'
         resources.srcDir 'res'
     }
-    test {
-        java.srcDir 'test'
-    }
 }
 
 repositories {
@@ -35,4 +32,5 @@ dependencies {
 
     compile group: 'com.zaxxer', name: 'HikariCP', version: '3.4.1'
     compile group: 'com.typesafe', name: 'config', version: '1.4.0'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.48'
 }

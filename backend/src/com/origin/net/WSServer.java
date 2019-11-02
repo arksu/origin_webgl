@@ -230,7 +230,7 @@ public abstract class WSServer extends WebSocketServer
 	@Override
 	public void onStart()
 	{
-		_log.debug("ws net v2 started");
+		_log.debug("ws net started");
 
 		// запускаем таск очистки кэша ответов сервера
 		new CleanerThread().start();

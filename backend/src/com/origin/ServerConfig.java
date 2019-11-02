@@ -10,6 +10,8 @@ public class ServerConfig
 	private static String WORK_DIR = "./";
 
 	public static String DB_USER;
+	public static String DB_PASSWORD;
+	public static String DB_NAME;
 
 	public static void loadConfig()
 	{
@@ -20,5 +22,7 @@ public class ServerConfig
 				.withFallback(ConfigFactory.load("server.defaults.conf"));
 
 		DB_USER = conf.getString("db.user");
+		DB_PASSWORD = conf.getString("db.password");
+		DB_NAME = conf.getString("db.name");
 	}
 }

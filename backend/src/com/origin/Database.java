@@ -12,6 +12,14 @@ public class Database
 	{
 		HikariConfig config = new HikariConfig();
 
+		config.setJdbcUrl("");
+		config.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+		config.setUsername(ServerConfig.DB_USER);
+		config.setPassword(ServerConfig.DB_PASSWORD);
+		config.addDataSourceProperty("cachePrepStmts", true);
+		config.addDataSourceProperty("prepStmtCacheSize", 250);
+		config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
+
 		DataSource source = new HikariDataSource(config);
 
 		try
