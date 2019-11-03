@@ -2,33 +2,58 @@ package com.origin;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class Database
 {
+	private static final Logger _log = LoggerFactory.getLogger(Database.class.getName());
+
+	private static DataSource source;
+
 	public static void start()
 	{
 		HikariConfig config = new HikariConfig();
 
-		config.setJdbcUrl("");
-		config.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
-		config.setUsername(ServerConfig.DB_USER);
-		config.setPassword(ServerConfig.DB_PASSWORD);
-		config.addDataSourceProperty("cachePrepStmts", true);
-		config.addDataSourceProperty("prepStmtCacheSize", 250);
-		config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
+		config.setDataSourceClassName("org.mariadb.jdbc.MariaDbDataSource");
 
-		DataSource source = new HikariDataSource(config);
+		config.setMinimumIdle(10);
+		config.setMaximumPoolSize(20);
+
+		config.addDataSourceProperty("user", ServerConfig.DB_USER);
+		config.addDataSourceProperty("password", ServerConfig.DB_PASSWORD);
+		config.addDataSourceProperty("databaseName", ServerConfig.DB_NAME);
+		config.addDataSourceProperty("loginTimeout", 2);
+
+		source = new HikariDataSource(config);
 
 		try
 		{
-			source.getConnection().close();
+			getConnection().close();
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+			_log.error("connect close error", e);
 		}
+	}
+
+	/**
+	 * получить коннект до базы
+	 */
+	public static Connection getConnection()
+	{
+		try
+		{
+			return source.getConnection();
+		}
+		catch (SQLException e)
+		{
+			_log.error("get connection error: " + e.getMessage(), e);
+		}
+		throw new RuntimeException("no available connection");
 	}
 }

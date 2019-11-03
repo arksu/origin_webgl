@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.origin.utils.GameException;
-import com.origin.net.model.WSGameSession;
+import com.origin.net.model.GameSession;
 import com.origin.net.model.WSRequest;
 import com.origin.net.model.WSResponse;
 import com.origin.utils.MapDeserializerDoubleAsIntFix;
@@ -61,7 +61,7 @@ public abstract class WSServer extends WebSocketServer
 	/**
 	 * список активных вебсокет сессий
 	 */
-	private Map<WebSocket, WSGameSession> _sessions = new ConcurrentHashMap<>();
+	private Map<WebSocket, GameSession> _sessions = new ConcurrentHashMap<>();
 
 	/**
 	 * кэш ssid (храним ssid и время последнего обращения с этим ssid)
@@ -104,7 +104,7 @@ public abstract class WSServer extends WebSocketServer
 			remoteAddr = getRemoteAddr(conn);
 		}
 
-		WSGameSession session = new WSGameSession(conn, remoteAddr);
+		GameSession session = new GameSession(conn, remoteAddr);
 		_sessions.put(conn, session);
 
 		// запустим таск на отправку пинга клиенту
@@ -116,14 +116,14 @@ public abstract class WSServer extends WebSocketServer
 	{
 		_log.debug("ws close " + getRemoteAddr(conn));
 
-		WSGameSession session = _sessions.remove(conn);
+		GameSession session = _sessions.remove(conn);
 		if (session != null)
 		{
 			onSessionClosed(session);
 		}
 	}
 
-	protected void onSessionClosed(WSGameSession session)
+	protected void onSessionClosed(GameSession session)
 	{
 	}
 
@@ -132,7 +132,7 @@ public abstract class WSServer extends WebSocketServer
 	{
 		_log.debug("ws msg: " + getRemoteAddr(conn) + " " + message);
 
-		WSGameSession session = _sessions.get(conn);
+		GameSession session = _sessions.get(conn);
 		if (session == null)
 		{
 			_log.error("no game session " + conn.getRemoteSocketAddress());
@@ -238,9 +238,9 @@ public abstract class WSServer extends WebSocketServer
 		_isRunning = true;
 	}
 
-	protected abstract Object process(WSGameSession WSGameSession, String target, Map<String, Object> data) throws Exception;
+	protected abstract Object process(GameSession GameSession, String target, Map<String, Object> data) throws Exception;
 
-	public Map<WebSocket, WSGameSession> getSessions()
+	public Map<WebSocket, GameSession> getSessions()
 	{
 		return _sessions;
 	}
@@ -250,9 +250,9 @@ public abstract class WSServer extends WebSocketServer
 	 */
 	private static class PingTask implements Runnable
 	{
-		private final WSGameSession _session;
+		private final GameSession _session;
 
-		public PingTask(WSGameSession session)
+		public PingTask(GameSession session)
 		{
 			_session = session;
 		}

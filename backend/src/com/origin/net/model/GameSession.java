@@ -3,13 +3,13 @@ package com.origin.net.model;
 import com.origin.net.WSServer;
 import org.java_websocket.WebSocket;
 
-public class WSGameSession
+public class GameSession
 {
 	private final WebSocket _connect;
 
 	private final String _remoteAddr;
 
-	public WSGameSession(WebSocket connect, String remoteAddr)
+	public GameSession(WebSocket connect, String remoteAddr)
 	{
 		_connect = connect;
 		_remoteAddr = remoteAddr;

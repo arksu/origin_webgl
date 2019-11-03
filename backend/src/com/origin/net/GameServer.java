@@ -3,7 +3,7 @@ package com.origin.net;
 import com.origin.User;
 import com.origin.UserCache;
 import com.origin.net.model.LoginResponse;
-import com.origin.net.model.WSGameSession;
+import com.origin.net.model.GameSession;
 import com.origin.utils.GameException;
 
 import java.net.InetSocketAddress;
@@ -19,7 +19,7 @@ public class GameServer extends WSServer
 	}
 
 	@Override
-	protected Object process(WSGameSession session, String target, Map<String, Object> data) throws Exception
+	protected Object process(GameSession session, String target, Map<String, Object> data) throws Exception
 	{
 		switch (target.toLowerCase())
 		{
@@ -30,7 +30,7 @@ public class GameServer extends WSServer
 		return null;
 	}
 
-	public Object login(WSGameSession session, Map<String, Object> data) throws InterruptedException, GameException
+	public Object login(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
 	{
 		String login = ((String) data.get("login"));
 
