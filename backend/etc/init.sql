@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `login`         VARCHAR(64)     NOT NULL,
     `password`      VARCHAR(64)     NOT NULL,
     `createTime`    TIMESTAMP       NOT NULL    DEFAULT CURRENT_TIMESTAMP,
-    `token`         CHAR(32)        NULL        DEFAULT NULL,
+    `ssid`         CHAR(32)        NULL        DEFAULT NULL,
 
     PRIMARY KEY (`id`),
     UNIQUE KEY `login_uniq` (`login`)

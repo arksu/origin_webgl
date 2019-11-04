@@ -2,8 +2,8 @@ package com.origin.net;
 
 import com.origin.User;
 import com.origin.UserCache;
-import com.origin.net.model.LoginResponse;
 import com.origin.net.model.GameSession;
+import com.origin.net.model.LoginResponse;
 import com.origin.utils.GameException;
 
 import java.net.InetSocketAddress;
@@ -35,8 +35,7 @@ public class GameServer extends WSServer
 		String login = ((String) data.get("login"));
 
 		User user = new User();
-
-		if (login.equals("root"))
+		if (user.load(login))
 		{
 			if (!userCache.addUserAuth(user))
 			{

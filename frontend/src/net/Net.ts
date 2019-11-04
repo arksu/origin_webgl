@@ -212,6 +212,11 @@ export default class WsNet {
     private reconnectTry() {
         console.warn("reconnect try[" + (this.reconnectTries - this.reconnectCounter + 1) + " of " + this.reconnectTries + "]");
 
+        if (this.pingTimer !== undefined) {
+            clearTimeout(this.pingTimer);
+            this.pingTimer = undefined;
+        }
+
         // если еще есть попытки реконнекта
         if (this.reconnectCounter > 0) {
             this.reconnectCounter--;

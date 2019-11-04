@@ -9,7 +9,7 @@ public class UserCache
 {
 	private static final int TIMEOUT_LOCK = 1000;
 
-	private final ConcurrentHashMap<String, User> _users = new ConcurrentHashMap();
+	private final ConcurrentHashMap<String, User> _users = new ConcurrentHashMap<>();
 
 	private final ReentrantLock _lock = new ReentrantLock();
 

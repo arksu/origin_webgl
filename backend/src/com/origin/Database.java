@@ -5,6 +5,9 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,6 +20,11 @@ public class Database
 
 	public static void start()
 	{
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
+		EntityManager em = emf.createEntityManager();
+		com.origin.entity.User user = em.find(com.origin.entity.User.class, 1);
+		System.out.println(user.getId());
+
 		HikariConfig config = new HikariConfig();
 
 		config.setDataSourceClassName("org.mariadb.jdbc.MariaDbDataSource");
