@@ -27,17 +27,17 @@ public class Database
 
 		HikariConfig config = new HikariConfig();
 
-		config.setDataSourceClassName("org.mariadb.jdbc.MariaDbDataSource");
-
-		config.setMinimumIdle(10);
-		config.setMaximumPoolSize(20);
-
-		config.addDataSourceProperty("user", ServerConfig.DB_USER);
-		config.addDataSourceProperty("password", ServerConfig.DB_PASSWORD);
-		config.addDataSourceProperty("databaseName", ServerConfig.DB_NAME);
-		config.addDataSourceProperty("loginTimeout", 2);
-
-		source = new HikariDataSource(config);
+//		config.setDataSourceClassName("org.mariadb.jdbc.MariaDbDataSource");
+//
+//		config.setMinimumIdle(10);
+//		config.setMaximumPoolSize(20);
+//
+//		config.addDataSourceProperty("user", ServerConfig.DB_USER);
+//		config.addDataSourceProperty("password", ServerConfig.DB_PASSWORD);
+//		config.addDataSourceProperty("databaseName", ServerConfig.DB_NAME);
+//		config.addDataSourceProperty("loginTimeout", 2);
+//
+//		source = new HikariDataSource(config);
 
 		try
 		{
