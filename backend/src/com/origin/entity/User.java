@@ -1,10 +1,17 @@
 package com.origin.entity;
 
-import javax.persistence.*;
+import com.origin.jpa.TableExtended;
+import com.origin.utils.Utils;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "users")
+@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true)
 public class User
 {
 	@Id
@@ -61,5 +68,10 @@ public class User
 	public void setSsid(String ssid)
 	{
 		_ssid = ssid;
+	}
+
+	public void generateSessionId()
+	{
+		_ssid = Utils.generatString(32);
 	}
 }
