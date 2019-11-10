@@ -1,7 +1,5 @@
 package com.origin;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,14 +16,28 @@ public class Database
 
 	private static DataSource source;
 
+//	private static EntityManager _em;
+
 	public static void start()
 	{
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
-		EntityManager em = emf.createEntityManager();
-		com.origin.entity.User user = em.find(com.origin.entity.User.class, 1);
-		System.out.println(user.getId());
+//		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
+//		_em = emf.createEntityManager();
+//
+//		_em.getCriteriaBuilder()
 
-		HikariConfig config = new HikariConfig();
+//		User user = em.find(User.class, 1);
+//		System.out.println(user.getId());
+//
+//		user.setLogin("some1222");
+//
+//		em.getTransaction().begin();
+//		User user1 = em.merge(user);
+//		System.out.println(user1);
+//		em.getTransaction().commit();
+//
+//		em.flush();
+
+//		HikariConfig config = new HikariConfig();
 
 //		config.setDataSourceClassName("org.mariadb.jdbc.MariaDbDataSource");
 //
@@ -39,15 +51,20 @@ public class Database
 //
 //		source = new HikariDataSource(config);
 
-		try
-		{
-			getConnection().close();
-		}
-		catch (SQLException e)
-		{
-			_log.error("connect close error", e);
-		}
+//		try
+//		{
+//			getConnection().close();
+//		}
+//		catch (SQLException e)
+//		{
+//			_log.error("connect close error", e);
+//		}
 	}
+
+//	public static EntityManager getEM()
+//	{
+//		return _em;
+//	}
 
 	/**
 	 * получить коннект до базы

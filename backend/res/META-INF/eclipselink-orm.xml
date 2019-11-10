@@ -3,7 +3,7 @@
                  xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/orm"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <entity class="com.origin.entity.User">
-        <table name="users" creation-suffix="engine=MyISAM COMMENT='users'"/>
-    </entity>
+<!--    <entity class="com.origin.entity.User">-->
+<!--        <table name="users" creation-suffix="engine=MyISAM COMMENT='users'"/>-->
+<!--    </entity>-->
 </entity-mappings>

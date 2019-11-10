@@ -1,7 +1,7 @@
 package com.origin.net;
 
-import com.origin.User;
 import com.origin.UserCache;
+import com.origin.entity.UserRepository;
 import com.origin.net.model.GameSession;
 import com.origin.net.model.LoginResponse;
 import com.origin.utils.GameException;
@@ -33,19 +33,19 @@ public class GameServer extends WSServer
 	public Object login(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
 	{
 		String login = ((String) data.get("login"));
-
-		User user = new User();
-		if (user.load(login))
-		{
-			if (!userCache.addUserAuth(user))
-			{
-				throw new GameException("user cache error");
-			}
-
-			LoginResponse response = new LoginResponse();
-			response.ssid = user.getSsid();
-			return response;
-		}
+//
+//		User user = new User();
+//		if (user.load(login))
+//		{
+//			if (!userCache.addUserAuth(user))
+//			{
+//				throw new GameException("user cache error");
+//			}
+//
+//			LoginResponse response = new LoginResponse();
+//			response.ssid = user.getSsid();
+//			return response;
+//		}
 
 		return null;
 	}
