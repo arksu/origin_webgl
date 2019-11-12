@@ -63,4 +63,10 @@ public class DatabaseField
 	{
 		return _columnDefinition;
 	}
+
+	public String getCreateSql()
+	{
+		// TODO
+		return _name + " " + _columnDefinition;
+	}
 }

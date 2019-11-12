@@ -6,6 +6,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * дескриптор класса сущности
+ * храним поля сущности, все нужное для DDL
+ */
 public class ClassDescriptor
 {
 	private Class _javaClass;
@@ -51,6 +55,17 @@ public class ClassDescriptor
 				_fields.add(databaseField);
 			}
 		}
+	}
+
+	public String buildCreateSql()
+	{
+		StringBuilder s = new StringBuilder("CREATE TABLE " + _table.getName() + " (");
+		for (DatabaseField field : _fields)
+		{
+			s.append(field.getCreateSql());
+		}
+
+		return s.toString();
 	}
 
 	public Class getJavaClass()

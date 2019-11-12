@@ -18,7 +18,7 @@ public class User
 	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
 	private int _id;
 
-	@Column(name = "login", columnDefinition = "VARCHAR(64) NOT NULL")
+	@Column(name = "login") // columnDefinition = "VARCHAR(64) NOT NULL"
 	private String _login;
 
 	@Column(name = "password", columnDefinition = "VARCHAR(64) NOT NULL")

@@ -13,6 +13,15 @@ public class JpaImpl
 		_descriptors.put(clazz, descriptor);
 	}
 
+	public void deploy()
+	{
+		for (ClassDescriptor descriptor : _descriptors.values())
+		{
+			// TODO: check table exists
+			String sql = descriptor.buildCreateSql();
+		}
+	}
+
 	public <T> T find(Class<T> entityClass, Object primaryKey)
 	{
 

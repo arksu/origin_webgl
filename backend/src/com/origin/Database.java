@@ -1,5 +1,6 @@
 package com.origin;
 
+import com.origin.entity.Character;
 import com.origin.entity.User;
 import com.origin.jpa.JpaImpl;
 import com.zaxxer.hikari.HikariConfig;
@@ -27,6 +28,9 @@ public class Database
 	public static void start()
 	{
 		em2.addEntityClass(User.class);
+		em2.addEntityClass(Character.class);
+
+		em2.deploy();
 
 		//**************************************************
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
