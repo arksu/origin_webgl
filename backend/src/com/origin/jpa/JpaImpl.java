@@ -18,7 +18,12 @@ public class JpaImpl
 		for (ClassDescriptor descriptor : _descriptors.values())
 		{
 			// TODO: check table exists
-			String sql = descriptor.buildCreateSql();
+			if (descriptor.getTable().isMustBeCreated())
+			{
+				String sql = descriptor.buildCreateSql();
+
+				System.out.println(sql);
+			}
 		}
 	}
 

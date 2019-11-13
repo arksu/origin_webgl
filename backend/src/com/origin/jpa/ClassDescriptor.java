@@ -51,7 +51,7 @@ public class ClassDescriptor
 			Column columnAnnotation = field.getAnnotation(Column.class);
 			if (columnAnnotation != null)
 			{
-				DatabaseField databaseField = new DatabaseField(columnAnnotation, _table);
+				DatabaseField databaseField = new DatabaseField(field.getType(), columnAnnotation, _table);
 				_fields.add(databaseField);
 			}
 		}
@@ -60,10 +60,19 @@ public class ClassDescriptor
 	public String buildCreateSql()
 	{
 		StringBuilder s = new StringBuilder("CREATE TABLE " + _table.getName() + " (");
+		boolean isFirst = true;
 		for (DatabaseField field : _fields)
 		{
+			if (!isFirst)
+			{
+				s.append(", ");
+			}
 			s.append(field.getCreateSql());
+			isFirst = false;
 		}
+		// TODO index
+		s.append(") ");
+		s.append(_table.getCreationSuffix());
 
 		return s.toString();
 	}
@@ -76,5 +85,10 @@ public class ClassDescriptor
 	public String getJavaClassName()
 	{
 		return _javaClassName;
+	}
+
+	public DatabaseTable getTable()
+	{
+		return _table;
 	}
 }

@@ -3,8 +3,10 @@ package com.origin.jpa;
 public class DatabaseTable
 {
 	private String _name;
+
 	private String _creationSuffix;
-	private boolean _mustBeCreated;
+
+	private boolean _mustBeCreated = true;
 
 	public String getName()
 	{
