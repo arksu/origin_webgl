@@ -15,8 +15,11 @@ import java.sql.Timestamp;
 public class User
 {
 	@Id
-	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
+//	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
 	private int _id;
+
+	@Id
+	private int id2;
 
 	@Column(name = "login") // columnDefinition = "VARCHAR(64) NOT NULL"
 	private String _login;
@@ -27,7 +30,8 @@ public class User
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp _createTime;
 
-	@Column(name = "ssid", columnDefinition = "CHAR(32) NULL DEFAULT NULL")
+//	@Column(name = "ssid", columnDefinition = "CHAR(32) NULL DEFAULT NULL")
+	@Column
 	private String _ssid;
 
 	public int getId()

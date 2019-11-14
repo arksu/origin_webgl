@@ -1,6 +1,7 @@
 package com.origin.jpa;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -48,11 +49,24 @@ public class ClassDescriptor
 		for (Field field : clazz.getDeclaredFields())
 		{
 			// ищем аннотации колонки таблицы
-			Column columnAnnotation = field.getAnnotation(Column.class);
-			if (columnAnnotation != null)
+			Column column = field.getAnnotation(Column.class);
+			if (column != null)
 			{
-				DatabaseField databaseField = new DatabaseField(field.getType(), columnAnnotation, _table);
+				DatabaseField databaseField = new DatabaseField(field, column, _table);
 				_fields.add(databaseField);
+			}
+
+			Id id = field.getAnnotation(Id.class);
+			if (id != null)
+			{
+				DatabaseField databaseField = new DatabaseField(field, _table);
+				_primaryKeyFields.add(databaseField);
+
+				// если для поля определен Id но нет определения колонки - то построим колонку по аннотации Id
+				if (column == null)
+				{
+					_fields.add(databaseField);
+				}
 			}
 		}
 	}

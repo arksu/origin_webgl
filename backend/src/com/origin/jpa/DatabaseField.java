@@ -1,43 +1,15 @@
 package com.origin.jpa;
 
 import javax.persistence.Column;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * описание поля в бд
+ */
 public class DatabaseField
 {
-	private static Map<Class, String> fieldTypeMapping = new HashMap<>();
-
-	static
-	{
-		fieldTypeMapping.put(Boolean.class, "TINYINT(1) default 0");
-
-		fieldTypeMapping.put(Integer.class, ("INTEGER"));
-		fieldTypeMapping.put(Long.class, "BIGINT");
-		fieldTypeMapping.put(Float.class, "FLOAT");
-		fieldTypeMapping.put(Double.class, "DOUBLE");
-		fieldTypeMapping.put(Short.class, "SMALLINT");
-		fieldTypeMapping.put(Byte.class, "TINYINT");
-		fieldTypeMapping.put(java.math.BigInteger.class, "BIGINT");
-		fieldTypeMapping.put(java.math.BigDecimal.class, "DECIMAL");
-		fieldTypeMapping.put(Number.class, "DECIMAL");
-
-//		fieldTypeMapping.put(String.class, "NVARCHAR(255)"); // ??????
-		fieldTypeMapping.put(String.class, "VARCHAR(255)");
-		fieldTypeMapping.put(Character.class, "CHAR(1)");
-
-		fieldTypeMapping.put(Byte[].class, "LONGBLOB");
-		fieldTypeMapping.put(Character[].class, "LONGTEXT");
-		fieldTypeMapping.put(byte[].class, "LONGBLOB");
-		fieldTypeMapping.put(char[].class, "LONGTEXT");
-		fieldTypeMapping.put(java.sql.Blob.class, "LONGBLOB");
-		fieldTypeMapping.put(java.sql.Clob.class, "LONGTEXT");
-
-		fieldTypeMapping.put(java.sql.Date.class, "DATE");
-		fieldTypeMapping.put(java.sql.Time.class, "TIME");
-		fieldTypeMapping.put(java.sql.Timestamp.class, "DATETIME");
-		fieldTypeMapping.put(java.time.LocalDate.class, "DATE");
-	}
 
 	/**
 	 * Variables used for generating DDL
@@ -68,13 +40,30 @@ public class DatabaseField
 	 */
 	protected DatabaseTable _table;
 
-	public DatabaseField(Class<?> type, Column annotation, DatabaseTable table)
+	private Field _field;
+
+	public DatabaseField(Field field, Column annotation, DatabaseTable table)
 	{
-		_type = type;
+		_field = field;
+		_type = _field.getType();
 		_name = annotation.name();
+		if (_name.length() == 0)
+		{
+			_name = _field.getName().toUpperCase();
+		}
 		_qualifiedName = table.getName() + "." + _name;
 		_isNullable = annotation.nullable();
 		_columnDefinition = annotation.columnDefinition();
+	}
+
+	public DatabaseField(Field field, DatabaseTable table)
+	{
+		_field = field;
+		_type = _field.getType();
+		_name = _field.getName().toUpperCase();
+		_qualifiedName = table.getName() + "." + _name;
+		_isNullable = false;
+		_table = table;
 	}
 
 	public DatabaseTable getTable()
@@ -115,9 +104,16 @@ public class DatabaseField
 		{
 			// иначе надо определить тип колонки по типу поля в сущности
 			// TODO
-			String stype = fieldTypeMapping.get(_type);
+			String stype = ConversionManager.getFieldTypeDefinition(_type);
 			s.append(stype);
-
+			if (_isNullable)
+			{
+				s.append(" NULL");
+			}
+			else
+			{
+				s.append(" NOT NULL");
+			}
 		}
 		return s.toString();
 	}
