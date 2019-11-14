@@ -18,27 +18,27 @@ public class DatabaseField
 //	protected int _length;
 //	protected int _precision;
 //	protected boolean _isUnique;
-	protected boolean _isNullable;
+	private boolean _isNullable;
 	//	protected boolean _isUpdatable;
-//	protected boolean _isPrimaryKey;
-	protected String _columnDefinition;
+	private boolean _isPrimaryKey;
+	private String _columnDefinition;
 
 	private Class<?> _type;
 
 	/**
 	 * Column name of the field.
 	 */
-	protected String _name;
+	private String _name;
 
 	/**
 	 * PERF: Cache fully qualified table.field-name.
 	 */
-	protected String _qualifiedName;
+	private String _qualifiedName;
 
 	/**
 	 * Fields table (encapsulates name + creator).
 	 */
-	protected DatabaseTable _table;
+	private DatabaseTable _table;
 
 	private Field _field;
 
@@ -54,6 +54,7 @@ public class DatabaseField
 		_qualifiedName = table.getName() + "." + _name;
 		_isNullable = annotation.nullable();
 		_columnDefinition = annotation.columnDefinition();
+		_isPrimaryKey = false;
 	}
 
 	public DatabaseField(Field field, DatabaseTable table)
@@ -64,11 +65,17 @@ public class DatabaseField
 		_qualifiedName = table.getName() + "." + _name;
 		_isNullable = false;
 		_table = table;
+		_isPrimaryKey = false;
 	}
 
 	public DatabaseTable getTable()
 	{
 		return _table;
+	}
+
+	public void setName(String name)
+	{
+		_name = name;
 	}
 
 	public String getName()
@@ -89,6 +96,16 @@ public class DatabaseField
 	public String getColumnDefinition()
 	{
 		return _columnDefinition;
+	}
+
+	public boolean isPrimaryKey()
+	{
+		return _isPrimaryKey;
+	}
+
+	public void setPrimaryKey(boolean primaryKey)
+	{
+		_isPrimaryKey = primaryKey;
 	}
 
 	public String getCreateSql()

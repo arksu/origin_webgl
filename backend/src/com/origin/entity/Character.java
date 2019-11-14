@@ -10,6 +10,7 @@ import javax.persistence.Table;
 public class Character
 {
 	@Id
+	@Column(name = "id")
 	private int _id;
 
 	@Column(name = "name")

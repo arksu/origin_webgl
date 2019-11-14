@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 public class User
 {
 	@Id
-//	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
+	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
 	private int _id;
 
 	@Id

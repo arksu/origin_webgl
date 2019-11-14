@@ -30,14 +30,12 @@ public class Database
 		em2.addEntityClass(User.class);
 		em2.addEntityClass(Character.class);
 
-		em2.deploy();
-
 		//**************************************************
 //		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
 //		_em = emf.createEntityManager();
 
-		User user = _em.find(User.class, 1);
-		System.out.println(user.getId());
+//		User user = _em.find(User.class, 1);
+//		System.out.println(user.getId());
 
 //		user.setLogin("some1222");
 //
@@ -64,11 +62,13 @@ public class Database
 
 		try
 		{
-			getConnection().close();
+			Connection connection = getConnection();
+			em2.deploy(connection);
+			connection.close();
 		}
 		catch (SQLException e)
 		{
-			_log.error("connect close error", e);
+			_log.error("connect error", e);
 		}
 	}
 

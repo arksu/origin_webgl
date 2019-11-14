@@ -19,7 +19,22 @@ public @interface TableExtended
 	String creationSuffix();
 
 	/**
+	 * надо ли вообще деплоить эту таблицу при старте системы
+	 */
+	boolean deploy() default true;
+
+	/**
 	 * надо ли создавать таблицу при инициализации
 	 */
 	boolean create() default true;
+
+	/**
+	 * надо ли очищать таблицу при деплое
+	 */
+	boolean truncate() default false;
+
+	/**
+	 * надо ли дропать таблицу при деплое
+	 */
+	boolean drop() default false;
 }

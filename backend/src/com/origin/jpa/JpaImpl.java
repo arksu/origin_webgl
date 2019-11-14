@@ -1,5 +1,7 @@
 package com.origin.jpa;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,17 +15,11 @@ public class JpaImpl
 		_descriptors.put(clazz, descriptor);
 	}
 
-	public void deploy()
+	public void deploy(Connection connection) throws SQLException
 	{
 		for (ClassDescriptor descriptor : _descriptors.values())
 		{
-			// TODO: check table exists
-			if (descriptor.getTable().isMustBeCreated())
-			{
-				String sql = descriptor.buildCreateSql();
-
-				System.out.println(sql);
-			}
+			descriptor.deploy(connection);
 		}
 	}
 
