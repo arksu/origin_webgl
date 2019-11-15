@@ -16,7 +16,7 @@ public @interface TableExtended
 	/**
 	 * суффикс создания таблицы (можно указать движок, кодировку, комментарий)
 	 */
-	String creationSuffix();
+	String creationSuffix() default "";
 
 	/**
 	 * надо ли вообще деплоить эту таблицу при старте системы

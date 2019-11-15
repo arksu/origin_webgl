@@ -3,15 +3,12 @@ package com.origin.entity;
 import com.origin.jpa.TableExtended;
 import com.origin.utils.Utils;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "users")
-@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true)
+@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true, drop = true)
 public class User
 {
 	@Id
@@ -30,8 +27,7 @@ public class User
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp _createTime;
 
-//	@Column(name = "ssid", columnDefinition = "CHAR(32) NULL DEFAULT NULL")
-	@Column
+	@Column(name = "ssid", columnDefinition = "CHAR(32) NULL DEFAULT NULL")
 	private String _ssid;
 
 	public int getId()

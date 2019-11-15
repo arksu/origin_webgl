@@ -1,5 +1,9 @@
 package com.origin.jpa;
 
+import com.origin.Launcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,6 +21,8 @@ import java.util.List;
  */
 public class ClassDescriptor
 {
+	private static final Logger _log = LoggerFactory.getLogger(ClassDescriptor.class.getName());
+
 	private Class _javaClass;
 	private String _javaClassName;
 
@@ -32,6 +38,7 @@ public class ClassDescriptor
 		_javaClass = clazz;
 		_javaClassName = clazz.getName();
 
+		// проверим что переданный класс это сущность JPA
 		Entity entity = clazz.getAnnotation(Entity.class);
 		if (entity == null)
 		{
@@ -134,15 +141,31 @@ public class ClassDescriptor
 		if (_table.isDeploy())
 		{
 			boolean exists = _table.checkExists(connection);
-			// TODO drop truncate
+			_log.debug("deploy table: " + _table.getName() + ", exists: " + exists);
+			Statement st = connection.createStatement();
+
+			if (exists)
+			{
+				if (_table.isDropOnDeploy())
+				{
+					String sql = "DROP TABLE `" + _table.getName() + "`";
+					_log.debug("execute SQL: " + sql);
+					st.execute(sql);
+					exists = false;
+				}
+				else if (_table.isTruncateOnDeploy())
+				{
+					String sql = "TRUNCATE TABLE `" + _table.getName() + "`";
+					_log.debug("execute SQL: " + sql);
+					st.execute(sql);
+				}
+			}
+
 			if (_table.isCreateOnDeploy() && !exists)
 			{
 				String sql = buildCreateSql();
-				Statement st = connection.createStatement();
+				_log.debug("execute SQL: " + sql);
 				st.executeQuery(sql);
-
-				System.out.println(sql);
-
 			}
 		}
 	}
