@@ -15,14 +15,11 @@ public class User
 	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
 	private int _id;
 
-	@Id
-	private int id2;
-
 	@Column(name = "login") // columnDefinition = "VARCHAR(64) NOT NULL"
 	private String _login;
 
 	@Column(name = "password", columnDefinition = "VARCHAR(64) NOT NULL")
-	private String _password;
+	private String _password = "123";
 
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp _createTime;

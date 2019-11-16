@@ -2,13 +2,12 @@ package com.origin;
 
 import com.origin.entity.Character;
 import com.origin.entity.User;
-import com.origin.jpa.JpaImpl;
+import com.origin.jpa.MyEntityManager;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.sql.DataSource;
@@ -21,21 +20,32 @@ public class Database
 
 	private static DataSource source;
 
-	private static EntityManager _em;
+	private static javax.persistence.EntityManager _em;
 
-	private static JpaImpl em2 = new JpaImpl();
+	private static MyEntityManager em2 = new MyEntityManager();
 
 	public static void start()
 	{
+		User user2 = new User();
+		user2.setLogin("12321");
+		//**************************************************
+
 		em2.addEntityClass(User.class);
 		em2.addEntityClass(Character.class);
 
-		//**************************************************
-//		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
-//		_em = emf.createEntityManager();
+		em2.setConnectionFactory(Database::getConnection);
+		em2.persist(user2);
 
-//		User user = _em.find(User.class, 1);
-//		System.out.println(user.getId());
+		//**************************************************
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
+		_em = emf.createEntityManager();
+
+		_em.getTransaction().begin();
+		_em.persist(user2);
+		_em.getTransaction().commit();
+
+		User user = _em.find(User.class, 1);
+		System.out.println(user.getId());
 
 //		user.setLogin("some1222");
 //
@@ -63,7 +73,7 @@ public class Database
 		try
 		{
 			Connection connection = getConnection();
-			em2.deploy(connection);
+			em2.deploy();
 			connection.close();
 		}
 		catch (SQLException e)
