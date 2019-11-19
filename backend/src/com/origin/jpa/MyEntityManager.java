@@ -84,7 +84,7 @@ public class MyEntityManager
 	 *                                      invoked on a container-managed entity manager of that is of type
 	 *                                      <code>PersistenceContextType.TRANSACTION</code>
 	 */
-	public void persist(Object entity)
+	public void persist(Object entity, Connection connection)
 	{
 
 	}

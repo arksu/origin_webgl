@@ -34,7 +34,16 @@ public class Database
 		em2.addEntityClass(Character.class);
 
 		em2.setConnectionFactory(Database::getConnection);
-		em2.persist(user2);
+
+//		try
+//		{
+//			Connection connection = em2.beginTransaction();
+//			em2.persist(user2);
+//		}
+//		catch (SQLException e)
+//		{
+//			em2.rollback();
+//		}
 
 		//**************************************************
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
