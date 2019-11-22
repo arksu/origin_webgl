@@ -70,6 +70,11 @@ public class MyEntityManager
 		}
 	}
 
+	public void persist(Object entity)
+	{
+		persist(entity, _connectionFactory.get());
+	}
+
 	/**
 	 * Make an instance managed and persistent.
 	 * @param entity entity instance

@@ -97,7 +97,7 @@ public class ClassDescriptor
 		}
 	}
 
-	public String buildCreateSql()
+	private String buildCreateSql()
 	{
 		StringBuilder s = new StringBuilder("CREATE TABLE " + _table.getName() + " (");
 		boolean isFirst = true;
