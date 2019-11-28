@@ -91,7 +91,11 @@ public class MyEntityManager
 	 */
 	public void persist(Object entity, Connection connection)
 	{
-
+		ClassDescriptor descriptor = getDescriptor(entity);
+		if (descriptor == null)
+		{
+			throw new IllegalArgumentException("Not entity object, no class descriptor");
+		}
 	}
 
 	/**
@@ -123,5 +127,14 @@ public class MyEntityManager
 	public void remove(Object entity)
 	{
 
+	}
+
+	public ClassDescriptor getDescriptor(Object entity)
+	{
+		if (entity == null)
+		{
+			return null;
+		}
+		return _descriptors.get(entity.getClass());
 	}
 }
