@@ -1,6 +1,5 @@
 package com.origin.jpa;
 
-import com.origin.Launcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,5 +182,10 @@ public class ClassDescriptor
 	public DatabaseTable getTable()
 	{
 		return _table;
+	}
+
+	public List<DatabaseField> getFields()
+	{
+		return _fields;
 	}
 }

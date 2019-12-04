@@ -10,7 +10,6 @@ import java.util.Map;
  */
 public class DatabaseField
 {
-
 	/**
 	 * Variables used for generating DDL
 	 **/

@@ -96,6 +96,11 @@ public class MyEntityManager
 		{
 			throw new IllegalArgumentException("Not entity object, no class descriptor");
 		}
+
+		// проходим по всем полям дескриптора
+		for (DatabaseField field : descriptor.getFields())
+		{
+		}
 	}
 
 	/**
