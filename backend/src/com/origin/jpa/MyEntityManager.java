@@ -134,6 +134,25 @@ public class MyEntityManager
 
 	}
 
+	/**
+	 * Find by primary key.
+	 * Search for an entity of the specified class and primary key.
+	 * If the entity instance is contained in the persistence context,
+	 * it is returned from there.
+	 * @param entityClass entity class
+	 * @param primaryKey primary key
+	 * @return the found entity instance or null if the entity does
+	 * not exist
+	 * @throws IllegalArgumentException if the first argument does
+	 *                                  not denote an entity type or the second argument is
+	 *                                  is not a valid type for that entity's primary key or
+	 *                                  is null
+	 */
+	public <T> T find(Class<T> entityClass, Object primaryKey)
+	{
+		return null;
+	}
+
 	public ClassDescriptor getDescriptor(Object entity)
 	{
 		if (entity == null)
