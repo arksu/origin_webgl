@@ -75,20 +75,6 @@ public class MyEntityManager
 		persist(entity, _connectionFactory.get());
 	}
 
-	/**
-	 * Make an instance managed and persistent.
-	 * @param entity entity instance
-	 * @throws EntityExistsException        if the entity already exists.
-	 *                                      (If the entity already exists, the <code>EntityExistsException</code> may
-	 *                                      be thrown when the persist operation is invoked, or the
-	 *                                      <code>EntityExistsException</code> or another <code>PersistenceException</code> may be
-	 *                                      thrown at flush or commit time.)
-	 * @throws IllegalArgumentException     if the instance is not an
-	 *                                      entity
-	 * @throws TransactionRequiredException if there is no transaction when
-	 *                                      invoked on a container-managed entity manager of that is of type
-	 *                                      <code>PersistenceContextType.TRANSACTION</code>
-	 */
 	public void persist(Object entity, Connection connection)
 	{
 		ClassDescriptor descriptor = getDescriptor(entity);
@@ -103,51 +89,7 @@ public class MyEntityManager
 		}
 	}
 
-	/**
-	 * Merge the state of the given entity into the
-	 * current persistence context.
-	 * @param entity entity instance
-	 * @return the managed instance that the state was merged to
-	 * @throws IllegalArgumentException     if instance is not an
-	 *                                      entity or is a removed entity
-	 * @throws TransactionRequiredException if there is no transaction when
-	 *                                      invoked on a container-managed entity manager of that is of type
-	 *                                      <code>PersistenceContextType.TRANSACTION</code>
-	 */
-	public <T> T merge(T entity)
-	{
-		return null;
-	}
 
-	/**
-	 * Remove the entity instance.
-	 * @param entity entity instance
-	 * @throws IllegalArgumentException     if the instance is not an
-	 *                                      entity or is a detached entity
-	 * @throws TransactionRequiredException if invoked on a
-	 *                                      container-managed entity manager of type
-	 *                                      <code>PersistenceContextType.TRANSACTION</code> and there is
-	 *                                      no transaction
-	 */
-	public void remove(Object entity)
-	{
-
-	}
-
-	/**
-	 * Find by primary key.
-	 * Search for an entity of the specified class and primary key.
-	 * If the entity instance is contained in the persistence context,
-	 * it is returned from there.
-	 * @param entityClass entity class
-	 * @param primaryKey primary key
-	 * @return the found entity instance or null if the entity does
-	 * not exist
-	 * @throws IllegalArgumentException if the first argument does
-	 *                                  not denote an entity type or the second argument is
-	 *                                  is not a valid type for that entity's primary key or
-	 *                                  is null
-	 */
 	public <T> T find(Class<T> entityClass, Object primaryKey)
 	{
 		return null;
