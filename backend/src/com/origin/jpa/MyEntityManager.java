@@ -1,7 +1,5 @@
 package com.origin.jpa;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.TransactionRequiredException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -88,7 +86,6 @@ public class MyEntityManager
 		{
 		}
 	}
-
 
 	public <T> T find(Class<T> entityClass, Object primaryKey)
 	{
