@@ -24,17 +24,17 @@ public @interface TableExtended
 	boolean deploy() default true;
 
 	/**
-	 * надо ли создавать таблицу при инициализации
+	 * надо ли создавать таблицу при старте системы
 	 */
 	boolean create() default true;
 
 	/**
-	 * надо ли очищать таблицу при деплое
+	 * надо ли очищать таблицу при старте системы
 	 */
 	boolean truncate() default false;
 
 	/**
-	 * надо ли дропать таблицу при деплое
+	 * надо ли дропать таблицу при старте системы
 	 */
 	boolean drop() default false;
 }

@@ -2,8 +2,6 @@ package com.origin.jpa;
 
 import javax.persistence.Column;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * описание поля в бд
@@ -80,6 +78,16 @@ public class DatabaseField
 	public String getName()
 	{
 		return _name;
+	}
+
+	public Field getField()
+	{
+		return _field;
+	}
+
+	public Class<?> getType()
+	{
+		return _type;
 	}
 
 	public String getQualifiedName()

@@ -1,15 +1,32 @@
 package com.origin.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MyEntityManager
 {
+	private static final Logger _log = LoggerFactory.getLogger(MyEntityManager.class.getName());
+
 	private Map<Class<?>, ClassDescriptor> _descriptors = new HashMap<>(4);
 
 	private ConnectionFactory _connectionFactory;
+
+	private Map<Object, Object> _cloneMap;
+	private Map<Object, Object> _deletedObjects;
+
+	public MyEntityManager()
+	{
+		_cloneMap = createMap();
+		_deletedObjects = createMap();
+	}
 
 	/**
 	 * фабрика для получения коннектов к базе
@@ -84,10 +101,67 @@ public class MyEntityManager
 			throw new IllegalArgumentException("Not entity object, no class descriptor");
 		}
 
-		// проходим по всем полям дескриптора
-		for (DatabaseField field : descriptor.getFields())
+		// ищем среди обслуживаемых сущностей такую
+		Object clone = _cloneMap.get(entity);
+		// если нашли - значит надо делать дифф и писать в базу апдейт
+		if (clone != null)
 		{
+
 		}
+		else
+		{
+			// не нашли. создаем новый объект в базе
+			// формируем SQL запрос на инсерт
+			StringBuilder sql = new StringBuilder("INSERT INTO ");
+			sql.append(descriptor.getTable().getName());
+			sql.append(" (");
+
+			List<DatabaseField> fields = descriptor.getFields();
+			for (int i = 0; i < fields.size(); i++)
+			{
+				sql.append(fields.get(i).getName());
+				if ((i + 1) < fields.size())
+				{
+					sql.append(", ");
+				}
+			}
+
+			sql.append(") VALUES (");
+
+			for (int i = 0; i < fields.size(); i++)
+			{
+				sql.append("?");
+				if ((i + 1) < fields.size())
+				{
+					sql.append(", ");
+				}
+			}
+
+			sql.append(")");
+			_log.debug("INSERT SQL " + entity.toString() + ": " + sql);
+
+			try
+			{
+				try (PreparedStatement ps = connection.prepareStatement(sql.toString()))
+				{
+					// проходим по всем полям дескриптора
+					for (int i = 0; i < fields.size(); i++)
+					{
+						Object val = fields.get(i).getField().get(entity);
+						// TODO set value
+					}
+				}
+			}
+			catch (IllegalAccessException e)
+			{
+
+			}
+			catch (SQLException e)
+			{
+
+			}
+		}
+
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey)
@@ -102,5 +176,20 @@ public class MyEntityManager
 			return null;
 		}
 		return _descriptors.get(entity.getClass());
+	}
+
+	private Map<Object, Object> createMap()
+	{
+		return new IdentityHashMap<>();
+	}
+
+	public boolean isObjectDeleted(Object object)
+	{
+		return (_deletedObjects != null) && _deletedObjects.containsKey(object);
+	}
+
+	protected void undeleteObject(Object object)
+	{
+		_deletedObjects.remove(object);
 	}
 }

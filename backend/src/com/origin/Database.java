@@ -42,7 +42,7 @@ public class Database
 		_em = emf.createEntityManager();
 
 		_em.getTransaction().begin();
-		_em.persist(user2);
+//		_em.persist(user2);
 		_em.getTransaction().commit();
 
 		User user = _em.find(User.class, 1);
