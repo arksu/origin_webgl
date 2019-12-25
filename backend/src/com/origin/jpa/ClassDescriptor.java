@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -187,5 +188,22 @@ public class ClassDescriptor
 	public List<DatabaseField> getFields()
 	{
 		return _fields;
+	}
+
+	/**
+	 * Build and return the default (zero-argument) constructor for the specified class.
+	 */
+	protected Constructor<?> buildDefaultConstructorFor(Class<?> javaClass)
+	{
+		try
+		{
+			Constructor<?> result = javaClass.getDeclaredConstructor();
+			result.setAccessible(true);
+			return result;
+		}
+		catch (NoSuchMethodException exception)
+		{
+			throw new RuntimeException(javaClass.getName() + " no such method <Default Constructor>");
+		}
 	}
 }

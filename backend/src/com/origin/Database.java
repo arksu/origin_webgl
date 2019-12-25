@@ -26,14 +26,16 @@ public class Database
 
 	public static void start()
 	{
-		User user2 = new User();
-		user2.setLogin("12321");
-		//**************************************************
-
 		em2.addEntityClass(User.class);
 		em2.addEntityClass(Character.class);
 
 		em2.setConnectionFactory(Database::getConnection);
+		//**************************************************
+
+		// TEST code
+		User user2 = new User();
+		user2.setLogin("12321");
+
 
 		//**************************************************
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");

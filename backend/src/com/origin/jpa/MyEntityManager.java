@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class MyEntityManager
 {
-	private Map<Class, ClassDescriptor> _descriptors = new HashMap<>(4);
+	private Map<Class<?>, ClassDescriptor> _descriptors = new HashMap<>(4);
 
 	private ConnectionFactory _connectionFactory;
 
@@ -36,6 +36,7 @@ public class MyEntityManager
 
 	public void commit(Connection connection) throws SQLException
 	{
+		// TODO
 		connection.setAutoCommit(true);
 		connection.commit();
 		connection.close();
@@ -43,6 +44,7 @@ public class MyEntityManager
 
 	public void rollback(Connection connection) throws SQLException
 	{
+		// TODO
 		connection.rollback();
 		connection.setAutoCommit(true);
 		connection.close();
@@ -62,9 +64,10 @@ public class MyEntityManager
 	 */
 	public void deploy() throws SQLException
 	{
+		final Connection c = _connectionFactory.get();
 		for (ClassDescriptor descriptor : _descriptors.values())
 		{
-			descriptor.deploy(_connectionFactory.get());
+			descriptor.deploy(c);
 		}
 	}
 
