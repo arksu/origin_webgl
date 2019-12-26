@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "users")
-@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true, drop = false)
+@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true, drop = false, truncate = true)
 public class User
 {
 	@Id

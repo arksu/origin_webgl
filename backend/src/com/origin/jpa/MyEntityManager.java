@@ -103,6 +103,7 @@ public class MyEntityManager
 
 		// ищем среди обслуживаемых сущностей такую
 		Object clone = _cloneMap.get(entity);
+
 		// если нашли - значит надо делать дифф и писать в базу апдейт
 		if (clone != null)
 		{
@@ -148,20 +149,20 @@ public class MyEntityManager
 					for (int i = 0; i < fields.size(); i++)
 					{
 						Object val = fields.get(i).getField().get(entity);
-						// TODO set value
+						DatabasePlatform.setParameterValue(val, ps, i + 1);
 					}
+					ps.executeUpdate();
 				}
 			}
 			catch (IllegalAccessException e)
 			{
-
+				_log.error("IllegalAccessException", e);
 			}
 			catch (SQLException e)
 			{
-
+				_log.error("SQLException", e);
 			}
 		}
-
 	}
 
 	public <T> T find(Class<T> entityClass, Object primaryKey)

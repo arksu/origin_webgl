@@ -68,6 +68,7 @@ public class ClassDescriptor
 		// читаем поля класса
 		for (Field field : clazz.getDeclaredFields())
 		{
+			field.setAccessible(true);
 			// ищем аннотации колонки таблицы
 			Column column = field.getAnnotation(Column.class);
 			DatabaseField columnField = null;
