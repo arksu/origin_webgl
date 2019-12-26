@@ -44,10 +44,10 @@ public class Database
 //		_em.persist(user2);
 //		_em.getTransaction().commit();
 
-		User user3 = _em.find(User.class, 1);
-		_em.getTransaction().begin();
-		user3.setLogin("user33");
-		_em.getTransaction().commit();
+//		User user3 = _em.find(User.class, 1);
+//		_em.getTransaction().begin();
+//		user3.setLogin("user33");
+//		_em.getTransaction().commit();
 
 //		User user = _em.find(User.class, 1);
 //		System.out.println(user.getId());
@@ -90,11 +90,6 @@ public class Database
 			_log.error("connect error", e);
 		}
 	}
-
-//	public static EntityManager getEM()
-//	{
-//		return _em;
-//	}
 
 	/**
 	 * получить коннект до базы

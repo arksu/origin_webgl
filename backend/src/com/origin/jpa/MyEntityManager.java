@@ -114,55 +114,30 @@ public class MyEntityManager
 		{
 			// не нашли. создаем новый объект в базе
 			// формируем SQL запрос на инсерт
-			StringBuilder sql = new StringBuilder("INSERT INTO ");
-			sql.append(descriptor.getTable().getName());
-			sql.append(" (");
-
-			final List<DatabaseField> fields = descriptor.getFields();
-			for (int i = 0; i < fields.size(); i++)
-			{
-				sql.append(fields.get(i).getName());
-				if ((i + 1) < fields.size())
-				{
-					sql.append(", ");
-				}
-			}
-
-			sql.append(") VALUES (");
-
-			for (int i = 0; i < fields.size(); i++)
-			{
-				sql.append("?");
-				if ((i + 1) < fields.size())
-				{
-					sql.append(", ");
-				}
-			}
-
-			sql.append(")");
 
 			try
 			{
-				try (PreparedStatement ps = connection.prepareStatement(sql.toString()))
+				try (PreparedStatement ps = connection.prepareStatement(descriptor.getSimpleInsertSql()))
 				{
 					// проходим по всем полям дескриптора
+					final List<DatabaseField> fields = descriptor.getFields();
 					for (int i = 0; i < fields.size(); i++)
 					{
 						Object val = fields.get(i).getField().get(entity);
 						DatabasePlatform.setParameterValue(val, ps, i + 1);
 					}
-					_log.debug("execute insert SQL " + entity.toString() + ": " + sql);
+					_log.debug("execute insert SQL " + entity.toString() + ": " + descriptor.getSimpleInsertSql());
 					ps.executeUpdate();
 					_cloneMap.put(entity, entity);
 				}
 			}
 			catch (IllegalAccessException e)
 			{
-				_log.error("IllegalAccessException", e);
+				throw new RuntimeException("IllegalAccessException", e);
 			}
 			catch (SQLException e)
 			{
-				_log.error("SQLException", e);
+				throw new RuntimeException("SQLException", e);
 			}
 		}
 	}
@@ -180,54 +155,49 @@ public class MyEntityManager
 			throw new IllegalArgumentException("Not entity object, no class descriptor");
 		}
 
-		StringBuilder sql = new StringBuilder("SELECT ");
-
-		final List<DatabaseField> fields = descriptor.getFields();
-		for (int i = 0; i < fields.size(); i++)
-		{
-			sql.append(fields.get(i).getName());
-			if ((i + 1) < fields.size())
-			{
-				sql.append(", ");
-			}
-		}
-		sql.append(" FROM ").append(descriptor.getTable().getName());
-		sql.append(" WHERE ");
-		final List<DatabaseField> pkFields = descriptor.getPrimaryKeyFields();
-		// в этом методе ищем по 1 ключевому полю
-		if (pkFields.size() != 1)
-		{
-			throw new IllegalArgumentException("Wrong PK fields size, must be only 1 PK field");
-		}
-		sql.append(pkFields.get(0).getName());
-		sql.append("=?");
-
 		try
 		{
-			try (PreparedStatement ps = connection.prepareStatement(sql.toString()))
+			try (PreparedStatement ps = connection.prepareStatement(descriptor.getSimpleSelectSql()))
 			{
 				DatabasePlatform.setParameterValue(primaryKey, ps, 1);
+				_log.debug("execute select SQL " + entityClass.getName() + ": " + descriptor.getSimpleSelectSql());
 				final ResultSet resultSet = ps.executeQuery();
 
-				_log.debug(resultSet.toString());
+				if (!resultSet.next())
+				{
+					throw new RuntimeException("Select return has no data");
+				}
+
+				// создаем объект дефолтным конструктором
+				final Object workingCopy = descriptor.buildNewInstance();
+				final Object clone = descriptor.buildNewInstance();
+
+				final List<DatabaseField> fields = descriptor.getFields();
+				// проходим по поляем объекта через дескриптор
+				for (int i = 0; i < fields.size(); i++)
+				{
+					// получаем значения полей
+					final Object val = resultSet.getObject(i + 1);
+
+					// пишем их в поля клона, используя buildCloneValue, т.е. значения тоже клоним если надо
+					fields.get(i).getField().set(workingCopy, val);
+					fields.get(i).getField().set(clone, DatabasePlatform.buildCloneValue(val));
+				}
+
+				// запоминаем клона в мапе
+				_cloneMap.put(workingCopy, clone);
+
+				return (T) workingCopy;
 			}
 		}
-//		catch (IllegalAccessException e)
-//		{
-//			_log.error("IllegalAccessException", e);
-//		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException("IllegalAccessException", e);
+		}
 		catch (SQLException e)
 		{
-			_log.error("SQLException", e);
+			throw new RuntimeException("SQLException", e);
 		}
-
-		// создаем объект дефолтным конструктором
-		// проходим по поляем объекта через дескриптор
-		// получаем значения полей
-		// пишем их в поля клона, используя buildCloneValue, т.е. значения тоже клоним если надо
-		// запоминаем клона в мапе
-
-		return null;
 	}
 
 	public ClassDescriptor getDescriptor(Object entity)

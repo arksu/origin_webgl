@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,6 +31,14 @@ public class ClassDescriptor
 	private List<DatabaseField> _primaryKeyFields;
 	private List<DatabaseField> _fields;
 
+	/**
+	 * кэшируем SQL запросы для типовых операций по одному ключу
+	 */
+	private String _simpleInsertSql;
+	private String _simpleSelectSql;
+
+	private Constructor _defaultConstructor;
+
 	public ClassDescriptor(Class<?> clazz)
 	{
 		_fields = new ArrayList<>(8);
@@ -37,6 +46,7 @@ public class ClassDescriptor
 
 		_javaClass = clazz;
 		_javaClassName = clazz.getName();
+		_defaultConstructor = buildDefaultConstructorFor(_javaClass);
 
 		// проверим что переданный класс это сущность JPA
 		Entity entity = clazz.getAnnotation(Entity.class);
@@ -171,6 +181,70 @@ public class ClassDescriptor
 		}
 	}
 
+	public String getSimpleInsertSql()
+	{
+		if (_simpleInsertSql == null)
+		{
+			StringBuilder sql = new StringBuilder("INSERT INTO ");
+			sql.append(_table.getName());
+			sql.append(" (");
+
+			for (int i = 0; i < _fields.size(); i++)
+			{
+				sql.append(_fields.get(i).getName());
+				if ((i + 1) < _fields.size())
+				{
+					sql.append(", ");
+				}
+			}
+
+			sql.append(") VALUES (");
+
+			for (int i = 0; i < _fields.size(); i++)
+			{
+				sql.append("?");
+				if ((i + 1) < _fields.size())
+				{
+					sql.append(", ");
+				}
+			}
+
+			sql.append(")");
+			_simpleInsertSql = sql.toString();
+		}
+		return _simpleInsertSql;
+	}
+
+	public String getSimpleSelectSql()
+	{
+		if (_simpleSelectSql == null)
+		{
+			StringBuilder sql = new StringBuilder("SELECT ");
+
+			for (int i = 0; i < _fields.size(); i++)
+			{
+				sql.append(_fields.get(i).getName());
+				if ((i + 1) < _fields.size())
+				{
+					sql.append(", ");
+				}
+			}
+			sql.append(" FROM ")
+			   .append(_table.getName())
+			   .append(" WHERE ");
+
+			// в этом методе ищем по 1 ключевому полю
+			if (_primaryKeyFields.size() != 1)
+			{
+				throw new IllegalArgumentException("Wrong PK fields size, must be only 1 PK field");
+			}
+			sql.append(_primaryKeyFields.get(0).getName());
+			sql.append("=?");
+			_simpleSelectSql = sql.toString();
+		}
+		return _simpleSelectSql;
+	}
+
 	public Class getJavaClass()
 	{
 		return _javaClass;
@@ -209,7 +283,27 @@ public class ClassDescriptor
 		}
 		catch (NoSuchMethodException exception)
 		{
-			throw new RuntimeException(javaClass.getName() + " no such method <Default Constructor>");
+			throw new RuntimeException(javaClass.getName() + " no such <Default Constructor>");
+		}
+	}
+
+	public Object buildNewInstance()
+	{
+		try
+		{
+			return _defaultConstructor.newInstance();
+		}
+		catch (InstantiationException e)
+		{
+			throw new RuntimeException("InstantiationException", e);
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException("IllegalAccessException", e);
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new RuntimeException("InvocationTargetException", e);
 		}
 	}
 }

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.sql.Types;
 import java.util.Calendar;
+import java.util.Date;
 
 import static com.origin.jpa.helper.ClassConstants.*;
 
@@ -312,5 +313,54 @@ public class DatabasePlatform
 		{
 			return Types.VARCHAR;
 		}
+	}
+
+	/**
+	 * INTERNAL:
+	 * Clone the actual value represented by this mapping.  Do set the cloned value into the object.
+	 */
+	public static Object buildCloneValue(Object attributeValue)
+	{
+		Object newAttributeValue = attributeValue;
+		if (attributeValue != null)
+		{
+			if (attributeValue instanceof byte[])
+			{
+				int length = ((byte[]) attributeValue).length;
+				byte[] arrayCopy = new byte[length];
+				System.arraycopy(attributeValue, 0, arrayCopy, 0, length);
+				newAttributeValue = arrayCopy;
+			}
+			else if (attributeValue instanceof Byte[])
+			{
+				int length = ((Byte[]) attributeValue).length;
+				Byte[] arrayCopy = new Byte[length];
+				System.arraycopy(attributeValue, 0, arrayCopy, 0, length);
+				newAttributeValue = arrayCopy;
+			}
+			else if (attributeValue instanceof char[])
+			{
+				int length = ((char[]) attributeValue).length;
+				char[] arrayCopy = new char[length];
+				System.arraycopy(attributeValue, 0, arrayCopy, 0, length);
+				newAttributeValue = arrayCopy;
+			}
+			else if (attributeValue instanceof Character[])
+			{
+				int length = ((Character[]) attributeValue).length;
+				Character[] arrayCopy = new Character[length];
+				System.arraycopy(attributeValue, 0, arrayCopy, 0, length);
+				newAttributeValue = arrayCopy;
+			}
+			else if (attributeValue instanceof Date)
+			{
+				newAttributeValue = ((Date) attributeValue).clone();
+			}
+			else if (attributeValue instanceof Calendar)
+			{
+				newAttributeValue = ((Calendar) attributeValue).clone();
+			}
+		}
+		return newAttributeValue;
 	}
 }
