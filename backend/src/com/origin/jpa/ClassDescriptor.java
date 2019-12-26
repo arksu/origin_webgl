@@ -191,6 +191,11 @@ public class ClassDescriptor
 		return _fields;
 	}
 
+	public List<DatabaseField> getPrimaryKeyFields()
+	{
+		return _primaryKeyFields;
+	}
+
 	/**
 	 * Build and return the default (zero-argument) constructor for the specified class.
 	 */

@@ -3,12 +3,15 @@ package com.origin.entity;
 import com.origin.jpa.TableExtended;
 import com.origin.utils.Utils;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "users")
-@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true, drop = false, truncate = true)
+@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true, drop = false, truncate = false)
 public class User
 {
 	@Id

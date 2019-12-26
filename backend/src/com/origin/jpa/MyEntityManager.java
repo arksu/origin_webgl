@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -107,7 +108,7 @@ public class MyEntityManager
 		// если нашли - значит надо делать дифф и писать в базу апдейт
 		if (clone != null)
 		{
-
+			// TODO
 		}
 		else
 		{
@@ -117,7 +118,7 @@ public class MyEntityManager
 			sql.append(descriptor.getTable().getName());
 			sql.append(" (");
 
-			List<DatabaseField> fields = descriptor.getFields();
+			final List<DatabaseField> fields = descriptor.getFields();
 			for (int i = 0; i < fields.size(); i++)
 			{
 				sql.append(fields.get(i).getName());
@@ -139,7 +140,6 @@ public class MyEntityManager
 			}
 
 			sql.append(")");
-			_log.debug("INSERT SQL " + entity.toString() + ": " + sql);
 
 			try
 			{
@@ -151,7 +151,9 @@ public class MyEntityManager
 						Object val = fields.get(i).getField().get(entity);
 						DatabasePlatform.setParameterValue(val, ps, i + 1);
 					}
+					_log.debug("execute insert SQL " + entity.toString() + ": " + sql);
 					ps.executeUpdate();
+					_cloneMap.put(entity, entity);
 				}
 			}
 			catch (IllegalAccessException e)
@@ -167,6 +169,64 @@ public class MyEntityManager
 
 	public <T> T find(Class<T> entityClass, Object primaryKey)
 	{
+		return find(entityClass, _connectionFactory.get(), primaryKey);
+	}
+
+	public <T> T find(Class<T> entityClass, Connection connection, Object primaryKey)
+	{
+		ClassDescriptor descriptor = _descriptors.get(entityClass);
+		if (descriptor == null)
+		{
+			throw new IllegalArgumentException("Not entity object, no class descriptor");
+		}
+
+		StringBuilder sql = new StringBuilder("SELECT ");
+
+		final List<DatabaseField> fields = descriptor.getFields();
+		for (int i = 0; i < fields.size(); i++)
+		{
+			sql.append(fields.get(i).getName());
+			if ((i + 1) < fields.size())
+			{
+				sql.append(", ");
+			}
+		}
+		sql.append(" FROM ").append(descriptor.getTable().getName());
+		sql.append(" WHERE ");
+		final List<DatabaseField> pkFields = descriptor.getPrimaryKeyFields();
+		// в этом методе ищем по 1 ключевому полю
+		if (pkFields.size() != 1)
+		{
+			throw new IllegalArgumentException("Wrong PK fields size, must be only 1 PK field");
+		}
+		sql.append(pkFields.get(0).getName());
+		sql.append("=?");
+
+		try
+		{
+			try (PreparedStatement ps = connection.prepareStatement(sql.toString()))
+			{
+				DatabasePlatform.setParameterValue(primaryKey, ps, 1);
+				final ResultSet resultSet = ps.executeQuery();
+
+				_log.debug(resultSet.toString());
+			}
+		}
+//		catch (IllegalAccessException e)
+//		{
+//			_log.error("IllegalAccessException", e);
+//		}
+		catch (SQLException e)
+		{
+			_log.error("SQLException", e);
+		}
+
+		// создаем объект дефолтным конструктором
+		// проходим по поляем объекта через дескриптор
+		// получаем значения полей
+		// пишем их в поля клона, используя buildCloneValue, т.е. значения тоже клоним если надо
+		// запоминаем клона в мапе
+
 		return null;
 	}
 

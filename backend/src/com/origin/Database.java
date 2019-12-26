@@ -34,19 +34,23 @@ public class Database
 
 		// TEST code
 		User user2 = new User();
-		user2.setLogin("12321");
-
+		user2.setLogin("test_login1");
 
 		//**************************************************
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
 		_em = emf.createEntityManager();
 
-		_em.getTransaction().begin();
+//		_em.getTransaction().begin();
 //		_em.persist(user2);
+//		_em.getTransaction().commit();
+
+		User user3 = _em.find(User.class, 1);
+		_em.getTransaction().begin();
+		user3.setLogin("user33");
 		_em.getTransaction().commit();
 
-		User user = _em.find(User.class, 1);
-		System.out.println(user.getId());
+//		User user = _em.find(User.class, 1);
+//		System.out.println(user.getId());
 
 //		user.setLogin("some1222");
 //
@@ -77,16 +81,9 @@ public class Database
 			em2.deploy();
 			connection.close();
 
-//			try
-//			{
-//				connection = em2.beginTransaction();
 			em2.persist(user2);
-//			}
-//			catch (SQLException e)
-//			{
-//			em2.rollback();
-//			}
-
+			final User user = em2.find(User.class, 1);
+			_log.debug(user.getLogin());
 		}
 		catch (SQLException e)
 		{
