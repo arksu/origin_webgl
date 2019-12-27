@@ -3,10 +3,7 @@ package com.origin.jpa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -117,7 +114,12 @@ public class MyEntityManager
 
 			try
 			{
-				try (PreparedStatement ps = connection.prepareStatement(descriptor.getSimpleInsertSql()))
+				// будем писать в сущность сгенерированного ид только если у нас одно ключевое поле
+				boolean isGeneratedOneKey = descriptor.getPrimaryKeyFields().size() == 1;
+
+				try (PreparedStatement ps = isGeneratedOneKey ?
+						connection.prepareStatement(descriptor.getSimpleInsertSql(), Statement.RETURN_GENERATED_KEYS) :
+						connection.prepareStatement(descriptor.getSimpleInsertSql()))
 				{
 					// проходим по всем полям дескриптора
 					final List<DatabaseField> fields = descriptor.getFields();
@@ -127,7 +129,29 @@ public class MyEntityManager
 						DatabasePlatform.setParameterValue(val, ps, i + 1);
 					}
 					_log.debug("execute insert SQL " + entity.toString() + ": " + descriptor.getSimpleInsertSql());
-					ps.executeUpdate();
+					int affectedRows = ps.executeUpdate();
+					if (affectedRows == 0)
+					{
+						throw new SQLException("Insert failed, no affected rows");
+					}
+					try (ResultSet generatedKeys = ps.getGeneratedKeys())
+					{
+						if (generatedKeys.next())
+						{
+							if (isGeneratedOneKey)
+							{
+								final DatabaseField field = descriptor.getPrimaryKeyFields().get(0);
+								final Object val = DatabasePlatform.getObjectThroughOptimizedDataConversion(generatedKeys, field, 1);
+
+								ps.close();
+								field.getField().set(entity, val);
+							}
+						}
+						else
+						{
+							throw new SQLException("insert user failed, no ID obtained.");
+						}
+					}
 					_cloneMap.put(entity, entity);
 				}
 			}
@@ -176,12 +200,14 @@ public class MyEntityManager
 				// проходим по поляем объекта через дескриптор
 				for (int i = 0; i < fields.size(); i++)
 				{
+					final DatabaseField field = fields.get(i);
+
 					// получаем значения полей
-					final Object val = resultSet.getObject(i + 1);
+					final Object val = DatabasePlatform.getObjectThroughOptimizedDataConversion(resultSet, field, i + 1);
 
 					// пишем их в поля клона, используя buildCloneValue, т.е. значения тоже клоним если надо
-					fields.get(i).getField().set(workingCopy, val);
-					fields.get(i).getField().set(clone, DatabasePlatform.buildCloneValue(val));
+					field.getField().set(workingCopy, val);
+					field.getField().set(clone, DatabasePlatform.buildCloneValue(val));
 				}
 
 				// запоминаем клона в мапе

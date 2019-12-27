@@ -6,10 +6,7 @@ import com.origin.jpa.helper.Helper;
 import java.io.CharArrayReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.SQLXML;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -151,7 +148,7 @@ public class DatabasePlatform
 		// Next process types that need conversion.
 		else if (parameter instanceof Calendar)
 		{
-			statement.setTimestamp(index, org.eclipse.persistence.internal.helper.Helper.timestampFromDate(((Calendar) parameter).getTime()));
+			statement.setTimestamp(index, Helper.timestampFromDate(((Calendar) parameter).getTime()));
 		}
 		else if (parameter.getClass() == ClassConstants.UTILDATE)
 		{
@@ -182,6 +179,113 @@ public class DatabasePlatform
 		{
 			statement.setObject(index, parameter);
 		}
+	}
+
+	public static Object getObjectThroughOptimizedDataConversion(ResultSet resultSet, DatabaseField field, int columnNumber) throws SQLException
+	{
+		// тип колонки из базы
+		final int type = resultSet.getMetaData().getColumnType(columnNumber);
+
+		Object value = field;// Means no optimization, need to distinguish from null.
+		Class fieldType = field.getType();
+
+		if (type == Types.VARCHAR || type == Types.CHAR || type == Types.NVARCHAR || type == Types.NCHAR)
+		{
+			value = resultSet.getString(columnNumber);
+			return value;
+		}
+		else if (fieldType == null)
+		{
+			return field;
+		}
+
+		boolean isPrimitive = false;
+
+		// Optimize numeric values to avoid conversion into big-dec and back to primitives.
+		if ((fieldType == ClassConstants.PLONG) || (fieldType == ClassConstants.LONG))
+		{
+			value = Long.valueOf(resultSet.getLong(columnNumber));
+			isPrimitive = ((Long) value).longValue() == 0l;
+		}
+		else if ((fieldType == ClassConstants.INTEGER) || (fieldType == ClassConstants.PINT))
+		{
+			value = Integer.valueOf(resultSet.getInt(columnNumber));
+			isPrimitive = ((Integer) value).intValue() == 0;
+		}
+		else if ((fieldType == ClassConstants.FLOAT) || (fieldType == ClassConstants.PFLOAT))
+		{
+			value = Float.valueOf(resultSet.getFloat(columnNumber));
+			isPrimitive = ((Float) value).floatValue() == 0f;
+		}
+		else if ((fieldType == ClassConstants.DOUBLE) || (fieldType == ClassConstants.PDOUBLE))
+		{
+			value = Double.valueOf(resultSet.getDouble(columnNumber));
+			isPrimitive = ((Double) value).doubleValue() == 0d;
+		}
+		else if ((fieldType == ClassConstants.SHORT) || (fieldType == ClassConstants.PSHORT))
+		{
+			value = Short.valueOf(resultSet.getShort(columnNumber));
+			isPrimitive = ((Short) value).shortValue() == 0;
+		}
+		else if ((type == Types.TIME) || (type == Types.DATE) || (type == Types.TIMESTAMP))
+		{
+			// PERF: Optimize dates by calling direct get method if type is Date or Time,
+			// unfortunately the double conversion is unavoidable for Calendar and util.Date.
+			if (fieldType == ClassConstants.SQLDATE)
+			{
+				value = resultSet.getDate(columnNumber);
+			}
+			else if (fieldType == ClassConstants.TIME)
+			{
+				value = resultSet.getTime(columnNumber);
+			}
+			else if (fieldType == ClassConstants.TIMESTAMP)
+			{
+				value = resultSet.getTimestamp(columnNumber);
+			}
+			else if (fieldType == ClassConstants.TIME_LTIME)
+			{
+				final java.sql.Timestamp ts = resultSet.getTimestamp(columnNumber);
+				value = ts != null ? ts.toLocalDateTime().toLocalTime() : null;
+			}
+			else if (fieldType == ClassConstants.TIME_LDATE)
+			{
+				final java.sql.Date dt = resultSet.getDate(columnNumber);
+				value = dt != null ? dt.toLocalDate() : null;
+			}
+			else if (fieldType == ClassConstants.TIME_LDATETIME)
+			{
+				final java.sql.Timestamp ts = resultSet.getTimestamp(columnNumber);
+				value = ts != null ? ts.toLocalDateTime() : null;
+			}
+			else if (fieldType == ClassConstants.TIME_OTIME)
+			{
+				final java.sql.Timestamp ts = resultSet.getTimestamp(columnNumber);
+				value = ts != null ? ts.toLocalDateTime().toLocalTime().atOffset(java.time.OffsetDateTime.now().getOffset()) : null;
+			}
+			else if (fieldType == ClassConstants.TIME_ODATETIME)
+			{
+				final java.sql.Timestamp ts = resultSet.getTimestamp(columnNumber);
+				value = ts != null ? java.time.OffsetDateTime.ofInstant(ts.toInstant(), java.time.ZoneId.systemDefault()) : null;
+			}
+		}
+		else if (fieldType == ClassConstants.BIGINTEGER)
+		{
+			value = resultSet.getBigDecimal(columnNumber);
+			if (value != null) return ((BigDecimal) value).toBigInteger();
+		}
+		else if (fieldType == ClassConstants.BIGDECIMAL)
+		{
+			value = resultSet.getBigDecimal(columnNumber);
+		}
+
+		// PERF: Only check for null for primitives.
+		if (isPrimitive && resultSet.wasNull())
+		{
+			value = null;
+		}
+
+		return value;
 	}
 
 	/**
