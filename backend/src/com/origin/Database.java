@@ -1,6 +1,7 @@
 package com.origin;
 
 import com.origin.entity.Character;
+import com.origin.entity.TestEntity1;
 import com.origin.entity.User;
 import com.origin.jpa.MyEntityManager;
 import com.zaxxer.hikari.HikariConfig;
@@ -28,6 +29,7 @@ public class Database
 	{
 		em2.addEntityClass(User.class);
 		em2.addEntityClass(Character.class);
+		em2.addEntityClass(TestEntity1.class);
 
 		em2.setConnectionFactory(Database::getConnection);
 		//**************************************************
@@ -80,6 +82,15 @@ public class Database
 			Connection connection = getConnection();
 			em2.deploy();
 			connection.close();
+
+			TestEntity1 t1 = new TestEntity1();
+			t1.setText("some1");
+			t1.setIntVal1(33);
+			final byte[] blob = new byte[6];
+			blob[1] = 22;
+			blob[2] = 33;
+			t1.setBlob(blob);
+			em2.persist(t1);
 
 			em2.persist(user2);
 			final User user = em2.find(User.class, 1);

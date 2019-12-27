@@ -134,11 +134,11 @@ public class MyEntityManager
 					{
 						throw new SQLException("Insert failed, no affected rows");
 					}
-					try (ResultSet generatedKeys = ps.getGeneratedKeys())
+					if (isGeneratedOneKey)
 					{
-						if (generatedKeys.next())
+						try (ResultSet generatedKeys = ps.getGeneratedKeys())
 						{
-							if (isGeneratedOneKey)
+							if (generatedKeys.next())
 							{
 								final DatabaseField field = descriptor.getPrimaryKeyFields().get(0);
 								final Object val = DatabasePlatform.getObjectThroughOptimizedDataConversion(generatedKeys, field, 1);
@@ -146,10 +146,10 @@ public class MyEntityManager
 								ps.close();
 								field.getField().set(entity, val);
 							}
-						}
-						else
-						{
-							throw new SQLException("insert user failed, no ID obtained.");
+							else
+							{
+								throw new SQLException("insert user failed, no ID obtained.");
+							}
 						}
 					}
 					_cloneMap.put(entity, entity);
