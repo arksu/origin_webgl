@@ -115,7 +115,7 @@ public class MyEntityManager
 			try
 			{
 				// будем писать в сущность сгенерированного ид только если у нас одно ключевое поле
-				boolean isGeneratedOneKey = descriptor.getPrimaryKeyFields().size() == 1;
+				boolean isGeneratedOneKey = descriptor.getPrimaryKeyFields().size() == 1 && descriptor.getPrimaryKeyFields().get(0).isUpdateInsertId();
 
 				try (PreparedStatement ps = isGeneratedOneKey ?
 						connection.prepareStatement(descriptor.getSimpleInsertSql(), Statement.RETURN_GENERATED_KEYS) :
@@ -166,12 +166,12 @@ public class MyEntityManager
 		}
 	}
 
-	public <T> T find(Class<T> entityClass, Object primaryKey)
+	public <T> T find(Class<T> entityClass, Object primaryKeyValue)
 	{
-		return find(entityClass, _connectionFactory.get(), primaryKey);
+		return find(entityClass, _connectionFactory.get(), primaryKeyValue);
 	}
 
-	public <T> T find(Class<T> entityClass, Connection connection, Object primaryKey)
+	public <T> T find(Class<T> entityClass, Connection connection, Object primaryKeyValue)
 	{
 		ClassDescriptor descriptor = _descriptors.get(entityClass);
 		if (descriptor == null)
@@ -183,7 +183,7 @@ public class MyEntityManager
 		{
 			try (PreparedStatement ps = connection.prepareStatement(descriptor.getSimpleSelectSql()))
 			{
-				DatabasePlatform.setParameterValue(primaryKey, ps, 1);
+				DatabasePlatform.setParameterValue(primaryKeyValue, ps, 1);
 				_log.debug("execute select SQL " + entityClass.getName() + ": " + descriptor.getSimpleSelectSql());
 				final ResultSet resultSet = ps.executeQuery();
 

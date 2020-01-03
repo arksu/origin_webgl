@@ -15,8 +15,9 @@ public class DatabaseField
 //	protected int _length;
 //	protected int _precision;
 //	protected boolean _isUnique;
+
 	private boolean _isNullable;
-	//	protected boolean _isUpdatable;
+	protected boolean _isUpdatable;
 	private boolean _isPrimaryKey;
 	private String _columnDefinition;
 
@@ -37,9 +38,14 @@ public class DatabaseField
 	 */
 	private DatabaseTable _table;
 
+	/**
+	 * обновляем ключевое поле после инсерта (только 1 ключевое поле auto increment)
+	 */
+	private boolean _isUpdateInsertId;
+
 	private Field _field;
 
-	public DatabaseField(Field field, Column annotation, DatabaseTable table)
+	public DatabaseField(Field field, Column annotation, ColumnExtended extendedAnnotation, DatabaseTable table)
 	{
 		_field = field;
 		_type = _field.getType();
@@ -50,8 +56,17 @@ public class DatabaseField
 		}
 		_qualifiedName = table.getName() + "." + _name;
 		_isNullable = annotation.nullable();
+		_isUpdatable = annotation.updatable();
 		_columnDefinition = annotation.columnDefinition();
 		_isPrimaryKey = false;
+		if (extendedAnnotation != null)
+		{
+			_isUpdateInsertId = extendedAnnotation.updateInsertId();
+		}
+		else
+		{
+			_isUpdateInsertId = false;
+		}
 	}
 
 	public DatabaseField(Field field, DatabaseTable table)
@@ -61,6 +76,7 @@ public class DatabaseField
 		_name = _field.getName().toUpperCase();
 		_qualifiedName = table.getName() + "." + _name;
 		_isNullable = false;
+		_isUpdatable = true;
 		_table = table;
 		_isPrimaryKey = false;
 	}
@@ -108,6 +124,11 @@ public class DatabaseField
 	public boolean isPrimaryKey()
 	{
 		return _isPrimaryKey;
+	}
+
+	public boolean isUpdateInsertId()
+	{
+		return _isUpdateInsertId;
 	}
 
 	public void setPrimaryKey(boolean primaryKey)

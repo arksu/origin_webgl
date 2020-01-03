@@ -6,10 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "characters")
-@TableExtended(truncate = true)
+@TableExtended(truncate = true, drop = true)
 public class Character
 {
 	@Id
@@ -18,5 +19,8 @@ public class Character
 
 	@Column(name = "name")
 	private String _name;
+
+	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
+	private Timestamp _createTime;
 
 }

@@ -81,29 +81,31 @@ public class ClassDescriptor
 			field.setAccessible(true);
 			// ищем аннотации колонки таблицы
 			Column column = field.getAnnotation(Column.class);
-			DatabaseField columnField = null;
+			ColumnExtended columnExtended = field.getAnnotation(ColumnExtended.class);
+			DatabaseField columnField;
 			if (column != null)
 			{
-				columnField = new DatabaseField(field, column, _table);
+				columnField = new DatabaseField(field, column, columnExtended, _table);
 				_fields.add(columnField);
 			}
 
 			Id id = field.getAnnotation(Id.class);
 			if (id != null)
 			{
-				DatabaseField idField = new DatabaseField(field, _table);
-				idField.setPrimaryKey(true);
-				_primaryKeyFields.add(idField);
+				DatabaseField idField;
 
 				// если для поля определен Id но нет определения колонки - то построим колонку по аннотации Id
 				if (column == null)
 				{
+					idField = new DatabaseField(field, _table);
 					_fields.add(idField);
 				}
 				else
 				{
-					idField.setName(columnField.getName());
+					idField = new DatabaseField(field, column, columnExtended, _table);
 				}
+				idField.setPrimaryKey(true);
+				_primaryKeyFields.add(idField);
 			}
 		}
 	}

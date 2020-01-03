@@ -1,5 +1,6 @@
 package com.origin.entity;
 
+import com.origin.jpa.ColumnExtended;
 import com.origin.jpa.TableExtended;
 import com.origin.utils.Utils;
 
@@ -11,11 +12,12 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "users")
-@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true, drop = false, truncate = false)
+@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true, drop = true, truncate = false)
 public class User
 {
 	@Id
 	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
+	@ColumnExtended(updateInsertId = true)
 	private int _id;
 
 	@Column(name = "login") // columnDefinition = "VARCHAR(64) NOT NULL"
