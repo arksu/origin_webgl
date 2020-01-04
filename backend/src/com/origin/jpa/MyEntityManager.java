@@ -3,13 +3,10 @@ package com.origin.jpa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@jdk.nashorn.internal.runtime.logging.Logger
 public class MyEntityManager
 {
 	private static final Logger _log = LoggerFactory.getLogger(MyEntityManager.class.getName());
@@ -87,6 +84,9 @@ public class MyEntityManager
 		}
 	}
 
+	/**
+	 * сохранить/обновить сущность в базу
+	 */
 	public void persist(Object entity)
 	{
 		persist(entity, _connectionFactory.get());
@@ -106,10 +106,95 @@ public class MyEntityManager
 		// если нашли - значит надо делать дифф и писать в базу апдейт
 		if (clone != null)
 		{
-			_log.debug("entity FOUND, UPDATE");
+			if (entity != clone)
+			{
+				if (descriptor.getPrimaryKeyFields().size() == 0)
+				{
+					throw new RuntimeException("No primary key for entity");
+				}
 
-			// TODO
+				_log.debug("entity FOUND, UPDATE");
 
+				try
+				{
+					StringBuilder sql = new StringBuilder("UPDATE ");
+					sql.append(descriptor.getTable().getName())
+					   .append(" SET ");
+
+					int updatedCount = 0;
+					List<Object> changes = null;
+					final List<DatabaseField> fields = descriptor.getFields();
+					for (int i = 0; i < fields.size(); i++)
+					{
+						final DatabaseField dbField = fields.get(i);
+						final Field field = dbField.getField();
+						final Object firstValue = field.get(entity);
+						final Object secondValue = field.get(clone);
+
+						if (!DatabasePlatform.compareObjectValues(firstValue, secondValue))
+						{
+							if (dbField.isPrimaryKey())
+							{
+								throw new RuntimeException("Update primary key");
+							}
+							if (!dbField.isUpdatable())
+							{
+								throw new RuntimeException("Field <" + dbField.getName() + "> is not updatable");
+							}
+							if (updatedCount > 0)
+							{
+								sql.append(", ");
+							}
+							updatedCount++;
+							sql.append(dbField.getName())
+							   .append("=?");
+							if (changes == null)
+							{
+								changes = new ArrayList<>();
+							}
+							changes.add(firstValue);
+						}
+					}
+					sql.append(" WHERE ");
+					for (int i = 0; i < descriptor.getPrimaryKeyFields().size(); i++)
+					{
+						sql.append(descriptor.getPrimaryKeyFields().get(i).getName())
+						   .append("=?");
+					}
+
+					if (updatedCount > 0)
+					{
+						final String rawSql = sql.toString();
+						try (PreparedStatement ps = connection.prepareStatement(rawSql))
+						{
+							_log.debug("execute update SQL " + entity.toString() + ": " + rawSql);
+
+							int index = 0;
+							while (index < changes.size())
+							{
+								index++;
+								DatabasePlatform.setParameterValue(changes.get(index - 1), ps, index);
+							}
+
+							for (int i = 0; i < descriptor.getPrimaryKeyFields().size(); i++)
+							{
+								index++;
+								Object val = descriptor.getPrimaryKeyFields().get(i).getField().get(entity);
+								DatabasePlatform.setParameterValue(val, ps, index);
+							}
+							ps.executeUpdate();
+						}
+					}
+				}
+				catch (IllegalAccessException e)
+				{
+					throw new RuntimeException("IllegalAccessException", e);
+				}
+				catch (SQLException e)
+				{
+					throw new RuntimeException("SQLException", e);
+				}
+			}
 		}
 		else
 		{
@@ -126,12 +211,29 @@ public class MyEntityManager
 						connection.prepareStatement(descriptor.getSimpleInsertSql(), Statement.RETURN_GENERATED_KEYS) :
 						connection.prepareStatement(descriptor.getSimpleInsertSql()))
 				{
+					// создадим клона для сохранения диффа
+					if (isGeneratedOneKey)
+					{
+						clone = descriptor.buildNewInstance();
+					}
+
 					// проходим по всем полям дескриптора
 					final List<DatabaseField> fields = descriptor.getFields();
+					int index = 0;
 					for (int i = 0; i < fields.size(); i++)
 					{
-						Object val = fields.get(i).getField().get(entity);
-						DatabasePlatform.setParameterValue(val, ps, i + 1);
+						final DatabaseField field = fields.get(i);
+						if (field.isInsertable())
+						{
+							index++;
+							Object val = field.getField().get(entity);
+							DatabasePlatform.setParameterValue(val, ps, index);
+
+							if (isGeneratedOneKey)
+							{
+								field.getField().set(clone, DatabasePlatform.buildCloneValue(val));
+							}
+						}
 					}
 
 					_log.debug("execute insert SQL " + entity.toString() + ": " + descriptor.getSimpleInsertSql());
@@ -152,9 +254,10 @@ public class MyEntityManager
 
 								ps.close();
 								field.getField().set(entity, val);
+								field.getField().set(clone, DatabasePlatform.buildCloneValue(val));
 
 								// добавим в мапу только если реально получили ид после инсерта и обновили в сущности
-								_cloneMap.put(entity, entity);
+								_cloneMap.put(entity, clone);
 							}
 							else
 							{

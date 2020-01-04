@@ -24,7 +24,7 @@ public class ClassDescriptor
 {
 	private static final Logger _log = LoggerFactory.getLogger(ClassDescriptor.class.getName());
 
-	private Class _javaClass;
+	private Class<?> _javaClass;
 	private String _javaClassName;
 
 	private DatabaseTable _table;
@@ -37,7 +37,7 @@ public class ClassDescriptor
 	private String _simpleInsertSql;
 	private String _simpleSelectSql;
 
-	private Constructor _defaultConstructor;
+	private Constructor<?> _defaultConstructor;
 
 	public ClassDescriptor(Class<?> clazz)
 	{
@@ -82,7 +82,7 @@ public class ClassDescriptor
 			// ищем аннотации колонки таблицы
 			Column column = field.getAnnotation(Column.class);
 			ColumnExtended columnExtended = field.getAnnotation(ColumnExtended.class);
-			DatabaseField columnField;
+			DatabaseField columnField = null;
 			if (column != null)
 			{
 				columnField = new DatabaseField(field, column, columnExtended, _table);
@@ -102,7 +102,7 @@ public class ClassDescriptor
 				}
 				else
 				{
-					idField = new DatabaseField(field, column, columnExtended, _table);
+					idField = columnField;
 				}
 				idField.setPrimaryKey(true);
 				_primaryKeyFields.add(idField);
@@ -193,10 +193,14 @@ public class ClassDescriptor
 
 			for (int i = 0; i < _fields.size(); i++)
 			{
-				sql.append(_fields.get(i).getName());
-				if ((i + 1) < _fields.size())
+				final DatabaseField f = _fields.get(i);
+				if (f.isInsertable())
 				{
-					sql.append(", ");
+					sql.append(f.getName());
+					if ((i + 1) < _fields.size())
+					{
+						sql.append(", ");
+					}
 				}
 			}
 
@@ -204,10 +208,13 @@ public class ClassDescriptor
 
 			for (int i = 0; i < _fields.size(); i++)
 			{
-				sql.append("?");
-				if ((i + 1) < _fields.size())
+				if (_fields.get(i).isInsertable())
 				{
-					sql.append(", ");
+					sql.append("?");
+					if ((i + 1) < _fields.size())
+					{
+						sql.append(", ");
+					}
 				}
 			}
 
@@ -247,7 +254,7 @@ public class ClassDescriptor
 		return _simpleSelectSql;
 	}
 
-	public Class getJavaClass()
+	public Class<?> getJavaClass()
 	{
 		return _javaClass;
 	}

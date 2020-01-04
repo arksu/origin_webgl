@@ -14,7 +14,7 @@ import static com.origin.jpa.helper.ClassConstants.*;
 
 public class DatabasePlatform
 {
-	private static final int _stringBindingSize = 4096;
+	private static final int _stringBindingSize = 256;
 
 	/**
 	 * INTERNAL
@@ -466,5 +466,50 @@ public class DatabasePlatform
 			}
 		}
 		return newAttributeValue;
+	}
+
+	/**
+	 * Compare the attribute values.
+	 */
+	public static boolean compareObjectValues(Object firstValue, Object secondValue)
+	{
+		// PERF: Check identity before conversion.
+		if (firstValue == secondValue)
+		{
+			return true;
+		}
+
+		if ((firstValue != null) && (secondValue != null))
+		{
+			// PERF: Check equals first, as normally no change.
+			// Also for serialization objects bytes may not be consistent, but equals may work (HashMap).
+			if (firstValue.equals(secondValue))
+			{
+				return true;
+			}
+		}
+
+/*
+		// CR2114 - following two lines modified; getFieldValue() needs class as an argument
+		firstValue = getFieldValue(firstValue, session);
+		secondValue = getFieldValue(secondValue, session);
+		// PERF:  Check identity/nulls before special type comparison.
+		if (firstValue == secondValue) {
+			return true;
+		}
+
+
+		// PERF: Check equals first, as normally no change.
+		if (firstValue.equals(secondValue)) {
+			return true;
+		}
+*/
+
+		if ((firstValue == null) || (secondValue == null))
+		{
+			return false;
+		}
+
+		return Helper.comparePotentialArrays(firstValue, secondValue);
 	}
 }

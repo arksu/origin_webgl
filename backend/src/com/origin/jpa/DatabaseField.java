@@ -16,8 +16,9 @@ public class DatabaseField
 //	protected int _precision;
 //	protected boolean _isUnique;
 
+	private boolean _isInsertable;
 	private boolean _isNullable;
-	protected boolean _isUpdatable;
+	private boolean _isUpdatable;
 	private boolean _isPrimaryKey;
 	private String _columnDefinition;
 
@@ -57,6 +58,7 @@ public class DatabaseField
 		_qualifiedName = table.getName() + "." + _name;
 		_isNullable = annotation.nullable();
 		_isUpdatable = annotation.updatable();
+		_isInsertable = annotation.insertable();
 		_columnDefinition = annotation.columnDefinition();
 		_isPrimaryKey = false;
 		if (extendedAnnotation != null)
@@ -77,6 +79,7 @@ public class DatabaseField
 		_qualifiedName = table.getName() + "." + _name;
 		_isNullable = false;
 		_isUpdatable = true;
+		_isInsertable = true;
 		_table = table;
 		_isPrimaryKey = false;
 	}
@@ -126,6 +129,16 @@ public class DatabaseField
 		return _isPrimaryKey;
 	}
 
+	public boolean isUpdatable()
+	{
+		return _isUpdatable;
+	}
+
+	public boolean isInsertable()
+	{
+		return _isInsertable;
+	}
+
 	public boolean isUpdateInsertId()
 	{
 		return _isUpdateInsertId;
@@ -134,6 +147,10 @@ public class DatabaseField
 	public void setPrimaryKey(boolean primaryKey)
 	{
 		_isPrimaryKey = primaryKey;
+		if (primaryKey)
+		{
+			_isUpdatable = false;
+		}
 	}
 
 	public String getCreateSql()

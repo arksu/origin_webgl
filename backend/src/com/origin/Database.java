@@ -95,6 +95,10 @@ public class Database
 			em2.persist(user2);
 			final User user = em2.find(User.class, 1);
 			_log.debug(user.getLogin());
+
+			user2.setLogin("updatedLogin");
+			user2.setPassword("updPassword");
+			em2.persist(user2);
 		}
 		catch (SQLException e)
 		{
