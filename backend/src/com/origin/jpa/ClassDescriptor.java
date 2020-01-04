@@ -36,6 +36,7 @@ public class ClassDescriptor
 	 */
 	private String _simpleInsertSql;
 	private String _simpleSelectSql;
+	private String _simpleDeleteSql;
 
 	private Constructor<?> _defaultConstructor;
 
@@ -252,6 +253,25 @@ public class ClassDescriptor
 			_simpleSelectSql = sql.toString();
 		}
 		return _simpleSelectSql;
+	}
+
+	public String getSimpleDeleteSql()
+	{
+		if (_simpleDeleteSql == null)
+		{
+			StringBuilder sql = new StringBuilder("DELETE FROM ");
+			sql.append(_table.getName())
+			   .append(" WHERE ");
+			if (_primaryKeyFields.size() != 1)
+			{
+				throw new IllegalArgumentException("Wrong PK fields size, must be only 1 PK field");
+			}
+			sql.append(_primaryKeyFields.get(0).getName());
+			sql.append("=?");
+
+			_simpleDeleteSql = sql.toString();
+		}
+		return _simpleDeleteSql;
 	}
 
 	public Class<?> getJavaClass()

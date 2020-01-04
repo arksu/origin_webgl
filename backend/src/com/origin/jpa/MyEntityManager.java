@@ -7,6 +7,11 @@ import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * менеджер сущностей, по мотивам JPA
+ * не реализует стандарт JPA никаким боком
+ * заточен только под MySQL/MariaDB
+ */
 public class MyEntityManager
 {
 	private static final Logger _log = LoggerFactory.getLogger(MyEntityManager.class.getName());
@@ -341,7 +346,141 @@ public class MyEntityManager
 		}
 	}
 
-	public ClassDescriptor getDescriptor(Object entity)
+	/**
+	 * перезагрузить управляемую сущность из базы
+	 */
+	public void refresh(Object entity)
+	{
+		refresh(entity, _connectionFactory.get());
+	}
+
+	public void refresh(Object entity, Connection connection)
+	{
+		Object clone = _cloneMap.get(entity);
+		if (clone != null)
+		{
+			ClassDescriptor descriptor = getDescriptor(entity);
+			if (descriptor == null)
+			{
+				throw new IllegalArgumentException("Not entity object, no class descriptor");
+			}
+			final List<DatabaseField> pkFields = descriptor.getPrimaryKeyFields();
+			if (pkFields.size() != 1)
+			{
+				throw new RuntimeException("Wrong PK size");
+			}
+
+			try
+			{
+				final Object primaryKeyValue = pkFields.get(0).getField().get(entity);
+
+				try (PreparedStatement ps = connection.prepareStatement(descriptor.getSimpleSelectSql()))
+				{
+					DatabasePlatform.setParameterValue(primaryKeyValue, ps, 1);
+					_log.debug("execute refresh SQL " + entity.getClass().getName() + ": " + descriptor.getSimpleSelectSql());
+					final ResultSet resultSet = ps.executeQuery();
+
+					if (!resultSet.next())
+					{
+						throw new RuntimeException("Select return has no data");
+					}
+
+					final List<DatabaseField> fields = descriptor.getFields();
+					// проходим по поляем объекта через дескриптор
+					for (int i = 0; i < fields.size(); i++)
+					{
+						final DatabaseField field = fields.get(i);
+
+						// получаем значения полей
+						final Object val = DatabasePlatform.getObjectThroughOptimizedDataConversion(resultSet, field, i + 1);
+
+						// пишем их в поля клона, используя buildCloneValue, т.е. значения тоже клоним если надо
+						field.getField().set(entity, val);
+						field.getField().set(clone, DatabasePlatform.buildCloneValue(val));
+					}
+
+					// запоминаем клона в мапе
+					_cloneMap.put(entity, clone);
+				}
+			}
+			catch (IllegalAccessException e)
+			{
+				throw new RuntimeException("IllegalAccessException", e);
+			}
+			catch (SQLException e)
+			{
+				throw new RuntimeException("SQLException", e);
+			}
+		}
+		else
+		{
+			throw new RuntimeException("Could not refresh not managed entity");
+		}
+	}
+
+	/**
+	 * удалить сущность из базы
+	 * сущность может быть и не управляемой - тогда надо в ней проставить только Id поля и передать сюда,
+	 * будет удалена по id
+	 */
+	public void remove(Object entity)
+	{
+		remove(entity, _connectionFactory.get());
+	}
+
+	public void remove(Object entity, Connection connection)
+	{
+		ClassDescriptor descriptor = getDescriptor(entity);
+		if (descriptor == null)
+		{
+			throw new IllegalArgumentException("Not entity object, no class descriptor");
+		}
+
+		final List<DatabaseField> pkFields = descriptor.getPrimaryKeyFields();
+		if (pkFields.size() != 1)
+		{
+			throw new RuntimeException("Wrong PK size");
+		}
+
+		try
+		{
+			final Object primaryKeyValue = pkFields.get(0).getField().get(entity);
+
+			try (PreparedStatement ps = connection.prepareStatement(descriptor.getSimpleDeleteSql()))
+			{
+				DatabasePlatform.setParameterValue(primaryKeyValue, ps, 1);
+				_log.debug("execute delete SQL " + entity.getClass().getName() + ": " + descriptor.getSimpleDeleteSql());
+
+				ps.executeQuery();
+				_cloneMap.remove(entity);
+			}
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException("IllegalAccessException", e);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException("SQLException", e);
+		}
+	}
+
+	public void detach(Object entity)
+	{
+		_cloneMap.remove(entity);
+	}
+
+	public boolean contains(Object entity)
+	{
+		return _cloneMap.containsKey(entity);
+	}
+
+	public void clear()
+	{
+		_cloneMap.clear();
+	}
+
+	private ClassDescriptor getDescriptor(Object entity)
 	{
 		if (entity == null)
 		{

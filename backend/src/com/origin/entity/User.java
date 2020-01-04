@@ -20,10 +20,10 @@ public class User
 	@ColumnExtended(updateInsertId = true)
 	private int _id;
 
-	@Column(name = "login") // columnDefinition = "VARCHAR(64) NOT NULL"
+	@Column(name = "login", columnDefinition = "VARCHAR(64) NOT NULL")
 	private String _login;
 
-	@Column(name = "password", insertable = false, columnDefinition = "VARCHAR(64) NULL DEFAULT NULL")
+	@Column(name = "password", columnDefinition = "VARCHAR(64) NOT NULL")
 	private String _password = "123";
 
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")

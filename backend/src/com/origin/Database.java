@@ -93,8 +93,16 @@ public class Database
 			em2.persist(t1);
 
 			em2.persist(user2);
+
 			final User user = em2.find(User.class, 1);
 			_log.debug(user.getLogin());
+
+			em2.refresh(user);
+			_log.debug(user.getLogin());
+
+			em2.remove(user);
+
+			em2.persist(user);
 
 			user2.setLogin("updatedLogin");
 			user2.setPassword("updPassword");
