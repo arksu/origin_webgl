@@ -9,6 +9,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+@jdk.nashorn.internal.runtime.logging.Logger
 public class MyEntityManager
 {
 	private static final Logger _log = LoggerFactory.getLogger(MyEntityManager.class.getName());
@@ -105,12 +106,16 @@ public class MyEntityManager
 		// если нашли - значит надо делать дифф и писать в базу апдейт
 		if (clone != null)
 		{
+			_log.debug("entity FOUND, UPDATE");
+
 			// TODO
+
 		}
 		else
 		{
 			// не нашли. создаем новый объект в базе
 			// формируем SQL запрос на инсерт
+			_log.debug("entity NOT found, INSERT");
 
 			try
 			{
@@ -128,14 +133,16 @@ public class MyEntityManager
 						Object val = fields.get(i).getField().get(entity);
 						DatabasePlatform.setParameterValue(val, ps, i + 1);
 					}
+
 					_log.debug("execute insert SQL " + entity.toString() + ": " + descriptor.getSimpleInsertSql());
 					int affectedRows = ps.executeUpdate();
-					if (affectedRows == 0)
-					{
-						throw new SQLException("Insert failed, no affected rows");
-					}
+
 					if (isGeneratedOneKey)
 					{
+						if (affectedRows == 0)
+						{
+							throw new SQLException("Insert failed, no affected rows");
+						}
 						try (ResultSet generatedKeys = ps.getGeneratedKeys())
 						{
 							if (generatedKeys.next())
@@ -145,14 +152,16 @@ public class MyEntityManager
 
 								ps.close();
 								field.getField().set(entity, val);
+
+								// добавим в мапу только если реально получили ид после инсерта и обновили в сущности
+								_cloneMap.put(entity, entity);
 							}
 							else
 							{
-								throw new SQLException("insert user failed, no ID obtained.");
+								throw new SQLException("Insert user failed, no ID obtained.");
 							}
 						}
 					}
-					_cloneMap.put(entity, entity);
 				}
 			}
 			catch (IllegalAccessException e)
@@ -166,6 +175,9 @@ public class MyEntityManager
 		}
 	}
 
+	/**
+	 * искать и загрузить сущность по ключевому полю (id)
+	 */
 	public <T> T find(Class<T> entityClass, Object primaryKeyValue)
 	{
 		return find(entityClass, _connectionFactory.get(), primaryKeyValue);
