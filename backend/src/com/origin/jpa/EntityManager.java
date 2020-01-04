@@ -1,32 +1,34 @@
 package com.origin.jpa;
 
+import com.origin.jpa.helper.IdentityWeakHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * менеджер сущностей, по мотивам JPA
  * не реализует стандарт JPA никаким боком
  * заточен только под MySQL/MariaDB
  */
-public class MyEntityManager
+public class EntityManager
 {
-	private static final Logger _log = LoggerFactory.getLogger(MyEntityManager.class.getName());
+	private static final Logger _log = LoggerFactory.getLogger(EntityManager.class.getName());
 
 	private Map<Class<?>, ClassDescriptor> _descriptors = new HashMap<>(4);
 
 	private ConnectionFactory _connectionFactory;
 
 	private Map<Object, Object> _cloneMap;
-	private Map<Object, Object> _deletedObjects;
 
-	public MyEntityManager()
+	public EntityManager()
 	{
 		_cloneMap = createMap();
-		_deletedObjects = createMap();
 	}
 
 	/**
@@ -377,7 +379,7 @@ public class MyEntityManager
 				try (PreparedStatement ps = connection.prepareStatement(descriptor.getSimpleSelectSql()))
 				{
 					DatabasePlatform.setParameterValue(primaryKeyValue, ps, 1);
-					_log.debug("execute refresh SQL " + entity.getClass().getName() + ": " + descriptor.getSimpleSelectSql());
+					_log.debug("execute refresh SQL " + entity + ": " + descriptor.getSimpleSelectSql());
 					final ResultSet resultSet = ps.executeQuery();
 
 					if (!resultSet.next())
@@ -449,7 +451,7 @@ public class MyEntityManager
 			try (PreparedStatement ps = connection.prepareStatement(descriptor.getSimpleDeleteSql()))
 			{
 				DatabasePlatform.setParameterValue(primaryKeyValue, ps, 1);
-				_log.debug("execute delete SQL " + entity.getClass().getName() + ": " + descriptor.getSimpleDeleteSql());
+				_log.debug("execute delete SQL " + entity + ": " + descriptor.getSimpleDeleteSql());
 
 				ps.executeQuery();
 				_cloneMap.remove(entity);
@@ -491,16 +493,6 @@ public class MyEntityManager
 
 	private Map<Object, Object> createMap()
 	{
-		return new IdentityHashMap<>();
-	}
-
-	public boolean isObjectDeleted(Object object)
-	{
-		return (_deletedObjects != null) && _deletedObjects.containsKey(object);
-	}
-
-	protected void undeleteObject(Object object)
-	{
-		_deletedObjects.remove(object);
+		return new IdentityWeakHashMap<>();
 	}
 }

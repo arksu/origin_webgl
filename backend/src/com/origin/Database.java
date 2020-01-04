@@ -1,9 +1,8 @@
 package com.origin;
 
 import com.origin.entity.Character;
-import com.origin.entity.TestEntity1;
 import com.origin.entity.User;
-import com.origin.jpa.MyEntityManager;
+import com.origin.jpa.EntityManager;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
@@ -21,17 +20,16 @@ public class Database
 
 	private static DataSource source;
 
-	private static javax.persistence.EntityManager _em;
+	private static javax.persistence.EntityManager _em1;
 
-	private static MyEntityManager em2 = new MyEntityManager();
+	private static EntityManager _em = new EntityManager();
 
 	public static void start()
 	{
-		em2.addEntityClass(User.class);
-		em2.addEntityClass(Character.class);
-		em2.addEntityClass(TestEntity1.class);
+		_em.addEntityClass(User.class);
+		_em.addEntityClass(Character.class);
 
-		em2.setConnectionFactory(Database::getConnection);
+		_em.setConnectionFactory(Database::getConnection);
 		//**************************************************
 
 		// TEST code
@@ -40,16 +38,16 @@ public class Database
 
 		//**************************************************
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
-		_em = emf.createEntityManager();
+		_em1 = emf.createEntityManager();
 
 //		_em.getTransaction().begin();
 //		_em.persist(user2);
 //		_em.getTransaction().commit();
 
-//		User user3 = _em.find(User.class, 1);
-//		_em.getTransaction().begin();
-//		user3.setLogin("user33");
-//		_em.getTransaction().commit();
+		User user3 = _em1.find(User.class, 1);
+		_em1.getTransaction().begin();
+		user3.setLogin("user33");
+		_em1.getTransaction().commit();
 
 //		User user = _em.find(User.class, 1);
 //		System.out.println(user.getId());
@@ -80,33 +78,24 @@ public class Database
 		try
 		{
 			Connection connection = getConnection();
-			em2.deploy();
+			_em.deploy();
 			connection.close();
 
-			TestEntity1 t1 = new TestEntity1();
-			t1.setText("some1");
-			t1.setIntVal1(33);
-			final byte[] blob = new byte[6];
-			blob[1] = 22;
-			blob[2] = 33;
-			t1.setBlob(blob);
-			em2.persist(t1);
+			_em.persist(user2);
 
-			em2.persist(user2);
-
-			final User user = em2.find(User.class, 1);
+			final User user = _em.find(User.class, 1);
 			_log.debug(user.getLogin());
 
-			em2.refresh(user);
+			_em.refresh(user);
 			_log.debug(user.getLogin());
 
-			em2.remove(user);
+			_em.remove(user);
 
-			em2.persist(user);
+			_em.persist(user);
 
 			user2.setLogin("updatedLogin");
 			user2.setPassword("updPassword");
-			em2.persist(user2);
+			_em.persist(user2);
 		}
 		catch (SQLException e)
 		{
