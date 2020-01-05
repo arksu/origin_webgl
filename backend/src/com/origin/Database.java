@@ -44,10 +44,10 @@ public class Database
 //		_em.persist(user2);
 //		_em.getTransaction().commit();
 
-		User user3 = _em1.find(User.class, 1);
-		_em1.getTransaction().begin();
-		user3.setLogin("user33");
-		_em1.getTransaction().commit();
+//		User user3 = _em1.find(User.class, 1);
+//		_em1.getTransaction().begin();
+//		user3.setLogin("user33");
+//		_em1.getTransaction().commit();
 
 //		User user = _em.find(User.class, 1);
 //		System.out.println(user.getId());
@@ -83,7 +83,7 @@ public class Database
 
 			_em.persist(user2);
 
-			final User user = _em.find(User.class, 1);
+			final User user = _em.findById(User.class, 1);
 			_log.debug(user.getLogin());
 
 			_em.refresh(user);

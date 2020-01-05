@@ -4,14 +4,16 @@ import com.origin.jpa.ColumnExtended;
 import com.origin.jpa.TableExtended;
 import com.origin.utils.Utils;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
+/**
+ * аккаунт пользователя к которому может прикрепляться несколько персонажей
+ */
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+		@Index(name = "login_uniq", columnList = "login", unique = true)
+})
 @TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", create = true, drop = true, truncate = false)
 public class User
 {
@@ -20,10 +22,10 @@ public class User
 	@ColumnExtended(updateInsertId = true)
 	private int _id;
 
-	@Column(name = "login", columnDefinition = "VARCHAR(64) NOT NULL")
+	@Column(name = "login", columnDefinition = "VARCHAR(64) NOT NULL", nullable = false)
 	private String _login;
 
-	@Column(name = "password", columnDefinition = "VARCHAR(64) NOT NULL")
+	@Column(name = "password", columnDefinition = "VARCHAR(64) NOT NULL", nullable = false)
 	private String _password = "123";
 
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")

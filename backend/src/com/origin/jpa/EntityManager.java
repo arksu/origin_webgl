@@ -15,6 +15,8 @@ import java.util.Map;
  * менеджер сущностей, по мотивам JPA
  * не реализует стандарт JPA никаким боком
  * заточен только под MySQL/MariaDB
+ * пока эта штука поддерживает сущности с 1 ключевым полем для инсерта/апдейта/удаления
+ * либо вообще без ключевых полей для инсерта
  */
 public class EntityManager
 {
@@ -288,12 +290,12 @@ public class EntityManager
 	/**
 	 * искать и загрузить сущность по ключевому полю (id)
 	 */
-	public <T> T find(Class<T> entityClass, Object primaryKeyValue)
+	public <T> T findById(Class<T> entityClass, Object primaryKeyValue)
 	{
-		return find(entityClass, _connectionFactory.get(), primaryKeyValue);
+		return findById(entityClass, _connectionFactory.get(), primaryKeyValue);
 	}
 
-	public <T> T find(Class<T> entityClass, Connection connection, Object primaryKeyValue)
+	public <T> T findById(Class<T> entityClass, Connection connection, Object primaryKeyValue)
 	{
 		ClassDescriptor descriptor = _descriptors.get(entityClass);
 		if (descriptor == null)

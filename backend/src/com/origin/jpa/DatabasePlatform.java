@@ -16,6 +16,8 @@ public class DatabasePlatform
 {
 	private static final int _stringBindingSize = 256;
 
+	public static final char SEPARATE_CHAR = '`';
+
 	/**
 	 * INTERNAL
 	 * Set the parameter in the JDBC statement.

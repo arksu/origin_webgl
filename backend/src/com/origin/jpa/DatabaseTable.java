@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseTable
 {
@@ -18,6 +20,8 @@ public class DatabaseTable
 	private boolean _dropOnDeploy = false;
 
 	private boolean _deploy = true;
+
+	protected List<IndexDefinition> _indexes;
 
 	public String getName()
 	{
@@ -77,6 +81,20 @@ public class DatabaseTable
 	public void setDeploy(boolean deploy)
 	{
 		_deploy = deploy;
+	}
+
+	public List<IndexDefinition> getIndexes()
+	{
+		if (_indexes == null)
+		{
+			_indexes = new ArrayList<>();
+		}
+		return _indexes;
+	}
+
+	public boolean haveIndexes()
+	{
+		return _indexes != null && _indexes.size() > 0;
 	}
 
 	public boolean checkExists(Connection connection) throws SQLException

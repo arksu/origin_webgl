@@ -3,10 +3,7 @@ package com.origin.jpa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +11,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.origin.jpa.DatabasePlatform.SEPARATE_CHAR;
 
 /**
  * дескриптор класса сущности
@@ -65,6 +65,20 @@ public class ClassDescriptor
 		_table = new DatabaseTable();
 		_table.setName(tableAnnotation.name());
 
+		// добавим все индексы в таблицу
+		final Index[] indexes = tableAnnotation.indexes();
+		if (indexes.length > 0)
+		{
+			for (Index index : indexes)
+			{
+				IndexDefinition indexDefinition = new IndexDefinition();
+				indexDefinition.setName(index.name());
+				indexDefinition.setUnique(index.unique());
+				indexDefinition.getFields().addAll(Arrays.asList(index.columnList().split(",")));
+				_table.getIndexes().add(indexDefinition);
+			}
+		}
+
 		// дополнительно суффикс создания таблицы
 		TableExtended extendedData = clazz.getAnnotation(TableExtended.class);
 		if (extendedData != null)
@@ -113,41 +127,73 @@ public class ClassDescriptor
 
 	private String buildCreateSql()
 	{
-		StringBuilder s = new StringBuilder("CREATE TABLE " + _table.getName() + " (");
+		StringBuilder sql = new StringBuilder("CREATE TABLE " + _table.getName() + " (");
 		boolean isFirst = true;
 		for (DatabaseField field : _fields)
 		{
 			if (!isFirst)
 			{
-				s.append(", ");
+				sql.append(", ");
 			}
-			s.append(field.getCreateSql());
+			sql.append(field.getCreateSql());
 			isFirst = false;
 		}
 
 		if (_primaryKeyFields.size() > 0)
 		{
-			s.append(", PRIMARY KEY (");
+			sql.append(", PRIMARY KEY (");
 			isFirst = true;
 			for (DatabaseField f : _primaryKeyFields)
 			{
 				if (!isFirst)
 				{
-					s.append(", ");
+					sql.append(", ");
 				}
-				s.append(f.getName());
+				sql.append(f.getName());
 				isFirst = false;
 			}
-			s.append(")");
-		}
-		s.append(")");
-		if (_table.getCreationSuffix() != null && _table.getCreationSuffix().length() > 0)
-		{
-			s.append(" ");
-			s.append(_table.getCreationSuffix());
+			sql.append(")");
 		}
 
-		return s.toString();
+		if (_table.haveIndexes())
+		{
+			for (int i = 0; i < _table.getIndexes().size(); i++)
+			{
+				final IndexDefinition index = _table.getIndexes().get(i);
+				if (index.isUnique())
+				{
+					sql.append(", UNIQUE KEY ");
+				}
+				else
+				{
+					sql.append(", KEY ");
+				}
+				String indexName = index.getName();
+				if (indexName == null || indexName.length() == 0)
+				{
+					indexName = _table.getName() + "_uniq" + (i + 1);
+				}
+				sql.append(SEPARATE_CHAR).append(indexName).append(SEPARATE_CHAR).append(" (");
+				for (int j = 0; j < index.getFields().size(); j++)
+				{
+					sql.append(index.getFields().get(j));
+					if ((j + 1) < index.getFields().size())
+					{
+						sql.append(", ");
+					}
+				}
+				sql.append(")");
+			}
+		}
+
+		sql.append(")");
+		if (_table.getCreationSuffix() != null && _table.getCreationSuffix().length() > 0)
+		{
+			sql.append(" ");
+			sql.append(_table.getCreationSuffix());
+		}
+
+		return sql.toString();
 	}
 
 	public void deploy(Connection connection) throws SQLException
@@ -162,14 +208,14 @@ public class ClassDescriptor
 			{
 				if (_table.isDropOnDeploy())
 				{
-					String sql = "DROP TABLE `" + _table.getName() + "`";
+					String sql = "DROP TABLE " + SEPARATE_CHAR + _table.getName() + SEPARATE_CHAR;
 					_log.debug("execute SQL: " + sql);
 					st.execute(sql);
 					exists = false;
 				}
 				else if (_table.isTruncateOnDeploy())
 				{
-					String sql = "TRUNCATE TABLE `" + _table.getName() + "`";
+					String sql = "TRUNCATE TABLE " + SEPARATE_CHAR + _table.getName() + SEPARATE_CHAR;
 					_log.debug("execute SQL: " + sql);
 					st.execute(sql);
 				}
