@@ -13,6 +13,7 @@ import javax.persistence.Persistence;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Database
 {
@@ -34,7 +35,7 @@ public class Database
 
 		// TEST code
 		User user2 = new User();
-		user2.setLogin("test_login1");
+		user2.setLogin("test_login12");
 
 		//**************************************************
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
@@ -81,21 +82,11 @@ public class Database
 			_em.deploy();
 			connection.close();
 
-			_em.persist(user2);
+			final List<User> all = _em.findAll(User.class, "SELECT * from users WHERE 1");
+			_log.debug("all " + all.size());
 
-			final User user = _em.findById(User.class, 1);
-			_log.debug(user.getLogin());
-
-			_em.refresh(user);
-			_log.debug(user.getLogin());
-
-			_em.remove(user);
-
-			_em.persist(user);
-
-			user2.setLogin("updatedLogin");
-			user2.setPassword("updPassword");
-			_em.persist(user2);
+			final User one = _em.findOne(User.class, "login", "test_login12");
+			_log.debug("one " + one.getLogin());
 		}
 		catch (SQLException e)
 		{

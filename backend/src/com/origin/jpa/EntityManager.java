@@ -126,6 +126,8 @@ public class EntityManager
 
 				try
 				{
+					// не можем получить простой запрос поскольку смотрим на дифф полей объекта
+					// и запрос зависит от реально изменившихся полей объекта, поэтому и кэшировать запрос не можем
 					StringBuilder sql = new StringBuilder("UPDATE ");
 					sql.append(descriptor.getTable().getName())
 					   .append(" SET ");
@@ -350,12 +352,73 @@ public class EntityManager
 		}
 	}
 
+	public <T> T findOne(Class<T> entityClass, String field, Object primaryKeyValue)
+	{
+		return findOne(entityClass, _connectionFactory.get(), field, primaryKeyValue);
+	}
+
+	public <T> T findOne(Class<T> entityClass, Connection connection, String field, Object primaryKeyValue)
+	{
+		ClassDescriptor descriptor = _descriptors.get(entityClass);
+		if (descriptor == null)
+		{
+			throw new IllegalArgumentException("Not entity object, no class descriptor");
+		}
+
+		try
+		{
+			final String sql = descriptor.getSelectOneSql(field);
+			try (PreparedStatement ps = connection.prepareStatement(sql))
+			{
+				DatabasePlatform.setParameterValue(primaryKeyValue, ps, 1);
+				_log.debug("execute select SQL " + entityClass.getName() + ": " + sql);
+				final ResultSet resultSet = ps.executeQuery();
+
+				if (!resultSet.next())
+				{
+					return null;
+				}
+
+				// создаем объект дефолтным конструктором
+				final Object workingCopy = descriptor.buildNewInstance();
+				final Object clone = descriptor.buildNewInstance();
+
+				final List<DatabaseField> fields = descriptor.getFields();
+				// проходим по поляем объекта через дескриптор
+				for (int i = 0; i < fields.size(); i++)
+				{
+					final DatabaseField f = fields.get(i);
+
+					// получаем значения полей
+					final Object val = DatabasePlatform.getObjectThroughOptimizedDataConversion(resultSet, f, i + 1);
+
+					// пишем их в поля клона, используя buildCloneValue, т.е. значения тоже клоним если надо
+					f.getField().set(workingCopy, val);
+					f.getField().set(clone, DatabasePlatform.buildCloneValue(val));
+				}
+
+				// запоминаем клона в мапе
+				_cloneMap.put(workingCopy, clone);
+
+				return (T) workingCopy;
+			}
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException("IllegalAccessException", e);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException("SQLException", e);
+		}
+	}
+
 	/**
 	 * найти сущности используя прямой SQL запрос
 	 */
 	public <T> List<T> findAll(Class<T> entityClass, String sql, Object... params)
 	{
-		return findAll(entityClass, _connectionFactory.toString(), sql, params);
+		return findAll(entityClass, _connectionFactory.get(), sql, params);
 	}
 
 	public <T> List<T> findAll(Class<T> entityClass, Connection connection, String sql, Object... params)
@@ -399,11 +462,11 @@ public class EntityManager
 						field.getField().set(workingCopy, val);
 						field.getField().set(clone, DatabasePlatform.buildCloneValue(val));
 
-						// запоминаем клона в мапе
-						_cloneMap.put(workingCopy, clone);
-
-						result.add(((T) workingCopy));
 					}
+					// запоминаем клона в мапе
+					_cloneMap.put(workingCopy, clone);
+
+					result.add(((T) workingCopy));
 				}
 
 				return result;

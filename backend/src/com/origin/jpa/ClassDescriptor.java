@@ -10,9 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static com.origin.jpa.DatabasePlatform.SEPARATE_CHAR;
 
@@ -37,6 +35,7 @@ public class ClassDescriptor
 	private String _simpleInsertSql;
 	private String _simpleSelectSql;
 	private String _simpleDeleteSql;
+	private Map<String, String> _selectOneSql;
 
 	private Constructor<?> _defaultConstructor;
 
@@ -299,6 +298,49 @@ public class ClassDescriptor
 			_simpleSelectSql = sql.toString();
 		}
 		return _simpleSelectSql;
+	}
+
+	public String getSelectOneSql(String field)
+	{
+		if (_selectOneSql == null)
+		{
+			_selectOneSql = new HashMap<>();
+		}
+
+		String result = _selectOneSql.get(field);
+
+		if (result == null)
+		{
+			StringBuilder sql = new StringBuilder("SELECT ");
+
+			boolean found = false;
+			for (int i = 0; i < _fields.size(); i++)
+			{
+				final String fname = _fields.get(i).getName();
+				if (field.equals(fname))
+				{
+					found = true;
+				}
+				sql.append(fname);
+				if ((i + 1) < _fields.size())
+				{
+					sql.append(", ");
+				}
+			}
+			if (!found)
+			{
+				throw new RuntimeException("No such field in entity");
+			}
+			sql.append(" FROM ")
+			   .append(_table.getName())
+			   .append(" WHERE ");
+
+			sql.append(field);
+			sql.append("=?");
+			result = sql.toString();
+			_selectOneSql.put(field, result);
+		}
+		return result;
 	}
 
 	public String getSimpleDeleteSql()
