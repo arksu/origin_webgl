@@ -313,7 +313,7 @@ public class EntityManager
 
 				if (!resultSet.next())
 				{
-					throw new RuntimeException("Select return has no data");
+					return null;
 				}
 
 				// создаем объект дефолтным конструктором
@@ -338,6 +338,75 @@ public class EntityManager
 				_cloneMap.put(workingCopy, clone);
 
 				return (T) workingCopy;
+			}
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException("IllegalAccessException", e);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException("SQLException", e);
+		}
+	}
+
+	/**
+	 * найти сущности используя прямой SQL запрос
+	 */
+	public <T> List<T> findAll(Class<T> entityClass, String sql, Object... params)
+	{
+		return findAll(entityClass, _connectionFactory.toString(), sql, params);
+	}
+
+	public <T> List<T> findAll(Class<T> entityClass, Connection connection, String sql, Object... params)
+	{
+		ClassDescriptor descriptor = _descriptors.get(entityClass);
+		if (descriptor == null)
+		{
+			throw new IllegalArgumentException("Not entity object, no class descriptor");
+		}
+
+		try
+		{
+			try (PreparedStatement ps = connection.prepareStatement(sql))
+			{
+				List<T> result = new ArrayList<>();
+
+				for (int i = 0; i < params.length; i++)
+				{
+					DatabasePlatform.setParameterValue(params[i], ps, i + 1);
+				}
+
+				_log.debug("execute select SQL " + entityClass.getName() + ": " + sql);
+				final ResultSet resultSet = ps.executeQuery();
+
+				final List<DatabaseField> fields = descriptor.getFields();
+				while (resultSet.next())
+				{
+					// создаем объект дефолтным конструктором
+					final Object workingCopy = descriptor.buildNewInstance();
+					final Object clone = descriptor.buildNewInstance();
+
+					// проходим по поляем объекта через дескриптор
+					for (int i = 0; i < fields.size(); i++)
+					{
+						final DatabaseField field = fields.get(i);
+
+						// получаем значения полей
+						final Object val = DatabasePlatform.getObjectThroughOptimizedDataConversion(resultSet, field, i + 1);
+
+						// пишем их в поля клона, используя buildCloneValue, т.е. значения тоже клоним если надо
+						field.getField().set(workingCopy, val);
+						field.getField().set(clone, DatabasePlatform.buildCloneValue(val));
+
+						// запоминаем клона в мапе
+						_cloneMap.put(workingCopy, clone);
+
+						result.add(((T) workingCopy));
+					}
+				}
+
+				return result;
 			}
 		}
 		catch (IllegalAccessException e)
