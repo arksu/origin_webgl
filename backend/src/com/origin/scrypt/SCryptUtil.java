@@ -2,7 +2,6 @@ package com.origin.scrypt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
 
 /**
  * Simple {@link SCrypt} interface for hashing passwords using the
@@ -24,36 +23,6 @@ import java.security.SecureRandom;
  */
 public class SCryptUtil
 {
-	/**
-	 * Hash the supplied plaintext password and generate output in the format described
-	 * in {@link SCryptUtil}.
-	 * @param passwd Password.
-	 * @param N CPU cost parameter.
-	 * @param r Memory cost parameter.
-	 * @param p Parallelization parameter.
-	 * @return The hashed password.
-	 */
-	public static String scrypt(String passwd, int N, int r, int p)
-	{
-		try
-		{
-			byte[] salt = new byte[16];
-			SecureRandom.getInstance("SHA1PRNG").nextBytes(salt);
-
-			byte[] derived = SCrypt.scryptJ(passwd.getBytes(StandardCharsets.UTF_8), salt, N, r, p, 32);
-
-			String params = Long.toString(log2(N) << 16L | r << 8 | p, 16);
-
-			return "$s0$" + params + '$'
-			       + String.valueOf(Base64.encode(salt)) + '$'
-			       + String.valueOf(Base64.encode(derived));
-		}
-		catch (GeneralSecurityException e)
-		{
-			throw new IllegalStateException("JVM doesn't support SHA1PRNG or HMAC_SHA256?");
-		}
-	}
-
 	/**
 	 * Compare the supplied plaintext password to a hashed password.
 	 * @param passwd Plaintext password.
@@ -99,31 +68,5 @@ public class SCryptUtil
 		{
 			throw new IllegalStateException("JVM doesn't support SHA1PRNG or HMAC_SHA256?");
 		}
-	}
-
-	private static int log2(int n)
-	{
-		int log = 0;
-		if ((n & 0xffff0000) != 0)
-		{
-			n >>>= 16;
-			log = 16;
-		}
-		if (n >= 256)
-		{
-			n >>>= 8;
-			log += 8;
-		}
-		if (n >= 16)
-		{
-			n >>>= 4;
-			log += 4;
-		}
-		if (n >= 4)
-		{
-			n >>>= 2;
-			log += 2;
-		}
-		return log + (n >>> 1);
 	}
 }
