@@ -13,7 +13,6 @@ import javax.persistence.Persistence;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 public class Database
 {
@@ -81,17 +80,16 @@ public class Database
 			Connection connection = getConnection();
 			_em.deploy();
 			connection.close();
-
-			final List<User> all = _em.findAll(User.class, "SELECT * from users WHERE 1");
-			_log.debug("all " + all.size());
-
-			final User one = _em.findOne(User.class, "login", "test_login12");
-			_log.debug("one " + one.getLogin());
 		}
 		catch (SQLException e)
 		{
 			_log.error("connect error", e);
 		}
+	}
+
+	public static EntityManager em()
+	{
+		return _em;
 	}
 
 	/**

@@ -1,16 +1,22 @@
 package com.origin.net;
 
+import com.origin.Database;
 import com.origin.UserCache;
-import com.origin.entity.UserRepository;
+import com.origin.entity.User;
 import com.origin.net.model.GameSession;
 import com.origin.net.model.LoginResponse;
+import com.origin.scrypt.SCryptUtil;
 import com.origin.utils.GameException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
 
 public class GameServer extends WSServer
 {
+	private static final Logger _log = LoggerFactory.getLogger(GameServer.class.getName());
+
 	private static UserCache userCache = new UserCache();
 
 	public GameServer(InetSocketAddress address, int decoderCount)
@@ -32,21 +38,33 @@ public class GameServer extends WSServer
 
 	public Object login(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
 	{
-		String login = ((String) data.get("login"));
-//
-//		User user = new User();
-//		if (user.load(login))
-//		{
-//			if (!userCache.addUserAuth(user))
-//			{
-//				throw new GameException("user cache error");
-//			}
-//
-//			LoginResponse response = new LoginResponse();
-//			response.ssid = user.getSsid();
-//			return response;
-//		}
+		final String login = ((String) data.get("login"));
+		final String password = ((String) data.get("password"));
 
-		return null;
+		final User user = Database.em().findOne(User.class, "login", login);
+
+		if (user != null)
+		{
+			if (SCryptUtil.check(user.getPassword(), password))
+			{
+				_log.debug("user auth: " + user.getLogin());
+				if (!userCache.addUserAuth(user))
+				{
+					throw new GameException("user cache error");
+				}
+				LoginResponse response = new LoginResponse();
+				response.ssid = user.getSsid();
+				return response;
+
+			}
+			else
+			{
+				throw new GameException("wrong password");
+			}
+		}
+		else
+		{
+			throw new GameException("user not found");
+		}
 	}
 }

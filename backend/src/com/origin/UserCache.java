@@ -60,7 +60,10 @@ public class UserCache
 		{
 			try
 			{
-				if (_users.containsValue(user)) return false;
+				if (_users.containsValue(user))
+				{
+					return false;
+				}
 				user.generateSessionId();
 				_users.put(user.getSsid(), user);
 				return true;

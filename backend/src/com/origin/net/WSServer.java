@@ -3,10 +3,10 @@ package com.origin.net;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.origin.utils.GameException;
 import com.origin.net.model.GameSession;
 import com.origin.net.model.WSRequest;
 import com.origin.net.model.WSResponse;
+import com.origin.utils.GameException;
 import com.origin.utils.MapDeserializerDoubleAsIntFix;
 import com.origin.utils.Utils;
 import org.java_websocket.WebSocket;
@@ -87,7 +87,8 @@ public abstract class WSServer extends WebSocketServer
 		if (conn != null && conn.getRemoteSocketAddress() != null && conn.getRemoteSocketAddress().getAddress() != null)
 		{
 			return conn.getRemoteSocketAddress().getAddress().getHostAddress();
-		} else
+		}
+		else
 		{
 			return "null";
 		}
@@ -141,7 +142,8 @@ public abstract class WSServer extends WebSocketServer
 		if ("ping".equals(message))
 		{
 			_executor.schedule(new PingTask(session), PING_TIME, TimeUnit.SECONDS);
-		} else
+		}
+		else
 		{
 			// десериализуем сообщение
 			WSRequest request = gsonDeserialize.fromJson(message, WSRequest.class);
@@ -196,7 +198,7 @@ public abstract class WSServer extends WebSocketServer
 							// создадим очередь ответов в кэше
 							LinkedList<WSResponse> queue = _responseCache.computeIfAbsent(ssid, k -> new LinkedList<>());
 							// ограничим размер кэша ответов сервера
-							while (queue.size() > 5)
+							while (queue.size() > 32)
 							{
 								queue.poll();
 							}
@@ -205,12 +207,14 @@ public abstract class WSServer extends WebSocketServer
 						}
 					}
 				}
-			} catch (GameException e)
+			}
+			catch (GameException e)
 			{
 				_log.error("GameException " + e.getMessage(), e);
 				response.success = 0;
 				response.errorText = e.getMessage();
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				_log.error("Exception " + e.getMessage(), e);
 				response.success = 0;
@@ -278,7 +282,8 @@ public abstract class WSServer extends WebSocketServer
 				try
 				{
 					Thread.sleep(SESSION_CACHE_TIMEOUT / 2);
-				} catch (InterruptedException e)
+				}
+				catch (InterruptedException e)
 				{
 					_log.error("InterruptedException", e);
 				}
