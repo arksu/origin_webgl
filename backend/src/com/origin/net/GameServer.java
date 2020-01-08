@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.sql.SQLException;
 import java.util.Map;
 
 public class GameServer extends WSServer
@@ -31,9 +32,42 @@ public class GameServer extends WSServer
 		{
 			case "login":
 				return login(session, data);
+			case "register":
+				return register(data);
 		}
 
 		return null;
+	}
+
+	public Object register(Map<String, Object> data) throws InterruptedException, GameException
+	{
+		User user = new User();
+
+		user.setLogin(((String) data.get("login")));
+		user.setPassword(((String) data.get("password")));
+		user.setEmail(((String) data.get("email")));
+
+		try
+		{
+			Database.em().persist(user);
+		}
+		catch (RuntimeException e)
+		{
+			if (e.getCause() instanceof SQLException && "23000".equals(((SQLException) e.getCause()).getSQLState()))
+			{
+				throw new GameException("username busy");
+			}
+			else
+			{
+				throw new GameException("register failed");
+			}
+		}
+		catch (Throwable e)
+		{
+			throw new GameException("register failed");
+		}
+
+		return "ok";
 	}
 
 	public Object login(GameSession session, Map<String, Object> data) throws InterruptedException, GameException

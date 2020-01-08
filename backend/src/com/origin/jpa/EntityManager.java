@@ -51,6 +51,7 @@ public class EntityManager
 
 	public Connection beginTransaction() throws SQLException
 	{
+		// TODO: leak detect
 		Connection connection = _connectionFactory.get();
 		connection.setAutoCommit(false);
 		return connection;
@@ -86,10 +87,12 @@ public class EntityManager
 	 */
 	public void deploy() throws SQLException
 	{
-		final Connection c = _connectionFactory.get();
-		for (ClassDescriptor descriptor : _descriptors.values())
+		try (Connection c = _connectionFactory.get())
 		{
-			descriptor.deploy(c);
+			for (ClassDescriptor descriptor : _descriptors.values())
+			{
+				descriptor.deploy(c);
+			}
 		}
 	}
 
@@ -98,7 +101,14 @@ public class EntityManager
 	 */
 	public void persist(Object entity)
 	{
-		persist(entity, _connectionFactory.get());
+		try (Connection connection = _connectionFactory.get())
+		{
+			persist(entity, connection);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException("SQLException", e);
+		}
 	}
 
 	public void persist(Object entity, Connection connection)
@@ -294,7 +304,14 @@ public class EntityManager
 	 */
 	public <T> T findById(Class<T> entityClass, Object primaryKeyValue)
 	{
-		return findById(entityClass, _connectionFactory.get(), primaryKeyValue);
+		try (Connection connection = _connectionFactory.get())
+		{
+			return findById(entityClass, connection, primaryKeyValue);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException("SQLException", e);
+		}
 	}
 
 	public <T> T findById(Class<T> entityClass, Connection connection, Object primaryKeyValue)
@@ -354,7 +371,14 @@ public class EntityManager
 
 	public <T> T findOne(Class<T> entityClass, String field, Object primaryKeyValue)
 	{
-		return findOne(entityClass, _connectionFactory.get(), field, primaryKeyValue);
+		try (Connection connection = _connectionFactory.get())
+		{
+			return findOne(entityClass, connection, field, primaryKeyValue);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException("SQLException", e);
+		}
 	}
 
 	public <T> T findOne(Class<T> entityClass, Connection connection, String field, Object primaryKeyValue)
@@ -418,7 +442,14 @@ public class EntityManager
 	 */
 	public <T> List<T> findAll(Class<T> entityClass, String sql, Object... params)
 	{
-		return findAll(entityClass, _connectionFactory.get(), sql, params);
+		try (Connection connection = _connectionFactory.get())
+		{
+			return findAll(entityClass, connection, sql, params);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException("SQLException", e);
+		}
 	}
 
 	public <T> List<T> findAll(Class<T> entityClass, Connection connection, String sql, Object... params)
@@ -487,7 +518,14 @@ public class EntityManager
 	 */
 	public void refresh(Object entity)
 	{
-		refresh(entity, _connectionFactory.get());
+		try (Connection connection = _connectionFactory.get())
+		{
+			refresh(entity, connection);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException("SQLException", e);
+		}
 	}
 
 	public void refresh(Object entity, Connection connection)
@@ -561,7 +599,14 @@ public class EntityManager
 	 */
 	public void remove(Object entity)
 	{
-		remove(entity, _connectionFactory.get());
+		try (Connection connection = _connectionFactory.get())
+		{
+			remove(entity, connection);
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException("SQLException", e);
+		}
 	}
 
 	public void remove(Object entity, Connection connection)

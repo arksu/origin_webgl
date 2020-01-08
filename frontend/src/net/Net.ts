@@ -12,7 +12,9 @@ enum State {
 /**
  * базовая реализация вебсокет коннектов
  */
-export default class WsNet {
+export default class Net {
+
+    public static instance: Net;
 
     /**
      * сокет

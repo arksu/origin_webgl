@@ -73,6 +73,15 @@ public class Database
 		config.addDataSourceProperty("databaseName", ServerConfig.DB_NAME);
 		config.addDataSourceProperty("loginTimeout", 2);
 
+//		config.addDataSourceProperty("cachePrepStmts", true);
+//		config.addDataSourceProperty("prepStmtCacheSize", 250);
+//		config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
+//		config.addDataSourceProperty("useServerPrepStmts", true);
+
+
+		config.setLeakDetectionThreshold(5000);
+		config.setConnectionTimeout(30000);
+
 		source = new HikariDataSource(config);
 
 		try

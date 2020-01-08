@@ -21,13 +21,26 @@ canvas {
   margin: auto;
 }
 
+#login-error {
+  position: relative;
+  display: none;
+  width: 100%;
+  background: #d2787e;
+  border-radius: 5px;
+  color: #3f1210;
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+}
+
 .form {
   position: relative;
   border-radius: 5px;
   z-index: 2;
   background: #FFFFFF;
   max-width: 360px;
-  margin: 0 auto 100px;
+  margin: 0 auto;
   padding: 45px;
   text-align: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
@@ -35,7 +48,7 @@ canvas {
 
 .form input {
   border-radius: 5px;
-  font-family: "Roboto", sans-serif;
+  font-family: "Arial", sans-serif;
   outline: 0;
   background: #f2f2f2;
   width: 100%;
@@ -48,7 +61,7 @@ canvas {
 
 .form button {
   border-radius: 5px;
-  font-family: "Roboto", sans-serif;
+  font-family: "Arial", sans-serif;
   text-transform: uppercase;
   outline: 0;
   background: #4CAF50;
@@ -66,6 +79,16 @@ canvas {
   background: #43A047;
 }
 
+.form button:disabled {
+  background: repeating-linear-gradient(
+                  -55deg,
+                  #222,
+                  #222 10px,
+                  #333 10px,
+                  #333 20px
+  );
+}
+
 .form .message {
   margin: 15px 0 0;
   color: #b3b3b3;
@@ -78,6 +101,9 @@ canvas {
 }
 
 .form #register-form {
+  display: block;
+}
+.form #login-form {
   display: none;
 }
 

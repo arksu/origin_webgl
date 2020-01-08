@@ -7,20 +7,25 @@
 
 <div class="login-page">
     <div class="form" id="form-container">
+
         <form id="register-form">
-            <input type="text" placeholder="login"/>
-            <input type="password" placeholder="password"/>
-            <input type="text" placeholder="email address"/>
-            <button>create</button>
+            <input type="text" placeholder="login" id="reg-login"/>
+            <input type="password" placeholder="password" id="reg-password"/>
+            <input type="text" placeholder="email address (optional)" id="reg-email"/>
+            <button id="reg-btn">register</button>
             <p class="message">Already registered? <a href="#" id="sign-btn">Sign In</a></p>
         </form>
 
         <form id="login-form">
-            <input type="text" placeholder="login"/>
-            <input type="password" placeholder="password"/>
-            <button>login</button>
+            <input type="text" placeholder="login" id="input-login"/>
+            <input type="password" placeholder="password" id="input-password"/>
+            <button id="login-btn">login</button>
             <p class="message">Not registered? <a href="#" id="register-btn">Create an account</a></p>
         </form>
+
+        <div id="login-error">
+
+        </div>
     </div>
 </div>
 

@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @Table(name = "users", indexes = {
 		@Index(name = "login_uniq", columnList = "login", unique = true)
 })
-@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", drop = false, truncate = false)
+@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", drop = true, truncate = false)
 public class User
 {
 	@Id
@@ -27,6 +27,9 @@ public class User
 
 	@Column(name = "password", columnDefinition = "VARCHAR(64) NOT NULL", nullable = false)
 	private String _password = "123";
+
+	@Column(name = "email", columnDefinition = "VARCHAR(64) NOT NULL", nullable = false)
+	private String _email;
 
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp _createTime;
@@ -57,6 +60,16 @@ public class User
 	public void setPassword(String password)
 	{
 		_password = password;
+	}
+
+	public String getEmail()
+	{
+		return _email;
+	}
+
+	public void setEmail(String email)
+	{
+		_email = email;
 	}
 
 	public Timestamp getCreateTime()

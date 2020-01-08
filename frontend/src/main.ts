@@ -6,6 +6,26 @@ import ApplicationOptions = PIXI.ApplicationOptions;
 
 window._ = _;
 
+window.onload = function () {
+    setNet();
+    setLoginForm();
+
+    // startPixi();
+};
+
+function setNet() {
+    let proto = "https:" === window.location.protocol ? "wss" : "ws";
+    let net = new Net();
+    net.url = proto + "://" + window.location.hostname + ":7070";
+    console.log("Net url: " + net.url);
+
+    Net.instance = net;
+
+    net.onDisconnect = () => {
+        console.log("net disconnected");
+    };
+}
+
 function startPixi() {
     let canvas = <HTMLCanvasElement>document.getElementById("game");
 
@@ -36,6 +56,8 @@ function startPixi() {
     };
 }
 
+let errorMessageTimer;
+
 function setLoginForm() {
     let loginForm = document.getElementById("login-form");
     let registerForm = document.getElementById("register-form");
@@ -43,7 +65,10 @@ function setLoginForm() {
         e.preventDefault();
         console.log("login!");
 
-        // loginForm.style.display = "none";
+        Net.instance.remoteCall("login", {
+            login: "root",
+            password: "root"
+        });
 
         // net.login(
         //     loginField.value,
@@ -53,42 +78,75 @@ function setLoginForm() {
         return false;
     };
 
+    registerForm.onsubmit = function (e) {
+        e.preventDefault();
+
+        console.log("register");
+
+        let login = (<HTMLInputElement>document.getElementById("reg-login")).value;
+        let password = (<HTMLInputElement>document.getElementById("reg-password")).value;
+        let email = (<HTMLInputElement>document.getElementById("reg-email")).value;
+        let btn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("reg-btn"));
+
+        clearLoginError();
+
+        if (!login || !password) {
+            showLoginError("Username or password is empty");
+
+        } else {
+            btn.disabled = true;
+            Net.instance.remoteCall("register", {
+                login: login,
+                password: password,
+                email: email
+            })
+                .then(d => {
+                    console.log(d);
+                    btn.disabled = false;
+
+                    if (d === "ok") {
+
+                    }
+                })
+                .catch(e => {
+                    console.log(e);
+                    if (e === "username busy") {
+                        showLoginError("This username is taken");
+                    }
+                    btn.disabled = false;
+                });
+        }
+    };
+
     document.getElementById("register-btn").onclick = function (e) {
         e.preventDefault();
+        clearLoginError();
 
         loginForm.style.display = "none";
         registerForm.style.display = "block";
     };
     document.getElementById("sign-btn").onclick = function (e) {
         e.preventDefault();
+        clearLoginError();
 
         loginForm.style.display = "block";
         registerForm.style.display = "none";
     };
 }
 
-window.onload = function () {
-    setLoginForm();
+function showLoginError(msg: string): any {
+    const error = document.getElementById("login-error");
 
-    let proto = "https:" === window.location.protocol ? "wss" : "ws";
-    let net = new Net();
-    net.url = proto + "://" + window.location.hostname + ":7070";
-    console.log("url: " + net.url);
+    error.innerHTML = msg;
+    error.style.display = "block";
+    errorMessageTimer = setTimeout(() => {
+        error.style.display = "none";
+    }, 3000);
+}
 
-    net.onDisconnect = () => {
-        console.log("net disconnected");
-    };
-    net.remoteCall("login", {
-        login: "root",
-        password: "root"
-    });
-
-
-    // startPixi();
-
-
-    console.log("yay!");
-
-
-};
+function clearLoginError() {
+    clearTimeout(errorMessageTimer);
+    const error = document.getElementById("login-error");
+    error.style.display = "none";
+}
 
