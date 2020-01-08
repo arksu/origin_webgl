@@ -33,8 +33,8 @@ public class Database
 		//**************************************************
 
 		// TEST code
-		User user2 = new User();
-		user2.setLogin("test_login12");
+//		User user2 = new User();
+//		user2.setLogin("test_login12");
 
 		//**************************************************
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");

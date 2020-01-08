@@ -1,3 +1,4 @@
+import "./scss/main.scss";
 import * as _ from "lodash";
 import * as PIXI from "pixi.js";
 import Net from "./net/Net";
@@ -35,7 +36,40 @@ function startPixi() {
     };
 }
 
+function setLoginForm() {
+    let loginForm = document.getElementById("login-form");
+    let registerForm = document.getElementById("register-form");
+    loginForm.onsubmit = function (e) {
+        e.preventDefault();
+        console.log("login!");
+
+        // loginForm.style.display = "none";
+
+        // net.login(
+        //     loginField.value,
+        //     passwordField.value
+        // );
+
+        return false;
+    };
+
+    document.getElementById("register-btn").onclick = function (e) {
+        e.preventDefault();
+
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+    };
+    document.getElementById("sign-btn").onclick = function (e) {
+        e.preventDefault();
+
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+    };
+}
+
 window.onload = function () {
+    setLoginForm();
+
     let proto = "https:" === window.location.protocol ? "wss" : "ws";
     let net = new Net();
     net.url = proto + "://" + window.location.hostname + ":7070";
@@ -50,8 +84,11 @@ window.onload = function () {
     });
 
 
-    startPixi();
+    // startPixi();
 
 
     console.log("yay!");
+
+
 };
+
