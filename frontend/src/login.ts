@@ -1,4 +1,5 @@
 import Net from "./net/Net";
+import Client from "./net/Client";
 
 let errorMessageTimer;
 
@@ -43,7 +44,7 @@ export function setLoginForm() {
             })
                 .then(d => {
                     btn.disabled = false;
-                    successLogin();
+                    successLogin(login, password, d);
                 })
                 .catch(e => {
                     console.error(e);
@@ -87,7 +88,7 @@ function showLoginError(msg: string): any {
     }, 3000);
 }
 
-function doLogin(login: string, password: string) {
+export function doLogin(login: string, password: string) {
     const scrypt = require('scryptsy');
 
     const N = 2048, r = 8, p = 1;
@@ -108,7 +109,7 @@ function doLogin(login: string, password: string) {
         password: hash
     })
         .then((d) => {
-            successLogin();
+            successLogin(login, password, d);
         })
         .catch((e) => {
             console.error(e);
@@ -120,9 +121,18 @@ function doLogin(login: string, password: string) {
         });
 }
 
-function successLogin() {
+function successLogin(login: string, password: string, d: any) {
+    localStorage.setItem("login", login);
+    localStorage.setItem("password", password);
+
     let loginPage = document.getElementById("login-page");
     loginPage.style.display = "none";
+
+    Client.instance = new Client();
+    Client.instance.ssid = d.ssid;
+
+    Net.instance.gameCall("getCharacters")
+        .then();
 }
 
 function log2(n) {

@@ -38,11 +38,6 @@ export default class Net {
     private lastId: number = 0;
 
     /**
-     * время ожидания ответа сервера на запрос, после превышения считаем что коннект оборвался
-     */
-    private requestTimeout: number = 1000;
-
-    /**
      * время между попытками реконнекта
      * @type {number}
      */
@@ -88,6 +83,7 @@ export default class Net {
      * @param {CloseEvent} ev
      */
     private onclose(ev: CloseEvent) {
+        console.log(ev);
         console.warn("ws close [" + ev.code + "] " + this.state);
 
         let oldState = this.state;
@@ -102,6 +98,11 @@ export default class Net {
                 break;
 
             case State.Connecting:
+                for (let k in this.requests) {
+                    let r = this.requests[k];
+                    r.reject("Connection not available");
+                }
+
                 if (this.onDisconnect !== undefined) {
                     this.onDisconnect();
                 }
@@ -144,8 +145,6 @@ export default class Net {
                     if (r !== undefined) {
                         // удалим из мапы
                         delete this.requests[d.id];
-                        // убьем таймер ожидания ответа
-                        clearTimeout(r.waitTimer);
 
                         // ответ успешен?
                         if (d.s === 1) {
@@ -221,13 +220,9 @@ export default class Net {
      * послать запрос на сервер
      * @param {string} target
      * @param {ApiRequest} req
-     * @param {number} timeout
      * @returns {Promise<any>}
      */
-    public remoteCall(target: string, req: ApiRequest, timeout?: number): Promise<any> {
-        // если не передали в параметре - берем дефолтный таймаут
-        let t = timeout === undefined ? this.requestTimeout : timeout;
-
+    public remoteCall(target: string, req?: ApiRequest): Promise<any> {
         return new Promise((resolve, reject) => {
             // не подключены
             if (this.state === State.Idle) {
@@ -239,10 +234,8 @@ export default class Net {
                 this.requests[this.lastId] = {
                     resolve,
                     reject,
-                    waitTimer: undefined,
                     target,
                     req,
-                    timeout: t
                 };
             } else if (this.state === State.Connected) {
                 const id = ++this.lastId;
@@ -253,18 +246,11 @@ export default class Net {
                 };
                 this.socketSend(data);
 
-                // таймер на ожидание ответа сервера
-                let waitTimer: number = t > 0 ? setTimeout(() => {
-                    this.reconnectTry();
-                }, t) : undefined;
-
                 this.requests[id] = {
                     resolve,
                     reject,
-                    waitTimer,
                     target,
                     req,
-                    timeout: t
                 };
             } else if (this.state === State.Reconnecting || this.state === State.Connecting) {
                 console.log("call when disconnected");
@@ -273,14 +259,24 @@ export default class Net {
                 this.requests[this.lastId] = {
                     resolve,
                     reject,
-                    waitTimer: undefined,
                     target,
                     req,
-                    timeout
                 };
             } else {
                 reject("ws wrong state");
             }
+        });
+    }
+
+    public gameCall(target: string, req?: ApiRequest): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.remoteCall(target, req)
+                .then((d) => {
+                    resolve(d);
+                })
+                .catch((e) => {
+                    // TODO
+                })
         });
     }
 
@@ -295,17 +291,6 @@ export default class Net {
                 d: r.req
             };
 
-            // таймер на ожидание ответа сервера
-            if (r.timeout !== undefined && r.timeout > 0) {
-                r.waitTimer = setTimeout(() => {
-                    this.reconnectTry();
-                    // r.reject("timeout");
-                }, r.timeout);
-            } else {
-                r.waitTimer = undefined;
-            }
-            console.log("resend");
-            console.log(_.cloneDeep(data));
             this.socketSend(data);
         }
     }
@@ -328,6 +313,7 @@ export default class Net {
 
     private socketSend(data: any): void {
         let d = JSON.stringify(data);
+        console.log(_.cloneDeep(data));
         this.socket!.send(d);
     }
 }
@@ -335,8 +321,6 @@ export default class Net {
 interface Request {
     resolve: (value?: any) => void;
     reject: (reason?: any) => void;
-    waitTimer?: number;
-    timeout: number;
     target: string;
     req: ApiRequest;
 }

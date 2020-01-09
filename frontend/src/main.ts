@@ -2,7 +2,7 @@ import "./scss/main.scss";
 import * as _ from "lodash";
 import * as PIXI from "pixi.js";
 import Net from "./net/Net";
-import {setLoginForm} from "./login";
+import {setLoginForm, doLogin} from "./login";
 
 window._ = _;
 
@@ -10,6 +10,16 @@ window._ = _;
 window.onload = function () {
     setNet();
     setLoginForm();
+
+    let login = localStorage.getItem("login");
+    let password = localStorage.getItem("password");
+    if (login && password) {
+        let loginBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("login-btn"));
+        loginBtn.disabled = true;
+        doLogin(login, password);
+    } else {
+        document.getElementById("login-page").style.display = "block";
+    }
 
     // startPixi();
 };

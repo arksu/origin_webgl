@@ -1,3 +1,5 @@
+import Client from "../net/Client";
+
 declare global {
     interface Window {
         _: any;

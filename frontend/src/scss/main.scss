@@ -16,6 +16,7 @@ canvas {
 }
 
 #login-page {
+  display: none;
   width: 360px;
   padding: 8% 0 0;
   margin: auto;
@@ -110,4 +111,11 @@ canvas {
   padding-top: 15px;
   padding-bottom: 15px;
   margin-top: 10px;
+}
+
+#characters-page {
+  display: none;
+  width: 360px;
+  padding: 8% 0 0;
+  margin: auto;
 }

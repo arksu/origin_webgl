@@ -2,6 +2,7 @@ package com.origin.net;
 
 import com.origin.Database;
 import com.origin.UserCache;
+import com.origin.entity.Character;
 import com.origin.entity.User;
 import com.origin.net.model.GameSession;
 import com.origin.net.model.LoginResponse;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 public class GameServer extends WSServer
@@ -28,18 +30,38 @@ public class GameServer extends WSServer
 	@Override
 	protected Object process(GameSession session, String target, Map<String, Object> data) throws Exception
 	{
-		switch (target.toLowerCase())
-		{
-			case "login":
-				return login(session, data);
-			case "register":
-				return register(data);
-		}
+		final String t = target;
 
+		// если к сессии еще не привязан юзер
+		if (session.getUser() == null)
+		{
+			switch (t)
+			{
+				case "login":
+					return login(session, data);
+				case "register":
+					return register(session, data);
+			}
+		}
+		else
+		{
+			switch (t)
+			{
+				case "getCharacters":
+					return getCharacters(session.getUser(), data);
+			}
+		}
 		return null;
 	}
 
-	public Object register(Map<String, Object> data) throws InterruptedException, GameException
+	public Object getCharacters(User user, Map<String, Object> data) throws GameException
+	{
+		final List<Character> list = Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=?", user.getId());
+
+		return list;
+	}
+
+	public Object register(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
 	{
 		User user = new User();
 
@@ -50,7 +72,7 @@ public class GameServer extends WSServer
 		try
 		{
 			Database.em().persist(user);
-			return loginUser(user);
+			return loginUser(session, user);
 		}
 		catch (RuntimeException e)
 		{
@@ -82,7 +104,7 @@ public class GameServer extends WSServer
 			{
 				_log.debug("user auth: " + user.getLogin());
 
-				return loginUser(user);
+				return loginUser(session, user);
 			}
 			else
 			{
@@ -95,8 +117,10 @@ public class GameServer extends WSServer
 		}
 	}
 
-	private Object loginUser(User user) throws InterruptedException
+	private Object loginUser(GameSession session, User user) throws InterruptedException
 	{
+		session.setUser(user);
+
 		if (!userCache.addUserAuth(user))
 		{
 			throw new GameException("user cache error");

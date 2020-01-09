@@ -1,5 +1,6 @@
 package com.origin.net.model;
 
+import com.origin.entity.User;
 import com.origin.net.WSServer;
 import org.java_websocket.WebSocket;
 
@@ -8,6 +9,8 @@ public class GameSession
 	private final WebSocket _connect;
 
 	private final String _remoteAddr;
+
+	private User _user;
 
 	public GameSession(WebSocket connect, String remoteAddr)
 	{
@@ -39,5 +42,15 @@ public class GameSession
 		{
 			_connect.send(data);
 		}
+	}
+
+	public void setUser(User user)
+	{
+		_user = user;
+	}
+
+	public User getUser()
+	{
+		return _user;
 	}
 }
