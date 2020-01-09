@@ -32,11 +32,6 @@ public abstract class WSServer extends WebSocketServer
 	private static final Logger _log = LoggerFactory.getLogger(WSServer.class.getName());
 
 	/**
-	 * время жизни кэша запросов сессии
-	 */
-	private static final int SESSION_CACHE_TIMEOUT = 5 * 60 * 1000;
-
-	/**
 	 * время между получением пинга и отправкой ответного пинга клиенту
 	 */
 	private static final int PING_TIME = 15;
@@ -186,26 +181,6 @@ public abstract class WSServer extends WebSocketServer
 				{
 					// обработаем запрос к серверу, получим ответ
 					response.data = process(session, request.target, request.data);
-
-					// если есть данные в запросе
-					if (request.data != null)
-					{
-						String ssid = (String) request.data.get("ssid");
-						if (!Utils.isEmpty(ssid))
-						{
-							// сохраним время ssid
-							_ssidTimeCache.put(ssid, new Date().getTime());
-							// создадим очередь ответов в кэше
-							LinkedList<WSResponse> queue = _responseCache.computeIfAbsent(ssid, k -> new LinkedList<>());
-							// ограничим размер кэша ответов сервера
-							while (queue.size() > 32)
-							{
-								queue.poll();
-							}
-							// сохраним ответ в кэше
-							queue.add(response);
-						}
-					}
 				}
 			}
 			catch (GameException e)
@@ -236,9 +211,6 @@ public abstract class WSServer extends WebSocketServer
 	{
 		_log.debug("ws net started");
 
-		// запускаем таск очистки кэша ответов сервера
-		new CleanerThread().start();
-
 		_isRunning = true;
 	}
 
@@ -265,43 +237,6 @@ public abstract class WSServer extends WebSocketServer
 		public void run()
 		{
 			_session.sendPing("ping");
-		}
-	}
-
-	/**
-	 * таск очистки кэша ответов сервера
-	 */
-	class CleanerThread extends Thread
-	{
-		@Override
-		public void run()
-		{
-			while (_isRunning)
-			{
-				cleanSessions();
-				try
-				{
-					Thread.sleep(SESSION_CACHE_TIMEOUT / 2);
-				}
-				catch (InterruptedException e)
-				{
-					_log.error("InterruptedException", e);
-				}
-			}
-		}
-
-		private void cleanSessions()
-		{
-			long currentTime = new Date().getTime();
-			for (String k : _ssidTimeCache.keySet())
-			{
-				if (currentTime > (_ssidTimeCache.get(k) + SESSION_CACHE_TIMEOUT))
-				{
-					_log.warn("delete ssid from cache: " + k);
-					_ssidTimeCache.remove(k);
-					_responseCache.remove(k);
-				}
-			}
 		}
 	}
 }

@@ -6,6 +6,8 @@ import ApplicationOptions = PIXI.ApplicationOptions;
 
 window._ = _;
 
+let errorMessageTimer;
+
 window.onload = function () {
     setNet();
     setLoginForm();
@@ -56,26 +58,20 @@ function startPixi() {
     };
 }
 
-let errorMessageTimer;
-
 function setLoginForm() {
     let loginForm = document.getElementById("login-form");
     let registerForm = document.getElementById("register-form");
+
     loginForm.onsubmit = function (e) {
         e.preventDefault();
         console.log("login!");
 
-        Net.instance.remoteCall("login", {
-            login: "root",
-            password: "root"
-        });
+        let login = (<HTMLInputElement>document.getElementById("input-login")).value;
+        let password = (<HTMLInputElement>document.getElementById("input-password")).value;
+        let btn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("login-btn"));
 
-        // net.login(
-        //     loginField.value,
-        //     passwordField.value
-        // );
-
-        return false;
+        btn.disabled = true;
+        doLogin(login, password);
     };
 
     registerForm.onsubmit = function (e) {
@@ -92,24 +88,22 @@ function setLoginForm() {
 
         if (!login || !password) {
             showLoginError("Username or password is empty");
-
         } else {
             btn.disabled = true;
             Net.instance.remoteCall("register", {
-                login: login,
-                password: password,
+                login,
+                password,
                 email: email
             })
                 .then(d => {
-                    console.log(d);
                     btn.disabled = false;
 
                     if (d === "ok") {
-
+                        doLogin(login, password);
                     }
                 })
                 .catch(e => {
-                    console.log(e);
+                    console.error(e);
                     if (e === "username busy") {
                         showLoginError("This username is taken");
                     }
@@ -148,5 +142,25 @@ function clearLoginError() {
     clearTimeout(errorMessageTimer);
     const error = document.getElementById("login-error");
     error.style.display = "none";
+}
+
+function doLogin(login: string, password: string) {
+    Net.instance.remoteCall("login", {
+        login,
+        password
+    })
+        .then((d) => {
+            let loginPage = document.getElementById("login-page");
+            loginPage.style.display = "none";
+
+        })
+        .catch((e) => {
+            console.error(e);
+
+            let btn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("login-btn"));
+            btn.disabled = false;
+
+            showLoginError(e);
+        });
 }
 

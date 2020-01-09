@@ -1,7 +1,7 @@
 body {
   padding: 0;
   margin: 0;
-  background: #2f5516;
+  background: #19320f;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: "Arial", sans-serif;
@@ -15,30 +15,17 @@ canvas {
   height: 100%;
 }
 
-.login-page {
+#login-page {
   width: 360px;
   padding: 8% 0 0;
   margin: auto;
-}
-
-#login-error {
-  position: relative;
-  display: none;
-  width: 100%;
-  background: #d2787e;
-  border-radius: 5px;
-  color: #3f1210;
-
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-top: 10px;
 }
 
 .form {
   position: relative;
   border-radius: 5px;
   z-index: 2;
-  background: #FFFFFF;
+  background: #4a6e4f;
   max-width: 360px;
   margin: 0 auto;
   padding: 45px;
@@ -50,7 +37,8 @@ canvas {
   border-radius: 5px;
   font-family: "Arial", sans-serif;
   outline: 0;
-  background: #f2f2f2;
+  background: #7a7a7a;
+  color: #222222;
   width: 100%;
   border: 0;
   margin: 0 0 15px;
@@ -59,16 +47,20 @@ canvas {
   font-size: 14px;
 }
 
+.form input::placeholder {
+  color: #404d40;
+}
+
 .form button {
   border-radius: 5px;
   font-family: "Arial", sans-serif;
   text-transform: uppercase;
   outline: 0;
-  background: #4CAF50;
+  background: #408643;
   width: 100%;
   border: 0;
   padding: 15px;
-  color: #FFFFFF;
+  color: #cdcdcd;
   font-size: 14px;
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
@@ -103,8 +95,19 @@ canvas {
 .form #register-form {
   display: block;
 }
+
 .form #login-form {
   display: none;
 }
 
+#login-error {
+  display: none;
+  width: 100%;
+  background: #d2787e;
+  border-radius: 5px;
+  color: #6e1c1a;
 
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-top: 10px;
+}

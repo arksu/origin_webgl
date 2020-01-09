@@ -43,21 +43,10 @@ export default class Net {
     private requestTimeout: number = 1000;
 
     /**
-     * количество попыток реконнекта в случае обрыва связи
-     * @type {number}
-     */
-    private reconnectTries: number = 10;
-
-    /**
      * время между попытками реконнекта
      * @type {number}
      */
     private reconnectTime: number = 4000;
-
-    /**
-     * счетчит попыток переподключения к севреру
-     */
-    private reconnectCounter: number;
 
     /**
      * обработчик отключения сети (вызывается только если очередь запросов была пуста, иначе там reject)
@@ -89,10 +78,6 @@ export default class Net {
 
         let oldState = this.state;
         this.state = State.Connected;
-
-        if (oldState === State.Reconnecting) {
-            this.reconnectCounter = this.reconnectTries;
-        }
 
         this.sendRequests();
     }
@@ -190,7 +175,6 @@ export default class Net {
 
         this.lastId = 0;
         this.requests = {};
-        this.reconnectCounter = this.reconnectTries;
 
         this.createSocket();
 
@@ -212,42 +196,24 @@ export default class Net {
      * обобщенный код переподключения
      */
     private reconnectTry() {
-        console.warn("reconnect try[" + (this.reconnectTries - this.reconnectCounter + 1) + " of " + this.reconnectTries + "]");
+        console.warn("reconnect try");
 
         if (this.pingTimer !== undefined) {
             clearTimeout(this.pingTimer);
             this.pingTimer = undefined;
         }
 
-        // если еще есть попытки реконнекта
-        if (this.reconnectCounter > 0) {
-            this.reconnectCounter--;
-            this.state = State.ReconnectWait;
+        // по всем текущим отправленным запросам вызовем reject
+        for (let k in this.requests) {
+            let r = this.requests[k];
+            r.reject("network is disconnected");
+        }
+        this.requests = {};
+        this.state = State.Idle;
+        this.socket = undefined;
 
-            for (let k in this.requests) {
-                let r = this.requests[k];
-                clearTimeout(r.waitTimer);
-            }
-
-            // ждем переподключения
-            setTimeout(() => {
-                this.reconnect();
-            }, this.reconnectTime);
-        } else {
-            let empty = true;
-            // по всем текущим отправленным запросам вызовем reject
-            for (let k in this.requests) {
-                empty = false;
-                let r = this.requests[k];
-                r.reject("network is disconnected");
-            }
-            this.requests = {};
-            this.state = State.Idle;
-            this.socket = undefined;
-
-            if (empty && this.onDisconnect !== undefined) {
-                this.onDisconnect();
-            }
+        if (this.onDisconnect !== undefined) {
+            this.onDisconnect();
         }
     }
 
