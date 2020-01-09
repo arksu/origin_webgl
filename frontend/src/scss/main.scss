@@ -119,3 +119,48 @@ canvas {
   padding: 8% 0 0;
   margin: auto;
 }
+
+#error-page {
+  display: none;
+  width: 360px;
+
+  margin-top: 8%;
+  margin-left: auto;
+  margin-right: auto;
+
+  padding: 45px 10px 10px 10px;
+
+  z-index: 1000;
+  background: #d2787e;
+  border-radius: 5px;
+  color: #6e1c1a;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+#error-text {
+  width: 100%;
+  text-align: center;
+}
+
+#error-page button {
+  border-radius: 5px;
+  font-family: "Arial", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #865658;
+  text-align: center;
+  margin-left: 25%;
+  margin-right: 25%;
+  width: 50%;
+  border: 0;
+  padding: 15px;
+  color: #cdcdcd;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+
+#error-page button:hover, .form button:active, .form button:focus {
+  background: #986264;
+}

@@ -79,6 +79,8 @@ function clearLoginError() {
 }
 
 function showLoginError(msg: string): any {
+    document.getElementById("login-page").style.display = "block";
+
     const error = document.getElementById("login-error");
 
     error.innerHTML = msg;
@@ -86,6 +88,13 @@ function showLoginError(msg: string): any {
     errorMessageTimer = setTimeout(() => {
         error.style.display = "none";
     }, 3000);
+}
+
+export function showLoginPage() {
+    document.getElementById("login-page").style.display = "block";
+    document.getElementById("login-form").style.display = "block";
+    document.getElementById("register-form").style.display = "none";
+    (<HTMLButtonElement>document.getElementById("login-btn")).disabled = false;
 }
 
 export function doLogin(login: string, password: string) {

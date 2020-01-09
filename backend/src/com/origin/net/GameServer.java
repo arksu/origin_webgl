@@ -58,7 +58,9 @@ public class GameServer extends WSServer
 	{
 		final List<Character> list = Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=?", user.getId());
 
-		return list;
+		throw new GameException("IllegalArgument Exception dfkdsjl kflsdj lsdjflsd jflsdkjfl skdj");
+
+//		return list;
 	}
 
 	public Object register(GameSession session, Map<String, Object> data) throws InterruptedException, GameException

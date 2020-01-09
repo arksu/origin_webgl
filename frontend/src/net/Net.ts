@@ -1,5 +1,6 @@
 import {ApiRequest} from "./ApiRequest";
 import * as _ from "lodash";
+import {showError} from "../error";
 
 enum State {
     Idle,
@@ -100,7 +101,7 @@ export default class Net {
             case State.Connecting:
                 for (let k in this.requests) {
                     let r = this.requests[k];
-                    r.reject("Connection not available");
+                    r.reject("Connection is not available");
                 }
 
                 if (this.onDisconnect !== undefined) {
@@ -150,6 +151,7 @@ export default class Net {
                         if (d.s === 1) {
                             r.resolve(d.d);
                         } else {
+                            console.error(d.e);
                             // иначе была ошибка, прокинем ее
                             r.reject(d.e);
                         }
@@ -178,6 +180,12 @@ export default class Net {
         this.createSocket();
 
         this.state = State.Connecting;
+    }
+
+    public disconnect() {
+        this.socket = undefined;
+        this.state = State.Idle;
+        this.requests = {};
     }
 
     /**
@@ -276,6 +284,8 @@ export default class Net {
                 })
                 .catch((e) => {
                     // TODO
+                    this.disconnect();
+                    showError(e);
                 })
         });
     }
