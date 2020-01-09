@@ -93,11 +93,11 @@ canvas {
 }
 
 .form #register-form {
-  display: block;
+  display: none;
 }
 
 .form #login-form {
-  display: none;
+  display: block;
 }
 
 #login-error {

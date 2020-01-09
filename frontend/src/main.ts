@@ -2,11 +2,10 @@ import "./scss/main.scss";
 import * as _ from "lodash";
 import * as PIXI from "pixi.js";
 import Net from "./net/Net";
-import ApplicationOptions = PIXI.ApplicationOptions;
+import {setLoginForm} from "./login";
 
 window._ = _;
 
-let errorMessageTimer;
 
 window.onload = function () {
     setNet();
@@ -35,7 +34,7 @@ function startPixi() {
     let gameHeight = window.innerHeight;
     console.log("game: " + gameWidth + " x " + gameWidth);
 
-    let opt: ApplicationOptions = {
+    let opt: PIXI.ApplicationOptions = {
         width: gameWidth,
         height: gameHeight,
         backgroundColor: 0x000000,
@@ -58,109 +57,6 @@ function startPixi() {
     };
 }
 
-function setLoginForm() {
-    let loginForm = document.getElementById("login-form");
-    let registerForm = document.getElementById("register-form");
 
-    loginForm.onsubmit = function (e) {
-        e.preventDefault();
-        console.log("login!");
 
-        let login = (<HTMLInputElement>document.getElementById("input-login")).value;
-        let password = (<HTMLInputElement>document.getElementById("input-password")).value;
-        let btn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("login-btn"));
-
-        btn.disabled = true;
-        doLogin(login, password);
-    };
-
-    registerForm.onsubmit = function (e) {
-        e.preventDefault();
-
-        console.log("register");
-
-        let login = (<HTMLInputElement>document.getElementById("reg-login")).value;
-        let password = (<HTMLInputElement>document.getElementById("reg-password")).value;
-        let email = (<HTMLInputElement>document.getElementById("reg-email")).value;
-        let btn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("reg-btn"));
-
-        clearLoginError();
-
-        if (!login || !password) {
-            showLoginError("Username or password is empty");
-        } else {
-            btn.disabled = true;
-            Net.instance.remoteCall("register", {
-                login,
-                password,
-                email: email
-            })
-                .then(d => {
-                    btn.disabled = false;
-
-                    if (d === "ok") {
-                        doLogin(login, password);
-                    }
-                })
-                .catch(e => {
-                    console.error(e);
-                    if (e === "username busy") {
-                        showLoginError("This username is taken");
-                    }
-                    btn.disabled = false;
-                });
-        }
-    };
-
-    document.getElementById("register-btn").onclick = function (e) {
-        e.preventDefault();
-        clearLoginError();
-
-        loginForm.style.display = "none";
-        registerForm.style.display = "block";
-    };
-    document.getElementById("sign-btn").onclick = function (e) {
-        e.preventDefault();
-        clearLoginError();
-
-        loginForm.style.display = "block";
-        registerForm.style.display = "none";
-    };
-}
-
-function showLoginError(msg: string): any {
-    const error = document.getElementById("login-error");
-
-    error.innerHTML = msg;
-    error.style.display = "block";
-    errorMessageTimer = setTimeout(() => {
-        error.style.display = "none";
-    }, 3000);
-}
-
-function clearLoginError() {
-    clearTimeout(errorMessageTimer);
-    const error = document.getElementById("login-error");
-    error.style.display = "none";
-}
-
-function doLogin(login: string, password: string) {
-    Net.instance.remoteCall("login", {
-        login,
-        password
-    })
-        .then((d) => {
-            let loginPage = document.getElementById("login-page");
-            loginPage.style.display = "none";
-
-        })
-        .catch((e) => {
-            console.error(e);
-
-            let btn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("login-btn"));
-            btn.disabled = false;
-
-            showLoginError(e);
-        });
-}
 

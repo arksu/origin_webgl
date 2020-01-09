@@ -50,6 +50,7 @@ public class GameServer extends WSServer
 		try
 		{
 			Database.em().persist(user);
+			return loginUser(user);
 		}
 		catch (RuntimeException e)
 		{
@@ -66,8 +67,6 @@ public class GameServer extends WSServer
 		{
 			throw new GameException("register failed");
 		}
-
-		return "ok";
 	}
 
 	public Object login(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
@@ -82,14 +81,8 @@ public class GameServer extends WSServer
 			if (SCryptUtil.check(user.getPassword(), password))
 			{
 				_log.debug("user auth: " + user.getLogin());
-				if (!userCache.addUserAuth(user))
-				{
-					throw new GameException("user cache error");
-				}
-				LoginResponse response = new LoginResponse();
-				response.ssid = user.getSsid();
-				return response;
 
+				return loginUser(user);
 			}
 			else
 			{
@@ -100,5 +93,16 @@ public class GameServer extends WSServer
 		{
 			throw new GameException("user not found");
 		}
+	}
+
+	private Object loginUser(User user) throws InterruptedException
+	{
+		if (!userCache.addUserAuth(user))
+		{
+			throw new GameException("user cache error");
+		}
+		LoginResponse response = new LoginResponse();
+		response.ssid = user.getSsid();
+		return response;
 	}
 }
