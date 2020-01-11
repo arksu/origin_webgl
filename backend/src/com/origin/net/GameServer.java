@@ -27,6 +27,9 @@ public class GameServer extends WSServer
 		super(address, decoderCount);
 	}
 
+	/**
+	 * обработка всех websocket запросов
+	 */
 	@Override
 	protected Object process(GameSession session, String target, Map<String, Object> data) throws Exception
 	{
@@ -63,6 +66,9 @@ public class GameServer extends WSServer
 //		return list;
 	}
 
+	/**
+	 * регистрация нового аккаунта
+	 */
 	public Object register(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
 	{
 		User user = new User();
@@ -93,6 +99,9 @@ public class GameServer extends WSServer
 		}
 	}
 
+	/**
+	 * вход в систему
+	 */
 	public Object login(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
 	{
 		final String login = ((String) data.get("login"));
