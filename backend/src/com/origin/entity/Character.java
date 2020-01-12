@@ -1,5 +1,6 @@
 package com.origin.entity;
 
+import com.google.gson.annotations.SerializedName;
 import com.origin.jpa.TableExtended;
 
 import javax.persistence.Column;
@@ -13,20 +14,22 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "characters")
-@TableExtended(truncate = true, drop = true)
+//@TableExtended(truncate = true, drop = true)
 public class Character
 {
 	@Id
 	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
+	@SerializedName("id")
 	private int _id;
 
 	@Column(name = "userId", columnDefinition = "INT(11) NOT NULL", nullable = false)
-	private int _userId;
+	private transient int _userId;
 
 	@Column(name = "name", columnDefinition = "VARCHAR(16) NOT NULL", nullable = false)
+	@SerializedName("name")
 	private String _name;
 
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
-	private Timestamp _createTime;
+	private transient Timestamp _createTime;
 
 }

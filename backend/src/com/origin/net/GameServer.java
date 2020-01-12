@@ -33,12 +33,10 @@ public class GameServer extends WSServer
 	@Override
 	protected Object process(GameSession session, String target, Map<String, Object> data) throws Exception
 	{
-		final String t = target;
-
 		// если к сессии еще не привязан юзер
 		if (session.getUser() == null)
 		{
-			switch (t)
+			switch (target)
 			{
 				case "login":
 					return login(session, data);
@@ -48,22 +46,54 @@ public class GameServer extends WSServer
 		}
 		else
 		{
-			switch (t)
+			switch (target)
 			{
 				case "getCharacters":
 					return getCharacters(session.getUser(), data);
+				case "createCharacter":
+					return createCharacter(session.getUser(), data);
+				case "selectCharacter":
+					return selectCharacter(session.getUser(), data);
+				case "deleteCharacter":
+					return deleteCharacter(session.getUser(), data);
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * получить список персонажей
+	 */
 	public Object getCharacters(User user, Map<String, Object> data) throws GameException
 	{
 		final List<Character> list = Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=?", user.getId());
 
-		throw new GameException("IllegalArgument Exception dfkdsjl kflsdj lsdjflsd jflsdkjfl skdj");
+		return list;
+	}
 
-//		return list;
+	/**
+	 * создать нового персонажа
+	 */
+	public Object createCharacter(User user, Map<String, Object> data)
+	{
+		return null;
+	}
+
+	/**
+	 * удалить персонажа
+	 */
+	public Object deleteCharacter(User user, Map<String, Object> data)
+	{
+		throw new GameException("some");
+//		return null;
+	}
+
+	/**
+	 * выбрать игровой персонаж
+	 */
+	public Object selectCharacter(User user, Map<String, Object> data)
+	{
+		return null;
 	}
 
 	/**

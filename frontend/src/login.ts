@@ -1,7 +1,37 @@
 import Net from "./net/Net";
 import Client from "./net/Client";
+import {showCharacters} from "./characters";
 
 let errorMessageTimer;
+
+function log2(n) {
+    let log = 0;
+    if ((n & 0xffff0000) !== 0) {
+        n >>>= 16;
+        log = 16;
+    }
+    if (n >= 256) {
+        n >>>= 8;
+        log += 8;
+    }
+    if (n >= 16) {
+        n >>>= 4;
+        log += 4;
+    }
+    if (n >= 4) {
+        n >>>= 2;
+        log += 2;
+    }
+    log = log + (n >>> 1);
+    return log;
+}
+
+function hexToBase64(str) {
+    return btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, '')
+        .replace(/([\da-fA-F]{2}) ?/g, '0x$1 ')
+        .replace(RegExp(' +$'), '')
+        .split(' ')));
+}
 
 export function setLoginForm() {
     let loginForm = document.getElementById("login-form");
@@ -141,34 +171,7 @@ function successLogin(login: string, password: string, d: any) {
     Client.instance.ssid = d.ssid;
 
     Net.instance.gameCall("getCharacters")
-        .then();
-}
-
-function log2(n) {
-    let log = 0;
-    if ((n & 0xffff0000) !== 0) {
-        n >>>= 16;
-        log = 16;
-    }
-    if (n >= 256) {
-        n >>>= 8;
-        log += 8;
-    }
-    if (n >= 16) {
-        n >>>= 4;
-        log += 4;
-    }
-    if (n >= 4) {
-        n >>>= 2;
-        log += 2;
-    }
-    log = log + (n >>> 1);
-    return log;
-}
-
-function hexToBase64(str) {
-    return btoa(String.fromCharCode.apply(null, str.replace(/\r|\n/g, '')
-        .replace(/([\da-fA-F]{2}) ?/g, '0x$1 ')
-        .replace(RegExp(' +$'), '')
-        .split(' ')));
+        .then((d) => {
+            showCharacters(d);
+        });
 }

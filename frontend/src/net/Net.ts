@@ -283,7 +283,6 @@ export default class Net {
                     resolve(d);
                 })
                 .catch((e) => {
-                    // TODO
                     this.disconnect();
                     showError(e);
                 })
