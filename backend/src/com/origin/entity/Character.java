@@ -1,7 +1,6 @@
 package com.origin.entity;
 
 import com.google.gson.annotations.SerializedName;
-import com.origin.jpa.TableExtended;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,4 +31,33 @@ public class Character
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
 	private transient Timestamp _createTime;
 
+	public int getId()
+	{
+		return _id;
+	}
+
+	public void setId(int id)
+	{
+		_id = id;
+	}
+
+	public int getUserId()
+	{
+		return _userId;
+	}
+
+	public void setUserId(int userId)
+	{
+		_userId = userId;
+	}
+
+	public String getName()
+	{
+		return _name;
+	}
+
+	public void setName(String name)
+	{
+		_name = name;
+	}
 }

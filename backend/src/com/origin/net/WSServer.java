@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -57,17 +55,6 @@ public abstract class WSServer extends WebSocketServer
 	 * список активных вебсокет сессий
 	 */
 	private Map<WebSocket, GameSession> _sessions = new ConcurrentHashMap<>();
-
-	/**
-	 * кэш ssid (храним ssid и время последнего обращения с этим ssid)
-	 * в фоне поток очищает старые ssid из этой мапы
-	 */
-	private Map<String, Long> _ssidTimeCache = new ConcurrentHashMap<>();
-
-	/**
-	 * кэш ответов сервера
-	 */
-	private Map<String, LinkedList<WSResponse>> _responseCache = new ConcurrentHashMap<>();
 
 	public WSServer(InetSocketAddress address, int decoderCount)
 	{
@@ -148,40 +135,8 @@ public abstract class WSServer extends WebSocketServer
 
 			try
 			{
-				// если есть данные получим ssid
-				if (request.data != null)
-				{
-					String ssid = (String) request.data.get("ssid");
-					if (!Utils.isEmpty(ssid))
-					{
-						// по ssid и id запроса узнаем был ли такой уже в кэше
-						// если есть - то вернем его иначе обработаем запрос как обычно
-						LinkedList<WSResponse> queue = _responseCache.get(ssid);
-						if (queue != null)
-						{
-							// ищем по всей очереди
-							for (WSResponse r : queue)
-							{
-								// совпадение по id запроса
-								if (r.id == request.id)
-								{
-									_log.warn("ws resp from cache [" + request.id + "]");
-									// получим данные ответа
-									response.data = r.data;
-									// обновим время жизни в кэше
-									_ssidTimeCache.put(ssid, new Date().getTime());
-									break;
-								}
-							}
-						}
-					}
-				}
-				// если данные выше не получили из кэша
-				if (response.data == null)
-				{
-					// обработаем запрос к серверу, получим ответ
-					response.data = process(session, request.target, request.data);
-				}
+				// обработаем запрос к серверу, получим ответ
+				response.data = process(session, request.target, request.data);
 			}
 			catch (GameException e)
 			{

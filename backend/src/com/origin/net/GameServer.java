@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 public class GameServer extends WSServer
@@ -66,9 +65,7 @@ public class GameServer extends WSServer
 	 */
 	public Object getCharacters(User user, Map<String, Object> data) throws GameException
 	{
-		final List<Character> list = Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=?", user.getId());
-
-		return list;
+		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=? limit 5", user.getId());
 	}
 
 	/**
@@ -84,8 +81,11 @@ public class GameServer extends WSServer
 	 */
 	public Object deleteCharacter(User user, Map<String, Object> data)
 	{
-		throw new GameException("some");
-//		return null;
+		Character character = new Character();
+//		character.setId(((long) data.get("id")));
+		Database.em().remove(character);
+
+		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=? limit 5", user.getId());
 	}
 
 	/**

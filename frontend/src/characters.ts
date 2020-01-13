@@ -8,29 +8,37 @@ export function showCharacters(list: Array<any>) {
         let charBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char" + i));
         charBtn.innerText = char.name;
         charBtn.onclick = () => {
-            Net.instance.gameCall("selectCharacter", {id: char.id});
             enableButtons(false);
+            Net.instance.gameCall("selectCharacter", {id: char.id})
+                .then(() => {
+                    // TODO
+                });
         };
-        charBtn.className="char-name";
+        charBtn.className = "char-name";
 
         let delBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("del-char" + i));
         delBtn.onclick = () => {
-            Net.instance.gameCall("deleteCharacter", {id: char.id});
             enableButtons(false);
+            Net.instance.gameCall("deleteCharacter", {id: char.id})
+                .then((d) => {
+                    showCharacters(d);
+                    enableButtons(true);
+                });
         };
     }
     for (let i = list.length + 1; i <= 5; i++) {
         let charBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char" + i));
         charBtn.innerText = "EMPTY SLOT";
         charBtn.onclick = () => {
-            Net.instance.gameCall("createCharacter", {slot: i});
             enableButtons(false);
+            // Net.instance.gameCall("createCharacter", {slot: i});
+            // TODO
         };
-        charBtn.className="char-empty";
+        charBtn.className = "char-empty";
     }
 }
 
-function enableButtons(val : boolean) {
+function enableButtons(val: boolean) {
     for (let i = 1; i <= 5; i++) {
         let charBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char" + i));
         charBtn.disabled = !val;

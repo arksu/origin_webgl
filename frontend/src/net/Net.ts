@@ -285,6 +285,7 @@ export default class Net {
                 .catch((e) => {
                     this.disconnect();
                     showError(e);
+                    reject(e);
                 })
         });
     }
