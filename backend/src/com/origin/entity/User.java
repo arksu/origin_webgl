@@ -1,8 +1,7 @@
 package com.origin.entity;
 
-import com.origin.jpa.ColumnExtended;
-import com.origin.jpa.TableExtended;
 import com.origin.utils.Utils;
+import org.jpark.ColumnExtended;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

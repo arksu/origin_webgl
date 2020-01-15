@@ -41,6 +41,9 @@ dependencies {
     compile( group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.7.1') {
         exclude (module : 'javax.persistence')
     }
+
+    compile project(':jpark')
+
 //    compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.jpa', version: '2.7.1'
 //    compile group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.core', version: '2.7.4'
 }

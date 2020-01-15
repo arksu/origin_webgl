@@ -2,9 +2,9 @@ package com.origin;
 
 import com.origin.entity.Character;
 import com.origin.entity.User;
-import com.origin.jpa.EntityManager;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.jpark.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
