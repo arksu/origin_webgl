@@ -1,6 +1,7 @@
 package com.origin.entity;
 
 import com.google.gson.annotations.SerializedName;
+import org.jpark.TableExtended;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "characters")
-//@TableExtended(truncate = true, drop = true)
+@TableExtended(truncate = true, drop = true)
 public class Character
 {
 	@Id

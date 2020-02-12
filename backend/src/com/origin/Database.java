@@ -37,8 +37,8 @@ public class Database
 //		user2.setLogin("test_login12");
 
 		//**************************************************
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
-		_em1 = emf.createEntityManager();
+//		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
+//		_em1 = emf.createEntityManager();
 
 //		_em.getTransaction().begin();
 //		_em.persist(user2);
