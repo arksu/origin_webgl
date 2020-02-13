@@ -14,7 +14,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "characters")
-@TableExtended(truncate = true, drop = true)
+//@TableExtended(truncate = true, drop = true)
 public class Character
 {
 	@Id
