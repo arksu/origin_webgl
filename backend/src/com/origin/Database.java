@@ -1,15 +1,11 @@
 package com.origin;
 
-import com.origin.entity.Character;
-import com.origin.entity.User;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jpark.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,8 +22,7 @@ public class Database
 
 	public static void start()
 	{
-		_em.addEntityClass(User.class);
-		_em.addEntityClass(Character.class);
+		_em.findEntities("com.origin.entity");
 
 		_em.setConnectionFactory(Database::getConnection);
 		//**************************************************
@@ -77,7 +72,6 @@ public class Database
 //		config.addDataSourceProperty("prepStmtCacheSize", 250);
 //		config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
 //		config.addDataSourceProperty("useServerPrepStmts", true);
-
 
 		config.setLeakDetectionThreshold(5000);
 		config.setConnectionTimeout(30000);
