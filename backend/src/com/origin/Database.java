@@ -23,8 +23,8 @@ public class Database
 	public static void start()
 	{
 		_em.findEntities("com.origin.entity");
-
 		_em.setConnectionFactory(Database::getConnection);
+
 		//**************************************************
 
 		// TEST code
