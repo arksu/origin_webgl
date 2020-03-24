@@ -38,9 +38,9 @@ dependencies {
 //    compile group: 'org.eclipse.persistence', name: 'javax.persistence', version: '2.2.1'
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
 
-    compile( group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.7.1') {
-        exclude (module : 'javax.persistence')
-    }
+//    compile( group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.7.1') {
+//        exclude (module : 'javax.persistence')
+//    }
 
     compile project(':jpark')
 

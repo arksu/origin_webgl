@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 		@Index(name = "login_uniq", columnList = "login", unique = true)
 })
 //@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", drop = false, truncate = false)
-public class User
+public class User extends DbObject
 {
 	@Id
 	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")

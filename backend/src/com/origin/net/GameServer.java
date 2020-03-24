@@ -73,6 +73,7 @@ public class GameServer extends WSServer
 	 */
 	public Object createCharacter(User user, Map<String, Object> data)
 	{
+		// TODO
 		return null;
 	}
 
@@ -82,6 +83,7 @@ public class GameServer extends WSServer
 	public Object deleteCharacter(User user, Map<String, Object> data)
 	{
 		Character character = new Character();
+		// TODO get id
 //		character.setId(((long) data.get("id")));
 		Database.em().remove(character);
 
@@ -93,6 +95,7 @@ public class GameServer extends WSServer
 	 */
 	public Object selectCharacter(User user, Map<String, Object> data)
 	{
+		// TODO
 		return null;
 	}
 
@@ -109,7 +112,7 @@ public class GameServer extends WSServer
 
 		try
 		{
-			Database.em().persist(user);
+			user.persist();
 			return loginUser(session, user);
 		}
 		catch (RuntimeException e)
