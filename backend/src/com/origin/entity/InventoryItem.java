@@ -54,4 +54,79 @@ public class InventoryItem
 	 */
 	@Column(name = "tick", columnDefinition = "INT(11) NOT NULL")
 	private int _tick;
+
+	public int getId()
+	{
+		return _id;
+	}
+
+	public int getInventoryId()
+	{
+		return _inventoryId;
+	}
+
+	public void setInventoryId(int inventoryId)
+	{
+		_inventoryId = inventoryId;
+	}
+
+	public int getType()
+	{
+		return _type;
+	}
+
+	public void setType(int type)
+	{
+		_type = type;
+	}
+
+	public int getX()
+	{
+		return _x;
+	}
+
+	public void setX(int x)
+	{
+		_x = x;
+	}
+
+	public int getY()
+	{
+		return _y;
+	}
+
+	public void setY(int y)
+	{
+		_y = y;
+	}
+
+	public int getQuality()
+	{
+		return _quality;
+	}
+
+	public void setQuality(int quality)
+	{
+		_quality = quality;
+	}
+
+	public int getCount()
+	{
+		return _count;
+	}
+
+	public void setCount(int count)
+	{
+		_count = count;
+	}
+
+	public int getTick()
+	{
+		return _tick;
+	}
+
+	public void setTick(int tick)
+	{
+		_tick = tick;
+	}
 }
