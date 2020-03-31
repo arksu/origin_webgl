@@ -2,6 +2,7 @@ package com.origin.entity;
 
 import com.origin.utils.Utils;
 import org.jpark.ColumnExtended;
+import org.jpark.TableExtended;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
 @Table(name = "users", indexes = {
 		@Index(name = "login_uniq", columnList = "login", unique = true)
 })
-//@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", drop = false, truncate = false)
+@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'", drop = false, truncate = false)
 public class User extends DbObject
 {
 	@Id
