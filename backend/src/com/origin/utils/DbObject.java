@@ -1,4 +1,4 @@
-package com.origin.entity;
+package com.origin.utils;
 
 import com.origin.Database;
 

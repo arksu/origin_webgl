@@ -1,5 +1,6 @@
 package com.origin.entity;
 
+import com.origin.utils.DbObject;
 import com.origin.utils.Utils;
 import org.jpark.ColumnExtended;
 import org.jpark.TableExtended;
@@ -26,13 +27,16 @@ public class User extends DbObject
 	private String _login;
 
 	@Column(name = "password", columnDefinition = "VARCHAR(64) NOT NULL", nullable = false)
-	private String _password = "123";
+	private String _password;
 
 	@Column(name = "email", columnDefinition = "VARCHAR(64) NOT NULL", nullable = false)
 	private String _email;
 
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp _createTime;
+
+	@Column(name = "onlineTime", columnDefinition = "INT(11) NOT NULL DEFAULT 0")
+	private long _onlineTime;
 
 	@Column(name = "ssid", columnDefinition = "CHAR(32) NULL DEFAULT NULL")
 	private String _ssid;
@@ -90,5 +94,15 @@ public class User extends DbObject
 	public void generateSessionId()
 	{
 		_ssid = Utils.generatString(32);
+	}
+
+	public long getOnlineTime()
+	{
+		return _onlineTime;
+	}
+
+	public void addOnlineTime(int val)
+	{
+		_onlineTime += val;
 	}
 }

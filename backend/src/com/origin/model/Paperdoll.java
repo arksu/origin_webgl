@@ -1,4 +1,4 @@
-package com.origin.game;
+package com.origin.model;
 
 import com.origin.entity.InventoryItem;
 

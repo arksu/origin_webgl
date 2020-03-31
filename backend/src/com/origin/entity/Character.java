@@ -1,7 +1,6 @@
 package com.origin.entity;
 
 import com.google.gson.annotations.SerializedName;
-import org.jpark.TableExtended;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
