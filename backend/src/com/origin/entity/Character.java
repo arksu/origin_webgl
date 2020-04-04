@@ -13,7 +13,6 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "characters")
-//@TableExtended(truncate = true, drop = true)
 public class Character
 {
 	@Id
@@ -59,5 +58,10 @@ public class Character
 	public void setName(String name)
 	{
 		_name = name;
+	}
+
+	public Timestamp getCreateTime()
+	{
+		return _createTime;
 	}
 }

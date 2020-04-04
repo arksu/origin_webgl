@@ -9,11 +9,12 @@ public class Paperdoll
 {
 	public enum Slot
 	{
-		LEFT_HAND(0),
-		RIGHT_HAND(1),
-		HEAD(2),
-		BODY(3),
-		LEGS(4);
+		LEFT_HAND(1),
+		RIGHT_HAND(2),
+		HEAD(3),
+		EYES(4),
+		BODY(5),
+		LEGS(6);
 
 		private final int _id;
 
