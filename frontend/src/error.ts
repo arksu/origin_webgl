@@ -1,8 +1,8 @@
 import {showLoginPage} from "./login";
-import {hideCharacters} from "./characters";
+import {hideCharactersList} from "./characters";
 
 export function showError(msg: string) {
-    hideCharacters();
+    hideCharactersList();
 
     document.getElementById("error-page").style.display = "block";
 

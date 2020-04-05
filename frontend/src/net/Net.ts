@@ -182,10 +182,16 @@ export default class Net {
         this.state = State.Connecting;
     }
 
+    /**
+     * отключиться и сбросить состояние
+     */
     public disconnect() {
+        this.socket!.close();
         this.socket = undefined;
         this.state = State.Idle;
         this.requests = {};
+        clearTimeout(this.pingTimer);
+        this.pingTimer = undefined;
     }
 
     /**

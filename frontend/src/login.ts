@@ -1,6 +1,6 @@
 import Net from "./net/Net";
 import Client from "./net/Client";
-import {showCharacters} from "./characters";
+import {showCharactersList} from "./characters";
 
 let errorMessageTimer;
 
@@ -108,6 +108,9 @@ function clearLoginError() {
     error.style.display = "none";
 }
 
+/**
+ * показать ошибку в окне логина
+ */
 function showLoginError(msg: string): any {
     document.getElementById("login-page").style.display = "block";
 
@@ -120,6 +123,9 @@ function showLoginError(msg: string): any {
     }, 3000);
 }
 
+/**
+ * показать страницу логина
+ */
 export function showLoginPage() {
     document.getElementById("login-page").style.display = "block";
     document.getElementById("login-form").style.display = "block";
@@ -127,6 +133,9 @@ export function showLoginPage() {
     (<HTMLButtonElement>document.getElementById("login-btn")).disabled = false;
 }
 
+/**
+ * выполнить логин в систему
+ */
 export function doLogin(login: string, password: string) {
     const scrypt = require('scryptsy');
 
@@ -160,6 +169,9 @@ export function doLogin(login: string, password: string) {
         });
 }
 
+/**
+ * успеншный вход в систему
+ */
 function successLogin(login: string, password: string, d: any) {
     localStorage.setItem("login", login);
     localStorage.setItem("password", password);
@@ -172,6 +184,6 @@ function successLogin(login: string, password: string, d: any) {
 
     Net.instance.gameCall("getCharacters")
         .then((d) => {
-            showCharacters(d);
+            showCharactersList(d);
         });
 }

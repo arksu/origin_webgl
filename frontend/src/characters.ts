@@ -1,41 +1,61 @@
 import Net from "./net/Net";
+import {showLoginPage} from "./login";
 
-export function showCharacters(list: Array<any>) {
-    document.getElementById("characters-page").style.display = "block";
-    for (let i = 1; i <= list.length; i++) {
-        let char = list[i - 1];
+/**
+ * показать список персонажей
+ */
+export function showCharactersList(list?: Array<any>) {
+    document.getElementById("characters-list").style.display = "block";
 
-        let charBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char" + i));
-        charBtn.innerText = char.name;
-        charBtn.onclick = () => {
-            enableButtons(false);
-            Net.instance.gameCall("selectCharacter", {id: char.id})
-                .then(() => {
-                    // TODO
-                });
-        };
-        charBtn.className = "char-name";
+    if (list !== undefined) {
+        for (let i = 1; i <= list.length; i++) {
+            let char = list[i - 1];
 
-        let delBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("del-char" + i));
-        delBtn.onclick = () => {
-            enableButtons(false);
-            Net.instance.gameCall("deleteCharacter", {id: char.id})
-                .then((d) => {
-                    showCharacters(d);
-                    enableButtons(true);
-                });
-        };
+            let charBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char" + i));
+            charBtn.innerText = char.name;
+            charBtn.className = "char-name";
+            charBtn.classList.add("char");
+            charBtn.onclick = () => {
+                enableButtons(false);
+                Net.instance.gameCall("selectCharacter", {id: char.id})
+                    .then(() => {
+                        // TODO
+                    });
+            };
+
+            let delBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("del-char" + i));
+            delBtn.onclick = () => {
+                enableButtons(false);
+                Net.instance.gameCall("deleteCharacter", {id: char.id})
+                    .then((d) => {
+                        showCharactersList(d);
+                        enableButtons(true);
+                    });
+            };
+        }
+        for (let i = list.length + 1; i <= 5; i++) {
+            let charBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char" + i));
+            charBtn.innerText = "EMPTY SLOT";
+            charBtn.className = "char-empty";
+            charBtn.classList.add("char");
+            charBtn.onclick = () => {
+                hideCharactersList();
+                showCharacterCreate();
+            };
+        }
     }
-    for (let i = list.length + 1; i <= 5; i++) {
-        let charBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char" + i));
-        charBtn.innerText = "EMPTY SLOT";
-        charBtn.onclick = () => {
-            enableButtons(false);
-            // Net.instance.gameCall("createCharacter", {slot: i});
-            // TODO
-        };
-        charBtn.className = "char-empty";
-    }
+
+    let logoutBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("logout-char"));
+    logoutBtn.onclick = () => {
+        enableButtons(false);
+
+        localStorage.removeItem("login");
+        localStorage.removeItem("password");
+
+        hideCharactersList();
+        Net.instance.disconnect();
+        showLoginPage();
+    };
 }
 
 function enableButtons(val: boolean) {
@@ -47,14 +67,36 @@ function enableButtons(val: boolean) {
     }
 }
 
-export function hideCharacters() {
+/**
+ * спрятать список персонажей
+ */
+export function hideCharactersList() {
     for (let i = 1; i <= 5; i++) {
         let charBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char" + i));
-        charBtn.innerText = ".";
-        charBtn.onclick = undefined;
         charBtn.disabled = false;
         let delBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("del-char" + i));
         delBtn.disabled = false;
     }
-    document.getElementById("characters-page").style.display = "none";
+    document.getElementById("characters-list").style.display = "none";
+}
+
+/**
+ * показать форму создания персонажа
+ */
+export function showCharacterCreate() {
+    document.getElementById("character-create").style.display = "block";
+
+    let cancelBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char-create-cancel"));
+    cancelBtn.onclick = () => {
+        hideCharacterCreate();
+        showCharactersList();
+    };
+    let confirmBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char-create-cancel"));
+    confirmBtn.onclick = () => {
+        // TODO
+    };
+}
+
+export function hideCharacterCreate() {
+    document.getElementById("character-create").style.display = "none";
 }

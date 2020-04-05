@@ -57,6 +57,7 @@ public class GameServer extends WSServer
 					return deleteCharacter(session.getUser(), data);
 			}
 		}
+		_log.warn("unknown command: {}", target);
 		return null;
 	}
 
@@ -83,8 +84,7 @@ public class GameServer extends WSServer
 	public Object deleteCharacter(User user, Map<String, Object> data)
 	{
 		Character character = new Character();
-		// TODO get id
-//		character.setId(((long) data.get("id")));
+		character.setId(Math.toIntExact((Long) data.get("id")));
 		Database.em().remove(character);
 
 		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=? limit 5", user.getId());
