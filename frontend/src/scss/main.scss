@@ -1,14 +1,14 @@
-$container_back_color: #4a6e4f;
+$container_back_color: #b5d8cd;
 $alert_back_color: #d2787e;
 $alert_color: #6e1c1a;
 $button_back_color: #408643;
 $button_hover_color: #43A047;
-$text_color: #b3b3b3;
+$text_color: #383838;
 
 body {
   padding: 0;
   margin: 0;
-  background: #19320f;
+  background: #4b6341;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: "Arial", sans-serif;
@@ -45,7 +45,7 @@ canvas {
   border-radius: 5px;
   font-family: "Arial", sans-serif;
   outline: 0;
-  background: #7a7a7a;
+  background: #a4b1a9;
   color: #222222;
   width: 100%;
   border: 0;
@@ -96,8 +96,8 @@ canvas {
 }
 
 .form .message a {
-  color: #4CAF50;
-  text-decoration: none;
+  color: #313131;
+//  text-decoration: none;
 }
 
 .form #register-form {
