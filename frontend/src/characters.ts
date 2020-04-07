@@ -86,17 +86,25 @@ export function hideCharactersList() {
 export function showCharacterCreate() {
     document.getElementById("character-create").style.display = "block";
 
+    // отмена
     let cancelBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char-create-cancel"));
     cancelBtn.onclick = () => {
         hideCharacterCreate();
         showCharactersList();
     };
-    let confirmBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char-create-cancel"));
+    // кнопка создания персонажа
+    let confirmBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char-create"));
     confirmBtn.onclick = () => {
+        let nameInput: HTMLInputElement = (<HTMLInputElement>document.getElementById("char-create-name"));
+        let charName = nameInput.value;
+        console.log(charName);
         // TODO
     };
 }
 
+/**
+ * спрятать диалог создания персонажа
+ */
 export function hideCharacterCreate() {
     document.getElementById("character-create").style.display = "none";
 }
