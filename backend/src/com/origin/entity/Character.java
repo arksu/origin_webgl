@@ -1,6 +1,7 @@
 package com.origin.entity;
 
 import com.google.gson.annotations.SerializedName;
+import com.origin.utils.DbObject;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +14,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "characters")
-public class Character
+public class Character extends DbObject
 {
 	@Id
 	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")

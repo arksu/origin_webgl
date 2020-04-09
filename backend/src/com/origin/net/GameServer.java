@@ -74,8 +74,14 @@ public class GameServer extends WSServer
 	 */
 	public Object createCharacter(User user, Map<String, Object> data)
 	{
-		// TODO
-		return null;
+		String name = (String) data.get("name");
+
+		Character character = new Character();
+		character.setName(name);
+		character.setUserId(user.getId());
+		character.persist();
+
+		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=? limit 5", user.getId());
 	}
 
 	/**

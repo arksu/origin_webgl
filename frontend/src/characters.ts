@@ -86,19 +86,28 @@ export function hideCharactersList() {
 export function showCharacterCreate() {
     document.getElementById("character-create").style.display = "block";
 
+    let nameInput: HTMLInputElement = (<HTMLInputElement>document.getElementById("char-create-name"));
+
     // отмена
     let cancelBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char-create-cancel"));
     cancelBtn.onclick = () => {
+        nameInput.value = "";
         hideCharacterCreate();
         showCharactersList();
     };
     // кнопка создания персонажа
     let confirmBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("char-create"));
     confirmBtn.onclick = () => {
-        let nameInput: HTMLInputElement = (<HTMLInputElement>document.getElementById("char-create-name"));
         let charName = nameInput.value;
-        console.log(charName);
-        // TODO
+        if (charName) {
+            console.log(charName);
+            Net.instance.gameCall("createCharacter", {name: charName})
+                .then((d) => {
+                    nameInput.value = "";
+                    hideCharacterCreate();
+                    showCharactersList(d);
+                });
+        }
     };
 }
 
