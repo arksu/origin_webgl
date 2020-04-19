@@ -29,6 +29,10 @@ public class Paperdoll
 		}
 	}
 
+	/**
+	 * храним вещи одетые на сущность в массиве
+	 * доступ к элементам по индексу {@see Paperdoll.Slot}
+	 */
 	private InventoryItem[] _items;
 
 }
