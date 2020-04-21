@@ -13,6 +13,11 @@ public class ServerConfig
 	public static String DB_PASSWORD;
 	public static String DB_NAME;
 
+	/**
+	 * размер игрового мира (сколько континентов грузим из базы)
+	 */
+	public static int WORLD_CONTINENTS_SIZE;
+
 	public static void loadConfig()
 	{
 		File configFile = new File(WORK_DIR + "config/server.conf");
@@ -24,5 +29,7 @@ public class ServerConfig
 		DB_USER = conf.getString("db.user");
 		DB_PASSWORD = conf.getString("db.password");
 		DB_NAME = conf.getString("db.name");
+
+		WORLD_CONTINENTS_SIZE = conf.getInt("world.size");
 	}
 }

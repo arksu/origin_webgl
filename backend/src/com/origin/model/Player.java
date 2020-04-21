@@ -10,6 +10,11 @@ public class Player extends GameObject
 	 */
 	private final Character _character;
 
+	/**
+	 * одежда (во что одет игрок)
+	 */
+	private Paperdoll _paperdoll;
+
 	public Player(Character character)
 	{
 		_character = character;
@@ -36,5 +41,15 @@ public class Player extends GameObject
 	public int getLevel()
 	{
 		return 0;
+	}
+
+	public Paperdoll getPaperdoll()
+	{
+		return _paperdoll;
+	}
+
+	public void setPaperdoll(Paperdoll paperdoll)
+	{
+		_paperdoll = paperdoll;
 	}
 }

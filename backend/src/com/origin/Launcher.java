@@ -18,7 +18,7 @@ public class Launcher
 		ServerConfig.loadConfig();
 		Database.start();
 
-		_log.debug("start ws server...");
+		_log.debug("start game server...");
 
 		GameServer server = new GameServer(new InetSocketAddress("0.0.0.0", 7070), Runtime.getRuntime().availableProcessors());
 		server.start();
