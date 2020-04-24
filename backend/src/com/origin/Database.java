@@ -86,7 +86,8 @@ public class Database
 		}
 		catch (SQLException e)
 		{
-			_log.error("connect error", e);
+			_log.error("deploy error", e);
+			throw new RuntimeException("database deploy failed");
 		}
 	}
 

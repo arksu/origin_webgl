@@ -19,7 +19,7 @@ repositories {
     mavenCentral()
 }
 
-def slf4jVersion = "1.7.26"
+def slf4jVersion = "1.7.30"
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-api', version: "$slf4jVersion"
