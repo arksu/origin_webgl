@@ -14,4 +14,6 @@ public abstract class GameObject
 	public abstract int getY();
 
 	public abstract int getLevel();
+
+	public abstract int getInstanceId();
 }

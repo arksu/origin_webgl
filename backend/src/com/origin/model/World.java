@@ -7,9 +7,14 @@ import com.origin.ServerConfig;
  */
 public class World
 {
-	private final World instance = new World();
+	private static final World instance = new World();
 
 	private final Continent[] _continents;
+
+	public static World getInstance()
+	{
+		return instance;
+	}
 
 	/**
 	 * создать игровой мир
@@ -27,5 +32,11 @@ public class World
 	public Continent getContinent(int index)
 	{
 		return _continents[index];
+	}
+
+	public boolean addPlayer(Player player)
+	{
+		// TODO
+		return true;
 	}
 }

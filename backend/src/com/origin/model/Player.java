@@ -1,5 +1,8 @@
 package com.origin.model;
 
+import com.origin.entity.Character;
+import com.origin.net.model.GameSession;
+
 /**
  * игровое представление персонажа игрока в игровом мире
  */
@@ -10,14 +13,30 @@ public class Player extends GameObject
 	 */
 	private final Character _character;
 
+	private GameSession _gameSession;
+
 	/**
 	 * одежда (во что одет игрок)
 	 */
+
 	private Paperdoll _paperdoll;
 
-	public Player(Character character)
+	/**
+	 * координаты кэшируем в объекте (потом периодически обновляем в сущности Character)
+	 */
+	private int _x;
+	private int _y;
+	private int _level;
+	private int _instanceId;
+
+	public Player(Character character, GameSession gameSession)
 	{
 		_character = character;
+		_gameSession = gameSession;
+		_x = character.getX();
+		_y = character.getY();
+		_level = character.getLevel();
+		_instanceId = character.getIntanceId();
 	}
 
 	public Character getCharacter()
@@ -28,19 +47,25 @@ public class Player extends GameObject
 	@Override
 	public int getX()
 	{
-		return 0;
+		return _x;
 	}
 
 	@Override
 	public int getY()
 	{
-		return 0;
+		return _y;
 	}
 
 	@Override
 	public int getLevel()
 	{
-		return 0;
+		return _level;
+	}
+
+	@Override
+	public int getInstanceId()
+	{
+		return _instanceId;
 	}
 
 	public Paperdoll getPaperdoll()

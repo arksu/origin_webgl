@@ -4,6 +4,8 @@ import com.origin.Database;
 import com.origin.UserCache;
 import com.origin.entity.Character;
 import com.origin.entity.User;
+import com.origin.model.Player;
+import com.origin.model.World;
 import com.origin.net.model.GameSession;
 import com.origin.net.model.LoginResponse;
 import com.origin.scrypt.SCryptUtil;
@@ -11,6 +13,7 @@ import com.origin.utils.GameException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.crypto.Data;
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
 import java.util.Map;
@@ -52,7 +55,7 @@ public class GameServer extends WSServer
 				case "createCharacter":
 					return createCharacter(session.getUser(), data);
 				case "selectCharacter":
-					return selectCharacter(session.getUser(), data);
+					return selectCharacter(session, data);
 				case "deleteCharacter":
 					return deleteCharacter(session.getUser(), data);
 			}
@@ -99,10 +102,21 @@ public class GameServer extends WSServer
 	/**
 	 * выбрать игровой персонаж
 	 */
-	public Object selectCharacter(User user, Map<String, Object> data)
+	public Object selectCharacter(GameSession session, Map<String, Object> data)
 	{
-		// TODO
-		return null;
+		Character character = Database.em().findById(Character.class, Math.toIntExact((Long) data.get("id")));
+
+		if (character == null)
+		{
+			throw new GameException("no such player");
+		}
+		Player player = new Player(character, session);
+		if (!World.getInstance().addPlayer(player))
+		{
+			throw new GameException("player could not be spawned");
+		}
+
+		return character;
 	}
 
 	/**
