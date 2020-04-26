@@ -29,16 +29,20 @@ public class Character extends DbObject
 	private String _name;
 
 	@Column(name = "x", columnDefinition = "INT(11) UNSIGNED NOT NULL")
+	@SerializedName("x")
 	private int _x;
 
 	@Column(name = "y", columnDefinition = "INT(11) UNSIGNED NOT NULL")
+	@SerializedName("y")
 	private int _y;
 
 	@Column(name = "level", columnDefinition = "INT(11) UNSIGNED NOT NULL")
+	@SerializedName("level")
 	private int _level;
 
 	@Column(name = "instanceId", columnDefinition = "INT(11) UNSIGNED NOT NULL")
-	private int _intanceId;
+	@SerializedName("instanceId")
+	private int _instanceId;
 
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
 	private transient Timestamp _createTime;
@@ -103,14 +107,14 @@ public class Character extends DbObject
 		_level = level;
 	}
 
-	public int getIntanceId()
+	public int getInstanceId()
 	{
-		return _intanceId;
+		return _instanceId;
 	}
 
-	public void setIntanceId(int intanceId)
+	public void setInstanceId(int instanceId)
 	{
-		_intanceId = intanceId;
+		_instanceId = instanceId;
 	}
 
 	public Timestamp getCreateTime()

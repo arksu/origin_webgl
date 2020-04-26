@@ -1,10 +1,13 @@
 import Net from "./net/Net";
 import {showLoginPage} from "./login";
+import Client from "./net/Client";
+import Game from "./game/Game";
 
 /**
  * показать список персонажей
  */
 export function showCharactersList(list?: Array<any>) {
+    document.getElementById("characters-page").style.display = "block";
     document.getElementById("characters-list").style.display = "block";
 
     if (list !== undefined) {
@@ -18,8 +21,10 @@ export function showCharactersList(list?: Array<any>) {
             charBtn.onclick = () => {
                 enableButtons(false);
                 Net.instance.gameCall("selectCharacter", {id: char.id})
-                    .then(() => {
-                        // TODO
+                    .then((d) => {
+                        Client.instance.character = d;
+                        hideCharactersList();
+                        Game.start();
                     });
             };
 
@@ -77,6 +82,7 @@ export function hideCharactersList() {
         let delBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("del-char" + i));
         delBtn.disabled = false;
     }
+    document.getElementById("characters-page").style.display = "none";
     document.getElementById("characters-list").style.display = "none";
 }
 
@@ -84,6 +90,7 @@ export function hideCharactersList() {
  * показать форму создания персонажа
  */
 export function showCharacterCreate() {
+    document.getElementById("characters-page").style.display = "block";
     document.getElementById("character-create").style.display = "block";
 
     let nameInput: HTMLInputElement = (<HTMLInputElement>document.getElementById("char-create-name"));
@@ -115,5 +122,6 @@ export function showCharacterCreate() {
  * спрятать диалог создания персонажа
  */
 export function hideCharacterCreate() {
+    document.getElementById("characters-page").style.display = "none";
     document.getElementById("character-create").style.display = "none";
 }

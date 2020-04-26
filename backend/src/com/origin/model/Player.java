@@ -36,7 +36,7 @@ public class Player extends GameObject
 		_x = character.getX();
 		_y = character.getY();
 		_level = character.getLevel();
-		_instanceId = character.getIntanceId();
+		_instanceId = character.getInstanceId();
 	}
 
 	public Character getCharacter()
