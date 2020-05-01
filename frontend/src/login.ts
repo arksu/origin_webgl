@@ -1,6 +1,6 @@
 import Net from "./net/Net";
 import Client from "./net/Client";
-import {showCharactersList} from "./characters";
+import {selectCharacter, showCharactersList} from "./characters";
 
 let errorMessageTimer;
 
@@ -183,7 +183,23 @@ function successLogin(login: string, password: string, d: any) {
     Client.instance.ssid = d.ssid;
 
     Net.instance.gameCall("getCharacters")
-        .then((d) => {
-            showCharactersList(d);
-        });
+        .then((list: any) => {
+                let lastCharId = localStorage.getItem("lastCharId");
+                console.log(lastCharId)
+                let found = false;
+                if (lastCharId !== null) {
+                    for (let k in list) {
+                        console.log(k)
+                        console.log(list[k])
+                        if (list[k].id == lastCharId) {
+                            found = true;
+                            selectCharacter(list[k]);
+                        }
+                    }
+                }
+                if (!found) {
+                    showCharactersList(list);
+                }
+            }
+        );
 }

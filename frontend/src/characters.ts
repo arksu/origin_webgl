@@ -20,12 +20,7 @@ export function showCharactersList(list?: Array<any>) {
             charBtn.classList.add("char");
             charBtn.onclick = () => {
                 enableButtons(false);
-                Net.instance.gameCall("selectCharacter", {id: char.id})
-                    .then((d) => {
-                        Client.instance.character = d;
-                        hideCharactersList();
-                        Game.start();
-                    });
+                selectCharacter(char);
             };
 
             let delBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("del-char" + i));
@@ -61,6 +56,18 @@ export function showCharactersList(list?: Array<any>) {
         Net.instance.disconnect();
         showLoginPage();
     };
+}
+
+export function selectCharacter(char: any) {
+    console.log("selectCharacter", char)
+    Net.instance
+        .gameCall("selectCharacter", {id: char.id})
+        .then((d) => {
+            localStorage.setItem("lastCharId", char.id);
+            Client.instance.character = d;
+            hideCharactersList();
+            Game.start();
+        });
 }
 
 function enableButtons(val: boolean) {
