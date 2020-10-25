@@ -42,7 +42,7 @@ public class GameServer extends WSServer
 				case "login":
 					return login(session, data);
 				case "register":
-					return register(session, data);
+					return registerNewAccount(session, data);
 			}
 		}
 		else
@@ -121,7 +121,7 @@ public class GameServer extends WSServer
 	/**
 	 * регистрация нового аккаунта
 	 */
-	public Object register(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
+	public Object registerNewAccount(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
 	{
 		User user = new User();
 

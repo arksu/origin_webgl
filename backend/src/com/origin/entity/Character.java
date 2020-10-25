@@ -17,11 +17,11 @@ import java.sql.Timestamp;
 public class Character extends DbObject
 {
 	@Id
-	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
+	@Column(name = "id", columnDefinition = "INT(11) UNSIGNED NOT NULL AUTO_INCREMENT")
 	@SerializedName("id")
 	private int _id;
 
-	@Column(name = "userId", columnDefinition = "INT(11) NOT NULL", nullable = false)
+	@Column(name = "userId", columnDefinition = "INT(11) UNSIGNED NOT NULL", nullable = false)
 	private transient int _userId;
 
 	@Column(name = "name", columnDefinition = "VARCHAR(16) NOT NULL", nullable = false)

@@ -22,6 +22,7 @@ public class Database
 
 	public static void start()
 	{
+		// подключим в ORM движок все сущности из нужного пакаджа в исходниках
 		_em.findEntities("com.origin.entity");
 		_em.setConnectionFactory(Database::getConnection);
 

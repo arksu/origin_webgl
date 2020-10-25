@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 public class User extends DbObject
 {
 	@Id
-	@Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
+	@Column(name = "id", columnDefinition = "INT(11) UNSIGNED NOT NULL AUTO_INCREMENT")
 	@ColumnExtended(updateInsertId = true)
 	private int _id;
 
