@@ -7,6 +7,12 @@ import com.origin.entity.InventoryItem;
  */
 public class Paperdoll
 {
+	/**
+	 * храним вещи одетые на сущность в массиве
+	 * доступ к элементам по индексу {@see Paperdoll.Slot}
+	 */
+	private InventoryItem[] _items;
+
 	public enum Slot
 	{
 		LEFT_HAND(1),
@@ -28,11 +34,5 @@ public class Paperdoll
 			return _id;
 		}
 	}
-
-	/**
-	 * храним вещи одетые на сущность в массиве
-	 * доступ к элементам по индексу {@see Paperdoll.Slot}
-	 */
-	private InventoryItem[] _items;
 
 }

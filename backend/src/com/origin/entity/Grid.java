@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import java.sql.Blob;
 
 /**
- * игровой "чанк" (регион) 100 на 100 тайлов
+ * игровой "чанк" (регион), базовый кусок карты
  */
 @Entity
 @Table(name = "grids", indexes = {
@@ -15,6 +15,11 @@ import java.sql.Blob;
 })
 public class Grid
 {
+	/**
+	 * размер грида в тайлах
+	 */
+	public static final int SIZE = 100;
+
 	/**
 	 * ид супергрида, по нему потом сделаем разбиение таблицы на партиции
 	 * континент к которому оносится супергрид также зашит в ид супергрида
