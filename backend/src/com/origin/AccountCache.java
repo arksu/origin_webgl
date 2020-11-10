@@ -1,6 +1,6 @@
 package com.origin;
 
-import com.origin.entity.User;
+import com.origin.entity.Account;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,14 +10,14 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * локальный кэш залогиненных юзеров
  */
-public class UserCache
+public class AccountCache
 {
 	private static final int TIMEOUT_LOCK = 1000;
 
 	/**
 	 * храним объекты юзеров в памяти
 	 */
-	private final ConcurrentHashMap<String, User> _users = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, Account> _accounts = new ConcurrentHashMap<>();
 
 	/**
 	 * блокировка на любые операции с кэшем
@@ -26,17 +26,17 @@ public class UserCache
 
 	public void drop(String ssid)
 	{
-		_users.remove(ssid);
+		_accounts.remove(ssid);
 	}
 
-	public String drop(User user)
+	public String drop(Account account)
 	{
-		for (Map.Entry<String, User> entry : _users.entrySet())
+		for (Map.Entry<String, Account> entry : _accounts.entrySet())
 		{
-			if (entry.getValue().getId() == user.getId())
+			if (entry.getValue().getId() == account.getId())
 			{
 				String ssid = entry.getKey();
-				_users.remove(ssid);
+				_accounts.remove(ssid);
 				return ssid;
 			}
 		}
@@ -46,7 +46,7 @@ public class UserCache
 	/**
 	 * добавить юзера в кэш с одновременной его авторизацией
 	 */
-	public boolean addUserAuth(User user) throws InterruptedException
+	public boolean addWithAuth(Account account) throws InterruptedException
 	{
 		// операции добавления юзера в кэш позволим делать только по 1 одновременно
 		// поэтому используем блокировку
@@ -54,12 +54,12 @@ public class UserCache
 		{
 			try
 			{
-				if (_users.containsValue(user))
+				if (_accounts.containsValue(account))
 				{
 					return false;
 				}
-				user.generateSessionId();
-				_users.put(user.getSsid(), user);
+				account.generateSessionId();
+				_accounts.put(account.getSsid(), account);
 				return true;
 			}
 			finally
@@ -70,7 +70,7 @@ public class UserCache
 		return false;
 	}
 
-	public void addUser(User user) throws InterruptedException
+	public void addUser(Account account) throws InterruptedException
 	{
 		if (_lock.tryLock(TIMEOUT_LOCK, TimeUnit.MILLISECONDS))
 		{

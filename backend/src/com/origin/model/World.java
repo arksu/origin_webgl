@@ -1,11 +1,5 @@
 package com.origin.model;
 
-import com.origin.Database;
-import com.origin.entity.Continent;
-import com.origin.entity.Supergrid;
-
-import java.util.List;
-
 /**
  * весь игровой мир
  */
@@ -20,8 +14,6 @@ public class World
 	 */
 	public World()
 	{
-		// грузим все супергриды
-		List<Supergrid> all = Database.em().findAll(Supergrid.class, "SELECT * FROM supergrids WHERE 1");
 
 	}
 
@@ -35,6 +27,11 @@ public class World
 		return _continents[index];
 	}
 
+	/**
+	 * добавить игрока в мир
+	 * @param player
+	 * @return получилось ли добавить (заспавнить) игрока в мир
+	 */
 	public boolean addPlayer(Player player)
 	{
 		// TODO

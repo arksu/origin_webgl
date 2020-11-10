@@ -1,10 +1,11 @@
 package com.origin.model;
 
 import com.origin.entity.Character;
+import com.origin.entity.Grid;
 import com.origin.net.model.GameSession;
 
 /**
- * игровое представление персонажа игрока в игровом мире
+ * инстанс персонажа игрока в игровом мире (игрок)
  */
 public class Player extends GameObject
 {
@@ -18,7 +19,6 @@ public class Player extends GameObject
 	/**
 	 * одежда (во что одет игрок)
 	 */
-
 	private Paperdoll _paperdoll;
 
 	/**
@@ -28,6 +28,11 @@ public class Player extends GameObject
 	private int _y;
 	private int _level;
 	private int _instanceId;
+
+	/**
+	 * текущий активный грид игрока
+	 */
+	private Grid _grid;
 
 	public Player(Character character, GameSession gameSession)
 	{

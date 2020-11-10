@@ -12,11 +12,11 @@ import java.sql.Timestamp;
  * аккаунт пользователя к которому может прикрепляться несколько персонажей
  */
 @Entity
-@Table(name = "users", indexes = {
+@Table(name = "accounts", indexes = {
 		@Index(name = "login_uniq", columnList = "login", unique = true)
 })
-@TableExtended(creationSuffix = "engine=MyISAM COMMENT='users'")
-public class User extends DbObject
+@TableExtended(creationSuffix = "engine=MyISAM COMMENT='accounts'")
+public class Account extends DbObject
 {
 	@Id
 	@Column(name = "id", columnDefinition = "INT(11) UNSIGNED NOT NULL AUTO_INCREMENT")

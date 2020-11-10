@@ -21,13 +21,29 @@ public class Character extends DbObject
 	@SerializedName("id")
 	private int _id;
 
-	@Column(name = "userId", columnDefinition = "INT(11) UNSIGNED NOT NULL", nullable = false)
-	private transient int _userId;
+	/**
+	 * ид аккаунта к которому привязан персонаж
+	 */
+	@Column(name = "accountId", columnDefinition = "INT(11) UNSIGNED NOT NULL", nullable = false)
+	private transient int _accountId;
 
+	/**
+	 * имя персонажа (выводим на головой в игровом клиенте)
+	 */
 	@Column(name = "name", columnDefinition = "VARCHAR(16) NOT NULL", nullable = false)
 	@SerializedName("name")
 	private String _name;
 
+	/**
+	 * на каком континенте находится игрок, либо ид дома (инстанса)
+	 */
+	@Column(name = "instanceId", columnDefinition = "INT(11) UNSIGNED NOT NULL")
+	@SerializedName("instanceId")
+	private int _instanceId;
+
+	/**
+	 * координаты внутри континента (из этого расчитываем супергрид и грид)
+	 */
 	@Column(name = "x", columnDefinition = "INT(11) UNSIGNED NOT NULL")
 	@SerializedName("x")
 	private int _x;
@@ -36,14 +52,16 @@ public class Character extends DbObject
 	@SerializedName("y")
 	private int _y;
 
+	/**
+	 * уровень (слой) глубины где находится игрок
+	 */
 	@Column(name = "level", columnDefinition = "INT(11) UNSIGNED NOT NULL")
 	@SerializedName("level")
 	private int _level;
 
-	@Column(name = "instanceId", columnDefinition = "INT(11) UNSIGNED NOT NULL")
-	@SerializedName("instanceId")
-	private int _instanceId;
-
+	/**
+	 * когда был создан персонаж
+	 */
 	@Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
 	private transient Timestamp _createTime;
 
@@ -57,14 +75,14 @@ public class Character extends DbObject
 		_id = id;
 	}
 
-	public int getUserId()
+	public int getAccountId()
 	{
-		return _userId;
+		return _accountId;
 	}
 
-	public void setUserId(int userId)
+	public void setAccountId(int accountId)
 	{
-		_userId = userId;
+		_accountId = accountId;
 	}
 
 	public String getName()

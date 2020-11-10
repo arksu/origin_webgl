@@ -1,9 +1,9 @@
 package com.origin.net;
 
 import com.origin.Database;
-import com.origin.UserCache;
+import com.origin.AccountCache;
+import com.origin.entity.Account;
 import com.origin.entity.Character;
-import com.origin.entity.User;
 import com.origin.model.Player;
 import com.origin.model.World;
 import com.origin.net.model.GameSession;
@@ -21,7 +21,7 @@ public class GameServer extends WSServer
 {
 	private static final Logger _log = LoggerFactory.getLogger(GameServer.class.getName());
 
-	private static UserCache userCache = new UserCache();
+	private static AccountCache accountCache = new AccountCache();
 
 	public GameServer(InetSocketAddress address, int decoderCount)
 	{
@@ -35,7 +35,7 @@ public class GameServer extends WSServer
 	protected Object process(GameSession session, String target, Map<String, Object> data) throws Exception
 	{
 		// если к сессии еще не привязан юзер
-		if (session.getUser() == null)
+		if (session.getAccount() == null)
 		{
 			switch (target)
 			{
@@ -50,13 +50,13 @@ public class GameServer extends WSServer
 			switch (target)
 			{
 				case "getCharacters":
-					return getCharacters(session.getUser(), data);
+					return getCharacters(session.getAccount(), data);
 				case "createCharacter":
-					return createCharacter(session.getUser(), data);
+					return createCharacter(session.getAccount(), data);
 				case "selectCharacter":
 					return selectCharacter(session, data);
 				case "deleteCharacter":
-					return deleteCharacter(session.getUser(), data);
+					return deleteCharacter(session.getAccount(), data);
 			}
 		}
 		_log.warn("unknown command: {}", target);
@@ -66,36 +66,36 @@ public class GameServer extends WSServer
 	/**
 	 * получить список персонажей
 	 */
-	public Object getCharacters(User user, Map<String, Object> data) throws GameException
+	public Object getCharacters(Account account, Map<String, Object> data) throws GameException
 	{
-		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=? limit 5", user.getId());
+		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE accountId=? limit 5", account.getId());
 	}
 
 	/**
 	 * создать нового персонажа
 	 */
-	public Object createCharacter(User user, Map<String, Object> data)
+	public Object createCharacter(Account account, Map<String, Object> data)
 	{
 		String name = (String) data.get("name");
 
 		Character character = new Character();
 		character.setName(name);
-		character.setUserId(user.getId());
+		character.setAccountId(account.getId());
 		character.persist();
 
-		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=? limit 5", user.getId());
+		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE accountId=? limit 5", account.getId());
 	}
 
 	/**
 	 * удалить персонажа
 	 */
-	public Object deleteCharacter(User user, Map<String, Object> data)
+	public Object deleteCharacter(Account account, Map<String, Object> data)
 	{
 		Character character = new Character();
 		character.setId(Math.toIntExact((Long) data.get("id")));
 		Database.em().remove(character);
 
-		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE userId=? limit 5", user.getId());
+		return Database.em().findAll(Character.class, "SELECT * FROM characters WHERE accountId=? limit 5", account.getId());
 	}
 
 	/**
@@ -123,16 +123,16 @@ public class GameServer extends WSServer
 	 */
 	public Object registerNewAccount(GameSession session, Map<String, Object> data) throws InterruptedException, GameException
 	{
-		User user = new User();
+		Account account = new Account();
 
-		user.setLogin(((String) data.get("login")));
-		user.setPassword(((String) data.get("password")));
-		user.setEmail(((String) data.get("email")));
+		account.setLogin(((String) data.get("login")));
+		account.setPassword(((String) data.get("password")));
+		account.setEmail(((String) data.get("email")));
 
 		try
 		{
-			user.persist();
-			return loginUser(session, user);
+			account.persist();
+			return loginUser(session, account);
 		}
 		catch (RuntimeException e)
 		{
@@ -159,15 +159,15 @@ public class GameServer extends WSServer
 		final String login = ((String) data.get("login"));
 		final String password = ((String) data.get("password"));
 
-		final User user = Database.em().findOne(User.class, "login", login);
+		final Account account = Database.em().findOne(Account.class, "login", login);
 
-		if (user != null)
+		if (account != null)
 		{
-			if (SCryptUtil.check(user.getPassword(), password))
+			if (SCryptUtil.check(account.getPassword(), password))
 			{
-				_log.debug("user auth: " + user.getLogin());
+				_log.debug("user auth: " + account.getLogin());
 
-				return loginUser(session, user);
+				return loginUser(session, account);
 			}
 			else
 			{
@@ -180,16 +180,16 @@ public class GameServer extends WSServer
 		}
 	}
 
-	private Object loginUser(GameSession session, User user) throws InterruptedException
+	private Object loginUser(GameSession session, Account account) throws InterruptedException
 	{
-		session.setUser(user);
+		session.setAccount(account);
 
-		if (!userCache.addUserAuth(user))
+		if (!accountCache.addWithAuth(account))
 		{
 			throw new GameException("user cache error");
 		}
 		LoginResponse response = new LoginResponse();
-		response.ssid = user.getSsid();
+		response.ssid = account.getSsid();
 		return response;
 	}
 }

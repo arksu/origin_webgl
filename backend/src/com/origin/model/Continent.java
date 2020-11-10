@@ -1,15 +1,11 @@
-package com.origin.entity;
+package com.origin.model;
 
-import com.origin.Database;
-
-import java.util.List;
+import com.origin.entity.Grid;
 
 /**
  * игровой континент (материк)
  * в игре может быть несколько больших континентов одновременно
  */
-//@Entity
-//@Table(name = "continents")
 public class Continent
 {
 	private final int _id;
@@ -18,8 +14,6 @@ public class Continent
 
 	public Continent(int id)
 	{
-		// TODO
-		List<Grid> all = Database.em().findAll(Grid.class, "SELECT * FROM grids WHERE supergrid=1");
 		_id = id;
 	}
 }
