@@ -191,6 +191,7 @@ public abstract class WSServer extends WebSocketServer
 		@Override
 		public void run()
 		{
+			_log.debug("send ping");
 			_session.sendPing("ping");
 		}
 	}

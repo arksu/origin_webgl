@@ -14,7 +14,7 @@ public class Player extends GameObject
 	 */
 	private final Character _character;
 
-	private GameSession _gameSession;
+	private GameSession _session;
 
 	/**
 	 * одежда (во что одет игрок)
@@ -34,10 +34,10 @@ public class Player extends GameObject
 	 */
 	private Grid _grid;
 
-	public Player(Character character, GameSession gameSession)
+	public Player(Character character, GameSession session)
 	{
 		_character = character;
-		_gameSession = gameSession;
+		_session = session;
 		_x = character.getX();
 		_y = character.getY();
 		_level = character.getLevel();
