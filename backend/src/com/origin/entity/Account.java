@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 @Table(name = "accounts", indexes = {
 		@Index(name = "login_uniq", columnList = "login", unique = true)
 })
-@TableExtended(creationSuffix = "engine=MyISAM COMMENT='accounts'")
 public class Account extends DbObject
 {
 	@Id
