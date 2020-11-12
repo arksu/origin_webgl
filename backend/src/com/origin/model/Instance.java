@@ -8,14 +8,19 @@ import java.util.List;
  * игровой континент (материк)
  * в игре может быть несколько больших континентов одновременно
  */
-public class Continent
+public class Instance
 {
 	private final int _id;
 
 	private List<Grid> _grids;
 
-	public Continent(int id)
+	public Instance(int id)
 	{
 		_id = id;
+	}
+
+	public List<Grid> getGrids()
+	{
+		return _grids;
 	}
 }

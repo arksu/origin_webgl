@@ -1,5 +1,6 @@
 package com.origin.entity;
 
+import com.origin.utils.DbObject;
 import org.jpark.TableExtended;
 
 import javax.persistence.Column;
@@ -13,21 +14,20 @@ import java.sql.Blob;
  */
 @Entity
 @Table(name = "grids", indexes = {
-		@Index(name = "id_uniq", columnList = "supergrid, x, y, level", unique = true),
-		@Index(name = "coord", columnList = "x, y, level")
+		@Index(name = "id_uniq", columnList = "instance, x, y, level", unique = true)
 })
 @TableExtended(creationSuffix = "engine=MyISAM")
-public class Grid
+public class Grid extends DbObject
 {
 	/**
-	 * ид супергрида, по нему потом сделаем разбиение таблицы на партиции
-	 * континент к которому оносится супергрид также зашит в ид супергрида
+	 * на каком континенте находится грид, либо ид дома (инстанса, локации)
 	 */
-	@Column(name = "supergrid", columnDefinition = "INT(11) UNSIGNED NOT NULL", nullable = false)
-	private int _supergrid;
+	@Column(name = "instance", columnDefinition = "INT(11) UNSIGNED NOT NULL")
+	private int _instanceId;
 
 	/**
-	 * координаты грида внутри супергрида
+	 * координаты грида в мире (какой по счету грид, НЕ в игровых единицах)
+	 * разбиение таблицы (partitions) делаем на основе RANGE(x) и субпартициях на основе RANGE(y)
 	 */
 	@Column(name = "x", columnDefinition = "INT(11) UNSIGNED NOT NULL")
 	private int _x;
@@ -44,14 +44,14 @@ public class Grid
 	@Column(name = "tiles", columnDefinition = "BLOB NOT NULL", nullable = false)
 	private Blob _tilesBlob;
 
-	public int getSupergrid()
+	public int getInstanceId()
 	{
-		return _supergrid;
+		return _instanceId;
 	}
 
-	public void setSupergrid(int supergrid)
+	public void setInstanceId(int instanceId)
 	{
-		_supergrid = supergrid;
+		_instanceId = instanceId;
 	}
 
 	public int getX()

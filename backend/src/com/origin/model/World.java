@@ -1,13 +1,15 @@
 package com.origin.model;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * весь игровой мир
  */
 public class World
 {
-	private static final World instance = new World();
+	public static final World instance = new World();
 
-	private Continent[] _continents;
+	private final ConcurrentHashMap<Integer, Instance> _instances = new ConcurrentHashMap<>();
 
 	/**
 	 * создать игровой мир
@@ -17,23 +19,18 @@ public class World
 
 	}
 
-	public static World getInstance()
-	{
-		return instance;
-	}
-
-	public Continent getContinent(int index)
-	{
-		return _continents[index];
-	}
-
 	/**
 	 * добавить игрока в мир
-	 * @param player
 	 * @return получилось ли добавить (заспавнить) игрока в мир
 	 */
-	public boolean addPlayer(Player player)
+	public boolean spawnPlayer(Player player)
 	{
+		Instance instance = _instances.computeIfAbsent(
+				player.getInstanceId(),
+				i -> new Instance(player.getInstanceId()));
+
+		instance.getGrids();
+
 		// TODO
 		return true;
 	}

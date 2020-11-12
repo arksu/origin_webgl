@@ -35,14 +35,14 @@ public class Character extends DbObject
 	private String _name;
 
 	/**
-	 * на каком континенте находится игрок, либо ид дома (инстанса)
+	 * на каком континенте находится игрок, либо ид дома (инстанса, локации)
 	 */
 	@Column(name = "instanceId", columnDefinition = "INT(11) UNSIGNED NOT NULL")
 	@SerializedName("instanceId")
 	private int _instanceId;
 
 	/**
-	 * координаты внутри континента (из этого расчитываем супергрид и грид)
+	 * координаты в игровых еденицах внутри континента (из этого расчитываем супергрид и грид)
 	 */
 	@Column(name = "x", columnDefinition = "INT(11) UNSIGNED NOT NULL")
 	@SerializedName("x")

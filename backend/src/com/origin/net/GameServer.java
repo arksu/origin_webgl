@@ -1,7 +1,7 @@
 package com.origin.net;
 
-import com.origin.Database;
 import com.origin.AccountCache;
+import com.origin.Database;
 import com.origin.entity.Account;
 import com.origin.entity.Character;
 import com.origin.model.Player;
@@ -110,7 +110,7 @@ public class GameServer extends WSServer
 			throw new GameException("no such player");
 		}
 		Player player = new Player(character, session);
-		if (!World.getInstance().addPlayer(player))
+		if (!World.instance.spawnPlayer(player))
 		{
 			throw new GameException("player could not be spawned");
 		}
