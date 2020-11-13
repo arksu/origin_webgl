@@ -16,7 +16,6 @@ public class World
 	 */
 	public World()
 	{
-
 	}
 
 	/**
@@ -25,13 +24,12 @@ public class World
 	 */
 	public boolean spawnPlayer(Player player)
 	{
+		// создаем грид в котором находится игрок
 		Instance instance = _instances.computeIfAbsent(
 				player.getInstanceId(),
 				i -> new Instance(player.getInstanceId()));
 
-		instance.getGrids();
-
-		// TODO
-		return true;
+		// сам инстанс уже спавнит игрока
+		return instance.spawnPlayer(player);
 	}
 }

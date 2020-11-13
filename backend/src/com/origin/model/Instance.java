@@ -1,8 +1,6 @@
 package com.origin.model;
 
-import com.origin.entity.Grid;
-
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * игровой континент (материк)
@@ -12,15 +10,22 @@ public class Instance
 {
 	private final int _id;
 
-	private List<Grid> _grids;
+	private final ConcurrentHashMap<Integer, LandLayer> _layers = new ConcurrentHashMap<>();
 
 	public Instance(int id)
 	{
 		_id = id;
 	}
 
-	public List<Grid> getGrids()
+	public boolean spawnPlayer(Player player)
 	{
-		return _grids;
+		LandLayer layer = _layers.computeIfAbsent(
+				player.getInstanceId(),
+				i -> new LandLayer(this, player.getLevel()));
+
+		// сам уровень земли уже спавнит игрока
+		return layer.spawnPlayer(player);
+
 	}
+
 }
