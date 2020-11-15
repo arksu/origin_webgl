@@ -1,5 +1,6 @@
 package com.origin;
 
+import com.origin.model.GridK;
 import com.origin.net.GameServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,10 @@ public class Launcher
 		Locale.setDefault(Locale.ROOT);
 
 		ServerConfig.loadConfig();
+
+		GridK gk = new GridK();
+		gk.some();
+
 		Database.start();
 
 		_log.debug("start game server...");
