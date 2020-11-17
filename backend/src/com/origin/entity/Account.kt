@@ -35,11 +35,12 @@ class Account : DbObject() {
 
     @Column(name = "ssid", columnDefinition = "CHAR(32) NULL DEFAULT NULL")
     var ssid: String? = null
+
     fun generateSessionId() {
         ssid = Utils.generatString(32)
     }
 
-    fun addOnlineTime(v: Int) {
+    fun appendOnlineTime(v: Int) {
         onlineTime += v.toLong()
     }
 }

@@ -21,7 +21,7 @@ public class GameServer extends WSServer
 {
 	private static final Logger _log = LoggerFactory.getLogger(GameServer.class.getName());
 
-	private static AccountCache accountCache = new AccountCache();
+	private static final AccountCache accountCache = new AccountCache();
 
 	public GameServer(InetSocketAddress address, int decoderCount)
 	{
@@ -133,8 +133,7 @@ public class GameServer extends WSServer
 		{
 			account.persist();
 			return loginUser(session, account);
-		}
-		catch (RuntimeException e)
+		} catch (RuntimeException e)
 		{
 			if (e.getCause() instanceof SQLException && "23000".equals(((SQLException) e.getCause()).getSQLState()))
 			{
@@ -144,8 +143,7 @@ public class GameServer extends WSServer
 			{
 				throw new GameException("register failed");
 			}
-		}
-		catch (Throwable e)
+		} catch (Throwable e)
 		{
 			throw new GameException("register failed");
 		}
@@ -186,7 +184,7 @@ public class GameServer extends WSServer
 
 		if (!accountCache.addWithAuth(account))
 		{
-			throw new GameException("user cache error");
+			throw new GameException("ssid collision, please try again");
 		}
 		LoginResponse response = new LoginResponse();
 		response.ssid = account.getSsid();
