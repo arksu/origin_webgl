@@ -11,5 +11,5 @@ abstract class GameObject {
     abstract val x: Int
     abstract val y: Int
     abstract val level: Int
-    abstract val instanceId: Int
+    abstract val region: Int
 }

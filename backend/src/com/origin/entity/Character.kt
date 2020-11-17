@@ -36,9 +36,9 @@ class Character : DbObject() {
     /**
      * на каком континенте находится игрок, либо ид дома (инстанса, локации)
      */
-    @Column(name = "instanceId", columnDefinition = "INT(11) UNSIGNED NOT NULL")
-    @SerializedName("instanceId")
-    var instanceId = 0
+    @Column(name = "region", columnDefinition = "INT(11) UNSIGNED NOT NULL")
+    @SerializedName("region")
+    var region = 0
 
     /**
      * координаты в игровых еденицах внутри континента (из этого расчитываем супергрид и грид)
@@ -64,4 +64,8 @@ class Character : DbObject() {
     @Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
     @Transient
     val createTime: Timestamp? = null
+
+    @Column(name = "onlineTime", columnDefinition = "BIGINT UNSIGNED NOT NULL DEFAULT 0")
+    var onlineTime: Long = 0
+        private set
 }

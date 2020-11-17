@@ -25,7 +25,7 @@ class Player(
     override val x: Int = character.x
     override val y: Int = character.y
     override val level: Int = character.level
-    override val instanceId: Int = character.instanceId
+    override val region: Int = character.region
 
     /**
      * текущий активный грид игрока

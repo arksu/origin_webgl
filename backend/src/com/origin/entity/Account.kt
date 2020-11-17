@@ -29,7 +29,7 @@ class Account : DbObject() {
     @Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
     val createTime: Timestamp? = null
 
-    @Column(name = "onlineTime", columnDefinition = "INT(11) NOT NULL DEFAULT 0")
+    @Column(name = "onlineTime", columnDefinition = "BIGINT UNSIGNED NOT NULL DEFAULT 0")
     var onlineTime: Long = 0
         private set
 
