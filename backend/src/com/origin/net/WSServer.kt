@@ -1,198 +1,136 @@
-package com.origin.net;
+package com.origin.net
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.origin.net.model.GameSession;
-import com.origin.net.model.WSRequest;
-import com.origin.net.model.WSResponse;
-import com.origin.utils.GameException;
-import com.origin.utils.MapDeserializerDoubleAsIntFix;
-import com.origin.utils.Utils;
-import org.java_websocket.WebSocket;
-import org.java_websocket.handshake.ClientHandshake;
-import org.java_websocket.server.WebSocketServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.InetSocketAddress;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import com.google.gson.Gson
+import com.origin.net.model.GameSession
+import com.origin.net.model.WSRequest
+import com.origin.net.model.WSResponse
+import com.origin.utils.GameException
+import com.origin.utils.MapDeserializerDoubleAsIntFix.gsonDeserialize
+import com.origin.utils.Utils
+import org.java_websocket.WebSocket
+import org.java_websocket.handshake.ClientHandshake
+import org.java_websocket.server.WebSocketServer
+import org.slf4j.LoggerFactory
+import java.net.InetSocketAddress
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 
 /**
  * вебсокет сервер, реализация сети вебгл клиента
  */
-public abstract class WSServer extends WebSocketServer
-{
-	private static final Logger _log = LoggerFactory.getLogger(WSServer.class.getName());
+abstract class WSServer(address: InetSocketAddress?, decoderCount: Int) : WebSocketServer(address, decoderCount, null) {
+    /**
+     * ping таски
+     */
+    private val executor: ScheduledExecutorService
 
-	/**
-	 * время между получением пинга и отправкой ответного пинга клиенту
-	 */
-	private static final int PING_TIME = 15;
+    init {
+        isReuseAddr = true
+        executor = Executors.newScheduledThreadPool(decoderCount)
+    }
 
-	public static Gson gsonSerialize = new Gson();
-	private static Gson gsonDeserialize;
+    private var isRunning = false
 
-	/**
-	 * ping таски
-	 */
-	private static volatile ScheduledExecutorService _executor;
+    /**
+     * список активных вебсокет сессий
+     */
+    val sessions: MutableMap<WebSocket, GameSession> = ConcurrentHashMap()
 
-	static
-	{
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(new TypeToken<Map<String, Object>>() {}.getType(), new MapDeserializerDoubleAsIntFix());
-		gsonDeserialize = gsonBuilder.create();
-	}
+    companion object {
+        private val _log = LoggerFactory.getLogger(WSServer::class.java.name)
 
-	private boolean _isRunning = false;
+        /**
+         * время между получением пинга и отправкой ответного пинга клиенту
+         */
+        private const val PING_TIME = 15
 
-	/**
-	 * список активных вебсокет сессий
-	 */
-	private Map<WebSocket, GameSession> _sessions = new ConcurrentHashMap<>();
+        @JvmField
+        val gsonSerialize = Gson()
 
-	public WSServer(InetSocketAddress address, int decoderCount)
-	{
-		super(address, decoderCount, null);
-		setReuseAddr(true);
 
-		_executor = Executors.newScheduledThreadPool(decoderCount);
-	}
+        private fun getRemoteAddr(conn: WebSocket?): String {
+            return if (conn != null && conn.remoteSocketAddress != null && conn.remoteSocketAddress.address != null) {
+                conn.remoteSocketAddress.address.hostAddress
+            } else {
+                "null"
+            }
+        }
+    }
 
-	private static String getRemoteAddr(WebSocket conn)
-	{
-		if (conn != null && conn.getRemoteSocketAddress() != null && conn.getRemoteSocketAddress().getAddress() != null)
-		{
-			return conn.getRemoteSocketAddress().getAddress().getHostAddress();
-		}
-		else
-		{
-			return "null";
-		}
-	}
+    override fun onOpen(conn: WebSocket, handshake: ClientHandshake) {
+        // если сервер запущен за nginx смотрим реальный ип в заголовке X-Real-IP который пробросили в nginx
+        var remoteAddr = handshake.getFieldValue("X-Real-IP")
+        _log.debug("ws open " + getRemoteAddr(conn) + " xRealIp=" + remoteAddr)
+        if (Utils.isEmpty(remoteAddr)) {
+            remoteAddr = getRemoteAddr(conn)
+        }
+        val session = GameSession(conn, remoteAddr)
+        sessions[conn] = session
 
-	@Override
-	public void onOpen(WebSocket conn, ClientHandshake handshake)
-	{
-		// если сервер запущен за nginx смотрим реальный ип в заголовке X-Real-IP который пробросили в nginx
-		String remoteAddr = handshake.getFieldValue("X-Real-IP");
-		_log.debug("ws open " + getRemoteAddr(conn) + " xRealIp=" + remoteAddr);
-		if (Utils.isEmpty(remoteAddr))
-		{
-			remoteAddr = getRemoteAddr(conn);
-		}
+        // запустим таск на отправку пинга клиенту
+        executor.schedule(PingTask(session), PING_TIME.toLong(), TimeUnit.SECONDS)
+    }
 
-		GameSession session = new GameSession(conn, remoteAddr);
-		_sessions.put(conn, session);
+    override fun onClose(conn: WebSocket, code: Int, reason: String, remote: Boolean) {
+        _log.debug("ws close " + getRemoteAddr(conn))
+        val session = sessions.remove(conn)
+        session?.let { onSessionClosed(it) }
+    }
 
-		// запустим таск на отправку пинга клиенту
-		_executor.schedule(new PingTask(session), PING_TIME, TimeUnit.SECONDS);
-	}
+    protected fun onSessionClosed(session: GameSession?) {}
 
-	@Override
-	public void onClose(WebSocket conn, int code, String reason, boolean remote)
-	{
-		_log.debug("ws close " + getRemoteAddr(conn));
+    override fun onMessage(conn: WebSocket, message: String) {
+        _log.debug("ws msg: " + getRemoteAddr(conn) + " " + message)
+        val session = sessions[conn]
+        if (session == null) {
+            _log.error("no game session " + conn.remoteSocketAddress)
+            throw IllegalStateException("no game session")
+        }
+        if ("ping" == message) {
+            executor.schedule(PingTask(session), PING_TIME.toLong(), TimeUnit.SECONDS)
+        } else {
+            // десериализуем сообщение
+            val request = gsonDeserialize!!.fromJson(message, WSRequest::class.java)
+            val response = WSResponse()
+            response.id = request.id
+            try {
+                // обработаем запрос к серверу, получим ответ
+                response.data = process(session, request.target, request.data)
+            } catch (e: GameException) {
+                _log.error("GameException " + e.message, e)
+                response.success = 0
+                response.errorText = e.message
+            } catch (e: Exception) {
+                _log.error("Exception " + e.message, e)
+                response.success = 0
+                response.errorText = e.javaClass.simpleName + " " + e.message
+            }
+            conn.send(gsonSerialize.toJson(response))
+        }
+    }
 
-		GameSession session = _sessions.remove(conn);
-		if (session != null)
-		{
-			onSessionClosed(session);
-		}
-	}
+    override fun onError(conn: WebSocket, ex: Exception) {
+        _log.error("ws error: " + getRemoteAddr(conn) + " " + ex.message, ex)
+    }
 
-	protected void onSessionClosed(GameSession session)
-	{
-	}
+    override fun onStart() {
+        _log.debug("ws net started")
+        isRunning = true
+    }
 
-	@Override
-	public void onMessage(WebSocket conn, String message)
-	{
-		_log.debug("ws msg: " + getRemoteAddr(conn) + " " + message);
+    @Throws(Exception::class)
+    protected abstract fun process(session: GameSession, target: String?, data: Map<String, Any>): Any?
 
-		GameSession session = _sessions.get(conn);
-		if (session == null)
-		{
-			_log.error("no game session " + conn.getRemoteSocketAddress());
-		}
+    /**
+     * таск отправки пинга клиенту
+     */
+    private class PingTask(private val _session: GameSession?) : Runnable {
+        override fun run() {
+            _log.debug("send ping")
+            _session!!.sendPing("ping")
+        }
+    }
 
-		if ("ping".equals(message))
-		{
-			_executor.schedule(new PingTask(session), PING_TIME, TimeUnit.SECONDS);
-		}
-		else
-		{
-			// десериализуем сообщение
-			WSRequest request = gsonDeserialize.fromJson(message, WSRequest.class);
-
-			WSResponse response = new WSResponse();
-			response.id = request.id;
-
-			try
-			{
-				// обработаем запрос к серверу, получим ответ
-				response.data = process(session, request.target, request.data);
-			}
-			catch (GameException e)
-			{
-				_log.error("GameException " + e.getMessage(), e);
-				response.success = 0;
-				response.errorText = e.getMessage();
-			}
-			catch (Exception e)
-			{
-				_log.error("Exception " + e.getMessage(), e);
-				response.success = 0;
-				response.errorText = e.getClass().getSimpleName() + " " + e.getMessage();
-			}
-
-			conn.send(gsonSerialize.toJson(response));
-		}
-	}
-
-	@Override
-	public void onError(WebSocket conn, Exception ex)
-	{
-		_log.error("ws error: " + getRemoteAddr(conn) + " " + ex.getMessage(), ex);
-	}
-
-	@Override
-	public void onStart()
-	{
-		_log.debug("ws net started");
-
-		_isRunning = true;
-	}
-
-	protected abstract Object process(GameSession GameSession, String target, Map<String, Object> data) throws Exception;
-
-	public Map<WebSocket, GameSession> getSessions()
-	{
-		return _sessions;
-	}
-
-	/**
-	 * таск отправки пинга клиенту
-	 */
-	private static class PingTask implements Runnable
-	{
-		private final GameSession _session;
-
-		public PingTask(GameSession session)
-		{
-			_session = session;
-		}
-
-		@Override
-		public void run()
-		{
-			_log.debug("send ping");
-			_session.sendPing("ping");
-		}
-	}
 }

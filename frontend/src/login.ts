@@ -182,7 +182,7 @@ function successLogin(login: string, password: string, d: any) {
     Client.instance = new Client();
     Client.instance.ssid = d.ssid;
 
-    Net.instance.gameCall("getCharacters")
+    Net.instance.gameCall("getCharacters", {})
         .then((list: any) => {
                 let lastCharId = localStorage.getItem("lastCharId");
                 console.log(lastCharId)

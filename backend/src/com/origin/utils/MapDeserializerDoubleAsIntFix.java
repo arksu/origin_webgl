@@ -2,6 +2,7 @@ package com.origin.utils;
 
 import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -11,6 +12,17 @@ import java.util.Set;
 
 public class MapDeserializerDoubleAsIntFix implements JsonDeserializer<Map<String, Object>>
 {
+	public static Gson gsonDeserialize;
+
+	static
+	{
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.registerTypeAdapter(new TypeToken<Map<String, Object>>()
+		{
+		}.getType(), new MapDeserializerDoubleAsIntFix());
+		gsonDeserialize = gsonBuilder.create();
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
