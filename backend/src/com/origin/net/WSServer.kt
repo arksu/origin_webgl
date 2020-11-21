@@ -121,7 +121,7 @@ abstract class WSServer(address: InetSocketAddress?, decoderCount: Int) : WebSoc
     }
 
     @Throws(Exception::class)
-    protected abstract fun process(session: GameSession, target: String?, data: Map<String, Any>): Any?
+    protected abstract fun process(session: GameSession, target: String?, data: Map<String, Any>?): Any?
 
     /**
      * таск отправки пинга клиенту

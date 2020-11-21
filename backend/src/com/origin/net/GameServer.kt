@@ -127,20 +127,20 @@ class GameServer(address: InetSocketAddress?, decoderCount: Int) : WSServer(addr
      * обработка всех websocket запросов
      */
     @Throws(Exception::class)
-    override fun process(session: GameSession, target: String?, data: Map<String, Any>): Any? {
+    override fun process(session: GameSession, target: String?, data: Map<String, Any>?): Any? {
         // если к сессии еще не привязан юзер
         if (session.account == null) {
 
             when (target) {
-                "login" -> return login(session, data)
-                "register" -> return registerNewAccount(session, data)
+                "login" -> return login(session, data!!)
+                "register" -> return registerNewAccount(session, data!!)
             }
         } else {
             when (target) {
-                "getCharacters" -> return getCharacters(session.account, data)
-                "createCharacter" -> return createCharacter(session.account, data)
-                "selectCharacter" -> return selectCharacter(session, data)
-                "deleteCharacter" -> return deleteCharacter(session.account, data)
+                "getCharacters" -> return getCharacters(session.account!!, data)
+                "createCharacter" -> return createCharacter(session.account!!, data!!)
+                "selectCharacter" -> return selectCharacter(session, data!!)
+                "deleteCharacter" -> return deleteCharacter(session.account!!, data!!)
             }
         }
         _log.warn("unknown command: {}", target)

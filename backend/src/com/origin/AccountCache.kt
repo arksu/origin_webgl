@@ -11,11 +11,11 @@ class AccountCache {
      * храним объекты юзеров в памяти
      * ssid > Account
      */
-    private val _accounts = ConcurrentHashMap<String?, Account>()
+    private val accounts = ConcurrentHashMap<String?, Account>()
 
     fun drop(ssid: String?) {
         // TODO
-        _accounts.remove(ssid)
+        accounts.remove(ssid)
     }
 
     /**
@@ -27,7 +27,7 @@ class AccountCache {
         // генерим аккаунту новый ssid
         account.generateSessionId()
         // обновляеем в кэше только если еще нет такого ssid
-        val present = _accounts.computeIfAbsent(account.ssid) { account }
+        val present = accounts.computeIfAbsent(account.ssid) { account }
         // если в кэше такой ssid был вернем ложь
         return present == account
     }

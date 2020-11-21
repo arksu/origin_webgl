@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Origin</title>
+</head>
+<body>
+
+<div id="login-page">
+    <div class="form" id="form-container">
+        <form id="register-form">
+            <input type="text" class="form-input" placeholder="login" id="reg-login"/>
+            <input type="password" class="form-input" placeholder="password" id="reg-password"/>
+            <input type="text" class="form-input" placeholder="email address (optional)" id="reg-email"/>
+            <button id="reg-btn">register</button>
+            <p class="message">Already registered? <a href="#" id="sign-btn">Sign In</a></p>
+        </form>
+
+        <form id="login-form">
+            <input type="text" class="form-input" placeholder="login" id="input-login"/>
+            <input type="password" class="form-input" placeholder="password" id="input-password"/>
+            <button id="login-btn">login</button>
+            <p class="message">Not registered? <a href="#" id="register-btn">Create an account</a></p>
+        </form>
+
+        <div id="login-error">
+        </div>
+    </div>
+</div>
+
+<div id="characters-page" class="characters-page">
+    <div id="characters-list" class="characters">
+        CHARACTERS<br>
+        <button id="char1">.</button> <button class="char char-delete" id="del-char1">[X]</button><br>
+        <button id="char2">.</button> <button class="char char-delete" id="del-char2">[X]</button><br>
+        <button id="char3">.</button> <button class="char char-delete" id="del-char3">[X]</button><br>
+        <button id="char4">.</button> <button class="char char-delete" id="del-char4">[X]</button><br>
+        <button id="char5">.</button> <button class="char char-delete" id="del-char5">[X]</button><br>
+        <button class="char char-logout" id="logout-char">logout</button>
+    </div>
+    <div id="character-create" class="characters">
+        CREATE CHARACTER<br>
+        <div style="margin-top: 15px"></div>
+        <input type="text" class="form-input" placeholder="name" id="char-create-name"/>
+        <button class="char char-create" id="char-create-cancel" style="margin-right: 4%">cancel</button>
+        <button class="char char-create" id="char-create" style="margin-left: 4%">create</button>
+    </div>
+</div>
+
+<div id="error-page">
+    <div id="error-text"></div>
+    <br>
+    <button id="error-btn">OK</button>
+</div>
+
+<canvas id="game" style="display: none"></canvas>
+
+</body>
+</html>

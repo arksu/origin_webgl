@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.utils.MapUtils
 import java.util.concurrent.ConcurrentHashMap
 
 /**
