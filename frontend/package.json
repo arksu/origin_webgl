@@ -25,7 +25,7 @@
     "style-loader": "^1.1.2",
     "ts-loader": "^8.0.11",
     "typescript": "^4.1.2",
-    "vue-loader": "^16.0.0-rc.1",
+    "vue-loader": "^16.0.0-rc.2",
     "webpack": "^5.6.0",
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0",
@@ -35,6 +35,7 @@
     "lodash": "^4.17.20",
     "pixi.js": "^5.3.3",
     "scryptsy": "^2.1.0",
-    "vue": "^3.0.2"
+    "vue": "^3.0.2",
+    "vue-router": "^4.0.0-rc.5"
   }
 }

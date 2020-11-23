@@ -1,10 +1,3 @@
-$container_back_color: #b5d8cd;
-$alert_back_color: #d2787e;
-$alert_color: #6e1c1a;
-$button_back_color: #408643;
-$button_hover_color: #43A047;
-$text_color: #383838;
-
 body {
   padding: 0;
   margin: 0;
@@ -18,6 +11,3 @@ canvas {
   width: 100%;
   height: 100%;
 }
-
-@import "login";
-@import "characters";

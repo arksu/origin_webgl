@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "importHelpers": true,
-    "strict": false,
+    "strict": true,
     "jsx": "preserve",
     "moduleResolution": "node",
     "baseUrl": ".",

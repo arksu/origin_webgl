@@ -1,6 +1,6 @@
 import {ApiRequest} from "./ApiRequest";
-import {showError} from "../error";
 import _ from "lodash";
+import {showError} from "./Error";
 
 enum State {
     Idle,
@@ -60,6 +60,10 @@ export default class Net {
      * @type {{}}
      */
     private requests: { [id: number]: Request } = {};
+
+    constructor(_url: string) {
+        this.url = _url;
+    }
 
     /**
      * обработка открытия сокета
@@ -338,7 +342,7 @@ interface Request {
     resolve: (value?: any) => void;
     reject: (reason?: any) => void;
     target: string;
-    req: ApiRequest;
+    req?: ApiRequest;
 }
 
 interface Response {

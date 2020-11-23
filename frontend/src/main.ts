@@ -1,4 +1,5 @@
 import {createApp} from 'vue'
+import router from "./router";
 import App from "./App.vue";
 
 import "./scss/main.scss";
@@ -8,6 +9,7 @@ import Game from "./game/Game";
 
 
 createApp(App)
+    .use(router)
     .mount("#app");
 
 window.onload = function () {
@@ -30,14 +32,12 @@ window.onload = function () {
 
 function setNet() {
     let proto = "https:" === window.location.protocol ? "wss" : "ws";
-    let net = new Net();
-    net.url = proto + "://" + window.location.hostname + ":7070";
+    let net = new Net(proto + "://" + window.location.hostname + ":7070");
     console.log("Net url: " + net.url);
 
     Net.instance = net;
 
     net.onDisconnect = () => {
-        Client.instance = null;
         Game.stop();
         console.log("net disconnected");
     };
