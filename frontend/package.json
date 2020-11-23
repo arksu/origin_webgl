@@ -4,28 +4,37 @@
   "author": "arksu",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --progress --host 0.0.0.0 --port 3070",
+    "dev": "webpack serve --open --progress --host 0.0.0.0 --port 3070",
     "build": "webpack"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.141",
     "@types/pixi.js": "^4.8.9",
-    "awesome-typescript-loader": "^5.2.1",
+    "@types/scryptsy": "^2.0.0",
+    "@types/webpack-env": "^1.15.3",
+    "@vue/compiler-sfc": "^3.0.2",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
     "css-loader": "^3.4.1",
     "hard-source-webpack-plugin": "^0.13.1",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^4.5.0",
     "node-sass": "^4.13.0",
+    "process": "^0.11.10",
     "sass-loader": "^8.0.0",
+    "stream-browserify": "^3.0.0",
     "style-loader": "^1.1.2",
-    "ts-loader": "^6.1.2",
-    "typescript": "^3.6.3",
-    "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.8.1"
+    "ts-loader": "^8.0.11",
+    "typescript": "^4.1.2",
+    "vue-loader": "^16.0.0-rc.1",
+    "webpack": "^5.6.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-env": "^0.8.0"
   },
   "dependencies": {
-    "lodash": "^4.17.15",
-    "pixi.js": "^5.1.5",
-    "scryptsy": "^2.1.0"
+    "lodash": "^4.17.20",
+    "pixi.js": "^5.3.3",
+    "scryptsy": "^2.1.0",
+    "vue": "^3.0.2"
   }
 }

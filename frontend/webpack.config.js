@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const {ProvidePlugin} = require("webpack");
+const {VueLoaderPlugin} = require('vue-loader')
 
 module.exports = {
     mode: 'development',
@@ -7,14 +9,16 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+            },
+            {
                 test: /\.tsx?$/,
-                use: {
-                    loader: 'awesome-typescript-loader',
-                    options: {
-                        useCache: true
-                    }
+                loader: 'ts-loader',
+                options: {
+                    appendTsSuffixTo: [/\.vue$/],
                 },
-                exclude: '/node_modules/',
+                exclude: /node_modules/,
             },
             {
                 test: /\.s[ac]ss$/,
@@ -39,9 +43,17 @@ module.exports = {
             title: 'Origin',
             template: "./src/index.html",
             filename: '../dist/index.html'
-        })
+        }),
+        new ProvidePlugin({
+            process: 'process/browser',
+        }),
+        new VueLoaderPlugin()
     ],
     resolve: {
+        fallback: {
+            "crypto": require.resolve("crypto-browserify"),
+            "stream": require.resolve("stream-browserify")
+        },
         modules: ["node_modules"],
         extensions: [".js", ".ts", ".tsx"]
     },
@@ -50,7 +62,9 @@ module.exports = {
         path: path.resolve(path.join(__dirname, "..", "dist")),
     },
     devServer: {
+        inline: true,
         hot: true,
+        stats: 'minimal',
         compress: true,
         overlay: true
     },

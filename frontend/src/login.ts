@@ -1,6 +1,7 @@
 import Net from "./net/Net";
 import Client from "./net/Client";
 import {selectCharacter, showCharactersList} from "./characters";
+import scryptsy from "scryptsy";
 
 let errorMessageTimer;
 
@@ -137,7 +138,7 @@ export function showLoginPage() {
  * выполнить логин в систему
  */
 export function doLogin(login: string, password: string) {
-    const scrypt = require('scryptsy');
+    // const scrypt = require('scryptsy');
 
     const N = 2048, r = 8, p = 1;
     const dkLen = 32;
@@ -146,7 +147,7 @@ export function doLogin(login: string, password: string) {
     window.crypto.getRandomValues(bs);
     let saltHex = bs.toString('hex');
 
-    let hashHex = scrypt(password, bs, N, r, p, dkLen).toString('hex');
+    let hashHex = scryptsy(password, bs, N, r, p, dkLen).toString('hex');
 
     let params: any = log2(N) << 16 | r << 8 | p;
     params = params.toString(16);

@@ -1,6 +1,6 @@
 import {ApiRequest} from "./ApiRequest";
-import * as _ from "lodash";
 import {showError} from "../error";
+import _ from "lodash";
 
 enum State {
     Idle,
