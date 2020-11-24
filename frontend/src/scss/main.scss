@@ -45,6 +45,7 @@ canvas {
 }
 
 .mail-form-agile {
+  border-radius: 18px;
   padding: 50px 40px;
   text-align: center;
   margin: 0px;
@@ -132,13 +133,14 @@ canvas {
   }
   .mail-form-agile {
     padding: 40px;
+    border-radius: 15px;
   }
 }
 
 
 @media screen and (max-width: 1080px) {
   .padding-all {
-    padding: 75px 50px;
+    padding: 8% 50px 1%;
   }
   .header h1 img {
     width: 8%;
@@ -160,7 +162,7 @@ canvas {
 
 @media screen and (max-width: 800px) {
   .padding-all {
-    padding: 75px 30px;
+    padding: 7% 30px;
   }
   .design-w3l {
     width: 60%;
@@ -195,6 +197,7 @@ canvas {
   }
   .mail-form-agile {
     padding: 35px 30px;
+    border-radius: 10px;
   }
   .mail-form-agile input[type="text"], .mail-form-agile input[type="password"] {
     font-size: 14px;
@@ -211,7 +214,7 @@ canvas {
 
 @media screen and (max-width: 568px) {
   .padding-all {
-    padding: 60px 20px;
+    padding: 6% 20px;
   }
 
   .header h1 {
@@ -238,7 +241,7 @@ canvas {
 
 @media screen and (max-width: 414px) {
   .padding-all {
-    padding: 50px 10px;
+    padding: 5% 10px;
   }
   .header h1 {
     font-size: 24px;
