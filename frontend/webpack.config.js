@@ -9,16 +9,16 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.vue$/,
-                loader: 'vue-loader',
-            },
-            {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
                 options: {
                     appendTsSuffixTo: [/\.vue$/],
                 },
                 exclude: /node_modules/,
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader'
             },
             {
                 test: /\.s[ac]ss$/,
@@ -38,6 +38,7 @@ module.exports = {
         ],
     },
     plugins: [
+        new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             hash: true,
             title: 'Origin',
@@ -47,7 +48,6 @@ module.exports = {
         new ProvidePlugin({
             process: 'process/browser',
         }),
-        new VueLoaderPlugin()
     ],
     resolve: {
         fallback: {

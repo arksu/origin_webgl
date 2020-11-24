@@ -13,14 +13,13 @@
   </form>
 </template>
 
-<script>
+<script lang="ts">
 import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "Login",
   methods: {
     submit: function (e: Event) {
-
       e.preventDefault();
     }
   }
