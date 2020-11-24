@@ -8,6 +8,12 @@ import Client from "./net/Client";
 import Game from "./game/Game";
 
 
+// пробуем поднять сеть
+
+// смотрим есть ли у нас сохраненный логин и пароль (хэш)
+
+// авторизуемся на сервере
+
 createApp(App)
     .use(router)
     .mount("#app");
