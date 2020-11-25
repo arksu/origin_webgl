@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const {ProvidePlugin} = require("webpack");
 const {VueLoaderPlugin} = require('vue-loader')
 
@@ -50,6 +51,7 @@ module.exports = {
         }),
     ],
     resolve: {
+        plugins: [new TSConfigPathsPlugin({})],
         fallback: {
             "crypto": require.resolve("crypto-browserify"),
             "stream": require.resolve("stream-browserify")

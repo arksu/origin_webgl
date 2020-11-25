@@ -4,7 +4,6 @@
     "module": "esnext",
     "allowJs": true,
     "outDir": "./dist/",
-
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

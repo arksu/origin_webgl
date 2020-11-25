@@ -1,9 +1,9 @@
 import {createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw} from "vue-router";
-import Login from "../views/Login.vue";
-import Signup from "../views/Signup.vue";
-import Game from "../views/Game.vue";
-import NotFound from "../views/NotFound.vue";
-
+import Login from "@/views/Login.vue";
+import Signup from "@/views/Signup.vue";
+import Game from "@/views/Game.vue";
+import NotFound from "@/views/NotFound.vue";
+import Client from "@/net/Client";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -41,21 +41,23 @@ const router = createRouter({
     routes
 });
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+    console.log(from)
+
     // всегда даем переход на "о нас"
     if (to.name == 'About') {
         next();
     }
-    if (to.name == 'Signup') {
+    // всегда даем зарегистрироваться
+    else if (to.name == 'Signup') {
         next();
     }
-
     // если не авторизованы надо перейти на логин форму
-    else if (to.name !== 'Login') {
-        console.log("redirect to login")
+    else if (to.name !== 'Login' && Client.instance.ssid == null) {
+        console.log("auth required, redirect to login")
         next({name: "Login"})
     } else if (to.name == 'Login') {
-        console.log("routed to login")
-        next()
+        console.log("routed to login");
+        next();
     } else {
         next();
     }

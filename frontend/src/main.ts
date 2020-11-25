@@ -1,11 +1,13 @@
-import router from "./router";
-import App1 from "./App.vue";
+import router from "@/router";
+import App1 from "@/App.vue";
 
-import "./scss/main.scss";
-import Net from "./net/Net";
-import Game from "./game/Game";
+import "@/scss/main.scss";
+import Net from "@/net/Net";
+import Game from "@/game/Game";
 import {createApp} from "vue";
+import Client from "@/net/Client";
 
+Client.instance = new Client();
 
 // пробуем поднять сеть
 
@@ -25,10 +27,7 @@ app.directive('focus', {
     }
 })
 
-console.log(app);
-
 window.onload = function () {
-
     // setNet();
     // setLoginForm();
 

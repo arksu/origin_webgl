@@ -25,7 +25,6 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  //padding: 100px 0;
   height: 100vh;
 }
 
@@ -40,7 +39,7 @@ canvas {
   padding: 40px 40px 30px;
   text-align: center;
   background: rgba(16, 96, 109, 0.65);
-  color: #000;
+  color: #bebebe;
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 }
@@ -147,7 +146,6 @@ canvas {
 
 @media screen and (max-width: 1366px) {
 
-
 }
 
 @media screen and (max-width: 1280px) {
@@ -160,22 +158,17 @@ canvas {
   }
 }
 
-
 @media screen and (max-width: 1080px) {
   .padding-all {
     //padding: 8% 50px 1%;
   }
 }
 
-
 @media screen and (max-width: 991px) {
   .form-container {
     width: 54%;
   }
-
-
 }
-
 
 @media screen and (max-width: 800px) {
   .padding-all {
@@ -187,16 +180,12 @@ canvas {
   .footer {
     padding-top: 50px;
   }
-
-
 }
-
 
 @media screen and (max-width: 667px) {
   .form-container {
     width: 75%;
   }
-
 }
 
 @media screen and (max-width: 640px) {
@@ -213,9 +202,7 @@ canvas {
   .footer p {
     font-size: 14px;
   }
-
 }
-
 
 @media screen and (max-width: 568px) {
   .padding-all {
@@ -233,7 +220,6 @@ canvas {
   .footer p {
     font-size: 13px;
   }
-
 }
 
 @media screen and (max-width: 414px) {
@@ -246,8 +232,6 @@ canvas {
   .form-container {
     width: 100%;
   }
-
-
 }
 
 @media screen and (max-width: 320px) {

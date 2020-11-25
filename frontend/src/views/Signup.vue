@@ -1,9 +1,6 @@
 <!--suppress HtmlFormInputWithoutLabel -->
 <template>
   <div class="padding-all">
-    <!--    <div class="header">-->
-    <!--      <h1>Login</h1>-->
-    <!--    </div>-->
     <div class="form-container">
       <div class="logo-container">
         <img src="assets/logo.png" alt="logo">
@@ -11,7 +8,7 @@
       <div class="login-form">
         <form @submit="submit" action="#">
           <input v-focus type="text" placeholder="Login" required autofocus>
-          <input type="text" placeholder="Email (optional)" class="">
+          <input type="text" placeholder="Email (optional)">
           <input type="password" placeholder="Password" required>
           <br>
           <input type="submit" value="register">
@@ -32,14 +29,10 @@ export default defineComponent({
   name: "Signup",
   methods: {
     submit: function (e: Event) {
-      console.log("submitted")
+
       e.preventDefault();
     }
   },
 });
 
 </script>
-
-<style scoped>
-
-</style>

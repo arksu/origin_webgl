@@ -1,4 +1,10 @@
 <template>
-  <h1>This is an about page</h1>
+  <div class="padding-all">
+    <div class="form-container">
+      <div class="login-form">
+        <h1>Origin is MMO survival game</h1>
+      </div>
+    </div>
+  </div>
 
 </template>
