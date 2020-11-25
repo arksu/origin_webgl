@@ -20,38 +20,29 @@ canvas {
 }
 
 /*-- forms --*/
-.header {
-  text-align: center;
-  padding-bottom: 75px;
-}
-
-.header h1 {
-  font-size: 50px;
-  letter-spacing: 3px;
-  margin: 0 auto;
-}
 
 .padding-all {
-  padding: 100px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //padding: 100px 0;
+  height: 100vh;
 }
 
-.padding {
-  margin: 20px 0 30px;
-}
-
-.design-w3l {
+.form-container {
+  margin-top: -12%;
   width: 36%;
-  margin: 0 auto;
+  max-width: 600px;
 }
 
-.mail-form-agile {
+.login-form {
   border-radius: 18px;
-  padding: 50px 40px;
+  padding: 40px 40px 30px;
   text-align: center;
-  margin: 0px;
-  background: rgba(16, 96, 109, 0.6);
+  background: rgba(16, 96, 109, 0.65);
   color: #000;
   margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 }
 
 .logo-container {
@@ -59,67 +50,99 @@ canvas {
   text-align: center;
 }
 
-.design-w3l img {
+.form-container img {
   max-width: 100%;
   max-height: 100%;
-
   vertical-align: middle;
 }
 
-.mail-form-agile input[type="text"], .mail-form-agile input[type="password"] {
-  padding: 13px 10px;
+@import url('https://fonts.googleapis.com/css2?family=BioRhyme:wght@400&display=swap');
+
+.login-form input[type="text"], .login-form input[type="password"] {
+  margin-bottom: 25px;
+  padding: 8px 10px;
   width: 92.5%;
-  font-size: 16px;
+  font-size: 19px;
   outline: none;
   background: transparent;
   border: 0;
   border-bottom: 1px solid #bebebe;
-  border-radius: 0px;
-  font-family: "Asap-Regular";
+  border-radius: 4px;
+  font-family: 'BioRhyme', serif;
   letter-spacing: 1.6px;
   color: #d5eeed;
 }
 
 ::placeholder {
-  color: #a4a7a9;
+  color: #bebebe;
 }
 
-.mail-form-agile input[type="submit"] {
+.login-form input[type="submit"] {
   font-size: 18px;
   padding: 10px 20px;
   letter-spacing: 1.2px;
   border: none;
   text-transform: uppercase;
   outline: none;
-  border-radius: 4px;
+  border-radius: 6px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
-  background: #D65B88;
+  background: #1a4f72;
   color: #fff;
   cursor: pointer;
   margin: 0 auto;
-  font-family: "Asap-Regular";
+  font-family: 'BioRhyme', serif;
   -webkit-transition-duration: 0.9s;
   transition-duration: 0.9s;
 }
 
-.mail-form-agile input[type="submit"]:hover {
+.login-form input[type="submit"]:hover {
   -webkit-transition-duration: 0.9s;
-  transition-duration: 0.9s;
-  background: rgba(91, 157, 214, 0.76);
+  transition-duration: 0.6s;
+  background: rgb(34, 140, 190);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+  animation: btn-glow 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes btn-glow {
+  from {
+    box-shadow: 0 0 10px rgba(52, 78, 88, 0.71);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(23, 180, 200, 0.71);
+  }
+}
+
+.signup-link {
+  color: #a9b5be;
+  padding-top: 20px;
+  font-family: 'BioRhyme', serif;
+  text-align: center;
+}
+
+.signup-link a {
+  transition: text-shadow 0.4s ease-in-out;
+  color: #75c4fd;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-shadow: 0 0 10px #37cdcdCB;
 }
 
 /*-- responsive media queries --*/
 
 
+@media screen and (max-height: 600px) {
+  .form-container {
+    margin-top: -2%;
+  }
+}
+
 @media screen and (max-width: 1440px) {
-  .design-w3l {
+  .form-container {
     width: 40%;
   }
-  .header h1 img {
-    width: 8.5%;
-  }
-
 }
 
 @media screen and (max-width: 1366px) {
@@ -128,10 +151,10 @@ canvas {
 }
 
 @media screen and (max-width: 1280px) {
-  .design-w3l {
+  .form-container {
     width: 46%;
   }
-  .mail-form-agile {
+  .login-form {
     padding: 40px;
     border-radius: 15px;
   }
@@ -140,19 +163,13 @@ canvas {
 
 @media screen and (max-width: 1080px) {
   .padding-all {
-    padding: 8% 50px 1%;
-  }
-  .header h1 img {
-    width: 8%;
-  }
-  .header h1 {
-    font-size: 44px;
+    //padding: 8% 50px 1%;
   }
 }
 
 
 @media screen and (max-width: 991px) {
-  .design-w3l {
+  .form-container {
     width: 54%;
   }
 
@@ -162,16 +179,10 @@ canvas {
 
 @media screen and (max-width: 800px) {
   .padding-all {
-    padding: 7% 30px;
+    //padding: 7% 30px;
   }
-  .design-w3l {
+  .form-container {
     width: 60%;
-  }
-  .header h1 {
-    font-size: 40px;
-  }
-  .header {
-    padding-bottom: 50px;
   }
   .footer {
     padding-top: 50px;
@@ -182,27 +193,21 @@ canvas {
 
 
 @media screen and (max-width: 667px) {
-  .design-w3l {
+  .form-container {
     width: 75%;
   }
 
 }
 
 @media screen and (max-width: 640px) {
-  .header h1 img {
-    width: 10%;
-  }
-  .header h1 {
-    font-size: 36px;
-  }
-  .mail-form-agile {
+  .login-form {
     padding: 35px 30px;
     border-radius: 10px;
   }
-  .mail-form-agile input[type="text"], .mail-form-agile input[type="password"] {
+  .login-form input[type="text"], .login-form input[type="password"] {
     font-size: 14px;
   }
-  .mail-form-agile input[type="submit"] {
+  .login-form input[type="submit"] {
     font-size: 16px;
   }
   .footer p {
@@ -214,23 +219,15 @@ canvas {
 
 @media screen and (max-width: 568px) {
   .padding-all {
-    padding: 6% 20px;
+    //padding: 6% 20px;
   }
-
-  .header h1 {
-    font-size: 32px;
-  }
-
 }
 
 @media screen and (max-width: 480px) {
-  .header h1 {
-    font-size: 28px;
-  }
-  .design-w3l {
+  .form-container {
     width: 92%;
   }
-  .mail-form-agile input[type="submit"] {
+  .login-form input[type="submit"] {
     font-size: 14px;
   }
   .footer p {
@@ -241,23 +238,12 @@ canvas {
 
 @media screen and (max-width: 414px) {
   .padding-all {
-    padding: 5% 10px;
+    //padding: 5% 10px;
   }
-  .header h1 {
-    font-size: 24px;
-  }
-
-
 }
 
 @media screen and (max-width: 384px) {
-  .header {
-    padding-bottom: 30px;
-  }
-  .header h1 {
-    font-size: 22px;
-  }
-  .design-w3l {
+  .form-container {
     width: 100%;
   }
 
@@ -265,9 +251,5 @@ canvas {
 }
 
 @media screen and (max-width: 320px) {
-  .header h1 {
-    font-size: 18px;
-  }
-
 
 }

@@ -1,3 +1,4 @@
+<!--suppress HtmlFormInputWithoutLabel -->
 <template>
   <div class="padding-all">
     <!--    <div class="header">-->
@@ -10,11 +11,13 @@
       <div class="login-form">
         <form @submit="submit" action="#">
           <input v-focus type="text" placeholder="Login" required autofocus>
-          <input type="password" placeholder="Password" class="" required>
+          <input type="text" placeholder="Email (optional)" class="">
+          <input type="password" placeholder="Password" required>
           <br>
-          <input type="submit" value="login">
+          <input type="submit" value="register">
           <div class="signup-link">
-            Not a member? <router-link to="/signup">Signup now</router-link>
+            Already have an account?
+            <router-link to="/login">Sign in</router-link>
           </div>
         </form>
       </div>
@@ -26,13 +29,13 @@
 import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "Login",
+  name: "Signup",
   methods: {
     submit: function (e: Event) {
       console.log("submitted")
       e.preventDefault();
     }
-  }
+  },
 });
 
 </script>

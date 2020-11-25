@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw} from "vue-router";
 import Login from "../views/Login.vue";
+import Signup from "../views/Signup.vue";
 import Game from "../views/Game.vue";
 import NotFound from "../views/NotFound.vue";
 
@@ -14,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/login",
         name: "Login",
         component: Login
+    },
+    {
+        path: "/signup",
+        name: "Signup",
+        component: Signup
     },
     {
         path: "/about",
@@ -37,6 +43,9 @@ const router = createRouter({
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
     // всегда даем переход на "о нас"
     if (to.name == 'About') {
+        next();
+    }
+    if (to.name == 'Signup') {
         next();
     }
 

@@ -1,11 +1,10 @@
-import {createApp} from 'vue'
 import router from "./router";
-import App from "./App.vue";
+import App1 from "./App.vue";
 
 import "./scss/main.scss";
 import Net from "./net/Net";
-import Client from "./net/Client";
 import Game from "./game/Game";
+import {createApp} from "vue";
 
 
 // пробуем поднять сеть
@@ -14,9 +13,19 @@ import Game from "./game/Game";
 
 // авторизуемся на сервере
 
-createApp(App)
-    .use(router)
-    .mount("#app");
+const app = createApp(App1);
+app.use(router)
+app.mount("#app");
+
+// добавим свою кастомную директиву для автофокуса input (v-focus)
+// используем в форме логина и регистрации
+app.directive('focus', {
+    mounted(el) {
+        el.focus();
+    }
+})
+
+console.log(app);
 
 window.onload = function () {
 
