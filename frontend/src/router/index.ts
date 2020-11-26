@@ -50,11 +50,19 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
         next();
     }
     // если не авторизованы надо перейти на логин форму
-    else if (to.name !== 'Login' && Client.instance.ssid == null) {
+    else if (to.name !== 'Login' && !Client.instance.isLogged()) {
+        // это первый запуск?
+        if (from.name == undefined) {
+            Client.instance.needAutologin = true;
+        }
         console.log("auth required, redirect to login")
         next({name: "Login"})
     } else if (to.name == 'Login') {
         console.log("routed to login");
+        // это первый запуск?
+        if (from.name == undefined) {
+            Client.instance.needAutologin = true;
+        }
         next();
     } else {
         next();

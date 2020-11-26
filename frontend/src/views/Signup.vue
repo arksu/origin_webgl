@@ -7,9 +7,12 @@
       </div>
       <div class="login-form">
         <form @submit="submit" action="#">
-          <input v-focus type="text" placeholder="Login" required>
-          <input type="text" placeholder="Email (optional)">
-          <input type="password" placeholder="Password" required>
+          <div class="error-message" v-if="errorText != null">
+            {{ errorText }}
+          </div>
+          <input v-focus type="text" placeholder="Login" required v-model="login">
+          <input type="text" placeholder="Email (optional)" v-model="email">
+          <input type="password" placeholder="Password" required v-model="password">
           <br>
           <input type="submit" value="register">
           <div class="signup-link">
@@ -24,13 +27,75 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
+import Net from "@/net/Net";
 
 export default defineComponent({
   name: "Signup",
+  data() {
+    return {
+      login: null as string | null,
+      email: null as string | null,
+      password: null as string | null,
+      errorText: null as string | null,
+      isProcessing: false as boolean
+    }
+  },
   methods: {
     submit: function (e: Event) {
-
       e.preventDefault();
+
+      this.signupImpl();
+    },
+    /**
+     * авторизация на сервере
+     */
+    signupImpl: function () {
+      this.isProcessing = true;
+      this.errorText = null;
+      console.log("sign up " + this.login);
+
+      const requestOptions = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          login: this.login,
+          email: this.email,
+          password: this.password
+        })
+      };
+
+      fetch(Net.apiUrl + "/signup", requestOptions)
+          .then(async response => {
+            if (response.ok) {
+              const data = await response.json()
+              if (data.error !== undefined) {
+                this.errorText = data.error;
+              }
+              console.log(data)
+            } else {
+              const error = "status: " + response.status + " " + (await response.text());
+              this.errorText = error;
+              console.warn(error)
+            }
+          })
+          .catch(error => {
+            this.errorText = error;
+            console.error('There was an error!', error);
+          })
+          .finally(() => {
+            this.isProcessing = false;
+          });
+    }
+  },
+  watch: {
+    login: function () {
+      this.errorText = null;
+    },
+    email: function () {
+      this.errorText = null;
+    },
+    password: function () {
+      this.errorText = null;
     }
   },
 });

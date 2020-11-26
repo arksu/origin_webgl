@@ -23,7 +23,7 @@ class Account : DbObject() {
     @Column(name = "password", columnDefinition = "VARCHAR(64) NOT NULL", nullable = false)
     var password: String? = null
 
-    @Column(name = "email", columnDefinition = "VARCHAR(64) NOT NULL", nullable = false)
+    @Column(name = "email", columnDefinition = "VARCHAR(64) NULL", nullable = false)
     var email: String? = null
 
     @Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")

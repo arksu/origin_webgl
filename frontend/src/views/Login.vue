@@ -7,6 +7,9 @@
       </div>
       <div class="login-form">
         <form @submit="submit" action="#">
+          <div class="error-message" v-if="errorText != null">
+            {{ errorText }}
+          </div>
           <input v-focus type="text" placeholder="Login" required v-model="login">
           <input type="password" placeholder="Password" required v-model="password">
           <br>
@@ -32,6 +35,7 @@ export default defineComponent({
     return {
       login: null as string | null,
       password: null as string | null,
+      errorText: null as string | null,
       isProcessing: false as boolean
     }
   },
@@ -55,6 +59,11 @@ export default defineComponent({
      * авторизация на сервере
      */
     loginImpl: function () {
+      // взведем флаг попытки входа
+      Client.instance.wasLoginTry = true;
+
+      this.isProcessing = true;
+      this.errorText = null;
       console.log("loginImpl " + this.login);
 
       const requestOptions = {
@@ -62,54 +71,39 @@ export default defineComponent({
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           login: this.login,
-          password: this.password
+          hash: this.password
         })
       };
 
       fetch(Net.apiUrl + "/login", requestOptions)
           .then(async response => {
-            const data = await response.text()
-            if (!response.ok) {
-              const error = data || response.status;
-
-              console.warn(error)
-            } else {
+            if (response.ok) {
+              const data = await response.json()
+              if (data.error !== undefined) {
+                this.errorText = data.error;
+              }
               console.log(data)
+            } else {
+              const error = "status: " + response.status + " " + (await response.text());
+              this.errorText = error;
+              console.warn(error)
             }
           })
           .catch(error => {
+            this.errorText = error;
             console.error('There was an error!', error);
-          });
-
-      /*
-      let proto = "https:" === window.location.protocol ? "wss" : "ws";
-      let net = new Net(proto + "://" + window.location.hostname + ":8010/ws");
-      console.log("Net url: " + net.url);
-
-      Net.instance = net;
-
-      net.onDisconnect = () => {
-        console.log("net disconnected");
-      };
-
-
-      Net.instance.remoteCall("login", {
-        login : this.login,
-        password: this.password
-      })
-          .then((d) => {
-            console.log("successLogin")
           })
-          .catch((e) => {
-            console.error(e);
-
-            let loginBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("login-btn"));
-            loginBtn.disabled = false;
-
-            console.log("showLoginError")
+          .finally(() => {
+            this.isProcessing = false;
           });
-
-       */
+    }
+  },
+  watch: {
+    login: function () {
+      this.errorText = null;
+    },
+    password: function () {
+      this.errorText = null;
     }
   },
   mounted() {
@@ -118,12 +112,13 @@ export default defineComponent({
     this.password = localStorage.getItem("password");
 
     // если это самый первый запуск - сразу попробуем авторизоваться на сервере
-    if (!Client.instance.wasLoginTry) {
-      this.loginImpl();
+    if (Client.instance.needAutologin && !Client.instance.wasLoginTry) {
+      Client.instance.needAutologin = false;
+      // также должны быть какие то данные в сохраненном логине и пароле
+      if (this.login !== null && this.login.length > 0 && this.password !== null && this.password.length > 0) {
+        this.loginImpl();
+      }
     }
-
-    // взведем флаг попытки входа
-    Client.instance.wasLoginTry = true;
   }
 });
 

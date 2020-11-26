@@ -24,15 +24,15 @@ repositories {
 }
 
 buildscript {
-    ext.kotlin_version = '1.4.20-RC'
-    ext.ktor_version = '1.4.2'
+    ext.kotlin_version = '1.4.1'
+    ext.ktor_version = '1.4.1'
     ext.slf4j_version = '1.7.30'
 
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.20"
     }
 }
 
@@ -59,6 +59,7 @@ dependencies {
     compile "io.ktor:ktor-server-core:$ktor_version"
     compile "io.ktor:ktor-server-netty:$ktor_version"
     compile "io.ktor:ktor-websockets:$ktor_version"
+    compile "io.ktor:ktor-gson:$ktor_version"
 
     compile project(':jpark')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
