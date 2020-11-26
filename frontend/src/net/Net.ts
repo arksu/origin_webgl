@@ -18,6 +18,16 @@ export default class Net {
     public static instance: Net;
 
     /**
+     * url для открытия коннекта
+     */
+    public static url: string;
+
+    /**
+     * url для работы с апи методами бекенда (авторизация, регистрация и тд)
+     */
+    public static apiUrl: string;
+
+    /**
      * сокет
      */
     private socket?: WebSocket;
@@ -27,11 +37,6 @@ export default class Net {
      * @type {State.Idle}
      */
     private state: State = State.Idle;
-
-    /**
-     * url для открытия коннекта
-     */
-    public url: string;
 
     /**
      * последний ид для отправки сообщений серверу
@@ -61,8 +66,7 @@ export default class Net {
      */
     private requests: { [id: number]: Request } = {};
 
-    constructor(_url: string) {
-        this.url = _url;
+    constructor() {
     }
 
     /**
@@ -324,7 +328,7 @@ export default class Net {
     }
 
     private createSocket() {
-        this.socket = new WebSocket(this.url);
+        this.socket = new WebSocket(Net.url);
 
         this.socket.onopen = this.onopen.bind(this);
         this.socket.onclose = this.onclose.bind(this);

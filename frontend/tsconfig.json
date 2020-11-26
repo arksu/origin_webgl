@@ -10,6 +10,8 @@
     "skipLibCheck": true,
     "importHelpers": true,
     "strict": true,
+    "strictPropertyInitialization": true,
+    "strictNullChecks": true,
     "jsx": "preserve",
     "moduleResolution": "node",
     "baseUrl": ".",

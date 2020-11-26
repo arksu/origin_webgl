@@ -1,6 +1,7 @@
 package com.origin.entity
 
 import com.origin.utils.DbObject
+import com.origin.utils.GRID_SIZE
 import org.jpark.TableExtended
 import java.sql.Blob
 import javax.persistence.Column
@@ -45,4 +46,8 @@ class Grid : DbObject() {
      */
     @Column(name = "tiles", columnDefinition = "BLOB NOT NULL", nullable = false)
     var tilesBlob: Blob? = null
+
+    fun s() {
+        GRID_SIZE
+    }
 }

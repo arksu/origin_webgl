@@ -1,21 +1,20 @@
 import router from "@/router";
-import App1 from "@/App.vue";
+import App from "@/App.vue";
 
 import "@/scss/main.scss";
 import Net from "@/net/Net";
-import Game from "@/game/Game";
 import {createApp} from "vue";
 import Client from "@/net/Client";
 
+// формируем ссылку для работы с бекендом
+let proto = "https:" === window.location.protocol ? "wss:" : "ws:";
+Net.url = proto + "//" + window.location.hostname + ":8010";
+Net.apiUrl = window.location.protocol + "//" + window.location.hostname + ":8010"
+
+// создадим синглон для клиента где будем хранить наш игровой стейт
 Client.instance = new Client();
 
-// пробуем поднять сеть
-
-// смотрим есть ли у нас сохраненный логин и пароль (хэш)
-
-// авторизуемся на сервере
-
-const app = createApp(App1);
+const app = createApp(App);
 app.use(router)
 app.mount("#app");
 
@@ -26,37 +25,3 @@ app.directive('focus', {
         el.focus();
     }
 })
-
-window.onload = function () {
-    // setNet();
-    // setLoginForm();
-
-    // let login = localStorage.getItem("login");
-    // let password = localStorage.getItem("password");
-    // if (login && password) {
-    //     let loginBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("login-btn"));
-    //     loginBtn.disabled = true;
-    //     doLogin(login, password);
-    // } else {
-    //     document.getElementById("login-page").style.display = "block";
-    // }
-
-    // startPixi();
-};
-
-function setNet() {
-    let proto = "https:" === window.location.protocol ? "wss" : "ws";
-    let net = new Net(proto + "://" + window.location.hostname + ":7070");
-    console.log("Net url: " + net.url);
-
-    Net.instance = net;
-
-    net.onDisconnect = () => {
-        Game.stop();
-        console.log("net disconnected");
-    };
-}
-
-
-
-

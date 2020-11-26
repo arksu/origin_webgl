@@ -7,7 +7,7 @@
       </div>
       <div class="login-form">
         <form @submit="submit" action="#">
-          <input v-focus type="text" placeholder="Login" required autofocus v-model="login">
+          <input v-focus type="text" placeholder="Login" required v-model="login">
           <input type="password" placeholder="Password" required v-model="password">
           <br>
           <input type="submit" value="login" :disabled="isProcessing">
@@ -24,6 +24,7 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import Client from "@/net/Client";
+import Net from "@/net/Net";
 
 export default defineComponent({
   name: "Login",
@@ -55,6 +56,60 @@ export default defineComponent({
      */
     loginImpl: function () {
       console.log("loginImpl " + this.login);
+
+      const requestOptions = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          login: this.login,
+          password: this.password
+        })
+      };
+
+      fetch(Net.apiUrl + "/login", requestOptions)
+          .then(async response => {
+            const data = await response.text()
+            if (!response.ok) {
+              const error = data || response.status;
+
+              console.warn(error)
+            } else {
+              console.log(data)
+            }
+          })
+          .catch(error => {
+            console.error('There was an error!', error);
+          });
+
+      /*
+      let proto = "https:" === window.location.protocol ? "wss" : "ws";
+      let net = new Net(proto + "://" + window.location.hostname + ":8010/ws");
+      console.log("Net url: " + net.url);
+
+      Net.instance = net;
+
+      net.onDisconnect = () => {
+        console.log("net disconnected");
+      };
+
+
+      Net.instance.remoteCall("login", {
+        login : this.login,
+        password: this.password
+      })
+          .then((d) => {
+            console.log("successLogin")
+          })
+          .catch((e) => {
+            console.error(e);
+
+            let loginBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("login-btn"));
+            loginBtn.disabled = false;
+
+            console.log("showLoginError")
+          });
+
+       */
     }
   },
   mounted() {

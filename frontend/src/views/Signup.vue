@@ -7,7 +7,7 @@
       </div>
       <div class="login-form">
         <form @submit="submit" action="#">
-          <input v-focus type="text" placeholder="Login" required autofocus>
+          <input v-focus type="text" placeholder="Login" required>
           <input type="text" placeholder="Email (optional)">
           <input type="password" placeholder="Password" required>
           <br>

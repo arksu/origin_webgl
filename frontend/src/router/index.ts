@@ -41,8 +41,6 @@ const router = createRouter({
     routes
 });
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-    console.log(from)
-
     // всегда даем переход на "о нас"
     if (to.name == 'About') {
         next();
