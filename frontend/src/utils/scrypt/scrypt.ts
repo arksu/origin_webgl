@@ -1,3 +1,4 @@
+// @ts-ignore see webpack resolve.alias
 import {pbkdf2Sync} from "crypto";
 import {BinaryLike, checkAndInit, smixSync} from "@/utils/scrypt/utils";
 
