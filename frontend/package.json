@@ -10,14 +10,13 @@
   "devDependencies": {
     "@types/lodash": "^4.14.141",
     "@types/pixi.js": "^4.8.9",
-    "@types/scryptsy": "^2.0.0",
     "@types/webpack-env": "^1.15.3",
     "@vue/compiler-sfc": "^3.0.2",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "css-loader": "^3.4.1",
     "hard-source-webpack-plugin": "^0.13.1",
-    "html-webpack-plugin": "^4.5.0",
+    "html-webpack-plugin": "^5.0.0-alpha.14",
     "node-sass": "^4.13.0",
     "process": "^0.11.10",
     "sass-loader": "^8.0.0",
@@ -35,7 +34,6 @@
   "dependencies": {
     "lodash": "^4.17.20",
     "pixi.js": "^5.3.3",
-    "scryptsy": "^2.1.0",
     "vue": "^3.0.2",
     "vue-router": "^4.0.0-rc.5"
   }

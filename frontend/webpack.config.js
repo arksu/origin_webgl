@@ -59,7 +59,8 @@ module.exports = {
         modules: ["node_modules"],
         extensions: [".js", ".ts", ".tsx", ".vue"],
         alias: {
-            'vue': '@vue/runtime-dom'
+            'vue': '@vue/runtime-dom',
+            "crypto": "crypto-browserify"
         }
     },
     output: {

@@ -28,6 +28,9 @@
 import {defineComponent} from "vue";
 import Client from "@/net/Client";
 import Net from "@/net/Net";
+import {Buffer} from 'buffer';
+import {log2, scrypt} from "@/utils/scrypt/scrypt";
+import {hexToBase64} from "@/utils/Util";
 
 export default defineComponent({
   name: "Login",
@@ -66,12 +69,30 @@ export default defineComponent({
       this.errorText = null;
       console.log("loginImpl " + this.login);
 
+      // формируем scrypt hash
+      const N = 2048, r = 8, p = 1;
+      const dkLen = 32;
+
+      // генерим случайную соль каждый раз
+      let saltBuffer = new Buffer(16);
+      window.crypto.getRandomValues(saltBuffer);
+
+      let saltHex: string = saltBuffer.toString('hex');
+
+      // собственно сам хэш
+      let hashHex = scrypt(this.password!!, saltBuffer, N, r, p, dkLen).toString('hex');
+
+      let params: any = log2(N) << 16 | r << 8 | p;
+      params = params.toString(16);
+      let hash = '$s0$' + params + '$' + hexToBase64(saltHex) + '$' + hexToBase64(hashHex);
+      console.log("password hash: " + hash)
+
       const requestOptions = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           login: this.login,
-          hash: this.password
+          hash: hash
         })
       };
 
