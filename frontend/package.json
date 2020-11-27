@@ -12,8 +12,6 @@
     "@types/pixi.js": "^4.8.9",
     "@types/webpack-env": "^1.15.3",
     "@vue/compiler-sfc": "^3.0.2",
-    "buffer": "^6.0.3",
-    "crypto-browserify": "^3.12.0",
     "css-loader": "^3.4.1",
     "hard-source-webpack-plugin": "^0.13.1",
     "html-webpack-plugin": "^5.0.0-alpha.14",
@@ -32,6 +30,8 @@
     "webpack-env": "^0.8.0"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
     "lodash": "^4.17.20",
     "pixi.js": "^5.3.3",
     "vue": "^3.0.2",

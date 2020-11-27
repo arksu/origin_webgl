@@ -79,7 +79,7 @@ export default defineComponent({
             }
           })
           .catch(error => {
-            this.errorText = error;
+            this.errorText = error.message || error;
             console.error('There was an error!', error);
           })
           .finally(() => {

@@ -47,12 +47,14 @@ module.exports = {
             filename: '../dist/index.html'
         }),
         new ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
             process: 'process/browser',
         }),
     ],
     resolve: {
         plugins: [new TSConfigPathsPlugin({})],
         fallback: {
+            "vm": false,
             "crypto": require.resolve("crypto-browserify"),
             "stream": require.resolve("stream-browserify")
         },
