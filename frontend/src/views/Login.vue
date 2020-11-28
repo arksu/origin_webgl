@@ -16,7 +16,7 @@
           <input type="submit" value="login" :disabled="isProcessing">
           <div class="signup-link">
             Not a member?
-            <router-link to="/signup">Signup now</router-link>
+            <router-link :to="{ name: 'Signup'}">Signup now</router-link>
           </div>
         </form>
       </div>
