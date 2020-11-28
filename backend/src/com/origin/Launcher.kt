@@ -18,12 +18,12 @@ import org.slf4j.LoggerFactory
 import java.sql.SQLException
 import java.util.*
 
-class UserLogin(val login: String, val hash: String)
-class UserSignup(val login: String, val email: String?, val password: String)
-class LoginResponse(val ssid: String?, val error: String? = null)
+data class UserLogin(val login: String, val hash: String)
+data class UserSignup(val login: String, val email: String?, val password: String)
+data class LoginResponse(val ssid: String?, val error: String? = null)
 
 object Launcher {
-    private val _log = LoggerFactory.getLogger(Launcher::class.java.name)
+    private val _log = LoggerFactory.getLogger(Launcher::class.java)
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -49,6 +49,7 @@ object Launcher {
                 get("/") {
                     call.respondText("Hello, world!", ContentType.Text.Html)
                 }
+
                 login()
                 signup()
 
@@ -67,6 +68,9 @@ object Launcher {
                                         close(CloseReason(CloseReason.Codes.NORMAL, "said bye"))
                                     }
                                 }
+                                else -> {
+                                    println("uncatched frame $frame")
+                                }
                             }
                         }
                     } finally {
@@ -84,6 +88,7 @@ object Launcher {
     private fun Routing.signup() {
         post("/signup") {
             val userSignup = call.receive<UserSignup>()
+            Thread.sleep(1000)
 
             val account = Account()
             account.login = userSignup.login
@@ -91,7 +96,8 @@ object Launcher {
             account.email = userSignup.email
 
             try {
-                account.persist()
+                // TODO save
+//                account.persist()
                 // TODO auth user
                 call.respond(LoginResponse("123"))
             } catch (e: RuntimeException) {
@@ -116,15 +122,20 @@ object Launcher {
     private fun Routing.login() {
         post("/login") {
             val userLogin = call.receive<UserLogin>()
-            val account = Database.em().findOne(Account::class.java, "login", userLogin.login)
+//            val account = Database.em().findOne(Account::class.java, "login", userLogin.login)
+            val account: Account? = null
 
             if (account == null) {
                 call.respond(LoginResponse(null, "account not found"))
             } else {
                 try {
                     if (SCryptUtil.check(account.password, userLogin.hash)) {
-                        _log.debug("user auth successfull ${account.login}")
+                        _log.debug("user auth successful ${account.login}")
+                        Thread.sleep(1000)
                         // TODO auth , ssid
+//                        if (!GameServer.accountCache.addWithAuth(account)) {
+//                            throw GameException("ssid collision, please try again")
+//                        }
                         call.respond(LoginResponse("123"))
                     } else {
                         call.respond(LoginResponse(null, "wrong password"))

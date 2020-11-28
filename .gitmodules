@@ -1,3 +1,0 @@
-[submodule "backend/jpark"]
-	path = backend/jpark
-	url = https://github.com/arksu/jpark.git

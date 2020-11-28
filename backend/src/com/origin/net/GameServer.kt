@@ -1,24 +1,16 @@
 package com.origin.net
 
 import com.origin.AccountCache
-import com.origin.Database
-import com.origin.entity.Account
-import com.origin.entity.Character
-import com.origin.model.Player
-import com.origin.model.World
-import com.origin.net.model.GameSession
-import com.origin.net.model.LoginResponse
-import com.origin.scrypt.SCryptUtil
-import com.origin.utils.GameException
 import org.slf4j.LoggerFactory
-import java.net.InetSocketAddress
-import java.sql.SQLException
 
-class GameServer(address: InetSocketAddress?, decoderCount: Int) : WSServer(address, decoderCount) {
+//class GameServer(address: InetSocketAddress?, decoderCount: Int) : WSServer(address, decoderCount) {
+class GameServer()  {
     companion object {
         private val _log = LoggerFactory.getLogger(GameServer::class.java.name)
         private val accountCache = AccountCache()
     }
+
+/*
 
     /**
      * получить список персонажей
@@ -146,4 +138,6 @@ class GameServer(address: InetSocketAddress?, decoderCount: Int) : WSServer(addr
         _log.warn("unknown command: {}", target)
         return null
     }
+
+ */
 }

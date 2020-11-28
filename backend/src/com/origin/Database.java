@@ -2,7 +2,6 @@ package com.origin;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.jpark.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,46 +15,16 @@ public class Database
 
 	private static DataSource source;
 
-	private static javax.persistence.EntityManager _em1;
-
-	private static EntityManager _em = new EntityManager();
+//	private static final EntityManager _em = new EntityManager();
 
 	public static void start()
 	{
 		// подключим в ORM движок все сущности из нужного пакаджа в исходниках
-		_em.findEntities("com.origin.entity");
-		_em.setConnectionFactory(Database::getConnection);
+//		_em.findEntities("com.origin.entity");
+//		_em.setConnectionFactory(Database::getConnection);
 
 		//**************************************************
 
-		// TEST code
-//		User user2 = new User();
-//		user2.setLogin("test_login12");
-
-		//**************************************************
-//		EntityManagerFactory emf = Persistence.createEntityManagerFactory("origin-app");
-//		_em1 = emf.createEntityManager();
-
-//		_em.getTransaction().begin();
-//		_em.persist(user2);
-//		_em.getTransaction().commit();
-
-//		User user3 = _em1.find(User.class, 1);
-//		_em1.getTransaction().begin();
-//		user3.setLogin("user33");
-//		_em1.getTransaction().commit();
-
-//		User user = _em.find(User.class, 1);
-//		System.out.println(user.getId());
-
-//		user.setLogin("some1222");
-//
-//		em.getTransaction().begin();
-//		User user1 = em.merge(user);
-//		System.out.println(user1);
-//		em.getTransaction().commit();
-//
-//		em.flush();
 
 		HikariConfig config = new HikariConfig();
 
@@ -69,32 +38,22 @@ public class Database
 		config.addDataSourceProperty("databaseName", ServerConfig.DB_NAME);
 		config.addDataSourceProperty("loginTimeout", 2);
 
-//		config.addDataSourceProperty("cachePrepStmts", true);
-//		config.addDataSourceProperty("prepStmtCacheSize", 250);
-//		config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
-//		config.addDataSourceProperty("useServerPrepStmts", true);
-
 		config.setLeakDetectionThreshold(5000);
 		config.setConnectionTimeout(30000);
 
 		source = new HikariDataSource(config);
 
-		try
-		{
-			Connection connection = getConnection();
-			_em.deploy();
-			connection.close();
-		}
-		catch (SQLException e)
-		{
-			_log.error("deploy error", e);
-			throw new RuntimeException("database deploy failed");
-		}
-	}
-
-	public static EntityManager em()
-	{
-		return _em;
+//		try
+//		{
+//			Connection connection = getConnection();
+//			_em.deploy();
+//			connection.close();
+//		}
+//		catch (SQLException e)
+//		{
+//			_log.error("deploy error", e);
+//			throw new RuntimeException("database deploy failed");
+//		}
 	}
 
 	/**
@@ -105,8 +64,7 @@ public class Database
 		try
 		{
 			return source.getConnection();
-		}
-		catch (SQLException e)
+		} catch (SQLException e)
 		{
 			_log.error("get connection error: " + e.getMessage(), e);
 		}

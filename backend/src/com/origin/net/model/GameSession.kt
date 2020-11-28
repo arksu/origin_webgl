@@ -1,12 +1,11 @@
 package com.origin.net.model
 
 import com.origin.entity.Account
-import com.origin.net.WSServer
-import org.java_websocket.WebSocket
 
-class GameSession(private val connect: WebSocket?, val remoteAddr: String) {
+//class GameSession(private val connect: WebSocket?, val remoteAddr: String) {
+class GameSession{
     var account: Account? = null
-
+/*
     fun send(channel: String?, data: Any?) {
         if (connect != null && connect.isOpen) {
             val response = WSResponse()
@@ -22,4 +21,6 @@ class GameSession(private val connect: WebSocket?, val remoteAddr: String) {
             connect.send(data)
         }
     }
+
+ */
 }

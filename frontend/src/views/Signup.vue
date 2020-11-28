@@ -14,7 +14,7 @@
           <input type="text" placeholder="Email (optional)" v-model="email">
           <input type="password" placeholder="Password" required v-model="password">
           <br>
-          <input type="submit" value="register">
+          <input type="submit" value="register" :disabled="isProcessing">
           <div class="signup-link">
             Already have an account?
             <router-link to="/login">Sign in</router-link>
@@ -43,6 +43,10 @@ export default defineComponent({
   methods: {
     submit: function (e: Event) {
       e.preventDefault();
+
+      // запомним что ввели в поля ввода
+      localStorage.setItem("login", this.login || "");
+      localStorage.setItem("password", this.password || "");
 
       this.signupImpl();
     },

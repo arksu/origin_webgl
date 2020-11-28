@@ -96,12 +96,21 @@ canvas {
 }
 
 .login-form input[type="submit"]:hover {
-  -webkit-transition-duration: 0.9s;
+  -webkit-transition-duration: 0.5s;
   transition-duration: 0.6s;
   background: rgb(34, 140, 190);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
   animation: btn-glow 0.6s ease-in-out infinite alternate;
 }
+.login-form input[type="submit"]:disabled {
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.6s;
+  background: rgb(86, 86, 91);
+  color: #838383;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+  animation: none;
+}
+
 
 @keyframes btn-glow {
   from {
