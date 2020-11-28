@@ -1,4 +1,28 @@
-Backend for Origin survival MMO game
+# Backend (game server)
+for Origin MMO game
 
-please install first:
-1. brew install mariadb
+# How it works
+
+- [Kotlin](https://github.com/JetBrains/kotlin) as programming language
+- [MariaDB](https://github.com/mariadb) database
+- [HikariCP](https://github.com/brettwooldridge/HikariCP) as JDBC connection pool
+- [Exposed](https://github.com/JetBrains/Exposed/) as Kotlin ORM Framework
+- [Gson](https://github.com/google/gson) for handling JSON
+- [Ktor](https://github.com/ktorio/ktor) as web framework
+
+# Getting started
+
+- install JVM 8+
+- install MariaDB database for your platform
+- create a database into MariaDB named 'origin'
+- the server is configured to start on [8020](http://localhost:8020).
+
+Build:
+> gradle clean build
+
+Start the server:
+> gradle run
+
+# Help
+
+Please fork and PR to improve the code.
