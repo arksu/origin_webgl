@@ -1,6 +1,5 @@
 package com.origin.entity
 
-import com.origin.utils.GRID_SIZE
 import java.sql.Blob
 
 /**
@@ -41,7 +40,4 @@ class Grid {
 //    @Column(name = "tiles", columnDefinition = "BLOB NOT NULL", nullable = false)
     var tilesBlob: Blob? = null
 
-    fun s() {
-        GRID_SIZE
-    }
 }

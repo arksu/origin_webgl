@@ -27,6 +27,7 @@ compileTestKotlin {
 }
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
@@ -34,6 +35,7 @@ buildscript {
     ext {
         kotlin_version = '1.4.1'
         ktor_version = '1.4.1'
+        exposed_version = '0.28.1'
         slf4j_version = '1.7.30'
     }
 
@@ -53,6 +55,9 @@ dependencies {
     compile "io.ktor:ktor-server-netty:$ktor_version"
     compile "io.ktor:ktor-websockets:$ktor_version"
     compile "io.ktor:ktor-gson:$ktor_version"
+
+    compile "org.jetbrains.exposed:exposed-core:$exposed_version"
+    compile "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
 
     compile "org.slf4j:slf4j-api:$slf4j_version"
     compile "org.slf4j:slf4j-log4j12:$slf4j_version"

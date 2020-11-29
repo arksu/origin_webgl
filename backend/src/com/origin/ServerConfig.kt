@@ -7,6 +7,9 @@ object ServerConfig {
     private const val WORK_DIR = "./"
 
     @JvmField
+    var DB_HOST: String? = null
+
+    @JvmField
     var DB_USER: String? = null
 
     @JvmField
@@ -27,8 +30,9 @@ object ServerConfig {
             .parseFile(configFile)
             .withFallback(ConfigFactory.load("server.defaults.conf"))
 
-        DB_USER = conf.getString("db.user")
-        DB_PASSWORD = conf.getString("db.password")
-        DB_NAME = conf.getString("db.name")
+        DB_HOST = conf.getString("origin.db.host")
+        DB_USER = conf.getString("origin.db.user")
+        DB_PASSWORD = conf.getString("origin.db.password")
+        DB_NAME = conf.getString("origin.db.name")
     }
 }
