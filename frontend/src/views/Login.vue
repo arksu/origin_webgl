@@ -106,7 +106,7 @@ export default defineComponent({
         })
       };
 
-      fetch(Net.apiUrl + "/login", requestOptions)
+      fetch(Net.apiUrl + "/api/login", requestOptions)
           .then(async response => {
             if (response.ok) {
               const data = await response.json()

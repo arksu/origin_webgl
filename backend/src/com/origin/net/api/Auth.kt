@@ -2,6 +2,7 @@ package com.origin.net.api
 
 import com.origin.LoginResponse
 import com.origin.UserLogin
+import com.origin.UserSignup
 import com.origin.entity.Account
 import com.origin.scrypt.SCryptUtil
 import io.ktor.application.*
@@ -9,16 +10,17 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import org.slf4j.LoggerFactory
+import java.sql.SQLException
 
 val logger = LoggerFactory.getLogger("Auth")
 
-fun Routing.login() {
+fun Route.login() {
     post("/login") {
         val userLogin = call.receive<UserLogin>()
 //            val account = Database.em().findOne(Account::class.java, "login", userLogin.login)
         val account: Account = Account()
         account.login = "ark"
-        account.password = "!23"
+        account.password = "123"
 
         if (account == null) {
             call.respond(LoginResponse(null, "account not found"))
@@ -43,8 +45,7 @@ fun Routing.login() {
 }
 
 
-/*
-private fun Routing.signup() {
+fun Route.signup() {
     post("/signup") {
         val userSignup = call.receive<UserSignup>()
         Thread.sleep(1000)
@@ -60,7 +61,7 @@ private fun Routing.signup() {
             // TODO auth user
             call.respond(LoginResponse("123"))
         } catch (e: RuntimeException) {
-            Launcher._log.error("register failed RuntimeException ${e.message}", e)
+            logger.error("register failed RuntimeException ${e.message}", e)
             if (e.cause is SQLException && "23000" == (e.cause as SQLException?)!!.sqlState) {
                 val vendorCode = (e.cause as SQLException?)!!.errorCode
                 if (vendorCode == 1062) {
@@ -72,10 +73,8 @@ private fun Routing.signup() {
                 call.respond(LoginResponse(null, "register failed ${e.message}"))
             }
         } catch (e: Throwable) {
-            Launcher._log.error("register failed Throwable ${e.message}", e)
+            logger.error("register failed Throwable ${e.message}", e)
             call.respond(LoginResponse(null, "register failed"))
         }
     }
 }
-
- */

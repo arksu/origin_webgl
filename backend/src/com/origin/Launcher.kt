@@ -42,7 +42,7 @@ object Launcher {
 
             routing {
                 get("/") {
-                    call.respondText("Hello, world!", ContentType.Text.Html)
+                    call.respondText("Hello, world!", ContentType.Text.Plain)
                 }
 
                 api()

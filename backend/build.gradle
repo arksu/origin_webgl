@@ -62,8 +62,6 @@ dependencies {
     compile "com.zaxxer:HikariCP:3.4.5"
     compile "org.mariadb.jdbc:mariadb-java-client:2.5.1"
     compile "com.typesafe:config:1.4.1"
-
-//    compile project(':jpark')
 }
 
 application {

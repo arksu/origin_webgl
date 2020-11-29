@@ -68,7 +68,7 @@ export default defineComponent({
         })
       };
 
-      fetch(Net.apiUrl + "/signup", requestOptions)
+      fetch(Net.apiUrl + "/api/signup", requestOptions)
           .then(async response => {
             if (response.ok) {
               const data = await response.json()
