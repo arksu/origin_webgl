@@ -8,3 +8,5 @@
 **gradle*
 
 backend/out
+backend/build
+

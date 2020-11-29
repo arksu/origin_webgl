@@ -1,19 +1,31 @@
 package com.origin.net.api
 
+import com.origin.LoginResponse
+import com.origin.UserLogin
+import com.origin.entity.Account
+import com.origin.scrypt.SCryptUtil
+import io.ktor.application.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import org.slf4j.LoggerFactory
 
-/*
-private fun Routing.login() {
+val logger = LoggerFactory.getLogger("Auth")
+
+fun Routing.login() {
     post("/login") {
         val userLogin = call.receive<UserLogin>()
 //            val account = Database.em().findOne(Account::class.java, "login", userLogin.login)
-        val account: Account? = null
+        val account: Account = Account()
+        account.login = "ark"
+        account.password = "!23"
 
         if (account == null) {
             call.respond(LoginResponse(null, "account not found"))
         } else {
             try {
                 if (SCryptUtil.check(account.password, userLogin.hash)) {
-                    Launcher._log.debug("user auth successful ${account.login}")
+                    logger.debug("user auth successful ${account.login}")
                     Thread.sleep(1000)
                     // TODO auth , ssid
 //                        if (!GameServer.accountCache.addWithAuth(account)) {
@@ -30,7 +42,6 @@ private fun Routing.login() {
     }
 }
 
- */
 
 /*
 private fun Routing.signup() {

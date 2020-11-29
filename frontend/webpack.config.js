@@ -47,27 +47,20 @@ module.exports = {
             filename: '../dist/index.html'
         }),
         new ProvidePlugin({
-            Buffer: ['buffer', 'Buffer'],
             process: 'process/browser',
         }),
     ],
     resolve: {
         plugins: [new TSConfigPathsPlugin({})],
-        fallback: {
-            "vm": false,
-            "crypto": require.resolve("crypto-browserify"),
-            "stream": require.resolve("stream-browserify")
-        },
         modules: ["node_modules"],
         extensions: [".js", ".ts", ".tsx", ".vue"],
         alias: {
             'vue': '@vue/runtime-dom',
-            "crypto": "crypto-browserify"
         }
     },
     output: {
         filename: '[name].bundle.js',
-        path: path.resolve(path.join(__dirname, "..", "dist")),
+        path: path.resolve(path.join(__dirname, ".", "dist")),
     },
     devServer: {
         historyApiFallback: true,

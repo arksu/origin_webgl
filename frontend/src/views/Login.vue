@@ -28,9 +28,8 @@
 import {defineComponent} from "vue";
 import Client from "@/net/Client";
 import Net from "@/net/Net";
-import {Buffer} from 'buffer';
-import {log2, scrypt} from "@/utils/scrypt/scrypt";
-import {hexToBase64} from "@/utils/Util";
+import {hexToBase64, log2} from "@/utils/Util";
+import {syncScrypt} from "scrypt-js"
 
 export default defineComponent({
   name: "Login",
@@ -69,18 +68,29 @@ export default defineComponent({
       this.errorText = null;
       console.log("loginImpl " + this.login);
 
+      let enc = new TextEncoder();
+      let passwordArray = enc.encode(this.password!!);
+
       // формируем scrypt hash
       const N = 2048, r = 8, p = 1;
       const dkLen = 32;
 
       // генерим случайную соль каждый раз
-      let saltBuffer = new Buffer(16);
+      let saltBuffer = new Uint8Array(16);
       window.crypto.getRandomValues(saltBuffer);
 
-      let saltHex: string = saltBuffer.toString('hex');
+      let saltHex: string = Array.prototype.map.call(
+              saltBuffer,
+              x => ('00' + x.toString(16)).slice(-2)
+          ).join('');
+
+        let hashHex = Array.prototype.map.call(
+            syncScrypt(passwordArray, saltBuffer, N, r, p, dkLen),
+            x => ('00' + x.toString(16)).slice(-2)
+        ).join('');
 
       // собственно сам хэш
-      let hashHex = scrypt(this.password!!, saltBuffer, N, r, p, dkLen).toString('hex');
+      // let hashHex = scrypt(this.password!!, saltBuffer, N, r, p, dkLen).toString('hex');
 
       let params: any = log2(N) << 16 | r << 8 | p;
       params = params.toString(16);
