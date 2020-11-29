@@ -25,6 +25,9 @@ object DatabaseFactory {
             addDataSourceProperty("user", ServerConfig.DB_USER)
             addDataSourceProperty("password", ServerConfig.DB_PASSWORD);
             addDataSourceProperty("loginTimeout", 2);
+            addDataSourceProperty("autoReconnect", true);
+
+            isAutoCommit = false
 
             minimumIdle = 10
             maximumPoolSize = 20
