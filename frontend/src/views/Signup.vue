@@ -77,7 +77,7 @@ export default defineComponent({
               }
               console.log(data)
             } else {
-              const error = "status: " + response.status + " " + (await response.text());
+              const error = "error " + response.status + " " + (await response.text() || response.statusText);
               this.errorText = error;
               console.warn(error)
             }

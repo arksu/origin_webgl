@@ -13,34 +13,39 @@ import io.ktor.routing.*
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.sql.SQLException
 
-val logger = LoggerFactory.getLogger("Auth")
+val logger: Logger = LoggerFactory.getLogger("Auth")
 
 fun Route.login() {
     post("/login") {
         val userLogin = call.receive<UserLogin>()
 
-
-        var account: Account? = null
-        transaction {
+        val account = transaction {
             addLogger(StdOutSqlLogger)
-            account = Account.find { Accounts.login eq userLogin.login }.firstOrNull()
+            val acc = Account.find { Accounts.login eq userLogin.login }.forUpdate().firstOrNull()
+                ?: throw UserNotFound()
+
+            if (SCryptUtil.check(acc.password, userLogin.hash)) {
+                acc.generateSessionId()
+            }
+
+            acc
         }
 
         if (account == null) {
             call.respond(LoginResponse(null, "account not found"))
         } else {
             try {
-                if (SCryptUtil.check(account!!.password, userLogin.hash)) {
-                    logger.debug("user auth successful ${account!!.login}")
-                    Thread.sleep(1000)
+                if (SCryptUtil.check(account.password, userLogin.hash)) {
+                    logger.debug("user auth successful ${account.login}")
                     // TODO auth , ssid
 //                        if (!GameServer.accountCache.addWithAuth(account)) {
 //                            throw GameException("ssid collision, please try again")
 //                        }
-                    call.respond(LoginResponse("123"))
+                    call.respond(LoginResponse(account.ssid))
                 } else {
                     call.respond(LoginResponse(null, "wrong password"))
                 }
@@ -48,11 +53,8 @@ fun Route.login() {
                 call.respond(LoginResponse(null, "error ${e.message}"))
             }
         }
-
-
     }
 }
-
 
 fun Route.signup() {
     post("/signup") {

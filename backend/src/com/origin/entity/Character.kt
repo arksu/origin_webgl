@@ -41,7 +41,7 @@ object Characters : IntIdTable("characters") {
     /**
      * когда был создан персонаж
      */
-    val createTime: Column<Timestamp> = timestamp("createTime", true)
+    val createTime: Column<Timestamp?> = timestamp("createTime", true).nullable()
     val onlineTime: Column<Long> = long("onlineTime").default(0)
 }
 
@@ -55,4 +55,8 @@ class Character(id: EntityID<Int>) : IntEntity(id) {
     var y by Characters.y
     var level by Characters.level
     var onlineTime by Characters.onlineTime
+
+    fun appendOnlineTime(v: Int) {
+        onlineTime += v.toLong()
+    }
 }

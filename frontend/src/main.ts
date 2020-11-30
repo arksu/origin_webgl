@@ -7,9 +7,10 @@ import {createApp} from "vue";
 import Client from "@/net/Client";
 
 // формируем ссылку для работы с бекендом
+let gameServerPort = 8020;
 let proto = "https:" === window.location.protocol ? "wss:" : "ws:";
-Net.url = proto + "//" + window.location.hostname + ":8010";
-Net.apiUrl = window.location.protocol + "//" + window.location.hostname + ":8010"
+Net.url = proto + "//" + window.location.hostname + ":" + gameServerPort;
+Net.apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + gameServerPort
 
 // создадим синглон для клиента где будем хранить наш игровой стейт
 Client.instance = new Client();

@@ -1,14 +1,53 @@
 package com.origin.net
 
 import com.origin.AccountCache
+import com.origin.net.api.UserNotFound
+import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.gson.*
+import io.ktor.http.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.server.cio.*
+import io.ktor.server.engine.*
+import io.ktor.util.*
+import io.ktor.websocket.*
 import org.slf4j.LoggerFactory
 
-//class GameServer(address: InetSocketAddress?, decoderCount: Int) : WSServer(address, decoderCount) {
-class GameServer()  {
-    companion object {
-        private val _log = LoggerFactory.getLogger(GameServer::class.java.name)
-        private val accountCache = AccountCache()
+@KtorExperimentalAPI
+object GameServer {
+    fun start() {
+        val server = embeddedServer(CIO, port = 8020) {
+            install(StatusPages) {
+                exception<UserNotFound> {
+                    call.respond(HttpStatusCode.Forbidden, "User not found")
+                }
+                exception<Throwable> { cause ->
+                    call.respond(HttpStatusCode.InternalServerError, cause.message!!)
+                }
+            }
+            install(CORS) {
+                cors()
+            }
+            install(WebSockets)
+            install(ContentNegotiation) {
+                gson {
+                    setPrettyPrinting()
+                }
+            }
+
+            routing {
+                get("/") {
+                    call.respondText("Hello, world!", ContentType.Text.Plain)
+                }
+                api()
+            }
+        }
+        server.start(wait = true)
     }
+
+    private val _log = LoggerFactory.getLogger(GameServer::class.java.name)
+    private val accountCache = AccountCache()
 
 /*
 
@@ -61,48 +100,7 @@ class GameServer()  {
         return character
     }
 
-    /**
-     * регистрация нового аккаунта
-     */
-    @Throws(InterruptedException::class, GameException::class)
-    fun registerNewAccount(session: GameSession, data: Map<String, Any>): Any {
-        val account = Account()
-        account.login = data["login"] as String?
-        account.password = data["password"] as String?
-        account.email = data["email"] as String?
-        return try {
-            account.persist()
-            loginUser(session, account)
-        } catch (e: RuntimeException) {
-            if (e.cause is SQLException && "23000" == (e.cause as SQLException?)!!.sqlState) {
-                throw GameException("username busy")
-            } else {
-                throw GameException("register failed")
-            }
-        } catch (e: Throwable) {
-            throw GameException("register failed")
-        }
-    }
 
-    /**
-     * вход в систему
-     */
-    @Throws(InterruptedException::class, GameException::class)
-    fun login(session: GameSession, data: Map<String, Any>): Any {
-        val login = data["login"] as String?
-        val password = data["password"] as String?
-        val account = Database.em().findOne(Account::class.java, "login", login)
-        return if (account != null) {
-            if (SCryptUtil.check(account.password, password)) {
-                _log.debug("user auth: " + account.login)
-                loginUser(session, account)
-            } else {
-                throw GameException("wrong password")
-            }
-        } else {
-            throw GameException("user not found")
-        }
-    }
 
     @Throws(InterruptedException::class)
     private fun loginUser(session: GameSession, account: Account): Any {

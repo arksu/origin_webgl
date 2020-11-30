@@ -57,15 +57,7 @@ export default defineComponent({
       // запустим процедуру логина
       this.loginImpl();
     },
-    /**
-     * авторизация на сервере
-     */
-    loginImpl: function () {
-      // взведем флаг попытки входа
-      Client.instance.wasLoginTry = true;
-
-      this.isProcessing = true;
-      this.errorText = null;
+    makeHash: function (): string {
       console.log("loginImpl " + this.login);
 
       let enc = new TextEncoder();
@@ -80,14 +72,14 @@ export default defineComponent({
       window.crypto.getRandomValues(saltBuffer);
 
       let saltHex: string = Array.prototype.map.call(
-              saltBuffer,
-              x => ('00' + x.toString(16)).slice(-2)
-          ).join('');
+          saltBuffer,
+          x => ('00' + x.toString(16)).slice(-2)
+      ).join('');
 
-        let hashHex = Array.prototype.map.call(
-            syncScrypt(passwordArray, saltBuffer, N, r, p, dkLen),
-            x => ('00' + x.toString(16)).slice(-2)
-        ).join('');
+      let hashHex = Array.prototype.map.call(
+          syncScrypt(passwordArray, saltBuffer, N, r, p, dkLen),
+          x => ('00' + x.toString(16)).slice(-2)
+      ).join('');
 
       // собственно сам хэш
       // let hashHex = scrypt(this.password!!, saltBuffer, N, r, p, dkLen).toString('hex');
@@ -96,6 +88,19 @@ export default defineComponent({
       params = params.toString(16);
       let hash = '$s0$' + params + '$' + hexToBase64(saltHex) + '$' + hexToBase64(hashHex);
       console.log("password hash: " + hash)
+      return hash;
+    },
+    /**
+     * авторизация на сервере
+     */
+    loginImpl: function () {
+      // взведем флаг попытки входа
+      Client.instance.wasLoginTry = true;
+
+      this.isProcessing = true;
+      this.errorText = null;
+
+      let hash = this.makeHash();
 
       const requestOptions = {
         method: 'POST',
@@ -115,7 +120,7 @@ export default defineComponent({
               }
               console.log(data)
             } else {
-              const error = "status: " + response.status + " " + (await response.text());
+              const error = "error " + response.status + " " + (await response.text() || response.statusText);
               this.errorText = error;
               console.warn(error)
             }

@@ -17,7 +17,7 @@ object Accounts : IntIdTable("accounts") {
     val password: Column<String> = varchar("password", 64)
     val email: Column<String?> = varchar("email", 64).nullable().uniqueIndex()
     val ssid: Column<String?> = char("ssid", 32).nullable()
-    val createTime: Column<Timestamp> = timestamp("createTime", true)
+    val createTime: Column<Timestamp?> = timestamp("createTime", true).nullable()
     val onlineTime: Column<Long> = long("onlineTime").default(0)
 }
 
@@ -29,8 +29,6 @@ class Account(id: EntityID<Int>) : IntEntity(id) {
     var password by Accounts.password
 
     var email by Accounts.email
-
-    val createTime by Accounts.createTime
 
     var onlineTime by Accounts.onlineTime
 

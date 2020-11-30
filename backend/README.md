@@ -14,8 +14,9 @@ for Origin MMO game
 
 - install JVM 8+
 - install MariaDB database for your platform
-- create a database into MariaDB named 'origin'
-- the server is configured to start on [8020](http://localhost:8020).
+- start MariaDB server
+- create a database into your MariaDB server named 'origin'
+- game server is configured to start on [8020](http://localhost:8020) port.
 
 Build:
 > gradle clean build
