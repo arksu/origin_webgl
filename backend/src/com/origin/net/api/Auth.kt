@@ -14,13 +14,13 @@ import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.LoggerFactory
+import java.sql.SQLException
 
 val logger = LoggerFactory.getLogger("Auth")
 
 fun Route.login() {
     post("/login") {
         val userLogin = call.receive<UserLogin>()
-//            val account = Database.em().findOne(Account::class.java, "login", userLogin.login)
 
 
         var account: Account? = null
@@ -57,12 +57,16 @@ fun Route.login() {
 fun Route.signup() {
     post("/signup") {
         val userSignup = call.receive<UserSignup>()
-        Thread.sleep(1000)
-/*
-        val account = Account()
-        account.login = userSignup.login
-        account.password = userSignup.password
-        account.email = userSignup.email
+
+        var account: Account? = null
+
+        transaction {
+            account = Account.new {
+                login = userSignup.login
+                password = userSignup.password
+            }
+        }
+
 
         try {
             // TODO save
@@ -86,6 +90,6 @@ fun Route.signup() {
             call.respond(LoginResponse(null, "register failed"))
         }
 
- */
+
     }
 }

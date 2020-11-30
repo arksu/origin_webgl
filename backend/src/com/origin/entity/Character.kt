@@ -1,66 +1,58 @@
 package com.origin.entity
 
-import com.google.gson.annotations.SerializedName
+import com.origin.timestamp
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.Column
 import java.sql.Timestamp
 
 /**
  * игровой персонаж игрока
  */
-//@Entity
-//@Table(name = "characters")
-class Character {
-//    @Id
-//    @Column(name = "id", columnDefinition = "INT(11) UNSIGNED NOT NULL AUTO_INCREMENT")
-    @SerializedName("id")
-    var id = 0
-
+object Characters : IntIdTable("characters") {
     /**
      * ид аккаунта к которому привязан персонаж
      */
-//    @Column(name = "accountId", columnDefinition = "INT(11) UNSIGNED NOT NULL", nullable = false)
-    @Transient
-    var accountId = 0
+    val accountId: Column<Int> = integer("accountId")
 
     /**
      * имя персонажа (выводим на головой в игровом клиенте)
      */
-//    @Column(name = "name", columnDefinition = "VARCHAR(16) NOT NULL", nullable = false)
-    @SerializedName("name")
-    var name: String? = null
+    val name: Column<String?> = varchar("name", 16).nullable()
 
     /**
      * на каком континенте находится игрок, либо ид дома (инстанса, локации)
      */
-//    @Column(name = "region", columnDefinition = "INT(11) UNSIGNED NOT NULL")
-    @SerializedName("region")
-    var region = 0
+    val region: Column<Int> = integer("region")
 
     /**
      * координаты в игровых еденицах внутри континента (из этого расчитываем супергрид и грид)
      */
-//    @Column(name = "x", columnDefinition = "INT(11) UNSIGNED NOT NULL")
-    @SerializedName("x")
-    var x = 0
-
-//    @Column(name = "y", columnDefinition = "INT(11) UNSIGNED NOT NULL")
-    @SerializedName("y")
-    var y = 0
+    val x: Column<Int> = integer("x")
+    val y: Column<Int> = integer("y")
 
     /**
      * уровень (слой) глубины где находится игрок
      */
-//    @Column(name = "level", columnDefinition = "INT(11) UNSIGNED NOT NULL")
-    @SerializedName("level")
-    var level = 0
+    val level: Column<Int> = integer("level")
 
     /**
      * когда был создан персонаж
      */
-//    @Column(name = "createTime", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
-    @Transient
-    val createTime: Timestamp? = null
+    val createTime: Column<Timestamp> = timestamp("createTime", true)
+    val onlineTime: Column<Long> = long("onlineTime").default(0)
+}
 
-//    @Column(name = "onlineTime", columnDefinition = "BIGINT UNSIGNED NOT NULL DEFAULT 0")
-    var onlineTime: Long = 0
-        private set
+class Character(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<Character>(Characters)
+
+    var accountId by Characters.accountId
+    var name by Characters.name
+    var region by Characters.region
+    var x by Characters.x
+    var y by Characters.y
+    var level by Characters.level
+    var onlineTime by Characters.onlineTime
 }

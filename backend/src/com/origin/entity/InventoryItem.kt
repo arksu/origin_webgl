@@ -1,51 +1,55 @@
 package com.origin.entity
 
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.Column
+
 /**
  * предмет в инвентаре
  */
-//@Entity
-//@Table(name = "inventory")
-class InventoryItem {
-    //    @Id
-//    @Column(name = "id", columnDefinition = "INT(11) NOT NULL AUTO_INCREMENT")
-    val id = 0
-
+object InventoryItems : IntIdTable("inventory") {
     /**
      * ид инвентаря (родителя, вещи в которой находится этот предмет
      */
-//    @Column(name = "inventoryId", columnDefinition = "INT(11) NOT NULL")
-    var inventoryId = 0
+    val inventoryId: Column<Int> = integer("inventoryId")
 
     /**
      * тип предмета
      */
-//    @Column(name = "type", columnDefinition = "INT(11) NOT NULL")
-    var type = 0
+    val type: Column<Int> = integer("type")
 
     /**
      * положение внутри инвентаря
      */
-//    @Column(name = "x", columnDefinition = "INT(11) NOT NULL")
-    var x = 0
-
-    //    @Column(name = "y", columnDefinition = "INT(11) NOT NULL")
-    var y = 0
+    val x: Column<Int> = integer("x")
+    val y: Column<Int> = integer("y")
 
     /**
      * качество вещи
      */
-//    @Column(name = "quality", columnDefinition = "INT(11) NOT NULL")
-    var quality = 0
+    val quality: Column<Int> = integer("quality")
 
     /**
      * количество в стаке
      */
-//    @Column(name = "count", columnDefinition = "INT(11) NOT NULL")
-    var count = 0
+    val count: Column<Int> = integer("count").default(1)
 
     /**
      * тик (если вещь может имзенятся с течением времени
      */
-//    @Column(name = "tick", columnDefinition = "INT(11) NOT NULL")
-    var tick = 0
+    val tick: Column<Int> = integer("tick").default(0)
+}
+
+class InventoryItem(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<InventoryItem>(InventoryItems)
+
+    var inventoryId by InventoryItems.inventoryId
+    var type by InventoryItems.type
+    var x by InventoryItems.x
+    var y by InventoryItems.y
+    var quality by InventoryItems.quality
+    var count by InventoryItems.count
+    var tick by InventoryItems.tick
 }

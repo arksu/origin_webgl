@@ -1,11 +1,27 @@
 package com.origin
 
 import com.origin.entity.Accounts
+import com.origin.entity.Characters
+import com.origin.entity.Grids
+import com.origin.entity.InventoryItems
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.sql.Timestamp
+
+class TimestampColumnType(private val defaultCurrentTimestamp: Boolean) : ColumnType() {
+    override fun sqlType(): String = "TIMESTAMP ${if (defaultCurrentTimestamp) "DEFAULT CURRENT_TIMESTAMP" else ""}"
+
+    override fun valueFromDB(value: Any): Timestamp = when (value) {
+        is Timestamp -> value
+        else -> error("Unexpected value of type Byte: $value of ${value::class.qualifiedName}")
+    }
+}
+
+fun Table.timestamp(name: String, defaultCurrentTimestamp: Boolean = false): Column<Timestamp> =
+    registerColumn(name, TimestampColumnType(defaultCurrentTimestamp))
+
 
 object DatabaseFactory {
 
@@ -14,7 +30,7 @@ object DatabaseFactory {
         Database.connect(datasource)
 
         transaction {
-            SchemaUtils.createMissingTablesAndColumns(Accounts)
+            SchemaUtils.createMissingTablesAndColumns(Accounts, Grids, Characters, InventoryItems)
         }
     }
 
