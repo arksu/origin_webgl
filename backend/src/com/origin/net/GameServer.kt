@@ -1,7 +1,9 @@
 package com.origin.net
 
 import com.origin.AccountCache
+import com.origin.net.api.UserExists
 import com.origin.net.api.UserNotFound
+import com.origin.net.api.WrongPassword
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
@@ -14,16 +16,27 @@ import io.ktor.util.*
 import io.ktor.websocket.*
 import org.slf4j.LoggerFactory
 
-@KtorExperimentalAPI
+val logger = LoggerFactory.getLogger(GameServer::class.java)
+
 object GameServer {
+    val accountCache = AccountCache()
+
+    @KtorExperimentalAPI
     fun start() {
         val server = embeddedServer(CIO, port = 8020) {
             install(StatusPages) {
                 exception<UserNotFound> {
                     call.respond(HttpStatusCode.Forbidden, "User not found")
                 }
+                exception<WrongPassword> {
+                    call.respond(HttpStatusCode.Forbidden, "Wrong password")
+                }
+                exception<UserExists> {
+                    call.respond(HttpStatusCode.Forbidden, "User exists")
+                }
                 exception<Throwable> { cause ->
-                    call.respond(HttpStatusCode.InternalServerError, cause.message!!)
+                    logger.error("error ${cause.javaClass.simpleName} - ${cause.message} ", cause)
+                    call.respond(HttpStatusCode.InternalServerError, cause.message ?: cause.javaClass.simpleName)
                 }
             }
             install(CORS) {
@@ -46,8 +59,6 @@ object GameServer {
         server.start(wait = true)
     }
 
-    private val _log = LoggerFactory.getLogger(GameServer::class.java.name)
-    private val accountCache = AccountCache()
 
 /*
 

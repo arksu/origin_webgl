@@ -63,7 +63,7 @@ export default defineComponent({
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           login: this.login,
-          email: this.email,
+          email: this.email == "" ? null : this.email,
           password: this.password
         })
       };

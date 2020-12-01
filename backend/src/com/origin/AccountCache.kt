@@ -23,12 +23,13 @@ class AccountCache {
      *
      * @return true если успешно добавили и в кэше НЕ было такого ssid, false в случае если коллизия ssid
      */
-    fun addWithAuth(account: Account): Boolean {
-        // генерим аккаунту новый ssid
-        account.generateSessionId()
-        // обновляеем в кэше только если еще нет такого ssid
-        val present = accounts.computeIfAbsent(account.ssid) { account }
-        // если в кэше такой ssid был вернем ложь
-        return present == account
+    fun addWithAuth(account: Account) {
+        do {
+            // генерим аккаунту новый ssid
+            account.generateSessionId()
+            // обновляеем в кэше только если еще нет такого ssid
+            val present = accounts.computeIfAbsent(account.ssid) { account }
+            // если в кэше такой ssid был вернем ложь
+        } while (present != account)
     }
 }
