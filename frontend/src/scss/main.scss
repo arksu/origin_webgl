@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=BioRhyme:wght@400&display=swap');
+
 body {
   padding: 0;
   margin: 0;
@@ -34,14 +36,17 @@ canvas {
   max-width: 600px;
 }
 
-.login-form {
+.login-panel {
   border-radius: 18px;
   padding: 30px 30px 30px;
   text-align: center;
   background: rgba(16, 96, 109, 0.65);
-  color: #bebebe;
+  color: #d5eeed;
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+
+  font-family: 'BioRhyme', serif;
+  font-size: 19px;
 }
 
 .logo-container {
@@ -55,19 +60,17 @@ canvas {
   vertical-align: middle;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=BioRhyme:wght@400&display=swap');
-
-.login-form input[type="text"], .login-form input[type="password"] {
+.login-panel input[type="text"], .login-panel input[type="password"] {
   margin-bottom: 25px;
   padding: 8px 10px;
   width: 92.5%;
-  font-size: 19px;
   outline: none;
   background: transparent;
   border: 0;
   border-bottom: 1px solid #bebebe;
   border-radius: 4px;
   font-family: 'BioRhyme', serif;
+  font-size: 19px;
   letter-spacing: 1.6px;
   color: #d5eeed;
 }
@@ -76,7 +79,7 @@ canvas {
   color: #bebebe;
 }
 
-.login-form input[type="submit"] {
+.login-button {
   font-size: 19px;
   padding: 10px 20px;
   letter-spacing: 1.2px;
@@ -95,14 +98,15 @@ canvas {
   transition-duration: 0.9s;
 }
 
-.login-form input[type="submit"]:hover {
+.login-button:hover {
   -webkit-transition-duration: 0.5s;
   transition-duration: 0.6s;
   background: rgb(34, 140, 190);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
   animation: btn-glow 0.6s ease-in-out infinite alternate;
 }
-.login-form input[type="submit"]:disabled {
+
+.login-button:disabled {
   -webkit-transition-duration: 0.1s;
   transition-duration: 0.6s;
   background: rgb(86, 86, 91);
@@ -146,6 +150,7 @@ canvas {
   color: #cdd2e0;
   background-color: rgba(252, 13, 13, 0.5);
 }
+
 /*-- responsive media queries --*/
 
 
@@ -169,7 +174,7 @@ canvas {
   .form-container {
     width: 46%;
   }
-  .login-form {
+  .login-panel {
     padding: 25px;
     border-radius: 15px;
   }
@@ -206,14 +211,14 @@ canvas {
 }
 
 @media screen and (max-width: 640px) {
-  .login-form {
+  .login-panel {
     padding: 25px 25px;
     border-radius: 10px;
   }
-  .login-form input[type="text"], .login-form input[type="password"] {
+  .login-panel input[type="text"], .login-panel input[type="password"] {
     font-size: 15px;
   }
-  .login-form input[type="submit"] {
+  .login-panel input[type="submit"] {
     font-size: 15px;
   }
   .signup-link {
@@ -231,17 +236,17 @@ canvas {
 }
 
 @media screen and (max-width: 480px) {
-  .login-form {
+  .login-panel {
     padding: 15px 15px;
     border-radius: 10px;
   }
   .form-container {
     width: 92%;
   }
-  .login-form input[type="text"], .login-form input[type="password"] {
+  .login-panel input[type="text"], .login-panel input[type="password"] {
     font-size: 14px;
   }
-  .login-form input[type="submit"] {
+  .login-panel input[type="submit"] {
     font-size: 14px;
   }
   .signup-link {
@@ -267,3 +272,5 @@ canvas {
 @media screen and (max-width: 320px) {
 
 }
+
+@import "characters";

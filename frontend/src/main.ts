@@ -1,3 +1,6 @@
+import '@fortawesome/fontawesome-free/js/fontawesome'
+import '@fortawesome/fontawesome-free/js/solid'
+
 import router from "@/router";
 import App from "@/App.vue";
 

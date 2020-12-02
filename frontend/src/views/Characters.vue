@@ -1,12 +1,15 @@
 <template>
   <div class="padding-all">
     <div class="form-container">
-      ok
-      <ul>
-        <li v-for="c in list">
-          {{ c.id }} - {{ c.name }}
-        </li>
-      </ul>
+      <div class="login-panel">
+        <div class="error-message" v-if="errorText != null">
+          {{ errorText }}
+        </div>
+        Characters
+        <char-row v-for="c in list" :id="c.id" :name="c.name"/>
+        <input type="button" value="logout" :disabled="isProcessing" class="login-button" :onclick="exit">
+
+      </div>
     </div>
   </div>
 </template>
@@ -15,6 +18,8 @@
 import {defineComponent} from "vue";
 import Net from "@/net/Net";
 import Client from "@/net/Client";
+import CharacterRow from "@/views/CharacterRow.vue";
+import router from "@/router";
 
 type CharacterResponse = {
   id: number
@@ -26,6 +31,9 @@ type Response = {
 
 export default defineComponent({
   name: "Characters",
+  components: {
+    'char-row': CharacterRow
+  },
   data() {
     return {
       list: null as Array<CharacterResponse> | null,
@@ -50,6 +58,12 @@ export default defineComponent({
                 this.errorText = data.error;
               } else if (data.list !== undefined) {
                 this.list = data.list;
+                const e = 5 - this.list!!.length
+                for (let i = 0; i < e; i++) {
+                  this.list!!.push({id: 0, name: 'Create New'})
+                }
+              } else {
+
               }
               console.log(data)
             } else {
@@ -65,6 +79,10 @@ export default defineComponent({
           .finally(() => {
             this.isProcessing = false;
           });
+    },
+    exit: function () {
+      Client.instance.ssid = undefined;
+      router.push({name: "Login"})
     }
   },
   mounted() {

@@ -5,6 +5,7 @@ import Game from "@/views/Game.vue";
 import NotFound from "@/views/NotFound.vue";
 import Client from "@/net/Client";
 import Characters from "@/views/Characters.vue";
+import NewCharacter from "@/views/NewCharacter.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -26,6 +27,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/characters",
         name: "Characters",
         component: Characters
+    },
+    {
+        path: "/new-character",
+        name: "NewCharacter",
+        component: NewCharacter
     },
     {
         path: "/about",

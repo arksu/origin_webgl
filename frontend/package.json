@@ -29,6 +29,7 @@
     "webpack-env": "^0.8.0"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
     "lodash": "^4.17.20",
     "pixi.js": "^5.3.3",
     "scrypt-js": "^3.0.1",

@@ -5,7 +5,7 @@
       <div class="logo-container">
         <img src="assets/logo.png" alt="logo">
       </div>
-      <div class="login-form">
+      <div class="login-panel">
         <form @submit="submit" action="#">
           <div class="error-message" v-if="errorText != null">
             {{ errorText }}
@@ -14,7 +14,7 @@
           <input type="text" placeholder="Email (optional)" v-model="email">
           <input type="password" placeholder="Password" required v-model="password">
           <br>
-          <input type="submit" value="register" :disabled="isProcessing">
+          <input type="submit" value="register" :disabled="isProcessing" class="login-button">
           <div class="signup-link">
             Already have an account?
             <router-link :to=" { name: 'Login' }">Sign in</router-link>
@@ -28,6 +28,8 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import Net from "@/net/Net";
+import Client from "@/net/Client";
+import router from "@/router";
 
 export default defineComponent({
   name: "Signup",
@@ -74,6 +76,9 @@ export default defineComponent({
               const data = await response.json()
               if (data.error !== undefined) {
                 this.errorText = data.error;
+              } else if (data.ssid !== undefined) {
+                Client.instance.ssid = data.ssid;
+                await router.push({name: "Characters"})
               }
               console.log(data)
             } else {

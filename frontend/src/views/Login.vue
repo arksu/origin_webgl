@@ -5,7 +5,7 @@
       <div class="logo-container">
         <img src="assets/logo.png" alt="logo">
       </div>
-      <div class="login-form">
+      <div class="login-panel">
         <form @submit="submit" action="#">
           <div class="error-message" v-if="errorText != null">
             {{ errorText }}
@@ -13,7 +13,7 @@
           <input v-focus type="text" placeholder="Login" required v-model="login">
           <input type="password" placeholder="Password" required v-model="password">
           <br>
-          <input type="submit" value="login" :disabled="isProcessing">
+          <input type="submit" value="login" :disabled="isProcessing" class="login-button">
           <div class="signup-link">
             Not a member?
             <router-link :to="{ name: 'Signup'}">Signup now</router-link>
@@ -47,7 +47,6 @@ export default defineComponent({
      * обработка формы ввода
      */
     submit: function (e: Event) {
-      console.log("submitted");
       // не дадим отработать стандартному обработчику
       e.preventDefault();
 
@@ -120,7 +119,7 @@ export default defineComponent({
                 this.errorText = data.error;
               } else if (data.ssid !== undefined) {
                 Client.instance.ssid = data.ssid;
-                router.push({name: "Characters"})
+                await router.push({name: "Characters"})
               }
               console.log(data)
             } else {
