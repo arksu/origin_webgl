@@ -30,6 +30,7 @@ import Client from "@/net/Client";
 import Net from "@/net/Net";
 import {hexToBase64, log2} from "@/utils/Util";
 import {syncScrypt} from "scrypt-js"
+import router from "@/router";
 
 export default defineComponent({
   name: "Login",
@@ -117,6 +118,9 @@ export default defineComponent({
               const data = await response.json()
               if (data.error !== undefined) {
                 this.errorText = data.error;
+              } else if (data.ssid !== undefined) {
+                Client.instance.ssid = data.ssid;
+                router.push({name: "Characters"})
               }
               console.log(data)
             } else {

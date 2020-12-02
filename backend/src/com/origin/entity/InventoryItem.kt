@@ -4,7 +4,6 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.Column
 
 /**
  * предмет в инвентаре
@@ -13,33 +12,33 @@ object InventoryItems : IntIdTable("inventory") {
     /**
      * ид инвентаря (родителя, вещи в которой находится этот предмет
      */
-    val inventoryId: Column<Int> = integer("inventoryId")
+    val inventoryId = integer("inventoryId")
 
     /**
      * тип предмета
      */
-    val type: Column<Int> = integer("type")
+    val type = integer("type")
 
     /**
      * положение внутри инвентаря
      */
-    val x: Column<Int> = integer("x")
-    val y: Column<Int> = integer("y")
+    val x = integer("x")
+    val y = integer("y")
 
     /**
      * качество вещи
      */
-    val quality: Column<Int> = integer("quality")
+    val quality = integer("quality")
 
     /**
      * количество в стаке
      */
-    val count: Column<Int> = integer("count").default(1)
+    val count = integer("count").default(1)
 
     /**
      * тик (если вещь может имзенятся с течением времени
      */
-    val tick: Column<Int> = integer("tick").default(0)
+    val tick = integer("tick").default(0)
 }
 
 class InventoryItem(id: EntityID<Int>) : IntEntity(id) {

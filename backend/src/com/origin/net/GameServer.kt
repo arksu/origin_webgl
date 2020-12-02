@@ -1,6 +1,7 @@
 package com.origin.net
 
 import com.origin.AccountCache
+import com.origin.net.api.AuthorizationException
 import com.origin.net.api.UserExists
 import com.origin.net.api.UserNotFound
 import com.origin.net.api.WrongPassword
@@ -21,12 +22,17 @@ val logger = LoggerFactory.getLogger(GameServer::class.java)
 object GameServer {
     val accountCache = AccountCache()
 
+    val SSID_HEADER = HttpHeaders.Authorization
+
     @KtorExperimentalAPI
     fun start() {
         val server = embeddedServer(CIO, port = 8020) {
             install(StatusPages) {
                 exception<UserNotFound> {
                     call.respond(HttpStatusCode.Forbidden, "User not found")
+                }
+                exception<AuthorizationException> {
+                    call.respond(HttpStatusCode.Unauthorized, "Not authorized")
                 }
                 exception<WrongPassword> {
                     call.respond(HttpStatusCode.Forbidden, "Wrong password")

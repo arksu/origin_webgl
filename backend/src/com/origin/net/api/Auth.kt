@@ -8,8 +8,6 @@ import io.ktor.application.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -20,14 +18,13 @@ val logger: Logger = LoggerFactory.getLogger("Auth")
 
 data class UserLogin(val login: String, val hash: String)
 data class UserSignup(val login: String, val email: String?, val password: String)
-data class LoginResponse(val ssid: String?, val error: String? = null)
+data class LoginResponse(val ssid: String)
 
 fun Route.login() {
     post("/login") {
         val userLogin = call.receive<UserLogin>()
 
         val account = transaction {
-            addLogger(StdOutSqlLogger)
             val acc =
                 Account.find { Accounts.login eq userLogin.login }.forUpdate().firstOrNull() ?: throw UserNotFound()
 
@@ -40,7 +37,7 @@ fun Route.login() {
         }
 
         logger.debug("user auth successful ${account.login}")
-        call.respond(LoginResponse(account.ssid))
+        call.respond(LoginResponse(account.ssid!!))
     }
 }
 
@@ -65,6 +62,6 @@ fun Route.signup() {
         }
 
         logger.debug("user register successful ${account.login}")
-        call.respond(LoginResponse(account.ssid))
+        call.respond(LoginResponse(account.ssid!!))
     }
 }

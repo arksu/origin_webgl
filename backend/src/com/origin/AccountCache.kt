@@ -60,8 +60,8 @@ class AccountCache {
         }
     }
 
-    fun get(ssid: String): Account? {
+    fun get(ssid: String?): Account? {
         // РЕАЛИЗАЦИЯ варианта 1 (описание выше)
-        return accounts[ssid]
+        return if (ssid == null) null else accounts[ssid]
     }
 }

@@ -5,8 +5,6 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.Column
-import java.sql.Timestamp
 
 /**
  * игровой персонаж игрока
@@ -15,40 +13,40 @@ object Characters : IntIdTable("characters") {
     /**
      * ид аккаунта к которому привязан персонаж
      */
-    val accountId: Column<Int> = integer("accountId")
+    val account = reference("accountId", Accounts)
 
     /**
      * имя персонажа (выводим на головой в игровом клиенте)
      */
-    val name: Column<String?> = varchar("name", 16).nullable()
+    val name = varchar("name", 16)
 
     /**
      * на каком континенте находится игрок, либо ид дома (инстанса, локации)
      */
-    val region: Column<Int> = integer("region")
+    val region = integer("region")
 
     /**
      * координаты в игровых еденицах внутри континента (из этого расчитываем супергрид и грид)
      */
-    val x: Column<Int> = integer("x")
-    val y: Column<Int> = integer("y")
+    val x = integer("x")
+    val y = integer("y")
 
     /**
      * уровень (слой) глубины где находится игрок
      */
-    val level: Column<Int> = integer("level")
+    val level = integer("level")
 
     /**
      * когда был создан персонаж
      */
-    val createTime: Column<Timestamp?> = timestamp("createTime", true).nullable()
-    val onlineTime: Column<Long> = long("onlineTime").default(0)
+    val createTime = timestamp("createTime", true).nullable()
+    val onlineTime = long("onlineTime").default(0)
 }
 
 class Character(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Character>(Characters)
 
-    var accountId by Characters.accountId
+    var account by Account referencedOn Characters.account
     var name by Characters.name
     var region by Characters.region
     var x by Characters.x

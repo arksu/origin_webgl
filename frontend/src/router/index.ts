@@ -4,6 +4,7 @@ import Signup from "@/views/Signup.vue";
 import Game from "@/views/Game.vue";
 import NotFound from "@/views/NotFound.vue";
 import Client from "@/net/Client";
+import Characters from "@/views/Characters.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -20,6 +21,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/signup",
         name: "Signup",
         component: Signup
+    },
+    {
+        path: "/characters",
+        name: "Characters",
+        component: Characters
     },
     {
         path: "/about",
