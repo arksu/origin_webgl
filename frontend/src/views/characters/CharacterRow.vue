@@ -44,6 +44,7 @@ export default defineComponent({
       console.log("delete " + this.id)
 
       if (!Client.instance.ssid) {
+        Client.instance.networkError("Auth required")
         return;
       }
 
@@ -54,21 +55,18 @@ export default defineComponent({
 
       fetch(Net.apiUrl + "/api/characters/" + this.id, requestOptions)
           .then(async response => {
+            console.log(response)
             if (response.ok) {
-              const data = await response.json()
-              if (data.ssid !== undefined) {
-                Client.instance.ssid = data.ssid;
-                await router.push({name: "Game"})
+              const data = await response.text()
+              if (data !== "ok") {
+                Client.instance.networkError("failed delete character");
               }
             } else {
-              const error = "error " + response.status + " " + (await response.text() || response.statusText);
-              Client.instance.networkError(error);
-              console.warn(error)
+              Client.instance.networkError("error " + response.status + " " + (await response.text() || response.statusText));
             }
           })
           .catch(error => {
             Client.instance.networkError(error.message || error);
-            console.error('There was an error!', error);
           })
           .finally(() => {
             this.isProcessing = false;

@@ -4,12 +4,7 @@
     <div class="form-container">
       <div class="login-panel">
         <form @submit="submit" action="#">
-
-          <div class="error-message" v-if="errorText != null">
-            {{ errorText }}
-          </div>
           Create new character
-
           <input v-focus type="text" placeholder="Name" required v-model="name">
           <input type="button" value="back" :disabled="isProcessing" class="login-button button-padding"
                  :onclick="back">
@@ -33,7 +28,6 @@ export default defineComponent({
   data() {
     return {
       name: null as string | null,
-      errorText: null as string | null,
       isProcessing: false as boolean
     }
   },
@@ -41,18 +35,16 @@ export default defineComponent({
     submit: function (e: Event) {
       // не дадим отработать стандартному обработчику
       e.preventDefault();
-      console.log("create")
+
       if (!Client.instance.ssid) {
-        this.errorText = "no ssid"
+        Client.instance.networkError("Auth required")
         return;
       }
 
-
       this.isProcessing = true;
-      this.errorText = null;
 
       const requestOptions = {
-        method: 'POST',
+        method: 'PUT',
         headers: {'Content-Type': 'application/json', 'Authorization': Client.instance.ssid},
         body: JSON.stringify({
           name: this.name,
@@ -63,28 +55,24 @@ export default defineComponent({
           .then(async response => {
             if (response.ok) {
               const data = await response.json()
-              if (data.error !== undefined) {
-                this.errorText = data.error;
-              } else if (data.ssid !== undefined) {
-                Client.instance.ssid = data.ssid;
-                await router.push({name: "Game"})
+              if (data.name !== undefined) {
+                // await router.push({name: "Game"})
+                await router.push({name: "Characters"})
+              } else {
+                Client.instance.networkError("failed create character");
               }
             } else {
-              const error = "error " + response.status + " " + (await response.text() || response.statusText);
-              this.errorText = error;
-              console.warn(error)
+              Client.instance.networkError("error " + response.status + " " + (await response.text() || response.statusText));
             }
           })
           .catch(error => {
-            this.errorText = error.message || error;
-            console.error('There was an error!', error);
+            Client.instance.networkError(error.message || error);
           })
           .finally(() => {
             this.isProcessing = false;
           });
     },
     back() {
-      console.log("back")
       router.push({name: "Characters"})
     }
   }

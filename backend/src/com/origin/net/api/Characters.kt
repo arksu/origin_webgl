@@ -31,14 +31,19 @@ fun Route.getCharactersList() {
 }
 
 data class CreateCharacter(val name: String)
-data class CreateCharacterResponse(val name: String)
+data class CreateCharacterResponse(val name: String, val id: Int)
 
 fun Route.createCharacter() {
-    post("/characters") {
+    put("/characters") {
         val acc = getAccountBySsid()
         val data = call.receive<CreateCharacter>()
 
-        transaction {
+        val newChar = transaction {
+            val c = Character.find { Characters.account eq acc.id }.count()
+            if (c >= 5) {
+                throw BadRequest("Characters limit exceed")
+            }
+
             Character.new {
                 account = acc
                 name = data.name
@@ -49,14 +54,24 @@ fun Route.createCharacter() {
                 level = 0
             }
         }
-        call.respond(CreateCharacterResponse(data.name))
+
+        call.respond(CreateCharacterResponse(newChar.name, newChar.id.value))
     }
 }
 
 fun Route.deleteCharacter() {
     delete("/characters/{id}") {
         val account = getAccountBySsid()
-        val id = call.parameters["id"]
+        val id: Int = Integer.parseInt(call.parameters["id"])
+        transaction {
+            val char = Character.findById(id)
+            if (char == null || char.account.id.value != account.id.value) {
+                throw BadRequest("Wrong character")
+            } else {
+                char.delete()
+            }
+        }
+        call.respond("ok")
     }
 }
 

@@ -2,9 +2,6 @@
   <div class="padding-all">
     <div class="form-container">
       <div class="login-panel">
-        <div class="error-message" v-if="errorText != null">
-          {{ errorText }}
-        </div>
         Characters
         <char-row v-for="c in list" :id="c.id" :name="c.name"/>
         <input type="button" value="logout" :disabled="isProcessing" class="login-button padding-button"
@@ -37,13 +34,15 @@ export default defineComponent({
   data() {
     return {
       list: null as Array<CharacterResponse> | null,
-      errorText: null as string | null,
       isProcessing: false as boolean
     }
   },
   methods: {
     getList: function () {
-      if (!Client.instance.ssid) return;
+      if (!Client.instance.ssid) {
+        Client.instance.networkError("Auth required")
+        return;
+      }
 
       const requestOptions = {
         method: 'GET',
