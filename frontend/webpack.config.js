@@ -26,6 +26,9 @@ module.exports = {
                 // test: /\.scss$/,
                 use: [
                     {
+                        loader: "vue-style-loader"
+                    },
+                    {
                         loader: "style-loader" // creates style nodes from JS strings
                     },
                     {

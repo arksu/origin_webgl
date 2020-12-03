@@ -29,7 +29,6 @@
 import {defineComponent} from "vue";
 import Net from "@/net/Net";
 import Client from "@/net/Client";
-import router from "@/router";
 
 export default defineComponent({
   name: "Signup",
@@ -74,13 +73,11 @@ export default defineComponent({
           .then(async response => {
             if (response.ok) {
               const data = await response.json()
-              if (data.error !== undefined) {
-                this.errorText = data.error;
-              } else if (data.ssid !== undefined) {
-                Client.instance.ssid = data.ssid;
-                await router.push({name: "Characters"})
+              if (data.ssid !== undefined) {
+                Client.instance.sucessLogin(data.ssid)
+              } else {
+                this.errorText = "no ssid in response"
               }
-              console.log(data)
             } else {
               const error = "error " + response.status + " " + (await response.text() || response.statusText);
               this.errorText = error;

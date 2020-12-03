@@ -7,7 +7,7 @@
       </div>
       <div class="login-panel">
         <form @submit="submit" action="#">
-          <div class="error-message" v-if="errorText != null">
+          <div class="error-message" v-if="errorText !== undefined">
             {{ errorText }}
           </div>
           <input v-focus type="text" placeholder="Login" required v-model="login">
@@ -30,7 +30,6 @@ import Client from "@/net/Client";
 import Net from "@/net/Net";
 import {hexToBase64, log2} from "@/utils/Util";
 import {syncScrypt} from "scrypt-js"
-import router from "@/router";
 
 export default defineComponent({
   name: "Login",
@@ -38,8 +37,9 @@ export default defineComponent({
     return {
       login: null as string | null,
       password: null as string | null,
-      errorText: null as string | null,
-      isProcessing: false as boolean
+      errorText: undefined as string | undefined,
+      isProcessing: false as boolean,
+      submitPressed: false as boolean
     }
   },
   methods: {
@@ -96,9 +96,10 @@ export default defineComponent({
     loginImpl: function () {
       // взведем флаг попытки входа
       Client.instance.wasLoginTry = true;
+      this.submitPressed = true;
 
       this.isProcessing = true;
-      this.errorText = null;
+      this.errorText = undefined;
 
       let hash = this.makeHash();
 
@@ -115,13 +116,11 @@ export default defineComponent({
           .then(async response => {
             if (response.ok) {
               const data = await response.json()
-              if (data.error !== undefined) {
-                this.errorText = data.error;
-              } else if (data.ssid !== undefined) {
-                Client.instance.ssid = data.ssid;
-                await router.push({name: "Characters"})
+              if (data.ssid !== undefined) {
+                Client.instance.sucessLogin(data.ssid)
+              } else {
+                this.errorText = "no ssid in response"
               }
-              console.log(data)
             } else {
               const error = "error " + response.status + " " + (await response.text() || response.statusText);
               this.errorText = error;
@@ -139,10 +138,10 @@ export default defineComponent({
   },
   watch: {
     login: function () {
-      this.errorText = null;
+      if (this.submitPressed) this.errorText = undefined;
     },
     password: function () {
-      this.errorText = null;
+      if (this.submitPressed) this.errorText = undefined;
     }
   },
   mounted() {
@@ -156,7 +155,12 @@ export default defineComponent({
       // также должны быть какие то данные в сохраненном логине и пароле
       if (this.login !== null && this.login.length > 0 && this.password !== null && this.password.length > 0) {
         this.loginImpl();
+        return;
       }
+    }
+    if (Client.instance.lastError !== undefined) {
+      this.errorText = Client.instance.lastError;
+      Client.instance.lastError = undefined;
     }
   }
 });

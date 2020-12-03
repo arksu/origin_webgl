@@ -4,8 +4,8 @@ import Signup from "@/views/Signup.vue";
 import Game from "@/views/Game.vue";
 import NotFound from "@/views/NotFound.vue";
 import Client from "@/net/Client";
-import Characters from "@/views/Characters.vue";
-import NewCharacter from "@/views/NewCharacter.vue";
+import Characters from "@/views/characters/Characters.vue";
+import NewCharacter from "@/views/characters/NewCharacter.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -60,22 +60,25 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
     // всегда даем зарегистрироваться
     else if (to.name == 'Signup') {
         next();
+    } else if (to.name == 'Login') {
+        next();
+    } else if (to.name == 'Game') {
+        if (!Client.instance.isLogged()) {
+            next({name: "Login"})
+        } else if (Client.instance.characterId == undefined) {
+            next({name: "Characters"})
+        } else {
+            next();
+        }
     }
     // если не авторизованы надо перейти на логин форму
     else if (to.name !== 'Login' && !Client.instance.isLogged()) {
         // это первый запуск?
         if (from.name == undefined) {
-            Client.instance.needAutologin = true;
+            // Client.instance.needAutologin = true;
         }
         console.log("auth required, redirect to login")
         next({name: "Login"})
-    } else if (to.name == 'Login') {
-        console.log("routed to login");
-        // это первый запуск?
-        if (from.name == undefined) {
-            Client.instance.needAutologin = true;
-        }
-        next();
     } else {
         next();
     }

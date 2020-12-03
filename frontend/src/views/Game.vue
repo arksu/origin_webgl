@@ -1,5 +1,5 @@
 <template>
-
+  <div>GAME</div>
 </template>
 
 <script>
@@ -8,9 +8,6 @@ export default {
 }
 
 /*
-let proto = "https:" === window.location.protocol ? "wss" : "ws";
-let net = new Net(proto + "://" + window.location.hostname + ":8010/ws");
-console.log("Net url: " + net.url);
 
 Net.instance = net;
 

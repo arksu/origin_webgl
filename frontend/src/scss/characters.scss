@@ -1,21 +1,6 @@
 
-.login-panel input[type="button"] {
-  font-size: 19px;
-  padding: 10px 20px;
-  letter-spacing: 1.2px;
-  border: none;
-  text-transform: uppercase;
-  outline: none;
-  border-radius: 6px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  background: #1a4f72;
-  color: #fff;
-  cursor: pointer;
-  margin: 10px 0 0 0;
-  font-family: 'BioRhyme', serif;
-  -webkit-transition-duration: 0.9s;
-  transition-duration: 0.9s;
+.padding-button {
+  margin: 10px 0 0 0
 }
 
 .character-row {
@@ -56,4 +41,8 @@
 
 .delete-char:hover {
   background: rgba(210, 57, 63, 0.6);
+}
+
+.button-padding {
+  margin: 0 10px 0 10px;
 }

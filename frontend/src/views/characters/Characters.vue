@@ -7,7 +7,8 @@
         </div>
         Characters
         <char-row v-for="c in list" :id="c.id" :name="c.name"/>
-        <input type="button" value="logout" :disabled="isProcessing" class="login-button" :onclick="exit">
+        <input type="button" value="logout" :disabled="isProcessing" class="login-button padding-button"
+               :onclick="exit">
 
       </div>
     </div>
@@ -18,8 +19,7 @@
 import {defineComponent} from "vue";
 import Net from "@/net/Net";
 import Client from "@/net/Client";
-import CharacterRow from "@/views/CharacterRow.vue";
-import router from "@/router";
+import CharacterRow from "@/views/characters/CharacterRow.vue";
 
 type CharacterResponse = {
   id: number
@@ -54,35 +54,28 @@ export default defineComponent({
           .then(async response => {
             if (response.ok) {
               const data = await response.json()
-              if (data.error !== undefined) {
-                this.errorText = data.error;
-              } else if (data.list !== undefined) {
+              if (data.list !== undefined) {
                 this.list = data.list;
                 const e = 5 - this.list!!.length
                 for (let i = 0; i < e; i++) {
                   this.list!!.push({id: 0, name: 'Create New'})
                 }
               } else {
-
+                Client.instance.networkError("no characters list");
               }
-              console.log(data)
             } else {
-              const error = "error " + response.status + " " + (await response.text() || response.statusText);
-              this.errorText = error;
-              console.warn(error)
+              Client.instance.networkError("error " + response.status + " " + (await response.text() || response.statusText));
             }
           })
           .catch(error => {
-            this.errorText = error.message || error;
-            console.error('There was an error!', error);
+            Client.instance.networkError(error.message || error);
           })
           .finally(() => {
             this.isProcessing = false;
           });
     },
     exit: function () {
-      Client.instance.ssid = undefined;
-      router.push({name: "Login"})
+      Client.instance.logout();
     }
   },
   mounted() {
