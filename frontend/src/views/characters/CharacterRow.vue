@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; display: table; margin: 10px 0">
     <div :class="getClass()" :onclick="select">
-      {{ name }} {{ id !== 0 ? "(id " + id + ")" : "" }}
+      {{ name }} {{ id !== 0 ? "[id " + id + "]" : "" }}
     </div>
     <div v-if="id !== 0" class="character-row delete-char" :onclick="deleteChar">
       <i class="fas fa-trash-alt"></i>
@@ -43,6 +43,8 @@ export default defineComponent({
     deleteChar(e: Event) {
       e.preventDefault()
       console.log("delete " + this.id)
+
+      if (!confirm("Are you sure to delete this character: " + this.name)) return;
 
       if (!Client.instance.ssid) {
         Client.instance.networkError("Auth required")

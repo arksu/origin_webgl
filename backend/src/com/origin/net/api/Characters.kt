@@ -12,17 +12,18 @@ import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
-data class CharacterResponse(val id: Int, val name: String)
 
 fun PipelineContext<Unit, ApplicationCall>.getAccountBySsid(): Account {
     return GameServer.accountCache.get(call.request.headers[SSID_HEADER]) ?: throw AuthorizationException()
 }
 
+data class CharacterResponse(val id: Int, val name: String)
+
 fun Route.getCharactersList() {
     get("/characters") {
         val account = getAccountBySsid()
         val list = transaction {
-            Character.find { Characters.account eq account.id.value }.map { c ->
+            Character.find { Characters.account eq account.id.value }.limit(5).map { c ->
                 CharacterResponse(c.id.value, c.name)
             }
         }
@@ -30,13 +31,22 @@ fun Route.getCharactersList() {
     }
 }
 
-data class CreateCharacter(val name: String)
+data class CreateCharacter(val name: String) {
+    fun validate(): Boolean {
+        val regex = Regex("([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[_-])*")
+        return regex.matches(name)
+    }
+}
+
 data class CreateCharacterResponse(val name: String, val id: Int)
 
 fun Route.createCharacter() {
     put("/characters") {
         val acc = getAccountBySsid()
         val data = call.receive<CreateCharacter>()
+        if (!data.validate()) {
+            throw BadRequest("Wrong name")
+        }
 
         val newChar = transaction {
             val c = Character.find { Characters.account eq acc.id }.count()
@@ -71,7 +81,7 @@ fun Route.deleteCharacter() {
                 char.delete()
             }
         }
-        call.respond("ok")
+        call.respondText("ok")
     }
 }
 
