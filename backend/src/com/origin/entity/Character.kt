@@ -13,7 +13,7 @@ object Characters : IntIdTable("characters") {
     /**
      * ид аккаунта к которому привязан персонаж
      */
-    val account = reference("accountId", Accounts)
+    val account = reference("account", Accounts)
 
     /**
      * имя персонажа (выводим на головой в игровом клиенте)

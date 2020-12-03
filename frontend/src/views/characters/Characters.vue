@@ -3,7 +3,7 @@
     <div class="form-container">
       <div class="login-panel">
         Characters
-        <char-row v-for="c in list" :id="c.id" :name="c.name"/>
+        <char-row v-for="c in list" :id="c.id" :name="c.name"  @deleted="getList"/>
         <input type="button" value="logout" :disabled="isProcessing" class="login-button padding-button"
                :onclick="exit">
 

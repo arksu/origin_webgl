@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; display: table; margin: 10px 0">
     <div :class="getClass()" :onclick="select">
-      {{ name }} {{ id !== 0 ? "id (" + id + ")" : "" }}
+      {{ name }} {{ id !== 0 ? "(id " + id + ")" : "" }}
     </div>
     <div v-if="id !== 0" class="character-row delete-char" :onclick="deleteChar">
       <i class="fas fa-trash-alt"></i>
@@ -21,6 +21,7 @@ export default defineComponent({
     id: Number,
     name: String
   },
+  emits: ['deleted'],
   data() {
     return {
       isProcessing: false as boolean
@@ -58,7 +59,10 @@ export default defineComponent({
             console.log(response)
             if (response.ok) {
               const data = await response.text()
-              if (data !== "ok") {
+              if (data === "ok") {
+                console.log("emit")
+                this.$emit('deleted')
+              } else {
                 Client.instance.networkError("failed delete character");
               }
             } else {

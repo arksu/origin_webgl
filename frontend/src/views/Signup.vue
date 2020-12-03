@@ -6,7 +6,7 @@
         <img src="assets/logo.png" alt="logo">
       </div>
       <div class="login-panel">
-        <form @submit="submit" action="#">
+        <form @submit.prevent="submit" action="#">
           <div class="error-message" v-if="errorText != null">
             {{ errorText }}
           </div>

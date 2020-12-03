@@ -3,13 +3,12 @@
   <div class="padding-all">
     <div class="form-container">
       <div class="login-panel">
-        <form @submit="submit" action="#">
+        <form @submit.prevent="submit" action="#">
           Create new character
           <input v-focus type="text" placeholder="Name" required v-model="name">
           <input type="button" value="back" :disabled="isProcessing" class="login-button button-padding"
                  :onclick="back">
           <input type="submit" value="create" :disabled="isProcessing" class="login-button button-padding">
-
         </form>
       </div>
 
@@ -56,7 +55,6 @@ export default defineComponent({
             if (response.ok) {
               const data = await response.json()
               if (data.name !== undefined) {
-                // await router.push({name: "Game"})
                 await router.push({name: "Characters"})
               } else {
                 Client.instance.networkError("failed create character");

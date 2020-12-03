@@ -64,7 +64,7 @@ fun Route.deleteCharacter() {
         val account = getAccountBySsid()
         val id: Int = Integer.parseInt(call.parameters["id"])
         transaction {
-            val char = Character.findById(id)
+            val char = Character.find { Characters.id eq id }.forUpdate().firstOrNull()
             if (char == null || char.account.id.value != account.id.value) {
                 throw BadRequest("Wrong character")
             } else {

@@ -1,10 +1,7 @@
 package com.origin.net
 
 import com.origin.AccountCache
-import com.origin.net.api.AuthorizationException
-import com.origin.net.api.UserExists
-import com.origin.net.api.UserNotFound
-import com.origin.net.api.WrongPassword
+import com.origin.net.api.*
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
@@ -39,6 +36,9 @@ object GameServer {
                 }
                 exception<UserExists> {
                     call.respond(HttpStatusCode.Forbidden, "User exists")
+                }
+                exception<BadRequest> { e ->
+                    call.respond(HttpStatusCode.BadRequest, e.msg)
                 }
                 exception<Throwable> { cause ->
                     logger.error("error ${cause.javaClass.simpleName} - ${cause.message} ", cause)
