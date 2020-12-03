@@ -5,6 +5,16 @@ export default class Client {
     public static instance: Client;
 
     /**
+     * url для открытия websocket коннекта
+     */
+    public static wsUrl: string;
+
+    /**
+     * url для работы с API методами бекенда (авторизация, регистрация и тд)
+     */
+    public static apiUrl: string;
+
+    /**
      * ид текущей сессии используемый для запросов серверу
      */
     public ssid?: string;
@@ -24,8 +34,10 @@ export default class Client {
      */
     public lastError?: string = undefined
 
-    public characterId?: number = undefined;
-
+    /**
+     * ид выбранного персонажа
+     */
+    public selectedCharacterId?: number = undefined;
 
     constructor() {
         this.ssid = localStorage.getItem("ssid") || undefined;
@@ -35,6 +47,10 @@ export default class Client {
         return this.ssid !== undefined;
     }
 
+    /**
+     * сетевая ошибка
+     * @param e сообщение об ошибке
+     */
     public networkError(e: string) {
         console.warn("networkError " + e)
         this.lastError = e;
@@ -42,12 +58,19 @@ export default class Client {
         router.push({name: 'Login'});
     }
 
+    /**
+     * произошел успешный вход через API
+     * @param ssid
+     */
     public sucessLogin(ssid: string) {
         Client.instance.ssid = ssid;
         localStorage.setItem("ssid", ssid);
         router.push({name: "Characters"});
     }
 
+    /**
+     * разлогинится и вернуться на экран входа
+     */
     public logout() {
         Client.instance.ssid = undefined;
         localStorage.removeItem("ssid");

@@ -19,7 +19,6 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import router from "@/router";
-import Net from "@/net/Net";
 import Client from "@/net/Client";
 
 export default defineComponent({
@@ -50,7 +49,7 @@ export default defineComponent({
         })
       };
 
-      fetch(Net.apiUrl + "/api/characters", requestOptions)
+      fetch(Client.apiUrl + "/api/characters", requestOptions)
           .then(async response => {
             if (response.ok) {
               const data = await response.json()

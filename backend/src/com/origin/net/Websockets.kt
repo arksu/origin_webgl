@@ -8,15 +8,23 @@ import java.util.*
 import kotlin.collections.LinkedHashSet
 
 fun WebSockets.WebSocketOptions.websockets() {
-    pingPeriod = Duration.ofSeconds(20)
+    pingPeriod = Duration.ofSeconds(2)
 }
 
 val wsConnections = Collections.synchronizedSet(LinkedHashSet<DefaultWebSocketSession>())
 
 fun Route.websockets() {
-    webSocket("/ws") {
+    webSocket("/game") {
         wsConnections += this
-        println("onConnect")
+        logger.debug("ws connected")
+
+        /*
+         val player = Player(character, session!!)
+        if (!World.instance.spawnPlayer(player)) {
+            throw GameException("player could not be spawned")
+        }
+         */
+
         try {
             for (frame in incoming) {
                 when (frame) {
@@ -33,25 +41,8 @@ fun Route.websockets() {
                 }
             }
         } finally {
+            logger.debug("ws disconnected")
             wsConnections -= this
         }
     }
 }
-/*
-    /**
-     * выбрать игровой персонаж
-     */
-    @Throws(GameException::class)
-    fun selectCharacter(session: GameSession?, data: Map<String, Any>): Any {
-        val character = Database.em().findById(
-            Character::class.java, Math.toIntExact(
-                (data["id"] as Long?)!!
-            )
-        ) ?: throw GameException("no such player")
-        val player = Player(character, session!!)
-        if (!World.instance.spawnPlayer(player)) {
-            throw GameException("player could not be spawned")
-        }
-        return character
-    }
- */

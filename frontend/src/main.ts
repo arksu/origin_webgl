@@ -5,15 +5,14 @@ import router from "@/router";
 import App from "@/App.vue";
 
 import "@/scss/main.scss";
-import Net from "@/net/Net";
 import {createApp} from "vue";
 import Client from "@/net/Client";
 
 // формируем ссылку для работы с бекендом
 let gameServerPort = 8020;
 let proto = "https:" === window.location.protocol ? "wss:" : "ws:";
-Net.url = proto + "//" + window.location.hostname + ":" + gameServerPort;
-Net.apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + gameServerPort
+Client.wsUrl = proto + "//" + window.location.hostname + ":" + gameServerPort + "/game";
+Client.apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + gameServerPort
 
 // создадим синглон для клиента где будем хранить наш игровой стейт
 Client.instance = new Client();

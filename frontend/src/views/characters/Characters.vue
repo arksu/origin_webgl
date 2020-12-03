@@ -3,7 +3,7 @@
     <div class="form-container">
       <div class="login-panel">
         Characters
-        <char-row v-for="c in list" :id="c.id" :name="c.name"  @deleted="getList"/>
+        <char-row v-for="c in list" :id="c.id" :name="c.name" @deleted="getList"/>
         <input type="button" value="logout" :disabled="isProcessing" class="login-button padding-button"
                :onclick="exit">
 
@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import Net from "@/net/Net";
 import Client from "@/net/Client";
 import CharacterRow from "@/views/characters/CharacterRow.vue";
 
@@ -49,7 +48,7 @@ export default defineComponent({
         headers: {'Content-Type': 'application/json', 'Authorization': Client.instance.ssid}
       };
 
-      fetch(Net.apiUrl + "/api/characters", requestOptions)
+      fetch(Client.apiUrl + "/api/characters", requestOptions)
           .then(async response => {
             if (response.ok) {
               const data = await response.json()

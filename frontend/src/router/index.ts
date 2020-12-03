@@ -65,7 +65,7 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
     } else if (to.name == 'Game') {
         if (!Client.instance.isLogged()) {
             next({name: "Login"})
-        } else if (Client.instance.characterId == undefined) {
+        } else if (Client.instance.selectedCharacterId == undefined) {
             next({name: "Characters"})
         } else {
             next();

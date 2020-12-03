@@ -27,7 +27,6 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import Client from "@/net/Client";
-import Net from "@/net/Net";
 import {hexToBase64, log2} from "@/utils/Util";
 import {syncScrypt} from "scrypt-js"
 
@@ -112,7 +111,7 @@ export default defineComponent({
         })
       };
 
-      fetch(Net.apiUrl + "/api/login", requestOptions)
+      fetch(Client.apiUrl + "/api/login", requestOptions)
           .then(async response => {
             if (response.ok) {
               const data = await response.json()

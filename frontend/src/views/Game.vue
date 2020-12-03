@@ -2,37 +2,24 @@
   <div>GAME</div>
 </template>
 
-<script>
-export default {
-  name: "Game"
-}
+<script lang="ts">
+import {defineComponent} from "vue";
+import NetV2 from "@/net/NetV2";
+import router from "@/router";
+import Client from "@/net/Client";
 
-/*
+export default defineComponent({
+  name: "Game",
+  mounted() {
+    NetV2.instance = new NetV2(Client.wsUrl)
 
-Net.instance = net;
+    NetV2.instance.onDisconnect = function () {
+      router.push({name: 'Characters'})
+      console.log("onDisconnect")
+    }
+  }
+});
 
-net.onDisconnect = () => {
-  console.log("net disconnected");
-};
-
-
-Net.instance.remoteCall("login", {
-  login : this.login,
-  password: this.password
-})
-    .then((d) => {
-      console.log("successLogin")
-    })
-    .catch((e) => {
-      console.error(e);
-
-      let loginBtn: HTMLButtonElement = (<HTMLButtonElement>document.getElementById("login-btn"));
-      loginBtn.disabled = false;
-
-      console.log("showLoginError")
-    });
-
- */
 </script>
 
 

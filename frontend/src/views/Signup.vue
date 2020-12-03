@@ -27,7 +27,6 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import Net from "@/net/Net";
 import Client from "@/net/Client";
 
 export default defineComponent({
@@ -69,7 +68,7 @@ export default defineComponent({
         })
       };
 
-      fetch(Net.apiUrl + "/api/signup", requestOptions)
+      fetch(Client.apiUrl + "/api/signup", requestOptions)
           .then(async response => {
             if (response.ok) {
               const data = await response.json()

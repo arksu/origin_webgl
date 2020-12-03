@@ -13,7 +13,6 @@
 import {defineComponent} from "vue";
 import router from "@/router";
 import Client from "@/net/Client";
-import Net from "@/net/Net";
 
 export default defineComponent({
   name: "CharacterRow",
@@ -38,6 +37,8 @@ export default defineComponent({
         router.push({name: 'NewCharacter'})
       } else {
         console.log("selected " + this.name)
+        Client.instance.selectedCharacterId = this.id;
+        router.push({name: 'Game'})
       }
     },
     deleteChar(e: Event) {
@@ -56,7 +57,7 @@ export default defineComponent({
         headers: {'Authorization': Client.instance.ssid}
       };
 
-      fetch(Net.apiUrl + "/api/characters/" + this.id, requestOptions)
+      fetch(Client.apiUrl + "/api/characters/" + this.id, requestOptions)
           .then(async response => {
             console.log(response)
             if (response.ok) {
