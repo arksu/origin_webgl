@@ -1,5 +1,7 @@
 package com.origin.net
 
+import com.origin.ServerConfig.PROTO_VERSION
+import com.origin.net.model.GameSession
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
@@ -8,14 +10,18 @@ import java.util.*
 import kotlin.collections.LinkedHashSet
 
 fun WebSockets.WebSocketOptions.websockets() {
-    pingPeriod = Duration.ofSeconds(2)
+    pingPeriod = Duration.ofSeconds(3)
+    timeout = Duration.ofSeconds(3)
 }
 
-val wsConnections = Collections.synchronizedSet(LinkedHashSet<DefaultWebSocketSession>())
+val gameSessions = Collections.synchronizedSet(LinkedHashSet<GameSession>())
+
+data class Test(val some1: String)
 
 fun Route.websockets() {
-    webSocket("/game") {
-        wsConnections += this
+    webSocketRaw("/game") {
+        val session = GameSession(this)
+        gameSessions += session
         logger.debug("ws connected")
 
         /*
@@ -24,11 +30,14 @@ fun Route.websockets() {
             throw GameException("player could not be spawned")
         }
          */
+        outgoing.send(Frame.Text("welcome to origin $PROTO_VERSION"))
+//        outgoing.send(Test("ddd"))
 
         try {
             for (frame in incoming) {
                 when (frame) {
                     is Frame.Text -> {
+                        outgoing.send(Frame.Pong(frame.buffer))
                         val text = frame.readText()
 
                         if (text.equals("bye", ignoreCase = true)) {
@@ -42,7 +51,7 @@ fun Route.websockets() {
             }
         } finally {
             logger.debug("ws disconnected")
-            wsConnections -= this
+            gameSessions -= session
         }
     }
 }

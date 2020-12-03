@@ -1,10 +1,11 @@
 package com.origin.net.model
 
-import com.origin.entity.Account
+import io.ktor.websocket.*
 
 //class GameSession(private val connect: WebSocket?, val remoteAddr: String) {
-class GameSession{
-    var account: Account? = null
+//class GameSession(val connect: DefaultWebSocketSession)
+class GameSession(val connect: WebSocketServerSession)
+
 /*
     fun send(channel: String?, data: Any?) {
         if (connect != null && connect.isOpen) {
@@ -23,4 +24,3 @@ class GameSession{
     }
 
  */
-}

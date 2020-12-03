@@ -1,5 +1,5 @@
-import _ from "lodash";
 import {ApiRequest} from "@/net/ApiRequest";
+import _ from "lodash";
 
 enum State {
     Disconnected,
@@ -38,8 +38,8 @@ interface Response {
     e?: any;
 }
 
-export default class NetV2 {
-    public static instance?: NetV2 = undefined;
+export default class Net {
+    public static instance?: Net = undefined;
 
     /**
      * ссылка для коннекта к вебсокет серверу
@@ -88,6 +88,12 @@ export default class NetV2 {
         this.createSocket();
     }
 
+    public disconnect() {
+        this.state = State.Disconnected;
+        this.socket?.close();
+        this.socket = undefined;
+    }
+
     /**
      * создать вебсокет
      * @private
@@ -114,6 +120,8 @@ export default class NetV2 {
         }
 
         this.state = State.Connected;
+
+        this.socketSend("dd")
     }
 
     /**
@@ -138,36 +146,37 @@ export default class NetV2 {
      * @param {MessageEvent} ev
      */
     private onmessage(ev: MessageEvent) {
+        console.log(ev.data)
         if (typeof ev.data === "string") {
-            if (ev.data === "ping") {
-                // this.pingTimer = setTimeout(() => {
-                //     this.socket!.send("ping");
-                // }, 15000);
-            } else {
-                let d: Response = JSON.parse(ev.data);
-                console.log(_.cloneDeep(d.d));
-
-                // пришло сообщение в общий канал (не ответ на запрос серверу)
-                if (d.id === 0 && d.c !== undefined) {
-                    this.onChannelMessage(d.c, d.d);
-                } else {
-                    // ищем в мапе по ид запроса
-                    let r: Request = this.requests[d.id];
-                    if (r !== undefined) {
-                        // удалим из мапы
-                        delete this.requests[d.id];
-
-                        // ответ успешен?
-                        if (d.s === 1) {
-                            r.resolve(d.d);
-                        } else {
-                            console.error(d.e);
-                            // иначе была ошибка, прокинем ее
-                            r.reject(d.e);
-                        }
-                    }
-                }
-            }
+            // if (ev.data === "ping") {
+            //     // this.pingTimer = setTimeout(() => {
+            //     //     this.socket!.send("ping");
+            //     // }, 15000);
+            // } else {
+            //     let d: Response = JSON.parse(ev.data);
+            //     console.log(_.cloneDeep(d.d));
+            //
+            //     // пришло сообщение в общий канал (не ответ на запрос серверу)
+            //     if (d.id === 0 && d.c !== undefined) {
+            //         this.onChannelMessage(d.c, d.d);
+            //     } else {
+            //         // ищем в мапе по ид запроса
+            //         let r: Request = this.requests[d.id];
+            //         if (r !== undefined) {
+            //             // удалим из мапы
+            //             delete this.requests[d.id];
+            //
+            //             // ответ успешен?
+            //             if (d.s === 1) {
+            //                 r.resolve(d.d);
+            //             } else {
+            //                 console.error(d.e);
+            //                 // иначе была ошибка, прокинем ее
+            //                 r.reject(d.e);
+            //             }
+            //         }
+            //     }
+            // }
         } else {
             console.warn("unknown data type: " + (typeof ev.data));
         }
@@ -179,5 +188,11 @@ export default class NetV2 {
      * @param _data
      */
     protected onChannelMessage(_channel: string, _data: any) {
+    }
+
+    private socketSend(data: any): void {
+        let d = JSON.stringify(data);
+        console.log(_.cloneDeep(data));
+        this.socket!.send(d);
     }
 }

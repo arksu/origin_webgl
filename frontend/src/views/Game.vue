@@ -4,19 +4,25 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import NetV2 from "@/net/NetV2";
+import Net from "@/net/Net";
 import router from "@/router";
 import Client from "@/net/Client";
 
 export default defineComponent({
   name: "Game",
   mounted() {
-    NetV2.instance = new NetV2(Client.wsUrl)
+    Net.instance = new Net(Client.wsUrl)
 
-    NetV2.instance.onDisconnect = function () {
+    Net.instance.onDisconnect = function () {
       router.push({name: 'Characters'})
       console.log("onDisconnect")
     }
+  },
+  unmounted() {
+    Net.instance?.disconnect();
+    Net.instance = undefined;
+
+
   }
 });
 
