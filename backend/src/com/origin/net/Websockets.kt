@@ -19,7 +19,7 @@ val gameSessions = Collections.synchronizedSet(LinkedHashSet<GameSession>())
 data class Test(val some1: String)
 
 fun Route.websockets() {
-    webSocketRaw("/game") {
+    webSocket("/game") {
         val session = GameSession(this)
         gameSessions += session
         logger.debug("ws connected")

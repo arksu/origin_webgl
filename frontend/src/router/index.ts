@@ -5,7 +5,6 @@ import Game from "@/views/Game.vue";
 import NotFound from "@/views/NotFound.vue";
 import Client from "@/net/Client";
 import Characters from "@/views/characters/Characters.vue";
-import NewCharacter from "@/views/characters/NewCharacter.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -31,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: "/new-character",
         name: "NewCharacter",
-        component: NewCharacter
+        component: () => import("@/views/characters/NewCharacter.vue")
     },
     {
         path: "/about",
@@ -39,8 +38,7 @@ const routes: Array<RouteRecordRaw> = [
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () =>
-            import(/* webpackChunkName: "about" */ "../views/About.vue")
+        component: () => import(/* webpackChunkName: "about" */ "@/views/About.vue")
     },
     {
         path: "/:catchAll(.*)",
@@ -53,6 +51,7 @@ const router = createRouter({
     routes
 });
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+    console.warn("router ", from.name, " => ", to.name);
     // всегда даем переход на "о нас"
     if (to.name == 'About') {
         next();
@@ -64,6 +63,7 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
         next();
     } else if (to.name == 'Game') {
         if (!Client.instance.isLogged()) {
+            console.log("not logged")
             next({name: "Login"})
         } else if (Client.instance.selectedCharacterId == undefined) {
             next({name: "Characters"})

@@ -1,10 +1,8 @@
 package com.origin.net.model
 
-import io.ktor.websocket.*
+import io.ktor.http.cio.websocket.*
 
-//class GameSession(private val connect: WebSocket?, val remoteAddr: String) {
-//class GameSession(val connect: DefaultWebSocketSession)
-class GameSession(val connect: WebSocketServerSession)
+class GameSession(val connect: DefaultWebSocketSession)
 
 /*
     fun send(channel: String?, data: Any?) {

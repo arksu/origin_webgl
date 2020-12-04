@@ -37,7 +37,13 @@ export default class Client {
     /**
      * ид выбранного персонажа
      */
-    public selectedCharacterId?: number = undefined;
+    public get selectedCharacterId(): number {
+        return parseInt(localStorage.getItem("selectedCharacterId") || "0");
+    }
+
+    public set selectedCharacterId(v: number) {
+        localStorage.setItem("selectedCharacterId", v.toString())
+    }
 
     constructor() {
         this.ssid = localStorage.getItem("ssid") || undefined;

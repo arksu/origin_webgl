@@ -13,16 +13,16 @@ export default defineComponent({
   mounted() {
     Net.instance = new Net(Client.wsUrl)
 
+    console.log("selectedCharacterId=" + Client.instance.selectedCharacterId)
+
     Net.instance.onDisconnect = function () {
-      router.push({name: 'Characters'})
       console.log("onDisconnect")
+      router.push({name: 'Characters'})
     }
   },
   unmounted() {
     Net.instance?.disconnect();
     Net.instance = undefined;
-
-
   }
 });
 

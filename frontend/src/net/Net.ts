@@ -120,8 +120,6 @@ export default class Net {
         }
 
         this.state = State.Connected;
-
-        this.socketSend("dd")
     }
 
     /**
@@ -146,7 +144,7 @@ export default class Net {
      * @param {MessageEvent} ev
      */
     private onmessage(ev: MessageEvent) {
-        console.log(ev.data)
+        console.log("RECV", ev.data)
         if (typeof ev.data === "string") {
             // if (ev.data === "ping") {
             //     // this.pingTimer = setTimeout(() => {
@@ -192,7 +190,7 @@ export default class Net {
 
     private socketSend(data: any): void {
         let d = JSON.stringify(data);
-        console.log(_.cloneDeep(data));
+        console.log("SEND", _.cloneDeep(data));
         this.socket!.send(d);
     }
 }

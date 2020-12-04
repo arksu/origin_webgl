@@ -37,7 +37,7 @@ export default defineComponent({
         router.push({name: 'NewCharacter'})
       } else {
         console.log("selected " + this.name)
-        Client.instance.selectedCharacterId = this.id;
+        Client.instance.selectedCharacterId = this.id || 0;
         router.push({name: 'Game'})
       }
     },
