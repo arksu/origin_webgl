@@ -5,18 +5,19 @@ import com.origin.net.model.GameSession
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
-import java.time.Duration
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
 fun WebSockets.WebSocketOptions.websockets() {
-    pingPeriod = Duration.ofSeconds(3)
-    timeout = Duration.ofSeconds(3)
+    // websockets config options
 }
 
+/**
+ * список игровых коннектов к серверу
+ */
 val gameSessions = Collections.synchronizedSet(LinkedHashSet<GameSession>())
 
-data class Test(val some1: String)
+
 
 fun Route.websockets() {
     webSocket("/game") {
@@ -39,6 +40,7 @@ fun Route.websockets() {
                     is Frame.Text -> {
                         outgoing.send(Frame.Pong(frame.buffer))
                         val text = frame.readText()
+
 
                         if (text.equals("bye", ignoreCase = true)) {
                             close(CloseReason(CloseReason.Codes.NORMAL, "said bye"))
