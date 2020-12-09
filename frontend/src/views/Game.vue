@@ -15,9 +15,15 @@ export default defineComponent({
 
     console.log("selectedCharacterId=" + Client.instance.selectedCharacterId)
 
-    Net.instance.onDisconnect = function () {
+    Net.instance.onDisconnect = () => {
       console.log("onDisconnect")
       router.push({name: 'Characters'})
+    }
+    Net.instance.onConnect = () => {
+      Net.remoteCall("test").then(d => {
+        console.log("RECV game call")
+        console.log(d)
+      });
     }
   },
   unmounted() {

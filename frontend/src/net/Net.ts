@@ -10,17 +10,15 @@ enum State {
 interface Request {
     resolve: (value?: any) => void;
     reject: (reason?: any) => void;
-    target: string;
-    req?: ApiRequest;
 }
 
 interface Response {
     id: number;
 
     /**
-     * success? 1-true, 0-false
+     * error if request is not success
      */
-    s: number;
+    e?: any;
 
     /**
      * channel
@@ -31,11 +29,6 @@ interface Response {
      * data
      */
     d: any;
-
-    /**
-     * error if not success
-     */
-    e?: any;
 }
 
 export default class Net {
@@ -63,12 +56,16 @@ export default class Net {
      */
     public onDisconnect?: Callback;
 
+    public onConnect?: Callback;
+
     /**
      * очередь запросов, запоминаем каждый запрос с его ид,
      * при получении ответа удаляем из этого списка по его ид
      * @type {{}}
      */
     private requests: { [id: number]: Request } = {};
+
+    private lastId: number = 0;
 
     constructor(url: string) {
         this.url = url;
@@ -120,6 +117,9 @@ export default class Net {
         }
 
         this.state = State.Connected;
+        if (this.onConnect !== undefined) {
+            this.onConnect();
+        }
     }
 
     /**
@@ -146,35 +146,30 @@ export default class Net {
     private onmessage(ev: MessageEvent) {
         console.log("RECV", ev.data)
         if (typeof ev.data === "string") {
-            // if (ev.data === "ping") {
-            //     // this.pingTimer = setTimeout(() => {
-            //     //     this.socket!.send("ping");
-            //     // }, 15000);
-            // } else {
-            //     let d: Response = JSON.parse(ev.data);
-            //     console.log(_.cloneDeep(d.d));
-            //
-            //     // пришло сообщение в общий канал (не ответ на запрос серверу)
-            //     if (d.id === 0 && d.c !== undefined) {
-            //         this.onChannelMessage(d.c, d.d);
-            //     } else {
-            //         // ищем в мапе по ид запроса
-            //         let r: Request = this.requests[d.id];
-            //         if (r !== undefined) {
-            //             // удалим из мапы
-            //             delete this.requests[d.id];
-            //
-            //             // ответ успешен?
-            //             if (d.s === 1) {
-            //                 r.resolve(d.d);
-            //             } else {
-            //                 console.error(d.e);
-            //                 // иначе была ошибка, прокинем ее
-            //                 r.reject(d.e);
-            //             }
-            //         }
-            //     }
-            // }
+            let response: Response = JSON.parse(ev.data);
+            console.log(_.cloneDeep(response));
+            console.log(_.cloneDeep(response.d));
+
+            // пришло сообщение в общий канал (не ответ на запрос серверу)
+            if (response.id === 0 && response.c !== undefined) {
+                this.onChannelMessage(response.c, response.d);
+            } else {
+                // ищем в мапе по ид запроса
+                let request: Request = this.requests[response.id];
+                if (request !== undefined) {
+                    // удалим из мапы
+                    delete this.requests[response.id];
+
+                    // ответ успешен?
+                    if (response.e === undefined) {
+                        request.resolve(response.d);
+                    } else {
+                        console.error(response.e);
+                        // иначе была ошибка, прокинем ее
+                        request.reject(response.e);
+                    }
+                }
+            }
         } else {
             console.warn("unknown data type: " + (typeof ev.data));
         }
@@ -192,5 +187,31 @@ export default class Net {
         let d = JSON.stringify(data);
         console.log("SEND", _.cloneDeep(data));
         this.socket!.send(d);
+    }
+
+    public static async remoteCall(target: string, req?: ApiRequest): Promise<any> {
+        if (this.instance == undefined) {
+            throw Error("net instance is undefined");
+        }
+
+        // формируем запрос на севрер
+        let id = ++this.instance.lastId;
+        let data = {
+            id: id,
+            t: target,
+            d: req
+        };
+
+        return await new Promise((resolve, reject) => {
+            // отправляем данные в сокет
+            this.instance!!.socketSend(data);
+
+            // запишем запрос в мапу запросов
+            // промис завершится когда придет ответ
+            this.instance!!.requests[id] = {
+                resolve,
+                reject
+            };
+        });
     }
 }

@@ -16,9 +16,6 @@ public class WSResponse
 	@JsonAdapter(StringTypeAdapter.class)
 	public Object data;
 
-	@SerializedName("s")
-	public int success = 1;
-
 	@SerializedName("e")
 	public String errorText;
 
