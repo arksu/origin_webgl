@@ -52,7 +52,6 @@ fun Route.websockets() {
                         } catch (e: Exception) {
                             logger.error("session recv error ${e.message}", e)
                             close(CloseReason(CloseReason.Codes.INTERNAL_ERROR, e.javaClass.simpleName))
-
                         }
                     }
                     else -> {

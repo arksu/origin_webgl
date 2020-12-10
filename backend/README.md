@@ -15,7 +15,8 @@ for Origin MMO game
 - install JVM 8+
 - install MariaDB database for your platform
 - start MariaDB server
-- create a database into your MariaDB server named 'origin'
+- create a database into your MariaDB server named 'origin' 
+- by default server configured for db user 'root' and password '1', you can change this in 'server.conf' file
 - game server is configured to start on [8020](http://localhost:8020) port.
 
 Build:

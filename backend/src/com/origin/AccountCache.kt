@@ -1,7 +1,9 @@
 package com.origin
 
 import com.origin.entity.Account
+import com.origin.net.gameSessions
 import com.origin.utils.LockByName
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -46,6 +48,14 @@ class AccountCache {
             if (oldSsid != null) {
                 // удалим старую сессию
                 accounts.remove(oldSsid)
+                // среди активных игровых сессий (коннектов) ищем с тем же ssid
+                gameSessions.forEach { s ->
+                    if (s.ssid == oldSsid) {
+                        runBlocking {
+                            s.kick()
+                        }
+                    }
+                }
             }
             do {
                 // генерим аккаунту новый ssid

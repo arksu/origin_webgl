@@ -12,14 +12,18 @@ import io.ktor.http.cio.websocket.*
  * игровая сессия (коннект)
  */
 class GameSession(private val connect: DefaultWebSocketSession) {
-    private var ssid: String? = null
+    var ssid: String? = null
+        private set
 
     private var account: Account? = null
 
     suspend fun received(r: GameRequest) {
+        // инициализация сессии
         if (ssid == null) {
             if (r.target == "ssid") {
+                // установим ssid
                 ssid = (r.data["ssid"] as String?) ?: throw BadRequest("wrong ssid")
+                // и найдем наш аккаунт в кэше
                 account = GameServer.accountCache.get(ssid) ?: throw AuthorizationException()
             }
         } else {
@@ -46,5 +50,10 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         response.id = req.id
         response.data = d
         connect.outgoing.send(Frame.Text(gsonSerializer.toJson(response)))
+    }
+
+    suspend fun kick() {
+        logger.warn("kick")
+        connect.close(CloseReason(CloseReason.Codes.NORMAL, "kicked"))
     }
 }

@@ -144,7 +144,7 @@ export default class Net {
     private onmessage(ev: MessageEvent) {
         if (typeof ev.data === "string") {
             let response: Response = JSON.parse(ev.data);
-            console.log("RECV", _.cloneDeep(response));
+            console.log("%cRECV", 'color: #1BAC19', _.cloneDeep(response));
 
             // пришло сообщение в общий канал (не ответ на запрос серверу)
             if (response.id === 0 && response.c !== undefined) {
@@ -182,7 +182,7 @@ export default class Net {
 
     private socketSend(data: any): void {
         let d = JSON.stringify(data);
-        console.log("SEND", _.cloneDeep(data));
+        console.log("%cSEND", 'color: red', _.cloneDeep(data));
         this.socket!.send(d);
     }
 
