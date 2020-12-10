@@ -128,7 +128,8 @@ export default defineComponent({
           })
           .catch(error => {
             this.errorText = error.message || error;
-            console.error('There was an error!', error);
+            console.error('error', error);
+            console.log(error.message)
           })
           .finally(() => {
             this.isProcessing = false;

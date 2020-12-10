@@ -4,14 +4,19 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
+/**
+ * игровой запрос от клиента
+ * java NOT kotlin из-за поля data
+ * коряво десериализуется если поставить тип котлина Any
+ */
 public class GameRequest
 {
 	@SerializedName("id")
-	int id = 0;
+	public int id = 0;
 
 	@SerializedName("t")
-	String target = null;
+	public String target = null;
 
 	@SerializedName("d")
-	Map<String, Object> data;
+	public Map<String, Object> data;
 }

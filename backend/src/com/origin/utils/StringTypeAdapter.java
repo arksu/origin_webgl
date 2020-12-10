@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.origin.utils.Utils;
 
 import java.lang.reflect.Type;
 
@@ -22,8 +21,7 @@ public class StringTypeAdapter implements JsonSerializer<Object>
 			String s = (String) src;
 			if (!Utils.isEmpty(s) && s.contains("{"))
 			{
-				JsonParser parser = new JsonParser();
-				return parser.parse(s).getAsJsonObject();
+				return JsonParser.parseString(s).getAsJsonObject();
 			}
 			else
 			{

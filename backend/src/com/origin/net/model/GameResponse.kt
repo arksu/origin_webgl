@@ -4,6 +4,9 @@ import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import com.origin.utils.StringTypeAdapter
 
+/**
+ * ответ сервера на запрос клиента
+ */
 class GameResponse {
     @SerializedName("id")
     var id = 0

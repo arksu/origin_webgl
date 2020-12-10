@@ -127,8 +127,7 @@ export default class Net {
      * @param {CloseEvent} ev
      */
     private onclose(ev: CloseEvent) {
-        console.log(ev);
-        console.warn("ws close [" + ev.code + "] " + this.state);
+        console.warn("ws closed [" + ev.code + "] " + ev.reason);
 
         this.state = State.Disconnected;
         this.socket = undefined;

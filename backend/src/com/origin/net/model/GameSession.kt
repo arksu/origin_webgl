@@ -1,43 +1,50 @@
 package com.origin.net.model
 
+import com.origin.entity.Account
+import com.origin.net.GameServer
+import com.origin.net.api.AuthorizationException
+import com.origin.net.api.BadRequest
 import com.origin.net.gsonSerializer
+import com.origin.net.logger
 import io.ktor.http.cio.websocket.*
 
-class GameSession(val connect: DefaultWebSocketSession) {
+/**
+ * игровая сессия (коннект)
+ */
+class GameSession(private val connect: DefaultWebSocketSession) {
+    private var ssid: String? = null
+
+    private var account: Account? = null
+
     suspend fun received(r: GameRequest) {
-        if (r.target.equals("test")) {
-            val n = r.data?.get("n")
-            val t = r.data?.get("t")
-            println(n)
-            println(t)
-            ack(r, "some")
+        if (ssid == null) {
+            if (r.target == "ssid") {
+                ssid = (r.data["ssid"] as String?) ?: throw BadRequest("wrong ssid")
+                account = GameServer.accountCache.get(ssid) ?: throw AuthorizationException()
+            }
+        } else {
+            when (r.target) {
+                "test" -> {
+                    ack(r, "test")
+                }
+                "bye" -> {
+                    // TEST
+                    connect.close(CloseReason(CloseReason.Codes.NORMAL, "said bye"))
+                }
+                else -> {
+                    logger.warn("unknown target ${r.target}")
+                }
+            }
         }
-
-
-//        if (text.equals("bye", ignoreCase = true)) {
-//            close(CloseReason(CloseReason.Codes.NORMAL, "said bye"))
-//        }
     }
 
-    suspend fun ack(req: GameRequest, d: Any? = null) {
+    /**
+     * ответ на запрос клиента
+     */
+    private suspend fun ack(req: GameRequest, d: Any? = null) {
         val response = GameResponse()
         response.id = req.id
         response.data = d
         connect.outgoing.send(Frame.Text(gsonSerializer.toJson(response)))
     }
 }
-
-/*
-    fun send(channel: String?, data: Any?) {
-        if (connect != null && connect.isOpen) {
-            val response = WSResponse()
-            response.id = 0
-            response.data = data
-            response.channel = channel
-            connect.send(WSServer.gsonSerialize.toJson(response))
-        }
-    }
-
-
-
- */

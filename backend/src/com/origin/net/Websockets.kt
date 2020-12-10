@@ -37,13 +37,6 @@ fun Route.websockets() {
         gameSessions += session
         logger.debug("ws connected")
 
-        /*
-         val player = Player(character, session!!)
-        if (!World.instance.spawnPlayer(player)) {
-            throw GameException("player could not be spawned")
-        }
-         */
-
         outgoing.send(Frame.Text(gsonSerializer.toJson(welcomeMessage)))
 
         try {
@@ -54,7 +47,13 @@ fun Route.websockets() {
                         logger.debug("RECV: $text")
 
                         val req = gsonDeserializer.fromJson(text, GameRequest::class.java)
-                        session.received(req)
+                        try {
+                            session.received(req)
+                        } catch (e: Exception) {
+                            logger.error("session recv error ${e.message}", e)
+                            close(CloseReason(CloseReason.Codes.INTERNAL_ERROR, e.javaClass.simpleName))
+
+                        }
                     }
                     else -> {
                         logger.warn("uncatched frame $frame")
