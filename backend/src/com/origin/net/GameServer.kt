@@ -22,6 +22,8 @@ object GameServer {
 
     @KtorExperimentalAPI
     fun start() {
+        logger.info("start game server...")
+
         val server = embeddedServer(CIO, port = 8020) {
             install(DefaultHeaders)
             install(CallLogging)

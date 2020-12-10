@@ -12,7 +12,7 @@ class Player(
      * персонаж игрока (сущность хранимая в БД)
      */
     val character: Character,
-    private val _session: GameSession
+    private val session: GameSession,
 ) : GameObject() {
     /**
      * одежда (во что одет игрок)

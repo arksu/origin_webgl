@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap
  * весь игровой мир
  */
 class World {
-    private val _regions = ConcurrentHashMap<Int, Region>()
+    private val regions = ConcurrentHashMap<Int, Region>()
 
     /**
      * добавить игрока в мир
@@ -14,7 +14,7 @@ class World {
      */
     fun spawnPlayer(player: Player): Boolean {
         // создаем грид в котором находится игрок
-        val region = _regions.computeIfAbsent(player.region) { Region(player.region) }
+        val region = regions.computeIfAbsent(player.region) { Region(player.region) }
 
         // сам инстанс уже спавнит игрока
         return region.spawnPlayer(player)

@@ -1,6 +1,5 @@
 package com.origin
 
-import com.origin.ServerConfig.loadConfig
 import com.origin.net.GameServer
 import io.ktor.util.*
 import org.slf4j.LoggerFactory
@@ -14,11 +13,8 @@ object Launcher {
     @JvmStatic
     fun main(args: Array<String>) {
         Locale.setDefault(Locale.ROOT)
-        loadConfig()
-        logger.debug("start game server...")
-
+        ServerConfig.load()
         DatabaseFactory.init()
-
         GameServer.start()
     }
 }

@@ -26,9 +26,9 @@ fun Table.timestamp(name: String, defaultCurrentTimestamp: Boolean = false): Col
 object DatabaseFactory {
 
     fun init() {
+        logger.info("Database init...")
         val datasource = hikari()
         Database.connect(datasource)
-
         transaction {
             SchemaUtils.createMissingTablesAndColumns(Accounts, Grids, Characters, InventoryItems)
         }

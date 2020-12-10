@@ -1,6 +1,9 @@
 package com.origin.net.model
 
 import com.origin.entity.Account
+import com.origin.entity.Character
+import com.origin.model.Player
+import com.origin.model.World
 import com.origin.net.GameServer
 import com.origin.net.api.AuthorizationException
 import com.origin.net.api.BadRequest
@@ -29,8 +32,12 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         } else {
             when (r.target) {
                 "gameEnter" -> {
-                    val selectedCharacterId: Number = r.data["selectedCharacterId"] as Number
-                    println(selectedCharacterId)
+                    val selectedCharacterId: Int = r.data["selectedCharacterId"] as Int
+                    val character = Character.findById(selectedCharacterId) ?: throw BadRequest("character not found")
+                    val player = Player(character, this)
+                    if (!World.instance.spawnPlayer(player)) {
+                        throw BadRequest("failed spawn player into world")
+                    }
                 }
                 "test" -> {
                     ack(r, "test")

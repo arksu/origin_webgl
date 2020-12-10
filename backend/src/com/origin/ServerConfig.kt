@@ -21,7 +21,9 @@ object ServerConfig {
     var DB_NAME: String? = null
 
     @JvmStatic
-    fun loadConfig() {
+    fun load() {
+        logger.info("Load config...")
+
         // ищем конфиг в папке с конфигом
         var configFile = File(WORK_DIR + "config/server.conf")
         // если его там нет ищем в корне приложения
