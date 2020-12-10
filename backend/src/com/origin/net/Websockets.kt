@@ -21,7 +21,7 @@ fun WebSockets.WebSocketOptions.websockets() {
 /**
  * список игровых коннектов к серверу
  */
-val gameSessions = Collections.synchronizedSet(LinkedHashSet<GameSession>())
+val gameSessions: MutableSet<GameSession> = Collections.synchronizedSet(LinkedHashSet<GameSession>())
 
 val gsonSerializer = Gson()
 
@@ -35,7 +35,7 @@ fun Route.websockets() {
     webSocket("/game") {
         val session = GameSession(this)
         gameSessions += session
-        logger.debug("ws connected")
+        logger.debug("ws connected $this.")
 
         outgoing.send(Frame.Text(gsonSerializer.toJson(welcomeMessage)))
 

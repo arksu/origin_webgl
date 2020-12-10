@@ -28,6 +28,10 @@ class GameSession(private val connect: DefaultWebSocketSession) {
             }
         } else {
             when (r.target) {
+                "gameEnter" -> {
+                    val selectedCharacterId: Number = r.data["selectedCharacterId"] as Number
+                    println(selectedCharacterId)
+                }
                 "test" -> {
                     ack(r, "test")
                 }

@@ -88,6 +88,7 @@ export default class Net {
         this.state = State.Disconnected;
         this.socket?.close();
         this.socket = undefined;
+        Net.instance = undefined
     }
 
     /**

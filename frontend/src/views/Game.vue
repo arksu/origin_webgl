@@ -20,17 +20,19 @@ export default defineComponent({
       router.push({name: 'Characters'})
     }
     Net.instance.onConnect = () => {
-      Net.remoteCall("ssid", {ssid: Client.instance.ssid});
-
-      Net.remoteCall("test", {n: 1, t: "err"}).then(d => {
-        console.log("RECV game call")
-        console.log(d)
+      Net.remoteCall("ssid", {
+        ssid: Client.instance.ssid
       });
+
+      Net.remoteCall("gameEnter", {
+        selectedCharacterId: Client.instance.selectedCharacterId
+      }).then(d => {
+
+      })
     }
   },
   unmounted() {
     Net.instance?.disconnect();
-    Net.instance = undefined;
   }
 });
 

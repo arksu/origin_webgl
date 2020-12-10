@@ -50,26 +50,31 @@ buildscript {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    compile "io.ktor:ktor-server-core:$ktor_version"
-    compile "io.ktor:ktor-server-cio:$ktor_version"
-    compile "io.ktor:ktor-server-netty:$ktor_version"
-    compile "io.ktor:ktor-websockets:$ktor_version"
-    compile "io.ktor:ktor-gson:$ktor_version"
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "io.ktor:ktor-server-cio:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-websockets:$ktor_version"
+    implementation "io.ktor:ktor-gson:$ktor_version"
 
-    compile "org.jetbrains.exposed:exposed-core:$exposed_version"
-    compile "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
-    compile "org.jetbrains.exposed:exposed-dao:$exposed_version"
+    implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
+    implementation "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
+    implementation "org.jetbrains.exposed:exposed-dao:$exposed_version"
 
-    compile "org.slf4j:slf4j-api:$slf4j_version"
-    compile "org.slf4j:slf4j-log4j12:$slf4j_version"
+    implementation "org.slf4j:slf4j-api:$slf4j_version"
+    implementation "org.slf4j:slf4j-log4j12:$slf4j_version"
 
-    compile "com.google.code.gson:gson:2.8.6"
+    implementation "com.google.code.gson:gson:2.8.6"
 
-    compile "com.zaxxer:HikariCP:3.4.5"
-    compile "org.mariadb.jdbc:mariadb-java-client:2.7.1"
-    compile "com.typesafe:config:1.4.1"
+    implementation "com.zaxxer:HikariCP:3.4.5"
+    implementation "org.mariadb.jdbc:mariadb-java-client:2.7.1"
+    implementation "com.typesafe:config:1.4.1"
 }
 
 application {
-    mainClassName = 'com.origin.Launcher'
+    mainClass = 'com.origin.Launcher'
+}
+
+task mapgen(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.origin.utils.MapGenerator'
 }
