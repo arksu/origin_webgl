@@ -20,7 +20,7 @@ export default defineComponent({
       router.push({name: 'Characters'})
     }
     Net.instance.onConnect = () => {
-      Net.remoteCall("test").then(d => {
+      Net.remoteCall("test", {n: 1, t: "err"}).then(d => {
         console.log("RECV game call")
         console.log(d)
       });

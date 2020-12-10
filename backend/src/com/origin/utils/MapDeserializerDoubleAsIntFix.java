@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class MapDeserializerDoubleAsIntFix implements JsonDeserializer<Map<String, Object>>
 {
-	public static Gson gsonDeserialize;
+	public static Gson gsonDeserializer;
 
 	static
 	{
@@ -20,7 +20,7 @@ public class MapDeserializerDoubleAsIntFix implements JsonDeserializer<Map<Strin
 		gsonBuilder.registerTypeAdapter(new TypeToken<Map<String, Object>>()
 		{
 		}.getType(), new MapDeserializerDoubleAsIntFix());
-		gsonDeserialize = gsonBuilder.create();
+		gsonDeserializer = gsonBuilder.create();
 	}
 
 	@Override

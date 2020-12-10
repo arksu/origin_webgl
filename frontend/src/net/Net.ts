@@ -1,4 +1,3 @@
-import {ApiRequest} from "@/net/ApiRequest";
 import _ from "lodash";
 
 enum State {
@@ -144,11 +143,9 @@ export default class Net {
      * @param {MessageEvent} ev
      */
     private onmessage(ev: MessageEvent) {
-        console.log("RECV", ev.data)
         if (typeof ev.data === "string") {
             let response: Response = JSON.parse(ev.data);
-            console.log(_.cloneDeep(response));
-            console.log(_.cloneDeep(response.d));
+            console.log("RECV", _.cloneDeep(response));
 
             // пришло сообщение в общий канал (не ответ на запрос серверу)
             if (response.id === 0 && response.c !== undefined) {
@@ -172,6 +169,7 @@ export default class Net {
             }
         } else {
             console.warn("unknown data type: " + (typeof ev.data));
+            console.warn("RECV", ev.data)
         }
     }
 
@@ -189,7 +187,7 @@ export default class Net {
         this.socket!.send(d);
     }
 
-    public static async remoteCall(target: string, req?: ApiRequest): Promise<any> {
+    public static async remoteCall(target: string, req?: any): Promise<any> {
         if (this.instance == undefined) {
             throw Error("net instance is undefined");
         }

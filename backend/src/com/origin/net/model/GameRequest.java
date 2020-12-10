@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Map;
 
-public class WSRequest
+public class GameRequest
 {
 	@SerializedName("id")
-	public int id;
+	int id = 0;
 
 	@SerializedName("t")
-	public String target;
+	String target = null;
 
 	@SerializedName("d")
-	public Map<String, Object> data;
+	Map<String, Object> data;
 }
