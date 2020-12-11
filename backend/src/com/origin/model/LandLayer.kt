@@ -6,11 +6,11 @@ import com.origin.entity.Grid
  * слой (уровень) земли
  */
 class LandLayer(
-    private val _region: Region,
+    private val region: Region,
     /**
      * уровень земли
      */
-    private val _level: Int
+    private val level: Int,
 ) {
     /**
      * гриды

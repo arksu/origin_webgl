@@ -1,9 +1,7 @@
 package com.origin.net
 
 import com.google.gson.Gson
-import com.origin.ServerConfig.PROTO_VERSION
 import com.origin.net.model.GameRequest
-import com.origin.net.model.GameResponse
 import com.origin.net.model.GameSession
 import com.origin.utils.MapDeserializerDoubleAsIntFix.gsonDeserializer
 import io.ktor.http.cio.websocket.*
@@ -27,17 +25,10 @@ val gsonSerializer = Gson()
 
 fun Route.websockets() {
 
-    val welcomeMessage = GameResponse()
-    welcomeMessage.channel = "general"
-    welcomeMessage.data = "welcome to Origin $PROTO_VERSION"
-    welcomeMessage.id = 0
-
     webSocket("/game") {
         val session = GameSession(this)
         gameSessions += session
         logger.debug("ws connected $this.")
-
-        outgoing.send(Frame.Text(gsonSerializer.toJson(welcomeMessage)))
 
         try {
             for (frame in incoming) {

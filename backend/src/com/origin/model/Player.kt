@@ -30,6 +30,6 @@ class Player(
     /**
      * текущий активный грид игрока
      */
-    private val _grid: Grid? = null
+    private val grid: Grid? = null
 
 }

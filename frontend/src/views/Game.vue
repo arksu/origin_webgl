@@ -20,15 +20,12 @@ export default defineComponent({
       router.push({name: 'Characters'})
     }
     Net.instance.onConnect = () => {
+      // авторизуемся на игровом сервере, создаем игровую сессию
+      // входим в мир выбранным персонажем
       Net.remoteCall("ssid", {
-        ssid: Client.instance.ssid
-      });
-
-      Net.remoteCall("gameEnter", {
+        ssid: Client.instance.ssid,
         selectedCharacterId: Client.instance.selectedCharacterId
-      }).then(d => {
-
-      })
+      });
     }
   },
   unmounted() {

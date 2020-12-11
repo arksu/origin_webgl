@@ -1,7 +1,9 @@
 package com.origin.net.model
 
+import com.origin.ServerConfig
 import com.origin.entity.Account
 import com.origin.entity.Character
+import com.origin.entity.Characters
 import com.origin.model.Player
 import com.origin.model.World
 import com.origin.net.GameServer
@@ -10,6 +12,8 @@ import com.origin.net.api.BadRequest
 import com.origin.net.gsonSerializer
 import com.origin.net.logger
 import io.ktor.http.cio.websocket.*
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * игровая сессия (коннект)
@@ -28,16 +32,22 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 ssid = (r.data["ssid"] as String?) ?: throw BadRequest("wrong ssid")
                 // и найдем наш аккаунт в кэше
                 account = GameServer.accountCache.get(ssid) ?: throw AuthorizationException()
+
+                val selectedCharacterId: Int = (r.data["selectedCharacterId"] as Long).toInt()
+                val character = transaction {
+                    Character.find { Characters.account eq account!!.id and Characters.id.eq(selectedCharacterId) }
+                        .firstOrNull()
+                        ?: throw BadRequest("character not found")
+                }
+                val player = Player(character, this)
+                if (!World.instance.spawnPlayer(player)) {
+                    throw BadRequest("failed spawn player into world")
+                }
+                send(GameResponse("general", "welcome to Origin ${ServerConfig.PROTO_VERSION}"))
             }
         } else {
             when (r.target) {
                 "gameEnter" -> {
-                    val selectedCharacterId: Int = r.data["selectedCharacterId"] as Int
-                    val character = Character.findById(selectedCharacterId) ?: throw BadRequest("character not found")
-                    val player = Player(character, this)
-                    if (!World.instance.spawnPlayer(player)) {
-                        throw BadRequest("failed spawn player into world")
-                    }
                 }
                 "test" -> {
                     ack(r, "test")
@@ -56,11 +66,12 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     /**
      * ответ на запрос клиента
      */
-    private suspend fun ack(req: GameRequest, d: Any? = null) {
-        val response = GameResponse()
-        response.id = req.id
-        response.data = d
-        connect.outgoing.send(Frame.Text(gsonSerializer.toJson(response)))
+    private suspend inline fun ack(req: GameRequest, d: Any? = null) {
+        send(GameResponse(req.id, d))
+    }
+
+    private suspend fun send(r: GameResponse) {
+        connect.outgoing.send(Frame.Text(gsonSerializer.toJson(r)))
     }
 
     suspend fun kick() {

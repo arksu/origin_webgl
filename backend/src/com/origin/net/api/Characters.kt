@@ -23,7 +23,7 @@ fun Route.getCharactersList() {
     get("/characters") {
         val account = getAccountBySsid()
         val list = transaction {
-            Character.find { Characters.account eq account.id.value }.limit(5).map { c ->
+            Character.find { Characters.account eq account.id }.limit(5).map { c ->
                 CharacterResponse(c.id.value, c.name)
             }
         }
