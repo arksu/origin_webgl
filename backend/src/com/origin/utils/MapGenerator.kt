@@ -6,46 +6,12 @@ import java.io.File
 import java.security.SecureRandom
 import javax.imageio.ImageIO
 
-val IMG_SIZE = 5000
+val IMG_SIZE = SUPERGRID_SIZE * GRID_SIZE
 
 @Suppress("UsePropertyAccessSyntax")
 val BLACK_COLOR: Int = Color.black.getRGB()
 
 val rnd = SecureRandom()
-
-// луг (низкие травы)
-val MEADOW_LOW = 0xd97cc0
-
-// луг (высокие травы)
-val MEADOW_HIGH = 0x8ebf8e
-
-// лес лиственный
-val FOREST_LEAF = 0x17d421
-
-// лес хвойный
-val FOREST_PINE = 0x316117
-
-// глина
-val CLAY = 0x70390f
-
-// песок
-val SAND = 0xe0e034
-
-// степь
-val PRAIRIE = 0xf0a01f
-
-// болото
-val SWAMP = 0x1c3819
-
-// тундра
-val TUNDRA = 0x3c7a6f
-
-// мелководье
-val WATER = 0x0055ff
-
-// глубокая вода
-val WATER_DEEP = 0x0000ff
-
 
 object MapGenerator {
     @JvmStatic

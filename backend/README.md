@@ -19,12 +19,28 @@ for Origin MMO game
 - by default server configured for db user 'root' and password '1', you can change this in 'server.conf' file
 - game server is configured to start on [8020](http://localhost:8020) port.
 
-Build:
-> gradle clean build
+###Build
+```shell
+gradle clean build
+```
 
-Start the server:
-> gradle run
+###Generate map
+```shell
+gradle mapgen
+``` 
+This will generate image file `map.png` into **backend** dir
+By default generate 1 supergrid, please see [MapGenerator.kt](/src/com/origin/utils/MapGenerator.kt) file
 
+###Import generated map into database
+```shell
+gradle mapimport
+``` 
+This will import image file `map.png` into databse with previously generated map by `mapgen` command
+
+###Start the server
+```shell
+gradle run
+```
 # Help
 
 Please fork and PR to improve the code.
