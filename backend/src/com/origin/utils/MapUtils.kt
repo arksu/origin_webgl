@@ -33,36 +33,41 @@ const val GRID_SQUARE = GRID_SIZE * GRID_SIZE
 const val GRID_BLOB_SIZE = GRID_SQUARE * 3
 
 // TILES
+object TileColors {
+    // луг (низкие травы)
+    val MEADOW_LOW = 0xd97cc0
 
-// луг (низкие травы)
-val MEADOW_LOW = 0xd97cc0
+    // луг (высокие травы)
+    val MEADOW_HIGH = 0x8ebf8e
 
-// луг (высокие травы)
-val MEADOW_HIGH = 0x8ebf8e
+    // лес лиственный
+    val FOREST_LEAF = 0x17d421
 
-// лес лиственный
-val FOREST_LEAF = 0x17d421
+    // лес хвойный
+    val FOREST_PINE = 0x316117
 
-// лес хвойный
-val FOREST_PINE = 0x316117
+    // глина
+    val CLAY = 0x70390f
 
-// глина
-val CLAY = 0x70390f
+    // песок
+    val SAND = 0xe0e034
 
-// песок
-val SAND = 0xe0e034
+    // степь
+    val PRAIRIE = 0xf0a01f
 
-// степь
-val PRAIRIE = 0xf0a01f
+    // болото
+    val SWAMP = 0x1c3819
 
-// болото
-val SWAMP = 0x1c3819
+    // тундра
+    val TUNDRA = 0x3c7a6f
 
-// тундра
-val TUNDRA = 0x3c7a6f
+    // мелководье
+    val WATER = 0x0055ff
 
-// мелководье
-val WATER = 0x0055ff
+    // глубокая вода
+    val WATER_DEEP = 0x0000ff
+}
 
-// глубокая вода
-val WATER_DEEP = 0x0000ff
+object Tile {
+
+}

@@ -1,5 +1,10 @@
 package com.origin.utils
 
+import com.origin.utils.TileColors.CLAY
+import com.origin.utils.TileColors.FOREST_LEAF
+import com.origin.utils.TileColors.FOREST_PINE
+import com.origin.utils.TileColors.MEADOW_LOW
+import com.origin.utils.TileColors.WATER
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.File
