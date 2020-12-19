@@ -8,8 +8,8 @@ abstract class GameObject {
     /**
      * работа с координатами
      */
-    abstract val x: Int
-    abstract val y: Int
-    abstract val level: Int
-    abstract val region: Int
+    abstract var x: Int
+    abstract var y: Int
+    abstract var level: Int
+    abstract var region: Int
 }

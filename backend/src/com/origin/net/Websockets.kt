@@ -21,6 +21,9 @@ fun WebSockets.WebSocketOptions.websockets() {
  */
 val gameSessions: MutableSet<GameSession> = Collections.synchronizedSet(LinkedHashSet<GameSession>())
 
+/**
+ * для сериализации пакетов (отправка клиенту)
+ */
 val gsonSerializer = Gson()
 
 fun Route.websockets() {

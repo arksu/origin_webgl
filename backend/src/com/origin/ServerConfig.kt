@@ -9,6 +9,9 @@ object ServerConfig {
     val PROTO_VERSION = "0.0.1"
 
     @JvmField
+    var PORT  = 0
+
+    @JvmField
     var DB_HOST: String? = null
 
     @JvmField
@@ -38,5 +41,6 @@ object ServerConfig {
         DB_USER = conf.getString("origin.db.user")
         DB_PASSWORD = conf.getString("origin.db.password")
         DB_NAME = conf.getString("origin.db.name")
+        PORT = conf.getInt("origin.net.port")
     }
 }

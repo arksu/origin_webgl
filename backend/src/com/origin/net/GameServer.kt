@@ -1,6 +1,7 @@
 package com.origin.net
 
 import com.origin.AccountCache
+import com.origin.ServerConfig
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
@@ -24,7 +25,7 @@ object GameServer {
     fun start() {
         logger.info("start game server...")
 
-        val server = embeddedServer(CIO, port = 8020) {
+        val server = embeddedServer(CIO, port = ServerConfig.PORT) {
             install(DefaultHeaders)
             install(CallLogging)
             install(StatusPages) {

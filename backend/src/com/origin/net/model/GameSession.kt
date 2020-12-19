@@ -27,13 +27,17 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     suspend fun received(r: GameRequest) {
         // инициализация сессии
         if (ssid == null) {
+            // начальная точка входа клиента в игру (авторизация по ssid)
+            // также передается выбранный персонаж
             if (r.target == "ssid") {
                 // установим ssid
                 ssid = (r.data["ssid"] as String?) ?: throw BadRequest("wrong ssid")
                 // и найдем наш аккаунт в кэше
                 account = GameServer.accountCache.get(ssid) ?: throw AuthorizationException()
 
+                // выбраннй перс
                 val selectedCharacterId: Int = (r.data["selectedCharacterId"] as Long).toInt()
+
                 val character = transaction {
                     Character.find { Characters.account eq account!!.id and Characters.id.eq(selectedCharacterId) }
                         .firstOrNull()
@@ -47,8 +51,6 @@ class GameSession(private val connect: DefaultWebSocketSession) {
             }
         } else {
             when (r.target) {
-                "gameEnter" -> {
-                }
                 "test" -> {
                     ack(r, "test")
                 }

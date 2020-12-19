@@ -12,6 +12,9 @@ import java.util.Set;
 
 public class MapDeserializerDoubleAsIntFix implements JsonDeserializer<Map<String, Object>>
 {
+	/**
+	 * десериализацпия пакетов (прием от клиента)
+	 */
 	public static Gson gsonDeserializer;
 
 	static

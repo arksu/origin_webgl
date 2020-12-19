@@ -1,7 +1,11 @@
 package com.origin.entity
 
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * игровой "чанк" (регион), базовый кусок карты
@@ -34,10 +38,26 @@ object Grids : Table("grids") {
     }
 }
 
-class Grid {
-    var region = 0
-    var x = 0
-    var y = 0
-    var level = 0
-    var tilesBlob: ExposedBlob? = null
+/**
+ * not DAO, потому что у нас хитрый индекс без явного id поля
+ */
+class Grid(r: ResultRow) {
+    var region = r[Grids.region]
+    var x = r[Grids.x]
+    var y = r[Grids.y]
+    var level = r[Grids.level]
+    var tilesBlob: ExposedBlob = r[Grids.tilesBlob]
+
+    companion object {
+        /**
+         * загрузка грида из базы
+         */
+        fun load(gx: Int, gy: Int, level: Int, region: Int): Grid {
+            val g = transaction {
+                Grids.select { (Grids.x eq gx) and (Grids.y eq gy) and (Grids.level eq level) and (Grids.region eq region) }
+                    .firstOrNull() ?: throw RuntimeException("")
+            }
+            return Grid(g)
+        }
+    }
 }

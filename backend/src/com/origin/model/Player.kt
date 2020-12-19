@@ -22,10 +22,20 @@ class Player(
     /**
      * координаты кэшируем в объекте (потом периодически обновляем в сущности Character)
      */
-    override val x: Int = character.x
-    override val y: Int = character.y
-    override val level: Int = character.level
-    override val region: Int = character.region
+    override var x: Int = character.x
+        set(value) {
+            field = value
+            // TODO
+            println(value)
+        }
+    override var y: Int = character.y
+        set(value) {
+            field = value
+            // TODO
+            println(value)
+        }
+    override var level: Int = character.level
+    override var region: Int = character.region
 
     /**
      * текущий активный грид игрока
