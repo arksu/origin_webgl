@@ -21,10 +21,13 @@ object MapImporter {
         ServerConfig.load()
         DatabaseFactory.init()
 
+        // читаем картинку с картой
         val img = ImageIO.read(File("map.png"))
 
+        // проверим размер картинки с картой
         if (img.width != IMG_SIZE || img.height != IMG_SIZE) throw RuntimeException("wrong image size")
 
+        // удалим из базы вообще все гриды
         transaction {
             Grids.deleteAll()
         }
@@ -41,43 +44,53 @@ object MapImporter {
             for (sy in 0 until SUPERGRID_SIZE) {
 
                 val ba = ByteArray(GRID_BLOB_SIZE)
-                val b: ExposedBlob = ExposedBlob(ba);
 
+                // идем по тайлам внутри грида
                 for (gx in 0 until GRID_SIZE) {
                     for (gy in 0 until GRID_SIZE) {
                         val tx = sx * GRID_SIZE + gx
                         val ty = sy * GRID_SIZE + gy
 
                         val idx = gy * GRID_SIZE + gx
+                        // читаем цвет карты
                         var c: Int = img.getRGB(tx, ty)
+
+                        // уберем альфа канал
                         c = c and 0xffffff
-                        when (c) {
+
+                        // берем тип тайла из цвета
+                        val tileType: Byte = when (c) {
                             MEADOW_LOW ->
-                                ba[idx] = 3
+                                3
                             FOREST_PINE ->
-                                ba[idx] = 4
+                                4
                             FOREST_LEAF ->
-                                ba[idx] = 1
+                                1
                             CLAY ->
-                                ba[idx] = 5
+                                5
                             WATER ->
-                                ba[idx] = 2
+                                2
                             else ->
                                 throw RuntimeException("unknown tile $c")
                         }
+                        ba[idx] = tileType
                     }
                 }
 
+                // пихаем в базу данные грида
                 transaction {
                     Grids.insert {
                         it[x] = gridOffsetX + sx
                         it[y] = gridOffsetY + sy
                         it[level] = 0
                         it[Grids.region] = region
-                        it[tilesBlob] = b
+                        it[tilesBlob] = ExposedBlob(ba);
+
                     }
                 }
             }
         }
+
+        println("map import done")
     }
 }

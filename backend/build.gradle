@@ -78,3 +78,7 @@ task mapgen(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.origin.utils.MapGenerator'
 }
+task mapimport(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.origin.utils.MapImporter'
+}
