@@ -25,7 +25,7 @@ class LandLayer(
 
         val g = Grid.load(gx, gy, player.level, player.region)
         grids.add(g)
-//        println(g)
+        println(g)
 
         // находим гриды которые нужны для спавна игрока
         return true
