@@ -4,12 +4,15 @@ package com.origin.model
  * базовый игровой объект в игровой механике
  * все игровые сущности наследуются от него
  */
-abstract class GameObject {
+open class GameObject(x: Int, y: Int, level: Int, region: Int, heading: Int) {
     /**
-     * работа с координатами
+     * координаты кэшируем в объекте (потом периодически обновляем в сущности)
      */
-    abstract var x: Int
-    abstract var y: Int
-    abstract var level: Int
-    abstract var region: Int
+    val coord: Coord = Coord(x, y, level, region, heading, this)
+
+    val x get() = coord.x
+    val y get() = coord.y
+    val level get() = coord.level
+    val region get() = coord.region
+
 }

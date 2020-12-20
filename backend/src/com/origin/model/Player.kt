@@ -7,35 +7,31 @@ import com.origin.net.model.GameSession
 /**
  * инстанс персонажа игрока в игровом мире (игрок)
  */
-class Player(
+class Player : GameObject {
+    constructor(character: Character, session: GameSession) : super(character.x,
+        character.y,
+        character.level,
+        character.region,
+        character.heading) {
+
+        this.character = character
+        this.session = session
+
+        paperdoll = Paperdoll()
+    }
+
     /**
      * персонаж игрока (сущность хранимая в БД)
      */
-    val character: Character,
-    private val session: GameSession,
-) : GameObject() {
+    val character: Character
+
+    private val session: GameSession
+
     /**
      * одежда (во что одет игрок)
      */
-    var paperdoll: Paperdoll? = null
+    val paperdoll: Paperdoll
 
-    /**
-     * координаты кэшируем в объекте (потом периодически обновляем в сущности Character)
-     */
-    override var x: Int = character.x
-        set(value) {
-            field = value
-            // TODO
-            println(value)
-        }
-    override var y: Int = character.y
-        set(value) {
-            field = value
-            // TODO
-            println(value)
-        }
-    override var level: Int = character.level
-    override var region: Int = character.region
 
     /**
      * текущий активный грид игрока

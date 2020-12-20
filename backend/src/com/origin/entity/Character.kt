@@ -37,6 +37,11 @@ object Characters : IntIdTable("characters") {
     val level = integer("level")
 
     /**
+     * угол поворота
+     */
+    val heading = integer("heading")
+
+    /**
      * когда был создан персонаж
      */
     val createTime = timestamp("createTime", true).nullable()
@@ -52,6 +57,7 @@ class Character(id: EntityID<Int>) : IntEntity(id) {
     var x by Characters.x
     var y by Characters.y
     var level by Characters.level
+    var heading by Characters.heading
     var onlineTime by Characters.onlineTime
 
     fun appendOnlineTime(v: Int) {
