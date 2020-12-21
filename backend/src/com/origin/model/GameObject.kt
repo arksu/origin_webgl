@@ -14,5 +14,4 @@ open class GameObject(x: Int, y: Int, level: Int, region: Int, heading: Int) {
     val y get() = coord.y
     val level get() = coord.level
     val region get() = coord.region
-
 }
