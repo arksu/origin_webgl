@@ -14,7 +14,7 @@ class World {
      */
     fun spawnPlayer(player: Player): Boolean {
         // создаем грид в котором находится игрок
-        val region = regions.computeIfAbsent(player.region) { Region(player.region) }
+        val region = regions.computeIfAbsent(player.pos.region) { Region(player.pos.region) }
 
         // сам инстанс уже спавнит игрока
         return region.spawnPlayer(player)

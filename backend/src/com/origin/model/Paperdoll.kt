@@ -5,7 +5,8 @@ import com.origin.entity.InventoryItem
 /**
  * кукла персонажа, что одето на персе
  */
-class Paperdoll {
+class Paperdoll(val player: Player) {
+
     /**
      * храним вещи одетые на сущность в массиве
      * доступ к элементам по индексу {@see Paperdoll.Slot}

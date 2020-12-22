@@ -10,7 +10,7 @@ class Region(private val _id: Int) {
     private val layers = ConcurrentHashMap<Int, LandLayer>()
 
     fun spawnPlayer(player: Player): Boolean {
-        val layer = layers.computeIfAbsent(player.region) { LandLayer(this, player.level) }
+        val layer = layers.computeIfAbsent(player.pos.region) { LandLayer(this, player.pos.level) }
 
         // сам уровень земли уже спавнит игрока
         return layer.spawnPlayer(player)

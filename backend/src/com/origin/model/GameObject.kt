@@ -1,17 +1,24 @@
 package com.origin.model
 
+import com.origin.entity.EntityPosition
+
 /**
  * базовый игровой объект в игровой механике
  * все игровые сущности наследуются от него
  */
-open class GameObject(x: Int, y: Int, level: Int, region: Int, heading: Int) {
+open class GameObject(entityPosition: EntityPosition) {
+
     /**
      * координаты кэшируем в объекте (потом периодически обновляем в сущности)
      */
-    val coord: Coord = Coord(x, y, level, region, heading, this)
+    val pos: Position
 
-    val x get() = coord.x
-    val y get() = coord.y
-    val level get() = coord.level
-    val region get() = coord.region
+    init {
+        pos = Position(entityPosition.x,
+            entityPosition.y,
+            entityPosition.level,
+            entityPosition.region,
+            entityPosition.heading,
+            this)
+    }
 }

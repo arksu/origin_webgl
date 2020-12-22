@@ -7,31 +7,19 @@ import com.origin.net.model.GameSession
 /**
  * инстанс персонажа игрока в игровом мире (игрок)
  */
-class Player : GameObject {
-    constructor(character: Character, session: GameSession) : super(character.x,
-        character.y,
-        character.level,
-        character.region,
-        character.heading) {
-
-        this.character = character
-        this.session = session
-
-        paperdoll = Paperdoll()
-    }
-
+class Player(
     /**
      * персонаж игрока (сущность хранимая в БД)
      */
-    val character: Character
+    private val character: Character,
 
-    private val session: GameSession
+    private val session: GameSession,
+) : Human(character) {
 
     /**
      * одежда (во что одет игрок)
      */
-    val paperdoll: Paperdoll
-
+    val paperdoll: Paperdoll = Paperdoll(this)
 
     /**
      * текущий активный грид игрока

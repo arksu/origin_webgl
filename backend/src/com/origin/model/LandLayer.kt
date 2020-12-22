@@ -20,10 +20,10 @@ class LandLayer(
     var grids: MutableList<Grid> = ArrayList()
 
     fun spawnPlayer(player: Player): Boolean {
-        val gx = player.x / GRID_FULL_SIZE
-        val gy = player.y / GRID_FULL_SIZE
+        val gx = player.pos.x / GRID_FULL_SIZE
+        val gy = player.pos.y / GRID_FULL_SIZE
 
-        val g = Grid.load(gx, gy, player.level, player.region)
+        val g = Grid.load(gx, gy, player.pos.level, player.pos.region)
         grids.add(g)
         println(g)
 
