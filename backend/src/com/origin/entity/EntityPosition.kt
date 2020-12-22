@@ -4,9 +4,13 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
-open class EntityPositions(name: String = "", columnName: String = "id") : IntIdTable(name, columnName) {
+/**
+ * позиция объектов в игровом мире
+ * общие поля для всех игровых объектов
+ */
+abstract class EntityPositions(name: String = "", columnName: String = "id") : IntIdTable(name, columnName) {
     /**
-     * на каком континенте находится игрок, либо ид дома (инстанса, локации)
+     * на каком континенте находится объект, либо ид дома (инстанса, локации)
      */
     val region = integer("region")
 
@@ -17,7 +21,7 @@ open class EntityPositions(name: String = "", columnName: String = "id") : IntId
     val y = integer("y")
 
     /**
-     * уровень (слой) глубины где находится игрок
+     * уровень (слой) глубины где находится объект
      */
     val level = integer("level")
 

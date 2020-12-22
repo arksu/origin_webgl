@@ -1,7 +1,6 @@
 package com.origin.model
 
 import com.origin.entity.Grid
-import com.origin.utils.GRID_FULL_SIZE
 
 /**
  * слой (уровень) земли
@@ -20,10 +19,7 @@ class LandLayer(
     var grids: MutableList<Grid> = ArrayList()
 
     fun spawnPlayer(player: Player): Boolean {
-        val gx = player.pos.x / GRID_FULL_SIZE
-        val gy = player.pos.y / GRID_FULL_SIZE
-
-        val g = Grid.load(gx, gy, player.pos.level, player.pos.region)
+        val g = Grid.load(player.pos.gridX, player.pos.gridY, player.pos.level, player.pos.region)
         grids.add(g)
         println(g)
 

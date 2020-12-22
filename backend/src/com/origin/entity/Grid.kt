@@ -47,7 +47,7 @@ object Grids : Table("grids") {
 }
 
 /**
- * not DAO, потому что у нас хитрый индекс без явного id поля
+ * НЕ DAO, потому что у нас хитрый индекс без явного id поля
  */
 class Grid(r: ResultRow) {
     var id = r[Grids.id]

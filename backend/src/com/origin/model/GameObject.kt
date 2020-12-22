@@ -7,18 +7,13 @@ import com.origin.entity.EntityPosition
  * все игровые сущности наследуются от него
  */
 open class GameObject(entityPosition: EntityPosition) {
-
     /**
      * координаты кэшируем в объекте (потом периодически обновляем в сущности)
      */
-    val pos: Position
-
-    init {
-        pos = Position(entityPosition.x,
-            entityPosition.y,
-            entityPosition.level,
-            entityPosition.region,
-            entityPosition.heading,
-            this)
-    }
+    val pos: Position = Position(entityPosition.x,
+        entityPosition.y,
+        entityPosition.level,
+        entityPosition.region,
+        entityPosition.heading,
+        this)
 }

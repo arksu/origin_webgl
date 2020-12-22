@@ -21,7 +21,12 @@ object Characters : EntityPositions("characters") {
     /**
      * когда был создан персонаж
      */
+    @Suppress("unused")
     val createTime = timestamp("createTime", true).nullable()
+
+    /**
+     * сколько времени онлайн провел
+     */
     val onlineTime = long("onlineTime").default(0)
 }
 
@@ -31,7 +36,7 @@ class Character(id: EntityID<Int>) : EntityPosition(id) {
     var account by Account referencedOn Characters.account
     var name by Characters.name
 
-    var onlineTime by Characters.onlineTime
+    private var onlineTime by Characters.onlineTime
 
     fun appendOnlineTime(v: Int) {
         onlineTime += v.toLong()

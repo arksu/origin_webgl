@@ -62,6 +62,7 @@ fun Route.createCharacter() {
                 x = 0
                 y = 0
                 level = 0
+                heading = 0
             }
         }
 
