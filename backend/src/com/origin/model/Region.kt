@@ -9,10 +9,8 @@ import java.util.concurrent.ConcurrentHashMap
 class Region(val id: Int) {
     private val layers = ConcurrentHashMap<Int, LandLayer>()
 
-    fun spawnPlayer(player: Player): Boolean {
-        val layer = layers.computeIfAbsent(player.pos.region) { LandLayer(this, player.pos.level) }
-
-        // сам уровень земли уже спавнит игрока
-        return layer.spawnPlayer(player)
+    fun getLayer(level: Int): LandLayer {
+        if (level < 0) throw RuntimeException("wrong grid level")
+        return layers.computeIfAbsent(level) { LandLayer(this, level) }
     }
 }

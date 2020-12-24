@@ -5,7 +5,6 @@ import com.origin.entity.Account
 import com.origin.entity.Character
 import com.origin.entity.Characters
 import com.origin.model.Player
-import com.origin.model.World
 import com.origin.net.GameServer
 import com.origin.net.api.AuthorizationException
 import com.origin.net.api.BadRequest
@@ -47,9 +46,11 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 // load player
                 val player = Player(character, this)
 
-                if (!World.instance.spawnPlayer(player)) {
+                // спавним игрока в мир
+                if (!player.pos.spawn()) {
                     throw BadRequest("failed spawn player into world")
                 }
+
                 send(GameResponse("general", "welcome to Origin ${ServerConfig.PROTO_VERSION}"))
             }
         } else {

@@ -1,45 +1,46 @@
 package com.origin.model
 
 import com.origin.entity.Grid
+import java.util.*
 
 /**
  * слой (уровень) земли
  */
 class LandLayer(
-    private val region: Region,
+    val region: Region,
 
     /**
      * уровень земли
      */
-    private val level: Int,
+    val level: Int,
 ) {
     /**
      * гриды
      */
-    var grids: MutableList<Grid> = ArrayList()
-
-    @Synchronized
-    fun spawnPlayer(player: Player): Boolean {
-        // грид в котором находится игрок
-        val grid = getGrid(player.pos.gridX, player.pos.gridY)
-
-        // находим гриды которые нужны для спавна игрока
-        
-
-        return true
-    }
+    private val grids: MutableList<Grid> = LinkedList<Grid>()
 
     /**
      * найти грид среди загруженных
      */
     @Synchronized
-    private fun getGrid(gx: Int, gy: Int): Grid {
-        // ищем ТУПО, но в будущем надо бы переделать на hashmap
+    fun getGrid(gx: Int, gy: Int): Grid {
+        if (gx < 0 || gy < 0) throw RuntimeException("wrong grid coords")
+
+        // ищем ТУПО, но в будущем надо бы переделать на hashmap или еще как с компаратором
+        // по координатам
         // а также предусмотреть выгрузку гридов из памяти и удаление из списка grids
+        // также неплохо было бы убрать Synchronized на методе, и блокировать только при загрузке грида
+        // ну а самый пик различать операцию получения грида из памяти и загрузку из базы
+        // в случае если грузим из базы сделать на suspend функциях
+        // так чтобы можно было параллельно запросить загрузку сразу нескольких гридов.
+        // и ждать когда они параллельно загрузятся, а не грузить по одному несколько штук
+
         grids.forEach { g ->
             if (g.x == gx && g.y == gy) return g
         }
         // если не нашли - тогда грузим из базы
-        return Grid.load(gx, gy, level, region.id)
+        val grid = Grid.load(gx, gy, this)
+        grids.add(grid)
+        return grid
     }
 }

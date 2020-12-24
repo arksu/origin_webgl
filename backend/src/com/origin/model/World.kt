@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.entity.Grid
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -8,16 +9,13 @@ import java.util.concurrent.ConcurrentHashMap
 class World {
     private val regions = ConcurrentHashMap<Int, Region>()
 
-    /**
-     * добавить игрока в мир
-     * @return получилось ли добавить (заспавнить) игрока в мир
-     */
-    fun spawnPlayer(player: Player): Boolean {
-        // создаем регион в котором находится игрок
-        val region = regions.computeIfAbsent(player.pos.region) { Region(player.pos.region) }
+    private fun getRegion(region: Int): Region {
+        if (region < 0) throw RuntimeException("wrong grid region")
+        return regions.computeIfAbsent(region) { Region(region) }
+    }
 
-        // сам регион уже спавнит игрока
-        return region.spawnPlayer(player)
+    fun getGrid(pos: Position): Grid {
+        return getRegion(pos.region).getLayer(pos.level).getGrid(pos.gridX, pos.gridY)
     }
 
     companion object {

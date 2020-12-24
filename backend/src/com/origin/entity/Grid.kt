@@ -1,12 +1,15 @@
 package com.origin.entity
 
 import com.origin.model.GameObject
+import com.origin.model.LandLayer
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 /**
  * игровой "чанк" (регион), базовый кусок карты
@@ -53,35 +56,63 @@ object Grids : Table("grids") {
 /**
  * НЕ DAO, потому что у нас хитрый индекс без явного id поля
  */
-class Grid(r: ResultRow) {
-    //    var id = r[Grids.id]
-    var region = r[Grids.region]
-    var x = r[Grids.x]
-    var y = r[Grids.y]
-    var level = r[Grids.level]
+class Grid(r: ResultRow, val layer: LandLayer) {
+    //    val id = r[Grids.id]
+    val region = r[Grids.region]
+    val x = r[Grids.x]
+    val y = r[Grids.y]
+    val level = r[Grids.level]
     var lastTick = r[Grids.lastTick]
     var tilesBlob: ByteArray = r[Grids.tilesBlob].bytes
 
     /**
      * список активных объектов которые поддерживают этот грид активным
      */
-    val activeObjects = ConcurrentLinkedQueue<GameObject>()
+    private val activeObjects = ConcurrentLinkedQueue<GameObject>()
 
     /**
      * список объектов в гриде
      */
-    val objects = ConcurrentLinkedQueue<GameObject>()
+    private val objects = ConcurrentLinkedQueue<GameObject>()
+
+    /**
+     * блокировка для операций с гридом
+     */
+    val lock = ReentrantLock()
+
+    fun spawn(obj: GameObject): Boolean {
+        if (obj.pos.region != region || obj.pos.level != level ||
+            obj.pos.gridX != x || obj.pos.gridY != y
+        ) {
+            throw RuntimeException("wrong spawn condition")
+        }
+
+        return true
+    }
+
+    /**
+     * обновление состояния грида и его объектов
+     */
+    fun update() {
+        // TODO
+        lock.withLock { }
+    }
+
+    fun checkCollsion(): Boolean {
+        // TODO
+        return true
+    }
 
     companion object {
         /**
          * загрузка грида из базы
          */
-        fun load(gx: Int, gy: Int, level: Int, region: Int): Grid {
+        fun load(gx: Int, gy: Int, layer: LandLayer): Grid {
             val row = transaction {
-                Grids.select { (Grids.x eq gx) and (Grids.y eq gy) and (Grids.level eq level) and (Grids.region eq region) }
+                Grids.select { (Grids.x eq gx) and (Grids.y eq gy) and (Grids.level eq layer.level) and (Grids.region eq layer.region.id) }
                     .firstOrNull() ?: throw RuntimeException("")
             }
-            return Grid(row)
+            return Grid(row, layer)
         }
     }
 }
