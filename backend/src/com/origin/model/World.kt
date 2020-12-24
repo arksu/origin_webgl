@@ -13,10 +13,10 @@ class World {
      * @return получилось ли добавить (заспавнить) игрока в мир
      */
     fun spawnPlayer(player: Player): Boolean {
-        // создаем грид в котором находится игрок
+        // создаем регион в котором находится игрок
         val region = regions.computeIfAbsent(player.pos.region) { Region(player.pos.region) }
 
-        // сам инстанс уже спавнит игрока
+        // сам регион уже спавнит игрока
         return region.spawnPlayer(player)
     }
 

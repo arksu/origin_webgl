@@ -31,7 +31,7 @@ abstract class EntityPositions(name: String = "", columnName: String = "id") : I
     val heading = integer("heading")
 }
 
-open class EntityPosition(id: EntityID<Int>) : IntEntity(id) {
+abstract class EntityPosition(id: EntityID<Int>) : IntEntity(id) {
     var region by Characters.region
     var x by Characters.x
     var y by Characters.y

@@ -1,8 +1,12 @@
 package com.origin.entity
 
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import com.origin.model.GameObject
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
  * игровой "чанк" (регион), базовый кусок карты
@@ -10,7 +14,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
  * по instance, суб партиции по x, y и тд
  */
 object Grids : Table("grids") {
-    val id: Column<Int> = integer("id").autoIncrement()
+//    val id: Column<Int> = integer("id").autoIncrement()
 
     /**
      * на каком континенте находится грид, либо ид дома (инстанса, локации)
@@ -35,7 +39,7 @@ object Grids : Table("grids") {
      */
     val tilesBlob = blob("tiles")
 
-    override val primaryKey by lazy { super.primaryKey ?: PrimaryKey(id) }
+//    override val primaryKey by lazy { super.primaryKey ?: PrimaryKey(id) }
 
     init {
         uniqueIndex(region, x, y, level)
@@ -50,24 +54,34 @@ object Grids : Table("grids") {
  * НЕ DAO, потому что у нас хитрый индекс без явного id поля
  */
 class Grid(r: ResultRow) {
-    var id = r[Grids.id]
+    //    var id = r[Grids.id]
     var region = r[Grids.region]
     var x = r[Grids.x]
     var y = r[Grids.y]
     var level = r[Grids.level]
     var lastTick = r[Grids.lastTick]
-    var tilesBlob: ExposedBlob = r[Grids.tilesBlob]
+    var tilesBlob: ByteArray = r[Grids.tilesBlob].bytes
+
+    /**
+     * список активных объектов которые поддерживают этот грид активным
+     */
+    val activeObjects = ConcurrentLinkedQueue<GameObject>()
+
+    /**
+     * список объектов в гриде
+     */
+    val objects = ConcurrentLinkedQueue<GameObject>()
 
     companion object {
         /**
          * загрузка грида из базы
          */
         fun load(gx: Int, gy: Int, level: Int, region: Int): Grid {
-            val g = transaction {
+            val row = transaction {
                 Grids.select { (Grids.x eq gx) and (Grids.y eq gy) and (Grids.level eq level) and (Grids.region eq region) }
                     .firstOrNull() ?: throw RuntimeException("")
             }
-            return Grid(g)
+            return Grid(row)
         }
     }
 }

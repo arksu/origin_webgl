@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap
  * игровая область (континент, материк)
  * в игре может быть несколько больших континентов одновременно
  */
-class Region(private val id: Int) {
+class Region(val id: Int) {
     private val layers = ConcurrentHashMap<Int, LandLayer>()
 
     fun spawnPlayer(player: Player): Boolean {

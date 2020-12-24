@@ -38,12 +38,15 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 // выбраннй перс
                 val selectedCharacterId: Int = (r.data["selectedCharacterId"] as Long).toInt()
 
+                // load char
                 val character = transaction {
                     Character.find { Characters.account eq account!!.id and Characters.id.eq(selectedCharacterId) }
                         .firstOrNull()
                         ?: throw BadRequest("character not found")
                 }
+                // load player
                 val player = Player(character, this)
+
                 if (!World.instance.spawnPlayer(player)) {
                     throw BadRequest("failed spawn player into world")
                 }
@@ -51,11 +54,12 @@ class GameSession(private val connect: DefaultWebSocketSession) {
             }
         } else {
             when (r.target) {
+                // TODO delete
                 "test" -> {
                     ack(r, "test")
                 }
+                // TODO delete
                 "bye" -> {
-                    // TEST
                     connect.close(CloseReason(CloseReason.Codes.NORMAL, "said bye"))
                 }
                 else -> {
