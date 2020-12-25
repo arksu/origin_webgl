@@ -20,6 +20,7 @@ class Position(
      * либо null если еще не привязан к гриду (не заспавнен)
      */
     var grid: Grid? = null
+        private set
 
     /**
      * грид
@@ -30,8 +31,15 @@ class Position(
     /**
      * заспавнить объект в мир
      */
-    fun spawn(): Boolean {
+    fun spawn(): CollisionResult {
         // берем грид и спавнимся через него
-        return World.instance.getGrid(this).spawn(parent)
+        val g = World.instance.getGrid(this)
+
+        val result = g.spawn(parent)
+
+        if (result.result == CollisionResult.CollisionType.COLLISION_NONE) {
+            grid = g
+        }
+        return result
     }
 }

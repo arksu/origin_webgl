@@ -43,4 +43,9 @@ class LandLayer(
         grids.add(grid)
         return grid
     }
+
+    fun validateCoord(gx: Int, gy: Int): Boolean {
+        // TODO max size
+        return !(gx < 0 || gy < 0 || gx > 50 || gy > 50)
+    }
 }

@@ -55,6 +55,7 @@ fun Route.websockets() {
             }
         } finally {
             logger.debug("ws disconnected")
+            session.disconnected()
             gameSessions -= session
         }
     }

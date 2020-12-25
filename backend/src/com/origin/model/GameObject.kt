@@ -2,12 +2,14 @@ package com.origin.model
 
 import com.origin.entity.EntityPosition
 import com.origin.entity.Grid
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * базовый игровой объект в игровой механике
  * все игровые сущности наследуются от него
  */
 open class GameObject(entityPosition: EntityPosition) {
+
     /**
      * координаты кэшируем в объекте (потом периодически обновляем в сущности)
      */
@@ -19,14 +21,19 @@ open class GameObject(entityPosition: EntityPosition) {
         this)
 
     /**
-     * текущий активный грид в котором находится объект
+     * блокировка для операций с объектом
      */
-    private val grid: Grid? get() = pos.grid
+    val lock = ReentrantLock()
 
     /**
-     * когда удален из грида
+     * текущий активный грид в котором находится объект
+     */
+    protected val grid: Grid? get() = pos.grid
+
+    /**
+     * когда этот объект удален из грида
      */
     fun onRemove() {
-
+        // TODO known list
     }
 }

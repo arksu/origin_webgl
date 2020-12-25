@@ -18,6 +18,10 @@ class World {
         return getRegion(pos.region).getLayer(pos.level).getGrid(pos.gridX, pos.gridY)
     }
 
+    fun getGrid(region: Int, level: Int, gx: Int, gy: Int): Grid {
+        return getRegion(region).getLayer(level).getGrid(gx, gy)
+    }
+
     companion object {
         @JvmField
         val instance = World()

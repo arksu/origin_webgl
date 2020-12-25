@@ -95,15 +95,21 @@ class Grid(r: ResultRow, val layer: LandLayer) {
         }
 
         lock.withLock {
-            // в любом случае обновим грид до начала проверок коллизий
-            update()
+            obj.lock.withLock {
+                // в любом случае обновим грид до начала проверок коллизий
+                update()
 
-            val collision = checkCollsion(obj, obj.pos.x, obj.pos.y, obj.pos.x, obj.pos.y, MoveType.SPAWN)
+                // проверим коллизию с объектами и тайлами грида
+                val collision = checkCollsion(obj, obj.pos.x, obj.pos.y, obj.pos.x, obj.pos.y, MoveType.SPAWN)
 
-            if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
-                addObject(obj)
+                if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
+                    if (obj is MovingObject) {
+                        obj.activateGrids()
+                    }
+                    addObject(obj)
+                }
+                return collision
             }
-            return collision
         }
     }
 
@@ -111,17 +117,28 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * обновление состояния грида и его объектов
      */
     fun update() {
-        // TODO
-        lock.withLock { }
+        lock.withLock {
+
+            // TODO
+
+        }
     }
 
     /**
      * проверить коллизию
      */
-    fun checkCollsion(obj: GameObject, x: Int, y: Int, toX: Int, toY: Int, moveType: MoveType): CollisionResult {
+    private fun checkCollsion(
+        obj: GameObject,
+        x: Int,
+        y: Int,
+        toX: Int,
+        toY: Int,
+        moveType: MoveType,
+    ): CollisionResult {
         lock.withLock {
 
             // TODO
+
             return CollisionResult.NONE
         }
     }
@@ -130,7 +147,7 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * добавить объект в грид
      * перед вызовом грид обязательно должен быть залочен!!!
      */
-    fun addObject(obj: GameObject) {
+    private fun addObject(obj: GameObject) {
         if (!lock.isLocked) {
             throw RuntimeException("addObject: grid is not locked")
         }
@@ -160,6 +177,31 @@ class Grid(r: ResultRow, val layer: LandLayer) {
                 it.onObjectRemoved(obj)
             }
         }
+    }
+
+    /**
+     * активировать грид
+     * только пока есть хоть 1 объект связанный с гридом - он будет считатся активным
+     * если ни одного объекта нет грид становится не активным и не обновляет свое состояние
+     * @param human объект который связывается с гридом
+     * @return только если удалось активировать
+     */
+    fun activate(human: Human) {
+        if (!activeObjects.contains(human)) {
+            if (!isActive) {
+                update()
+            }
+
+            activeObjects.add(human)
+        }
+    }
+
+    /**
+     * деактивировать грид
+     * если в гриде не осталось ни одного активного объекта то он прекращает обновляться
+     */
+    fun deactivate(human: Human) {
+
     }
 
     companion object {

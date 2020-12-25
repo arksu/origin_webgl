@@ -7,6 +7,9 @@ enum class MoveType {
     // передвижение по суше
     WALK,
 
+    // бегом
+    RUN,
+
     // плывет по воде
     SWIMMING
 }

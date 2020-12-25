@@ -4,6 +4,7 @@ import com.origin.ServerConfig
 import com.origin.entity.Account
 import com.origin.entity.Character
 import com.origin.entity.Characters
+import com.origin.model.CollisionResult
 import com.origin.model.Player
 import com.origin.net.GameServer
 import com.origin.net.api.AuthorizationException
@@ -22,6 +23,8 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         private set
 
     private var account: Account? = null
+
+    private var player: Player? = null
 
     suspend fun received(r: GameRequest) {
         // инициализация сессии
@@ -44,10 +47,10 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                         ?: throw BadRequest("character not found")
                 }
                 // load player
-                val player = Player(character, this)
+                player = Player(character, this)
 
                 // спавним игрока в мир
-                if (!player.pos.spawn()) {
+                if (player!!.pos.spawn().result != CollisionResult.CollisionType.COLLISION_NONE) {
                     throw BadRequest("failed spawn player into world")
                 }
 
@@ -68,6 +71,10 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 }
             }
         }
+    }
+
+    fun disconnected() {
+        player?.disconnected()
     }
 
     /**

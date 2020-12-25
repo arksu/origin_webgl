@@ -1,7 +1,6 @@
 package com.origin.model
 
 import com.origin.entity.Character
-import com.origin.entity.Grid
 import com.origin.net.model.GameSession
 
 /**
@@ -21,6 +20,9 @@ class Player(
      */
     val paperdoll: Paperdoll = Paperdoll(this)
 
-
+    fun disconnected() {
+        // TODO
+        pos.grid?.removeObject(this)
+    }
 
 }
