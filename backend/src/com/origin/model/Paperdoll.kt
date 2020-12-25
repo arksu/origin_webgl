@@ -7,6 +7,8 @@ import com.origin.entity.InventoryItem
  */
 class Paperdoll(val player: Player) {
 
+    // TODO загрузка из базы
+
     /**
      * храним вещи одетые на сущность в массиве
      * доступ к элементам по индексу {@see Paperdoll.Slot}

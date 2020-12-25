@@ -21,9 +21,6 @@ class Player(
      */
     val paperdoll: Paperdoll = Paperdoll(this)
 
-    /**
-     * текущий активный грид игрока
-     */
-    private val grid: Grid? = null
+
 
 }

@@ -27,7 +27,11 @@ class Position(
     val gridX = x / GRID_FULL_SIZE
     val gridY = y / GRID_FULL_SIZE
 
+    /**
+     * заспавнить объект в мир
+     */
     fun spawn(): Boolean {
+        // берем грид и спавнимся через него
         return World.instance.getGrid(this).spawn(parent)
     }
 }

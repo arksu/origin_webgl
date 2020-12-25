@@ -1,7 +1,6 @@
 package com.origin.entity
 
-import com.origin.model.GameObject
-import com.origin.model.LandLayer
+import com.origin.model.*
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
@@ -68,7 +67,7 @@ class Grid(r: ResultRow, val layer: LandLayer) {
     /**
      * список активных объектов которые поддерживают этот грид активным
      */
-    private val activeObjects = ConcurrentLinkedQueue<GameObject>()
+    private val activeObjects = ConcurrentLinkedQueue<Human>()
 
     /**
      * список объектов в гриде
@@ -80,14 +79,32 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      */
     val lock = ReentrantLock()
 
-    fun spawn(obj: GameObject): Boolean {
+    /**
+     * активен ли грид?
+     */
+    val isActive: Boolean get() = !activeObjects.isEmpty()
+
+    /**
+     * спавн объекта в грид
+     */
+    fun spawn(obj: GameObject): CollisionResult {
         if (obj.pos.region != region || obj.pos.level != level ||
             obj.pos.gridX != x || obj.pos.gridY != y
         ) {
             throw RuntimeException("wrong spawn condition")
         }
 
-        return true
+        lock.withLock {
+            // в любом случае обновим грид до начала проверок коллизий
+            update()
+
+            val collision = checkCollsion(obj, obj.pos.x, obj.pos.y, obj.pos.x, obj.pos.y, MoveType.SPAWN)
+
+            if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
+                addObject(obj)
+            }
+            return collision
+        }
     }
 
     /**
@@ -98,9 +115,51 @@ class Grid(r: ResultRow, val layer: LandLayer) {
         lock.withLock { }
     }
 
-    fun checkCollsion(): Boolean {
-        // TODO
-        return true
+    /**
+     * проверить коллизию
+     */
+    fun checkCollsion(obj: GameObject, x: Int, y: Int, toX: Int, toY: Int, moveType: MoveType): CollisionResult {
+        lock.withLock {
+
+            // TODO
+            return CollisionResult.NONE
+        }
+    }
+
+    /**
+     * добавить объект в грид
+     * перед вызовом грид обязательно должен быть залочен!!!
+     */
+    fun addObject(obj: GameObject) {
+        if (!lock.isLocked) {
+            throw RuntimeException("addObject: grid is not locked")
+        }
+
+        if (!objects.contains(obj)) {
+            objects.add(obj)
+
+            if (isActive) activeObjects.forEach {
+                it.onObjectAdded(obj)
+            }
+        }
+    }
+
+    /**
+     * удалить объект из грида
+     */
+    fun removeObject(obj: GameObject) {
+        if (!lock.isLocked) {
+            throw RuntimeException("addObject: grid is not locked")
+        }
+
+        if (objects.contains(obj)) {
+            obj.onRemove()
+            objects.remove(obj)
+
+            if (isActive) activeObjects.forEach {
+                it.onObjectRemoved(obj)
+            }
+        }
     }
 
     companion object {
