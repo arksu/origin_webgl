@@ -8,14 +8,6 @@ import com.origin.entity.EntityPosition
  */
 open class Human(pos: EntityPosition) : MovingObject(pos) {
 
-    override fun activateGrids() {
-        super.activateGrids()
-
-        grids.forEach {
-            it.activate(this)
-        }
-    }
-
     /**
      * добавили объект в грид в котором находится объект
      */
@@ -27,6 +19,5 @@ open class Human(pos: EntityPosition) : MovingObject(pos) {
      */
     fun onObjectRemoved(obj: GameObject) {
     }
-
 
 }

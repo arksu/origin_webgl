@@ -2,6 +2,7 @@ package com.origin.net.model
 
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
+import com.origin.entity.Grid
 import com.origin.utils.StringTypeAdapter
 
 class GameResponse {
@@ -41,4 +42,11 @@ class GameResponse {
         channel = null
         this.errorText = errorText
     }
+}
+
+@Suppress("unused")
+class MapGridData(grid: Grid) {
+    val x: Int = grid.x
+    val y: Int = grid.y
+    val tiles: ByteArray = grid.tilesBlob
 }

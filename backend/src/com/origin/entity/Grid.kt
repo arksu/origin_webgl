@@ -66,6 +66,7 @@ class Grid(r: ResultRow, val layer: LandLayer) {
 
     /**
      * список активных объектов которые поддерживают этот грид активным
+     * также всем активным объектам рассылаем уведомления о том что происходит в гриде (события)
      */
     private val activeObjects = ConcurrentLinkedQueue<Human>()
 
@@ -103,9 +104,6 @@ class Grid(r: ResultRow, val layer: LandLayer) {
                 val collision = checkCollsion(obj, obj.pos.x, obj.pos.y, obj.pos.x, obj.pos.y, MoveType.SPAWN)
 
                 if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
-                    if (obj is MovingObject) {
-                        obj.activateGrids()
-                    }
                     addObject(obj)
                 }
                 return collision
@@ -148,7 +146,7 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * перед вызовом грид обязательно должен быть залочен!!!
      */
     private fun addObject(obj: GameObject) {
-        if (!lock.isLocked) {
+        if (!lock.isHeldByCurrentThread) {
             throw RuntimeException("addObject: grid is not locked")
         }
 
@@ -165,9 +163,9 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * удалить объект из грида
      */
     fun removeObject(obj: GameObject) {
-        if (!lock.isLocked) {
-            throw RuntimeException("addObject: grid is not locked")
-        }
+//        if (!lock.isHeldByCurrentThread) {
+//            throw RuntimeException("removeObject: grid is not locked")
+//        }
 
         if (objects.contains(obj)) {
             obj.onRemove()
@@ -187,12 +185,17 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * @return только если удалось активировать
      */
     fun activate(human: Human) {
+        if (!lock.isHeldByCurrentThread) {
+            throw RuntimeException("activate: grid is not locked")
+        }
         if (!activeObjects.contains(human)) {
             if (!isActive) {
                 update()
             }
 
             activeObjects.add(human)
+
+            World.instance.addActiveGrid(this)
         }
     }
 
@@ -201,7 +204,14 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * если в гриде не осталось ни одного активного объекта то он прекращает обновляться
      */
     fun deactivate(human: Human) {
+        if (!lock.isHeldByCurrentThread) {
+            throw RuntimeException("deactivate: grid is not locked")
+        }
+        activeObjects.remove(human)
 
+        if (!isActive) {
+            World.instance.removeActiveGrid(this)
+        }
     }
 
     companion object {

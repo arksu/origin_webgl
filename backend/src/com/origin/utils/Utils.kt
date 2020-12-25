@@ -3,8 +3,6 @@ package com.origin.utils
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
-
-
 typealias ObjectID = Int
 
 object Utils {

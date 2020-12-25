@@ -12,7 +12,7 @@ class Player(
      */
     private val character: Character,
 
-    private val session: GameSession,
+    val session: GameSession,
 ) : Human(character) {
 
     /**
@@ -21,8 +21,10 @@ class Player(
     val paperdoll: Paperdoll = Paperdoll(this)
 
     fun disconnected() {
-        // TODO
-        pos.grid?.removeObject(this)
+        // deactivate and unload grids
+        uloadGrids()
+
+        remove()
     }
 
 }

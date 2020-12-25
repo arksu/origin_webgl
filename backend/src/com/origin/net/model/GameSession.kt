@@ -4,7 +4,6 @@ import com.origin.ServerConfig
 import com.origin.entity.Account
 import com.origin.entity.Character
 import com.origin.entity.Characters
-import com.origin.model.CollisionResult
 import com.origin.model.Player
 import com.origin.net.GameServer
 import com.origin.net.api.AuthorizationException
@@ -14,6 +13,7 @@ import com.origin.net.logger
 import io.ktor.http.cio.websocket.*
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.concurrent.withLock
 
 /**
  * игровая сессия (коннект)
@@ -46,13 +46,18 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                         .firstOrNull()
                         ?: throw BadRequest("character not found")
                 }
-                // load player
-                player = Player(character, this)
+                // создали игрока, его позицию
+                val player = Player(character, this)
 
-                // спавним игрока в мир
-                if (player!!.pos.spawn().result != CollisionResult.CollisionType.COLLISION_NONE) {
-                    throw BadRequest("failed spawn player into world")
+                player.lock.withLock {
+                    // спавним игрока в мир, прогружаются гриды, активируются
+                    if (!player.pos.spawn()) {
+                        throw BadRequest("failed spawn player into world")
+                    }
                 }
+                player.loadGrids()
+
+                this.player = player
 
                 send(GameResponse("general", "welcome to Origin ${ServerConfig.PROTO_VERSION}"))
             }
@@ -84,12 +89,13 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         send(GameResponse(req.id, d))
     }
 
-    private suspend fun send(r: GameResponse) {
+    suspend fun send(r: GameResponse) {
         connect.outgoing.send(Frame.Text(gsonSerializer.toJson(r)))
     }
 
     suspend fun kick() {
         logger.warn("kick")
         connect.close(CloseReason(CloseReason.Codes.NORMAL, "kicked"))
+        player?.disconnected()
     }
 }
