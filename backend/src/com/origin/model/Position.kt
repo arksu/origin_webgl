@@ -1,11 +1,15 @@
 package com.origin.model
 
 import com.origin.entity.Grid
+import com.origin.entity.GridMsg
 import com.origin.utils.GRID_FULL_SIZE
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
  * позиция объекта в игровом мире
  */
+@ObsoleteCoroutinesApi
 class Position(
     var x: Int,
     var y: Int,
@@ -31,11 +35,13 @@ class Position(
     /**
      * заспавнить объект в мир
      */
-    fun spawn(): Boolean {
+    suspend fun spawn(): Boolean {
         // берем грид и спавнимся через него
         val g = World.instance.getGrid(this)
 
-        val result = g.spawn(parent)
+        val deferred = CompletableDeferred<CollisionResult>()
+        g.actor.send(GridMsg.Spawn(parent, deferred))
+        val result = deferred.await()
 
         // если успешно добавились в грид - запомним его у себя
         return if (result.result == CollisionResult.CollisionType.COLLISION_NONE) {

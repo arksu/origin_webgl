@@ -42,6 +42,10 @@ class GameResponse {
         channel = null
         this.errorText = errorText
     }
+
+    override fun toString(): String {
+        return "id=$id data=$data channel=$channel"
+    }
 }
 
 @Suppress("unused")

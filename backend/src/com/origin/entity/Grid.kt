@@ -1,6 +1,14 @@
 package com.origin.entity
 
 import com.origin.model.*
+import com.origin.net.logger
+import com.origin.net.model.GameResponse
+import com.origin.net.model.MapGridData
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.channels.actor
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
@@ -52,9 +60,15 @@ object Grids : Table("grids") {
     }
 }
 
+sealed class GridMsg {
+    class Spawn(val obj: GameObject, val deferred: CompletableDeferred<CollisionResult>) : GridMsg()
+    class Activate(val human: Human, val deferred: CompletableDeferred<Boolean>) : GridMsg()
+}
+
 /**
  * НЕ DAO, потому что у нас хитрый индекс без явного id поля
  */
+@ObsoleteCoroutinesApi
 class Grid(r: ResultRow, val layer: LandLayer) {
     //    val id = r[Grids.id]
     val region = r[Grids.region]
@@ -63,6 +77,20 @@ class Grid(r: ResultRow, val layer: LandLayer) {
     val level = r[Grids.level]
     var lastTick = r[Grids.lastTick]
     var tilesBlob: ByteArray = r[Grids.tilesBlob].bytes
+
+    val scope = CoroutineScope(Dispatchers.Default)
+
+    val actor = scope.actor<GridMsg> {
+        for (msg in channel) {
+            when (msg) {
+                is GridMsg.Spawn -> msg.deferred.complete(spawn(msg.obj))
+                is GridMsg.Activate -> {
+                    activate(msg.human)
+                    msg.deferred.complete(true)
+                }
+            }
+        }
+    }
 
     /**
      * список активных объектов которые поддерживают этот грид активным
@@ -88,27 +116,23 @@ class Grid(r: ResultRow, val layer: LandLayer) {
     /**
      * спавн объекта в грид
      */
-    fun spawn(obj: GameObject): CollisionResult {
+    private fun spawn(obj: GameObject): CollisionResult {
         if (obj.pos.region != region || obj.pos.level != level ||
             obj.pos.gridX != x || obj.pos.gridY != y
         ) {
             throw RuntimeException("wrong spawn condition")
         }
 
-        lock.withLock {
-            obj.lock.withLock {
-                // в любом случае обновим грид до начала проверок коллизий
-                update()
+        // в любом случае обновим грид до начала проверок коллизий
+        update()
 
-                // проверим коллизию с объектами и тайлами грида
-                val collision = checkCollsion(obj, obj.pos.x, obj.pos.y, obj.pos.x, obj.pos.y, MoveType.SPAWN)
+        // проверим коллизию с объектами и тайлами грида
+        val collision = checkCollsion(obj, obj.pos.x, obj.pos.y, obj.pos.x, obj.pos.y, MoveType.SPAWN)
 
-                if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
-                    addObject(obj)
-                }
-                return collision
-            }
+        if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
+            addObject(obj)
         }
+        return collision
     }
 
     /**
@@ -146,10 +170,6 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * перед вызовом грид обязательно должен быть залочен!!!
      */
     private fun addObject(obj: GameObject) {
-        if (!lock.isHeldByCurrentThread) {
-            throw RuntimeException("addObject: grid is not locked")
-        }
-
         if (!objects.contains(obj)) {
             objects.add(obj)
 
@@ -184,16 +204,17 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * @param human объект который связывается с гридом
      * @return только если удалось активировать
      */
-    fun activate(human: Human) {
-        if (!lock.isHeldByCurrentThread) {
-            throw RuntimeException("activate: grid is not locked")
-        }
+    private suspend fun activate(human: Human) {
         if (!activeObjects.contains(human)) {
             if (!isActive) {
                 update()
             }
 
             activeObjects.add(human)
+            if (human is Player) {
+                logger.debug("GameResponse map $x $y")
+                human.session.send(GameResponse("map", MapGridData(this)))
+            }
 
             World.instance.addActiveGrid(this)
         }

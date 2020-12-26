@@ -11,13 +11,14 @@ import com.origin.net.api.BadRequest
 import com.origin.net.gsonSerializer
 import com.origin.net.logger
 import io.ktor.http.cio.websocket.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
-import kotlin.concurrent.withLock
 
 /**
  * игровая сессия (коннект)
  */
+@ObsoleteCoroutinesApi
 class GameSession(private val connect: DefaultWebSocketSession) {
     var ssid: String? = null
         private set
@@ -27,6 +28,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     private var player: Player? = null
 
     suspend fun received(r: GameRequest) {
+
         // инициализация сессии
         if (ssid == null) {
             // начальная точка входа клиента в игру (авторизация по ssid)
@@ -49,16 +51,16 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 // создали игрока, его позицию
                 val player = Player(character, this)
 
-                player.lock.withLock {
-                    // спавним игрока в мир, прогружаются гриды, активируются
-                    if (!player.pos.spawn()) {
-                        throw BadRequest("failed spawn player into world")
-                    }
+                // спавним игрока в мир, прогружаются гриды, активируются
+                if (!player.pos.spawn()) {
+                    throw BadRequest("failed spawn player into world")
                 }
+
                 player.loadGrids()
 
                 this.player = player
 
+                logger.debug("send welcome")
                 send(GameResponse("general", "welcome to Origin ${ServerConfig.PROTO_VERSION}"))
             }
         } else {
@@ -90,6 +92,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     }
 
     suspend fun send(r: GameResponse) {
+        logger.debug("send $r")
         connect.outgoing.send(Frame.Text(gsonSerializer.toJson(r)))
     }
 
