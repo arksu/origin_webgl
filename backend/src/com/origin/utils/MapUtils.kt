@@ -24,6 +24,10 @@ const val GRID_FULL_SIZE = GRID_SIZE * TILE_SIZE
  * полная длина супергрида в игровых единицах (НЕ тайлах)
  */
 const val SUPERGRID_FULL_SIZE = GRID_FULL_SIZE * SUPERGRID_SIZE
+
+/**
+ * площадь грида в тайлах
+ */
 const val GRID_SQUARE = GRID_SIZE * GRID_SIZE
 
 /**
@@ -35,39 +39,35 @@ const val GRID_BLOB_SIZE = GRID_SQUARE * 3
 // TILES
 object TileColors {
     // луг (низкие травы)
-    val MEADOW_LOW = 0xd97cc0
+    const val MEADOW_LOW = 0xd97cc0
 
     // луг (высокие травы)
-    val MEADOW_HIGH = 0x8ebf8e
+    const val MEADOW_HIGH = 0x8ebf8e
 
     // лес лиственный
-    val FOREST_LEAF = 0x17d421
+    const val FOREST_LEAF = 0x17d421
 
     // лес хвойный
-    val FOREST_PINE = 0x316117
+    const val FOREST_PINE = 0x316117
 
     // глина
-    val CLAY = 0x70390f
+    const val CLAY = 0x70390f
 
     // песок
-    val SAND = 0xe0e034
+    const val SAND = 0xe0e034
 
     // степь
-    val PRAIRIE = 0xf0a01f
+    const val PRAIRIE = 0xf0a01f
 
     // болото
-    val SWAMP = 0x1c3819
+    const val SWAMP = 0x1c3819
 
     // тундра
-    val TUNDRA = 0x3c7a6f
+    const val TUNDRA = 0x3c7a6f
 
     // мелководье
-    val WATER = 0x0055ff
+    const val WATER = 0x0055ff
 
     // глубокая вода
-    val WATER_DEEP = 0x0000ff
-}
-
-object Tile {
-
+    const val WATER_DEEP = 0x0000ff
 }
