@@ -4,9 +4,8 @@ import com.origin.entity.EntityPosition
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
+import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
-
-abstract class MessageWithJob(val job: CompletableJob?)
 
 @ObsoleteCoroutinesApi
 sealed class GameObjectMsg {
@@ -23,6 +22,9 @@ sealed class GameObjectMsg {
  */
 @ObsoleteCoroutinesApi
 open class GameObject(entityPosition: EntityPosition) {
+    companion object {
+        val logger = LoggerFactory.getLogger(GameObject::class.java)
+    }
 
     /**
      * координаты кэшируем в объекте (потом периодически обновляем в сущности)
@@ -34,10 +36,11 @@ open class GameObject(entityPosition: EntityPosition) {
         entityPosition.heading,
         this)
 
-    val actor = CoroutineScope(Dispatchers.IO).actor<Any> {
+    val actor = CoroutineScope(Dispatchers.IO).actor<Any>(capacity = ACTOR_CAPACITY) {
         channel.consumeEach {
             processMessages(it)
         }
+        logger.warn("game obj actor $this finished")
     }
 
     suspend fun sendJob(msg: MessageWithJob): CompletableJob {
@@ -47,6 +50,7 @@ open class GameObject(entityPosition: EntityPosition) {
     }
 
     protected open suspend fun processMessages(msg: Any) {
+        logger.warn("gameobject processMessages ${msg.javaClass.simpleName}")
         when (msg) {
             is GameObjectMsg.Spawn -> msg.resp.complete(pos.spawn())
             is GameObjectMsg.Remove -> {
@@ -78,17 +82,19 @@ open class GameObject(entityPosition: EntityPosition) {
      * удалить объект из мира
      */
     private suspend fun remove() {
-        grid.sendJob(GridMsg.RemoveObject(this, Job())).invokeOnCompletion {
-            // если есть что-то вложенное внутри
-            if (!lift.isEmpty()) {
-                lift.values.forEach {
-                    // TODO
+        grid.sendJob(GridMsg.RemoveObject(this, Job()))
+            .join()
+//            .invokeOnCompletion {
+        // если есть что-то вложенное внутри
+        if (!lift.isEmpty()) {
+            lift.values.forEach {
+                // TODO
 //                    it.pos.set xy coord
-                    // spawn it
-                    //it.pos.spawn()
-                    // store pos into db
-                }
+                // spawn it
+                //it.pos.spawn()
+                // store pos into db
             }
+//            }
         }
     }
 
@@ -96,6 +102,7 @@ open class GameObject(entityPosition: EntityPosition) {
      * когда ЭТОТ объект удален из грида
      */
     private fun onRemoved() {
+        logger.warn("onRemoved")
         // TODO known list
     }
 

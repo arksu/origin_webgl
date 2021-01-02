@@ -8,6 +8,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.LoggerFactory
 
 /**
  * игровой "чанк" (регион), базовый кусок карты
@@ -75,5 +76,7 @@ open class GridEntity(r: ResultRow, val layer: LandLayer) {
             }
             return Grid(row, layer)
         }
+
+        val logger = LoggerFactory.getLogger(Grid::class.java)
     }
 }

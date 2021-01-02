@@ -1,7 +1,6 @@
 package com.origin.model
 
 import com.origin.entity.EntityPosition
-import com.origin.net.logger
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -23,6 +22,8 @@ open class MovingObject(pos: EntityPosition) : GameObject(pos) {
     private val grids = LinkedList<Grid>()
 
     override suspend fun processMessages(msg: Any) {
+        logger.warn("MovingObject processMessages ${msg.javaClass.simpleName}")
+
         when (msg) {
             is MovingObjectMsg.LoadGrids -> {
                 loadGrids()

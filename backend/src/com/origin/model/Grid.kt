@@ -1,7 +1,6 @@
 package com.origin.model
 
 import com.origin.entity.GridEntity
-import com.origin.net.logger
 import com.origin.net.model.GameResponse
 import com.origin.net.model.MapGridData
 import kotlinx.coroutines.*
@@ -19,8 +18,8 @@ sealed class GridMsg {
 }
 
 @ObsoleteCoroutinesApi
-class Grid(r: ResultRow, val l: LandLayer) : GridEntity(r, l) {
-    val actor = CoroutineScope(Dispatchers.IO).actor<Any> {
+class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
+    val actor = CoroutineScope(Dispatchers.IO).actor<Any>(capacity = ACTOR_CAPACITY) {
         channel.consumeEach {
             processMessages(it)
         }
@@ -33,7 +32,7 @@ class Grid(r: ResultRow, val l: LandLayer) : GridEntity(r, l) {
     }
 
     private suspend fun processMessages(msg: Any) {
-        com.origin.logger.debug("grid msg $msg")
+        logger.debug("grid processMessages ${msg.javaClass.simpleName}")
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
             is GridMsg.Activate -> {
@@ -92,7 +91,7 @@ class Grid(r: ResultRow, val l: LandLayer) : GridEntity(r, l) {
     /**
      * обновление состояния грида и его объектов
      */
-    fun update() {
+    private fun update() {
 
     }
 
@@ -135,7 +134,7 @@ class Grid(r: ResultRow, val l: LandLayer) : GridEntity(r, l) {
             obj.actor.send(GameObjectMsg.OnRemoved())
 
             if (isActive) activeObjects.forEach {
-                it.actor.send(GameObjectMsg.OnObjectRemoved(obj))
+                it.actor.offer(GameObjectMsg.OnObjectRemoved(obj))
             }
         }
     }

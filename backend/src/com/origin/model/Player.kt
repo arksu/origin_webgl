@@ -2,6 +2,7 @@ package com.origin.model
 
 import com.origin.entity.Character
 import com.origin.net.model.GameSession
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
@@ -29,11 +30,12 @@ class Player(
     val paperdoll: Paperdoll = Paperdoll(this)
 
     suspend fun disconnected() {
-        // поскольку это отключение - поэтому ждать завершения обработки сообщений ни к чему
         // deactivate and unload grids
-        actor.send(MovingObjectMsg.UnloadGrids())
+        sendJob(GameObjectMsg.Remove(Job())).join()
         // удалить объект из мира
-        actor.send(GameObjectMsg.Remove())
+        sendJob(MovingObjectMsg.UnloadGrids(Job())).join()
+        // завершаем актора
+        actor.close()
     }
 
 }
