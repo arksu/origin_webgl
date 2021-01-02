@@ -29,8 +29,10 @@ class Player(
     val paperdoll: Paperdoll = Paperdoll(this)
 
     suspend fun disconnected() {
+        // поскольку это отключение - поэтому ждать завершения обработки сообщений ни к чему
         // deactivate and unload grids
         actor.send(MovingObjectMsg.UnloadGrids())
+        // удалить объект из мира
         actor.send(GameObjectMsg.Remove())
     }
 

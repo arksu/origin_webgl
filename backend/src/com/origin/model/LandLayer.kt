@@ -1,8 +1,8 @@
 package com.origin.model
 
-import com.origin.entity.Grid
+import com.origin.entity.GridEntity
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
  * слой (уровень) земли
@@ -19,7 +19,7 @@ class LandLayer(
     /**
      * гриды
      */
-    private val grids = LinkedBlockingQueue<Grid>()
+    private val grids = ConcurrentLinkedQueue<Grid>()
 
     /**
      * найти грид среди загруженных
@@ -42,7 +42,7 @@ class LandLayer(
             if (g.x == gx && g.y == gy) return g
         }
         // если не нашли - тогда грузим из базы
-        val grid = Grid.load(gx, gy, this)
+        val grid = GridEntity.load(gx, gy, this)
         grids.add(grid)
         return grid
     }

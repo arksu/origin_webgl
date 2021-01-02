@@ -1,7 +1,5 @@
 package com.origin.model
 
-import com.origin.entity.Grid
-import com.origin.entity.GridMsg
 import com.origin.utils.GRID_FULL_SIZE
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -42,9 +40,9 @@ class Position(
         // берем грид и спавнимся через него
         val g = World.instance.getGrid(this)
 
-        val deferred = CompletableDeferred<CollisionResult>()
-        g.actor.send(GridMsg.Spawn(parent, deferred))
-        val result = deferred.await()
+        val resp = CompletableDeferred<CollisionResult>()
+        g.actor.send(GridMsg.Spawn(parent, resp))
+        val result = resp.await()
 
         // если успешно добавились в грид - запомним его у себя
         return if (result.result == CollisionResult.CollisionType.COLLISION_NONE) {

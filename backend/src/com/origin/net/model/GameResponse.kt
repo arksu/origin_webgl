@@ -2,7 +2,7 @@ package com.origin.net.model
 
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
-import com.origin.entity.Grid
+import com.origin.model.Grid
 import com.origin.utils.StringTypeAdapter
 
 class GameResponse {

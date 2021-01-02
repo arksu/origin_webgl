@@ -25,7 +25,7 @@ for Origin MMO game
 - Install MariaDB 10+
 - create database `origin`
 - check `root` password for database: it must be set to `1` (these credentials are pre-configured into default `server.conf`)
-See [server.conf](/config/server.conf)
+See [server.conf](/backend/config/server.conf)
 
 ### Generate map
 ```shell

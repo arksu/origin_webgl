@@ -1,17 +1,15 @@
 package com.origin.model
 
 import com.origin.entity.EntityPosition
-import com.origin.entity.Grid
-import com.origin.entity.GridMsg
 import com.origin.net.logger
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.*
 
 sealed class MovingObjectMsg {
-    class LoadGrids(val job: CompletableJob? = null);
-    class UnloadGrids(val job: CompletableJob? = null);
+    class LoadGrids(job: CompletableJob) : MessageWithJob(job)
+    class UnloadGrids(job: CompletableJob? = null) : MessageWithJob(job)
 }
 
 /**
@@ -19,12 +17,10 @@ sealed class MovingObjectMsg {
  */
 @ObsoleteCoroutinesApi
 open class MovingObject(pos: EntityPosition) : GameObject(pos) {
-
-
     /**
      * список гридов в которых находится объект. max 9 штук.
      */
-    private val grids = ConcurrentLinkedQueue<Grid>()
+    private val grids = LinkedList<Grid>()
 
     override suspend fun processMessages(msg: Any) {
         when (msg) {
@@ -61,9 +57,7 @@ open class MovingObject(pos: EntityPosition) : GameObject(pos) {
                 if (this is Human) {
                     val h = this
                     logger.debug("GridMsg.Activate ${grid.x} ${grid.y}")
-                    val job = Job()
-                    grid.actor.send(GridMsg.Activate(h, job))
-                    job.join()
+                    grid.sendJob(GridMsg.Activate(h, Job())).join()
                 }
             }
         }
@@ -78,9 +72,7 @@ open class MovingObject(pos: EntityPosition) : GameObject(pos) {
         }
 
         if (this is Human) grids.forEach {
-            val job = Job()
-            it.actor.send(GridMsg.Deactivate(this, job))
-            job.join()
+            grid.sendJob(GridMsg.Deactivate(this, Job())).join()
         }
         grids.clear()
     }

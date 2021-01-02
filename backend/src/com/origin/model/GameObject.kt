@@ -1,17 +1,17 @@
 package com.origin.model
 
 import com.origin.entity.EntityPosition
-import com.origin.entity.Grid
-import com.origin.entity.GridMsg
-import com.origin.logger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.consumeEach
 import java.util.concurrent.ConcurrentHashMap
+
+abstract class MessageWithJob(val job: CompletableJob?)
 
 @ObsoleteCoroutinesApi
 sealed class GameObjectMsg {
-    class Spawn(val deferred: CompletableDeferred<Boolean>)
-    class Remove(val job: CompletableJob? = null)
+    class Spawn(val resp: CompletableDeferred<Boolean>)
+    class Remove(job: CompletableJob? = null) : MessageWithJob(job)
     class OnRemoved
     class OnObjectRemoved(val obj: GameObject)
     class OnObjectAdded(val obj: GameObject)
@@ -35,14 +35,20 @@ open class GameObject(entityPosition: EntityPosition) {
         this)
 
     val actor = CoroutineScope(Dispatchers.IO).actor<Any> {
-        for (msg in channel) {
-            processMessages(msg)
+        channel.consumeEach {
+            processMessages(it)
         }
+    }
+
+    suspend fun sendJob(msg: MessageWithJob): CompletableJob {
+        assert(msg.job != null)
+        actor.send(msg)
+        return msg.job!!
     }
 
     protected open suspend fun processMessages(msg: Any) {
         when (msg) {
-            is GameObjectMsg.Spawn -> msg.deferred.complete(pos.spawn())
+            is GameObjectMsg.Spawn -> msg.resp.complete(pos.spawn())
             is GameObjectMsg.Remove -> {
                 remove()
                 msg.job?.complete()
@@ -72,13 +78,7 @@ open class GameObject(entityPosition: EntityPosition) {
      * удалить объект из мира
      */
     private suspend fun remove() {
-        val job = Job()
-        grid.actor.send(GridMsg.RemoveObject(this, job))
-        logger.debug("object remove join")
-
-        job.invokeOnCompletion {
-            logger.debug("object remove done")
-
+        grid.sendJob(GridMsg.RemoveObject(this, Job())).invokeOnCompletion {
             // если есть что-то вложенное внутри
             if (!lift.isEmpty()) {
                 lift.values.forEach {
@@ -93,21 +93,23 @@ open class GameObject(entityPosition: EntityPosition) {
     }
 
     /**
-     * когда этот объект удален из грида
+     * когда ЭТОТ объект удален из грида
      */
     private fun onRemoved() {
         // TODO known list
     }
 
     /**
-     * добавили объект в грид в котором находится объект
+     * ДРУГОЙ добавили объект в грид в котором находится объект
      */
     open fun onObjectAdded(obj: GameObject) {
+        // TODO known list
     }
 
     /**
-     * грид говорит что какой то объект был удален
+     * грид говорит что ДРУГОЙ объект был удален
      */
     open fun onObjectRemoved(obj: GameObject) {
+        // TODO known list
     }
 }

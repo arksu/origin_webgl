@@ -56,20 +56,17 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 val player = Player(character, this)
 
                 // спавним игрока в мир, прогружаются гриды, активируются
-                val deferred = CompletableDeferred<Boolean>()
-                player.actor.send(GameObjectMsg.Spawn(deferred))
+                val resp = CompletableDeferred<Boolean>()
+                player.actor.send(GameObjectMsg.Spawn(resp))
 
-                if (!deferred.await()) {
+                if (!resp.await()) {
                     throw BadRequest("failed spawn player into world")
                 }
 
-                val job = Job()
-                player.actor.send(MovingObjectMsg.LoadGrids(job))
-                job.join()
+                player.sendJob(MovingObjectMsg.LoadGrids(Job())).join()
 
                 this.player = player
 
-                logger.debug("send welcome")
                 send(GameResponse("general", "welcome to Origin ${ServerConfig.PROTO_VERSION}"))
             }
         } else {
