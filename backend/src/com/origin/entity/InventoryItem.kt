@@ -1,14 +1,14 @@
 package com.origin.entity
 
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.id.LongIdTable
 
 /**
  * предмет в инвентаре
  */
-object InventoryItems : IntIdTable("inventory") {
+object InventoryItems : LongIdTable("inventory") {
     /**
      * ид инвентаря (родителя, вещи в которой находится этот предмет
      */
@@ -41,8 +41,8 @@ object InventoryItems : IntIdTable("inventory") {
     val tick = integer("tick").default(0)
 }
 
-class InventoryItem(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<InventoryItem>(InventoryItems)
+class InventoryItem(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<InventoryItem>(InventoryItems)
 
     var inventoryId by InventoryItems.inventoryId
     var type by InventoryItems.type

@@ -1,6 +1,10 @@
 package com.origin.model
 
+import com.origin.collision.CollisionResult
+import com.origin.collision.MoveType
 import com.origin.entity.GridEntity
+import com.origin.model.GameObjectMsg.OnObjectAdded
+import com.origin.model.GameObjectMsg.OnObjectRemoved
 import com.origin.net.model.GameResponse
 import com.origin.net.model.MapGridData
 import kotlinx.coroutines.CompletableDeferred
@@ -132,7 +136,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             objects.add(obj)
 
             if (isActive) activeObjects.forEach {
-                it.send(GameObjectMsg.OnObjectAdded(obj))
+                it.send(OnObjectAdded(obj))
             }
         }
     }
@@ -146,7 +150,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             obj.send(GameObjectMsg.OnRemoved())
 
             if (isActive) activeObjects.forEach {
-                it.send(GameObjectMsg.OnObjectRemoved(obj))
+                it.send(OnObjectRemoved(obj))
             }
         }
     }
@@ -160,17 +164,17 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      */
     private suspend fun activate(human: Human) {
         if (!activeObjects.contains(human)) {
+            // если грид был до этого не активен обязательно надо обновить состояние
             if (!isActive) {
                 update()
             }
 
             activeObjects.add(human)
             if (human is Player) {
-                logger.debug("GameResponse map $x $y")
                 human.session.send(GameResponse("map", MapGridData(this)))
             }
 
-            World.instance.addActiveGrid(this)
+            World.addActiveGrid(this)
         }
     }
 
@@ -182,7 +186,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         activeObjects.remove(human)
 
         if (!isActive) {
-            World.instance.removeActiveGrid(this)
+            World.removeActiveGrid(this)
         }
     }
 }

@@ -7,11 +7,13 @@ import com.origin.entity.Characters
 import com.origin.model.GameObjectMsg.Spawn
 import com.origin.model.MovingObjectMsg.LoadGrids
 import com.origin.model.Player
+import com.origin.model.World
 import com.origin.net.GameServer
 import com.origin.net.api.AuthorizationException
 import com.origin.net.api.BadRequest
 import com.origin.net.gsonSerializer
 import com.origin.net.logger
+import com.origin.utils.ObjectID
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -42,7 +44,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 account = GameServer.accountCache.get(ssid) ?: throw AuthorizationException()
 
                 // выбраннй перс
-                val selectedCharacterId: Int = (r.data["selectedCharacterId"] as Long).toInt()
+                val selectedCharacterId: ObjectID = (r.data["selectedCharacterId"] as ObjectID)
 
                 // load char
                 val character = transaction {
@@ -64,6 +66,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 player.sendJobAndJoin(LoadGrids::class)
 
                 this.player = player
+                World.addPlayer(player)
 
                 send(GameResponse("general", "welcome to Origin ${ServerConfig.PROTO_VERSION}"))
             }

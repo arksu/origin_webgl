@@ -3,7 +3,11 @@ package com.origin.utils
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
-typealias ObjectID = Int
+typealias ObjectID = Long
+
+fun String?.toObjectID(): ObjectID {
+    return this?.toLong() ?: throw RuntimeException("no string value for ObjectID")
+}
 
 object Utils {
 

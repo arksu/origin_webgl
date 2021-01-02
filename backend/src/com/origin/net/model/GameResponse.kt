@@ -2,6 +2,7 @@ package com.origin.net.model
 
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
+import com.origin.model.GameObject
 import com.origin.model.Grid
 import com.origin.utils.StringTypeAdapter
 
@@ -53,4 +54,11 @@ class MapGridData(grid: Grid) {
     val x: Int = grid.x
     val y: Int = grid.y
     val tiles: ByteArray = grid.tilesBlob
+}
+
+class ObjectPosition(obj: GameObject) {
+    val id = obj.id
+    val x = obj.pos.x
+    val y = obj.pos.y
+    val heading = obj.pos.heading
 }

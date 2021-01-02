@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
  * весь игровой мир
  */
 @ObsoleteCoroutinesApi
-class World {
+object World {
     /**
      * регионы (материки, истансы)
      */
@@ -57,15 +57,18 @@ class World {
         activeGrids.remove(grid)
     }
 
+    fun addPlayer(player: Player) {
+        players[player.id] = player
+    }
+
+    fun removePlayer(player: Player) {
+        players.remove(player.id)
+    }
+
     private fun getRegionSize(region: Int): Pair<Int, Int> {
         return when (region) {
             0 -> Pair(50, 50) // TODO region sizes
             else -> throw RuntimeException("Unknown region $region")
         }
-    }
-
-    companion object {
-        @JvmField
-        val instance = World()
     }
 }

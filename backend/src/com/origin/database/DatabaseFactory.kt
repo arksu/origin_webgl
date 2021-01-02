@@ -1,9 +1,6 @@
 package com.origin
 
-import com.origin.entity.Accounts
-import com.origin.entity.Characters
-import com.origin.entity.Grids
-import com.origin.entity.InventoryItems
+import com.origin.entity.*
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.*
@@ -30,7 +27,13 @@ object DatabaseFactory {
         val datasource = hikari()
         Database.connect(datasource)
         transaction {
-            SchemaUtils.createMissingTablesAndColumns(Accounts, Grids, Characters, InventoryItems)
+            SchemaUtils.createMissingTablesAndColumns(
+                Accounts,
+                Grids,
+                Characters,
+                InventoryItems,
+                GlobalVariables
+            )
         }
     }
 

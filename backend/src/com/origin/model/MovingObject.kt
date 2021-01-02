@@ -3,6 +3,7 @@ package com.origin.model
 import com.origin.entity.EntityPosition
 import com.origin.model.GridMsg.Activate
 import com.origin.model.GridMsg.Deactivate
+import com.origin.utils.ObjectID
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -17,7 +18,7 @@ sealed class MovingObjectMsg {
  * объект который может самостоятельно передвигаться
  */
 @ObsoleteCoroutinesApi
-open class MovingObject(pos: EntityPosition) : GameObject(pos) {
+open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos) {
     /**
      * список гридов в которых находится объект. max 9 штук.
      */
@@ -55,7 +56,7 @@ open class MovingObject(pos: EntityPosition) : GameObject(pos) {
             val gx = pos.gridX + x
             val gy = pos.gridY + y
             if (grid.layer.validateCoord(gx, gy)) {
-                val grid = World.instance.getGrid(pos.region, pos.level, gx, gy)
+                val grid = World.getGrid(pos.region, pos.level, gx, gy)
                 grids.add(grid)
 
                 if (this is Human) {

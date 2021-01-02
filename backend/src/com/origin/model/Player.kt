@@ -17,7 +17,7 @@ class Player(
     private val character: Character,
 
     val session: GameSession,
-) : Human(character) {
+) : Human(character.id.value, character) {
 
     override suspend fun processMessages(msg: Any) {
         when (msg) {
@@ -31,6 +31,8 @@ class Player(
     val paperdoll: Paperdoll = Paperdoll(this)
 
     suspend fun disconnected() {
+        World.removePlayer(this)
+
         // deactivate and unload grids
         sendJobAndJoin(UnloadGrids::class)
         // удалить объект из мира

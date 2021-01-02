@@ -1,4 +1,4 @@
-package com.origin.model
+package com.origin.collision
 
 class CollisionResult(val result: CollisionType) {
 

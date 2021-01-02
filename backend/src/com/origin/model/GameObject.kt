@@ -1,6 +1,9 @@
 package com.origin.model
 
 import com.origin.entity.EntityPosition
+import com.origin.net.model.GameResponse
+import com.origin.net.model.ObjectPosition
+import com.origin.utils.ObjectID
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
@@ -22,10 +25,20 @@ sealed class GameObjectMsg {
  * все игровые сущности наследуются от него
  */
 @ObsoleteCoroutinesApi
-open class GameObject(entityPosition: EntityPosition) {
+open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
     companion object {
         val logger = LoggerFactory.getLogger(GameObject::class.java)
     }
+
+    /**
+     * координаты кэшируем в объекте (потом периодически обновляем в сущности)
+     */
+    val pos: Position = Position(entityPosition.x,
+        entityPosition.y,
+        entityPosition.level,
+        entityPosition.region,
+        entityPosition.heading,
+        this)
 
     /**
      * текущий активный грид в котором находится объект
@@ -39,16 +52,6 @@ open class GameObject(entityPosition: EntityPosition) {
      * все будет спавнится в одни и теже координаты
      */
     private val lift = ConcurrentHashMap<Int, GameObject>()
-
-    /**
-     * координаты кэшируем в объекте (потом периодически обновляем в сущности)
-     */
-    val pos: Position = Position(entityPosition.x,
-        entityPosition.y,
-        entityPosition.level,
-        entityPosition.region,
-        entityPosition.heading,
-        this)
 
     /**
      * актор для обработки сообщений
@@ -90,7 +93,13 @@ open class GameObject(entityPosition: EntityPosition) {
     protected open suspend fun processMessages(msg: Any) {
         logger.warn("gameobject processMessages ${msg.javaClass.simpleName}")
         when (msg) {
-            is GameObjectMsg.Spawn -> msg.resp.complete(pos.spawn())
+            is GameObjectMsg.Spawn -> {
+                val result = pos.spawn()
+                if (result && (this is Player)) {
+                    this.session.send(GameResponse("obj", ObjectPosition(this)))
+                }
+                msg.resp.complete(result)
+            }
             is GameObjectMsg.Remove -> {
                 remove()
                 msg.job?.complete()

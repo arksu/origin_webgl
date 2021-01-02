@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.collision.CollisionResult
 import com.origin.utils.GRID_FULL_SIZE
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -38,7 +39,7 @@ class Position(
             throw RuntimeException("pos.grid is already set, on spawn")
         }
         // берем грид и спавнимся через него
-        val g = World.instance.getGrid(this)
+        val g = World.getGrid(this)
 
         val resp = CompletableDeferred<CollisionResult>()
         g.send(GridMsg.Spawn(parent, resp))
