@@ -31,7 +31,6 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     private var player: Player? = null
 
     suspend fun received(r: GameRequest) {
-
         // инициализация сессии
         if (ssid == null) {
             // начальная точка входа клиента в игру (авторизация по ssid)
@@ -48,7 +47,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 // load char
                 val character = transaction {
                     Character.find { Characters.account eq account!!.id and Characters.id.eq(selectedCharacterId) }
-                        .firstOrNull()
+                        .singleOrNull()
                         ?: throw BadRequest("character not found")
                 }
                 // создали игрока, его позицию

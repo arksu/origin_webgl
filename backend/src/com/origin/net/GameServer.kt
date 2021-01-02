@@ -12,10 +12,12 @@ import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.util.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.LoggerFactory
 
 val logger = LoggerFactory.getLogger(GameServer::class.java)
 
+@ObsoleteCoroutinesApi
 object GameServer {
     val accountCache = AccountCache()
 
@@ -45,7 +47,7 @@ object GameServer {
 
             routing {
                 get("/") {
-                    call.respondText("Hello, world!", ContentType.Text.Plain)
+                    call.respondText("Hello, origin-world!", ContentType.Text.Plain)
                 }
                 api()
                 websockets()

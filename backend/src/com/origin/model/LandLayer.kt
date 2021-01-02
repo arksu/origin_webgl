@@ -15,6 +15,12 @@ class LandLayer(
      * уровень земли
      */
     val level: Int,
+
+    /**
+     * размеры в гридах
+     */
+    private val width: Int,
+    private val height: Int,
 ) {
     /**
      * гриды
@@ -48,7 +54,6 @@ class LandLayer(
     }
 
     fun validateCoord(gx: Int, gy: Int): Boolean {
-        // TODO max size 50
-        return !(gx < 0 || gy < 0 || gx > 50 || gy > 50)
+        return !(gx < 0 || gy < 0 || gx > width || gy > height)
     }
 }

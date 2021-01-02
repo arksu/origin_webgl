@@ -6,7 +6,7 @@ import java.io.File
 object ServerConfig {
     private const val WORK_DIR = "./"
 
-    val PROTO_VERSION = "0.0.1"
+    const val PROTO_VERSION = "0.0.1"
 
     @JvmField
     var PORT  = 0

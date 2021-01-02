@@ -3,7 +3,10 @@ package com.origin.model
 import com.origin.entity.GridEntity
 import com.origin.net.model.GameResponse
 import com.origin.net.model.MapGridData
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
 import org.jetbrains.exposed.sql.ResultRow
@@ -15,11 +18,31 @@ sealed class GridMsg {
     class Activate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class Deactivate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class RemoveObject(val obj: GameObject, job: CompletableJob? = null) : MessageWithJob(job)
+    class Update
 }
 
 @ObsoleteCoroutinesApi
 class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
-    private val actor = CoroutineScope(Dispatchers.IO).actor<Any>(capacity = ACTOR_CAPACITY) {
+    /**
+     * список активных объектов которые поддерживают этот грид активным
+     * также всем активным объектам рассылаем уведомления о том что происходит в гриде (события)
+     */
+    private val activeObjects = ConcurrentLinkedQueue<Human>()
+
+    /**
+     * список объектов в гриде
+     */
+    private val objects = ConcurrentLinkedQueue<GameObject>()
+
+    /**
+     * активен ли грид?
+     */
+    private val isActive: Boolean get() = !activeObjects.isEmpty()
+
+    /**
+     * актор для обработки сообщений
+     */
+    private val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
         channel.consumeEach {
             processMessages(it)
         }
@@ -51,24 +74,9 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 this.removeObject(msg.obj)
                 msg.job?.complete()
             }
+            is GridMsg.Update -> update()
         }
     }
-
-    /**
-     * список активных объектов которые поддерживают этот грид активным
-     * также всем активным объектам рассылаем уведомления о том что происходит в гриде (события)
-     */
-    private val activeObjects = ConcurrentLinkedQueue<Human>()
-
-    /**
-     * список объектов в гриде
-     */
-    private val objects = ConcurrentLinkedQueue<GameObject>()
-
-    /**
-     * активен ли грид?
-     */
-    private val isActive: Boolean get() = !activeObjects.isEmpty()
 
     /**
      * спавн объекта в грид

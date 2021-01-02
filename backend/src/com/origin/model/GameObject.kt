@@ -28,6 +28,19 @@ open class GameObject(entityPosition: EntityPosition) {
     }
 
     /**
+     * текущий активный грид в котором находится объект
+     */
+    protected val grid: Grid get() = pos.grid
+
+    /**
+     * объект который несем над собой, или в котором едем. по сути это контейнер для вложенных объектов
+     * они больше не находятся в гриде, а обслуживаются только объектом который их "несет/везет"
+     * причем такое состояние только в рантайме. в базе все хранится по координатам. и при рестарте сервера
+     * все будет спавнится в одни и теже координаты
+     */
+    private val lift = ConcurrentHashMap<Int, GameObject>()
+
+    /**
      * координаты кэшируем в объекте (потом периодически обновляем в сущности)
      */
     val pos: Position = Position(entityPosition.x,
@@ -37,7 +50,10 @@ open class GameObject(entityPosition: EntityPosition) {
         entityPosition.heading,
         this)
 
-    protected val actor = CoroutineScope(Dispatchers.IO).actor<Any>(capacity = ACTOR_CAPACITY) {
+    /**
+     * актор для обработки сообщений
+     */
+    protected val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
         channel.consumeEach {
             processMessages(it)
         }
@@ -86,19 +102,6 @@ open class GameObject(entityPosition: EntityPosition) {
             else -> throw RuntimeException("unprocessed actor message ${msg.javaClass.simpleName}")
         }
     }
-
-    /**
-     * текущий активный грид в котором находится объект
-     */
-    protected val grid: Grid get() = pos.grid
-
-    /**
-     * объект который несем над собой, или в котором едем. по сути это контейнер для вложенных объектов
-     * они больше не находятся в гриде, а обслуживаются только объектом который их "несет/везет"
-     * причем такое состояние только в рантайме. в базе все хранится по координатам. и при рестарте сервера
-     * все будет спавнится в одни и теже координаты
-     */
-    private val lift = ConcurrentHashMap<Int, GameObject>()
 
     /**
      * удалить объект из мира

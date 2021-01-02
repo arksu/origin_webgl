@@ -1,6 +1,8 @@
 package com.origin.model
 
 import com.origin.entity.EntityPosition
+import com.origin.model.GridMsg.Activate
+import com.origin.model.GridMsg.Deactivate
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -30,7 +32,7 @@ open class MovingObject(pos: EntityPosition) : GameObject(pos) {
                 msg.job?.complete()
             }
             is MovingObjectMsg.UnloadGrids -> {
-                uloadGrids()
+                unloadGrids()
                 msg.job?.complete()
             }
             else -> super.processMessages(msg)
@@ -43,6 +45,7 @@ open class MovingObject(pos: EntityPosition) : GameObject(pos) {
      * в случае телепорта объекта надо очистить этот список
      */
     private suspend fun loadGrids() {
+        // грузить гриды можем только если ничего еще не было загружено
         if (!grids.isEmpty()) {
             throw RuntimeException("activateGrids - grids is not empty")
         }
@@ -58,7 +61,7 @@ open class MovingObject(pos: EntityPosition) : GameObject(pos) {
                 if (this is Human) {
                     val h = this
                     logger.debug("GridMsg.Activate ${grid.x} ${grid.y}")
-                    grid.sendJob(GridMsg.Activate(h, Job())).join()
+                    grid.sendJob(Activate(h, Job())).join()
                 }
             }
         }
@@ -67,13 +70,13 @@ open class MovingObject(pos: EntityPosition) : GameObject(pos) {
     /**
      * выгрузить все гриды в которых находимся
      */
-    private suspend fun uloadGrids() {
+    private suspend fun unloadGrids() {
         if (grids.isEmpty()) {
             throw RuntimeException("uloadGrids - grids is empty")
         }
 
         if (this is Human) grids.forEach {
-            grid.sendJob(GridMsg.Deactivate(this, Job())).join()
+            grid.sendJob(Deactivate(this, Job())).join()
         }
         grids.clear()
     }

@@ -23,7 +23,10 @@ class World {
 
     private fun getRegion(region: Int): Region {
         if (region < 0) throw RuntimeException("wrong grid region")
-        return regions.computeIfAbsent(region) { Region(region) }
+        return regions.computeIfAbsent(region) {
+            val (w, h) = getRegionSize(region)
+            Region(region, w, h)
+        }
     }
 
     /**
@@ -52,6 +55,13 @@ class World {
      */
     fun removeActiveGrid(grid: Grid) {
         activeGrids.remove(grid)
+    }
+
+    private fun getRegionSize(region: Int): Pair<Int, Int> {
+        return when (region) {
+            0 -> Pair(50, 50) // TODO region sizes
+            else -> throw RuntimeException("Unknown region $region")
+        }
     }
 
     companion object {
