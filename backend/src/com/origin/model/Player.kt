@@ -2,10 +2,12 @@ package com.origin.model
 
 import com.origin.entity.Character
 import com.origin.net.model.GameSession
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
  * инстанс персонажа игрока в игровом мире (игрок)
  */
+@ObsoleteCoroutinesApi
 class Player(
     /**
      * персонаж игрока (сущность хранимая в БД)
@@ -15,16 +17,21 @@ class Player(
     val session: GameSession,
 ) : Human(character) {
 
+    override suspend fun processMessages(msg: Any) {
+        when (msg) {
+            else -> super.processMessages(msg)
+        }
+    }
+
     /**
      * одежда (во что одет игрок)
      */
     val paperdoll: Paperdoll = Paperdoll(this)
 
-    fun disconnected() {
+    suspend fun disconnected() {
         // deactivate and unload grids
-        uloadGrids()
-
-        remove()
+        actor.send(MovingObjectMsg.UnloadGrids())
+        actor.send(GameObjectMsg.Remove())
     }
 
 }

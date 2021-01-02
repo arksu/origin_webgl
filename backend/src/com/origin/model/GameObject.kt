@@ -2,14 +2,26 @@ package com.origin.model
 
 import com.origin.entity.EntityPosition
 import com.origin.entity.Grid
+import com.origin.entity.GridMsg
+import com.origin.logger
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.actor
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
+
+@ObsoleteCoroutinesApi
+sealed class GameObjectMsg {
+    class Spawn(val deferred: CompletableDeferred<Boolean>)
+    class Remove(val job: CompletableJob? = null)
+    class OnRemoved
+    class OnObjectRemoved(val obj: GameObject)
+    class OnObjectAdded(val obj: GameObject)
+}
 
 /**
  * базовый игровой объект в игровой механике
  * все игровые сущности наследуются от него
  */
+@ObsoleteCoroutinesApi
 open class GameObject(entityPosition: EntityPosition) {
 
     /**
@@ -22,15 +34,31 @@ open class GameObject(entityPosition: EntityPosition) {
         entityPosition.heading,
         this)
 
-    /**
-     * блокировка для операций с объектом
-     */
-    val lock = ReentrantLock()
+    val actor = CoroutineScope(Dispatchers.IO).actor<Any> {
+        for (msg in channel) {
+            processMessages(msg)
+        }
+    }
+
+    protected open suspend fun processMessages(msg: Any) {
+        when (msg) {
+            is GameObjectMsg.Spawn -> msg.deferred.complete(pos.spawn())
+            is GameObjectMsg.Remove -> {
+                remove()
+                msg.job?.complete()
+            }
+            is GameObjectMsg.OnRemoved -> onRemoved()
+            is GameObjectMsg.OnObjectRemoved -> onObjectRemoved(msg.obj)
+            is GameObjectMsg.OnObjectAdded -> onObjectAdded(msg.obj)
+
+            else -> throw RuntimeException("unprocessed actor message ${msg.javaClass.simpleName}")
+        }
+    }
 
     /**
      * текущий активный грид в котором находится объект
      */
-    protected val grid: Grid? get() = pos.grid
+    protected val grid: Grid get() = pos.grid
 
     /**
      * объект который несем над собой, или в котором едем. по сути это контейнер для вложенных объектов
@@ -43,9 +71,13 @@ open class GameObject(entityPosition: EntityPosition) {
     /**
      * удалить объект из мира
      */
-    fun remove() {
-        lock.withLock {
-            pos.grid?.removeObject(this)
+    private suspend fun remove() {
+        val job = Job()
+        grid.actor.send(GridMsg.RemoveObject(this, job))
+        logger.debug("object remove join")
+
+        job.invokeOnCompletion {
+            logger.debug("object remove done")
 
             // если есть что-то вложенное внутри
             if (!lift.isEmpty()) {
@@ -53,6 +85,7 @@ open class GameObject(entityPosition: EntityPosition) {
                     // TODO
 //                    it.pos.set xy coord
                     // spawn it
+                    //it.pos.spawn()
                     // store pos into db
                 }
             }
@@ -62,7 +95,19 @@ open class GameObject(entityPosition: EntityPosition) {
     /**
      * когда этот объект удален из грида
      */
-    fun onRemove() {
+    private fun onRemoved() {
         // TODO known list
+    }
+
+    /**
+     * добавили объект в грид в котором находится объект
+     */
+    open fun onObjectAdded(obj: GameObject) {
+    }
+
+    /**
+     * грид говорит что какой то объект был удален
+     */
+    open fun onObjectRemoved(obj: GameObject) {
     }
 }

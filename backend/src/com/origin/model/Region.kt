@@ -1,11 +1,13 @@
 package com.origin.model
 
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * игровая область (континент, материк)
  * в игре может быть несколько больших континентов одновременно
  */
+@ObsoleteCoroutinesApi
 class Region(val id: Int) {
     private val layers = ConcurrentHashMap<Int, LandLayer>()
 

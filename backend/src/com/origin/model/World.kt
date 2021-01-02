@@ -2,11 +2,13 @@ package com.origin.model
 
 import com.origin.entity.Grid
 import com.origin.utils.ObjectID
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.concurrent.ConcurrentHashMap
 
 /**
  * весь игровой мир
  */
+@ObsoleteCoroutinesApi
 class World {
     /**
      * регионы (материки, истансы)

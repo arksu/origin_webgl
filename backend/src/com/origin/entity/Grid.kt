@@ -4,10 +4,7 @@ import com.origin.model.*
 import com.origin.net.logger
 import com.origin.net.model.GameResponse
 import com.origin.net.model.MapGridData
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
@@ -15,8 +12,6 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 
 /**
  * игровой "чанк" (регион), базовый кусок карты
@@ -60,9 +55,12 @@ object Grids : Table("grids") {
     }
 }
 
+@ObsoleteCoroutinesApi
 sealed class GridMsg {
     class Spawn(val obj: GameObject, val deferred: CompletableDeferred<CollisionResult>) : GridMsg()
-    class Activate(val human: Human, val deferred: CompletableDeferred<Boolean>) : GridMsg()
+    class Activate(val human: Human, val job: CompletableJob? = null) : GridMsg()
+    class Deactivate(val human: Human, val job: CompletableJob? = null) : GridMsg()
+    class RemoveObject(val obj: GameObject, val job: CompletableJob? = null) : GridMsg()
 }
 
 /**
@@ -78,16 +76,40 @@ class Grid(r: ResultRow, val layer: LandLayer) {
     var lastTick = r[Grids.lastTick]
     var tilesBlob: ByteArray = r[Grids.tilesBlob].bytes
 
-    val scope = CoroutineScope(Dispatchers.Default)
+    companion object {
+        /**
+         * загрузка грида из базы
+         */
+        fun load(gx: Int, gy: Int, layer: LandLayer): Grid {
+            val row = transaction {
+                Grids.select { (Grids.x eq gx) and (Grids.y eq gy) and (Grids.level eq layer.level) and (Grids.region eq layer.region.id) }
+                    .firstOrNull() ?: throw RuntimeException("")
+            }
+            return Grid(row, layer)
+        }
+    }
 
-    val actor = scope.actor<GridMsg> {
+    val actor = CoroutineScope(Dispatchers.IO).actor<GridMsg> {
         for (msg in channel) {
-            when (msg) {
-                is GridMsg.Spawn -> msg.deferred.complete(spawn(msg.obj))
-                is GridMsg.Activate -> {
-                    activate(msg.human)
-                    msg.deferred.complete(true)
-                }
+            processMessages(msg)
+        }
+    }
+
+    private suspend fun processMessages(msg: GridMsg) {
+        com.origin.logger.debug("grid msg $msg")
+        when (msg) {
+            is GridMsg.Spawn -> msg.deferred.complete(spawn(msg.obj))
+            is GridMsg.RemoveObject -> {
+                this.removeObject(msg.obj)
+                msg.job?.complete()
+            }
+            is GridMsg.Activate -> {
+                this.activate(msg.human)
+                msg.job?.complete()
+            }
+            is GridMsg.Deactivate -> {
+                this.deactivate(msg.human)
+                msg.job?.complete()
             }
         }
     }
@@ -104,19 +126,14 @@ class Grid(r: ResultRow, val layer: LandLayer) {
     private val objects = ConcurrentLinkedQueue<GameObject>()
 
     /**
-     * блокировка для операций с гридом
-     */
-    val lock = ReentrantLock()
-
-    /**
      * активен ли грид?
      */
-    val isActive: Boolean get() = !activeObjects.isEmpty()
+    private val isActive: Boolean get() = !activeObjects.isEmpty()
 
     /**
      * спавн объекта в грид
      */
-    private fun spawn(obj: GameObject): CollisionResult {
+    private suspend fun spawn(obj: GameObject): CollisionResult {
         if (obj.pos.region != region || obj.pos.level != level ||
             obj.pos.gridX != x || obj.pos.gridY != y
         ) {
@@ -139,11 +156,7 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * обновление состояния грида и его объектов
      */
     fun update() {
-        lock.withLock {
 
-            // TODO
-
-        }
     }
 
     /**
@@ -157,24 +170,21 @@ class Grid(r: ResultRow, val layer: LandLayer) {
         toY: Int,
         moveType: MoveType,
     ): CollisionResult {
-        lock.withLock {
 
-            // TODO
-
-            return CollisionResult.NONE
-        }
+        // TODO
+        return CollisionResult.NONE
     }
 
     /**
      * добавить объект в грид
      * перед вызовом грид обязательно должен быть залочен!!!
      */
-    private fun addObject(obj: GameObject) {
+    private suspend fun addObject(obj: GameObject) {
         if (!objects.contains(obj)) {
             objects.add(obj)
 
             if (isActive) activeObjects.forEach {
-                it.onObjectAdded(obj)
+                it.actor.send(GameObjectMsg.OnObjectAdded(obj))
             }
         }
     }
@@ -182,17 +192,13 @@ class Grid(r: ResultRow, val layer: LandLayer) {
     /**
      * удалить объект из грида
      */
-    fun removeObject(obj: GameObject) {
-//        if (!lock.isHeldByCurrentThread) {
-//            throw RuntimeException("removeObject: grid is not locked")
-//        }
-
+    private suspend fun removeObject(obj: GameObject) {
         if (objects.contains(obj)) {
-            obj.onRemove()
             objects.remove(obj)
+            obj.actor.send(GameObjectMsg.OnRemoved())
 
             if (isActive) activeObjects.forEach {
-                it.onObjectRemoved(obj)
+                it.actor.send(GameObjectMsg.OnObjectRemoved(obj))
             }
         }
     }
@@ -224,27 +230,11 @@ class Grid(r: ResultRow, val layer: LandLayer) {
      * деактивировать грид
      * если в гриде не осталось ни одного активного объекта то он прекращает обновляться
      */
-    fun deactivate(human: Human) {
-        if (!lock.isHeldByCurrentThread) {
-            throw RuntimeException("deactivate: grid is not locked")
-        }
+    private fun deactivate(human: Human) {
         activeObjects.remove(human)
 
         if (!isActive) {
             World.instance.removeActiveGrid(this)
-        }
-    }
-
-    companion object {
-        /**
-         * загрузка грида из базы
-         */
-        fun load(gx: Int, gy: Int, layer: LandLayer): Grid {
-            val row = transaction {
-                Grids.select { (Grids.x eq gx) and (Grids.y eq gy) and (Grids.level eq layer.level) and (Grids.region eq layer.region.id) }
-                    .firstOrNull() ?: throw RuntimeException("")
-            }
-            return Grid(row, layer)
         }
     }
 }

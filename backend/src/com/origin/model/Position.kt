@@ -23,7 +23,7 @@ class Position(
      * грид в котором находится объект
      * либо null если еще не привязан к гриду (не заспавнен)
      */
-    var grid: Grid? = null
+    lateinit var grid: Grid
         private set
 
     /**
@@ -36,6 +36,9 @@ class Position(
      * заспавнить объект в мир
      */
     suspend fun spawn(): Boolean {
+        if (::grid.isInitialized) {
+            throw RuntimeException("pos.grid is already set, on spawn")
+        }
         // берем грид и спавнимся через него
         val g = World.instance.getGrid(this)
 

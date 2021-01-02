@@ -7,6 +7,7 @@ import com.origin.utils.MapDeserializerDoubleAsIntFix.gsonDeserializer
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.time.Duration
 import java.util.*
 import kotlin.collections.LinkedHashSet
@@ -26,6 +27,7 @@ val gameSessions: MutableSet<GameSession> = Collections.synchronizedSet(LinkedHa
  */
 val gsonSerializer = Gson()
 
+@ObsoleteCoroutinesApi
 fun Route.websockets() {
 
     webSocket("/game") {
