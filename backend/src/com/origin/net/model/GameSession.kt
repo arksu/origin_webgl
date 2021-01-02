@@ -4,8 +4,8 @@ import com.origin.ServerConfig
 import com.origin.entity.Account
 import com.origin.entity.Character
 import com.origin.entity.Characters
-import com.origin.model.GameObjectMsg
-import com.origin.model.MovingObjectMsg
+import com.origin.model.GameObjectMsg.Spawn
+import com.origin.model.MovingObjectMsg.LoadGrids
 import com.origin.model.Player
 import com.origin.net.GameServer
 import com.origin.net.api.AuthorizationException
@@ -14,7 +14,6 @@ import com.origin.net.gsonSerializer
 import com.origin.net.logger
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -57,13 +56,13 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
                 // спавним игрока в мир, прогружаются гриды, активируются
                 val resp = CompletableDeferred<Boolean>()
-                player.actor.send(GameObjectMsg.Spawn(resp))
+                player.send(Spawn(resp))
 
                 if (!resp.await()) {
                     throw BadRequest("failed spawn player into world")
                 }
 
-                player.sendJob(MovingObjectMsg.LoadGrids(Job())).join()
+                player.sendJobAndJoin(LoadGrids::class)
 
                 this.player = player
 

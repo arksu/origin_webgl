@@ -6,6 +6,7 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
 
 @ObsoleteCoroutinesApi
 sealed class GameObjectMsg {
@@ -36,17 +37,38 @@ open class GameObject(entityPosition: EntityPosition) {
         entityPosition.heading,
         this)
 
-    val actor = CoroutineScope(Dispatchers.IO).actor<Any>(capacity = ACTOR_CAPACITY) {
+    protected val actor = CoroutineScope(Dispatchers.IO).actor<Any>(capacity = ACTOR_CAPACITY) {
         channel.consumeEach {
             processMessages(it)
         }
         logger.warn("game obj actor $this finished")
     }
 
-    suspend fun sendJob(msg: MessageWithJob): CompletableJob {
+    /**
+     * послать сообщение (используя только его класс) с "работой" и ожидать его завершения
+     */
+    suspend fun sendJobAndJoin(c: KClass<out MessageWithJob>) {
+        // ищем конструктор с 1 параметром CompletableJob
+        val constructor = c.constructors.singleOrNull {
+            it.parameters.size == 1 && it.parameters[0].type.classifier == CompletableJob::class
+        } ?: throw RuntimeException("No job constructor")
+        // создаем сообщение с новой "работой"
+        val msg = constructor.call(Job())
+        // шлем сообщение и ждем ответа
+        sendJob(msg).join()
+    }
+
+    /**
+     * отправить сообещине с "работой" и ожидать его завершения
+     */
+    private suspend fun sendJob(msg: MessageWithJob): CompletableJob {
         assert(msg.job != null)
         actor.send(msg)
         return msg.job!!
+    }
+
+    suspend fun send(msg: Any) {
+        actor.send(msg)
     }
 
     protected open suspend fun processMessages(msg: Any) {

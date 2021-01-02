@@ -19,7 +19,7 @@ sealed class GridMsg {
 
 @ObsoleteCoroutinesApi
 class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
-    val actor = CoroutineScope(Dispatchers.IO).actor<Any>(capacity = ACTOR_CAPACITY) {
+    private val actor = CoroutineScope(Dispatchers.IO).actor<Any>(capacity = ACTOR_CAPACITY) {
         channel.consumeEach {
             processMessages(it)
         }
@@ -29,6 +29,10 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         assert(msg.job != null)
         actor.send(msg)
         return msg.job!!
+    }
+
+    suspend fun send(msg: Any) {
+        actor.send(msg)
     }
 
     private suspend fun processMessages(msg: Any) {
@@ -120,7 +124,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             objects.add(obj)
 
             if (isActive) activeObjects.forEach {
-                it.actor.send(GameObjectMsg.OnObjectAdded(obj))
+                it.send(GameObjectMsg.OnObjectAdded(obj))
             }
         }
     }
@@ -131,10 +135,10 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     private suspend fun removeObject(obj: GameObject) {
         if (objects.contains(obj)) {
             objects.remove(obj)
-            obj.actor.send(GameObjectMsg.OnRemoved())
+            obj.send(GameObjectMsg.OnRemoved())
 
             if (isActive) activeObjects.forEach {
-                it.actor.offer(GameObjectMsg.OnObjectRemoved(obj))
+                it.send(GameObjectMsg.OnObjectRemoved(obj))
             }
         }
     }

@@ -41,7 +41,7 @@ class Position(
         val g = World.instance.getGrid(this)
 
         val resp = CompletableDeferred<CollisionResult>()
-        g.actor.send(GridMsg.Spawn(parent, resp))
+        g.send(GridMsg.Spawn(parent, resp))
         val result = resp.await()
 
         // если успешно добавились в грид - запомним его у себя

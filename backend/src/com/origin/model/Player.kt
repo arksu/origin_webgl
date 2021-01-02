@@ -1,8 +1,9 @@
 package com.origin.model
 
 import com.origin.entity.Character
+import com.origin.model.GameObjectMsg.Remove
+import com.origin.model.MovingObjectMsg.UnloadGrids
 import com.origin.net.model.GameSession
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
@@ -31,9 +32,9 @@ class Player(
 
     suspend fun disconnected() {
         // deactivate and unload grids
-        sendJob(GameObjectMsg.Remove(Job())).join()
+        sendJobAndJoin(UnloadGrids::class)
         // удалить объект из мира
-        sendJob(MovingObjectMsg.UnloadGrids(Job())).join()
+        sendJobAndJoin(Remove::class)
         // завершаем актора
         actor.close()
     }
