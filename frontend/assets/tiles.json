@@ -1,0 +1,44 @@
+{"frames": {
+
+"grass1.png":
+{
+	"frame": {"x":0,"y":0,"w":63,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
+	"sourceSize": {"w":63,"h":32}
+},
+"grass2.png":
+{
+	"frame": {"x":63,"y":0,"w":63,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
+	"sourceSize": {"w":63,"h":32}
+},
+"stone1.png":
+{
+	"frame": {"x":126,"y":0,"w":63,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
+	"sourceSize": {"w":63,"h":32}
+},
+"swamp1.png":
+{
+	"frame": {"x":189,"y":0,"w":63,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
+	"sourceSize": {"w":63,"h":32}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "tiles.png",
+	"format": "RGBA8888",
+	"size": {"w":252,"h":32},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:45d663700a7e1476d8e080b0cb22bd5a:bcea12fd52a4ee3e0b4773fc30394fcc:02ab132358d6d8b512e80119463a8329$"
+}
+}

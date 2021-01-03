@@ -4,10 +4,6 @@ import com.origin.entity.Character
 import com.origin.net.model.GameSession
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
-enum class State {
-    None, Connected, Disconnected
-}
-
 class PlayerMsg {
     class Connected
     class Disconnected
@@ -26,7 +22,11 @@ class Player(
     val session: GameSession,
 ) : Human(character.id.value, character) {
 
-    var state = State.None;
+    enum class State {
+        None, Connected, Disconnected
+    }
+
+    var state = State.None
 
     /**
      * одежда (во что одет игрок)
@@ -47,7 +47,7 @@ class Player(
      * когда уже все прогружено и заспавнено, гриды активированы
      */
     private fun connected() {
-        state = State.Connected;
+        state = State.Connected
         World.addPlayer(this)
     }
 
