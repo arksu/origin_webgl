@@ -71,7 +71,7 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
     /**
      * выгрузить все гриды в которых находимся
      */
-    private suspend fun unloadGrids() {
+    protected suspend fun unloadGrids() {
         if (grids.isEmpty()) {
             throw RuntimeException("uloadGrids - grids is empty")
         }

@@ -7,7 +7,7 @@ import com.origin.entity.Characters
 import com.origin.model.GameObjectMsg.Spawn
 import com.origin.model.MovingObjectMsg.LoadGrids
 import com.origin.model.Player
-import com.origin.model.World
+import com.origin.model.PlayerMsg
 import com.origin.net.GameServer
 import com.origin.net.api.AuthorizationException
 import com.origin.net.api.BadRequest
@@ -64,9 +64,8 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 }
 
                 player.sendJobAndJoin(LoadGrids::class)
-
                 this.player = player
-                World.addPlayer(player)
+                player.send(PlayerMsg.Connected())
 
                 ack(r, "welcome to Origin ${ServerConfig.PROTO_VERSION}")
             }
@@ -88,7 +87,8 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     }
 
     suspend fun disconnected() {
-        player?.disconnected()
+        logger.warn("disconnected")
+        player?.send(PlayerMsg.Disconnected())
     }
 
     /**
@@ -106,6 +106,6 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     suspend fun kick() {
         logger.warn("kick")
         connect.close(CloseReason(CloseReason.Codes.NORMAL, "kicked"))
-        player?.disconnected()
+        player?.send(PlayerMsg.Disconnected())
     }
 }

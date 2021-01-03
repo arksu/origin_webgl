@@ -115,7 +115,7 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
     /**
      * удалить объект из мира
      */
-    private suspend fun remove() {
+    protected suspend fun remove() {
         grid.sendJob(GridMsg.RemoveObject(this, Job()))
             .join()
 //            .invokeOnCompletion {
