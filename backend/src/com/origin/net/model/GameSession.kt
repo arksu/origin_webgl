@@ -68,7 +68,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 this.player = player
                 World.addPlayer(player)
 
-                send(GameResponse("general", "welcome to Origin ${ServerConfig.PROTO_VERSION}"))
+                ack(r, "welcome to Origin ${ServerConfig.PROTO_VERSION}")
             }
         } else {
             when (r.target) {

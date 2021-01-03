@@ -49,7 +49,6 @@ class GameResponse {
     }
 }
 
-@Suppress("unused")
 class MapGridData(grid: Grid) {
     val x: Int = grid.x
     val y: Int = grid.y

@@ -14,7 +14,7 @@ let proto = "https:" === window.location.protocol ? "wss:" : "ws:";
 Client.wsUrl = proto + "//" + window.location.hostname + ":" + gameServerPort + "/game";
 Client.apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + gameServerPort
 
-// создадим синглон для клиента где будем хранить наш игровой стейт
+// создадим синглтон для клиента где будем хранить наш игровой стейт
 Client.instance = new Client();
 
 const app = createApp(App);

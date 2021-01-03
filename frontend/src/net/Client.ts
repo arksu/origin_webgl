@@ -82,4 +82,11 @@ export default class Client {
         localStorage.removeItem("ssid");
         router.push({name: "Login"})
     }
+
+    /**
+     * очистить игровые данные
+     */
+    public clear() {
+
+    }
 }

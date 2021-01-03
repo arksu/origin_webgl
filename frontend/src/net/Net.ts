@@ -30,6 +30,9 @@ interface Response {
     d: any;
 }
 
+/**
+ * Websocket реализация сети (используется только в самой игре)
+ */
 export default class Net {
     public static instance?: Net = undefined;
 
@@ -200,7 +203,7 @@ export default class Net {
             d: req
         };
 
-        return await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             // отправляем данные в сокет
             this.instance!!.socketSend(data);
 
