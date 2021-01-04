@@ -1,5 +1,6 @@
-import {Application, Sprite, Texture, utils} from "pixi.js"
-import {getRandomInt} from "@/utils/Util";
+import {Application, utils} from "pixi.js"
+import Client from "@/net/Client";
+import Grid from "@/game/Grid";
 
 let PIXI = require("pixi.js");
 
@@ -33,6 +34,7 @@ export default class Game {
 
         Game.instance?.destroy();
         Game.instance = undefined;
+        Client.instance.clear();
 
         this.canvas.style.display = "none";
         this.appdiv.style.display = "block";
@@ -45,7 +47,8 @@ export default class Game {
 
         let loader = this.app.loader;
 
-        let img = utils.TextureCache['assets/tiles.json_image']
+        let img = utils.TextureCache['assets/tiles.json_image'];
+
         if (img == undefined) {
             loader.add("assets/tiles.json")
             loader.load((_, __) => {
@@ -61,25 +64,13 @@ export default class Game {
     }
 
     private setup() {
-        const TILE_WIDTH_HALF = 64 / 2;
-        const TILE_HEIGHT_HALF = 32 / 2;
+        for (let key in Client.instance.map) {
+            let splitted = key.split("_");
+            let x: number = +splitted[0];
+            let y: number = +splitted[1];
 
-        for (let x = 0; x < 20; x++) {
-            for (let y = 0; y < 15; y++) {
-
-                let rnd = getRandomInt(2);
-                let tn = rnd == 1 ? 'grass1.png' : 'grass2.png';
-
-                let t = Texture.from(tn);
-
-                let s = Sprite.from(t);
-                s.roundPixels = true;
-
-                this.app.stage.addChild(s)
-
-                s.x = 500 + x * TILE_WIDTH_HALF - y * TILE_WIDTH_HALF;
-                s.y = 200 + x * TILE_HEIGHT_HALF + y * TILE_HEIGHT_HALF;
-            }
+            let grid: Grid = new Grid(this.app, x, y);
+            this.app.stage.addChild(grid.container);
         }
     }
 }

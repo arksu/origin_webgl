@@ -35,6 +35,11 @@ export default class Client {
     public lastError?: string = undefined
 
     /**
+     * данные карты (тайлы)
+     */
+    public map: { [key: string]: number[] } = {};
+
+    /**
      * ид выбранного персонажа
      */
     public get selectedCharacterId(): number {
@@ -87,6 +92,6 @@ export default class Client {
      * очистить игровые данные
      */
     public clear() {
-
+        this.map = {};
     }
 }

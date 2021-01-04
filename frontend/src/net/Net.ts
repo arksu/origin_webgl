@@ -1,4 +1,5 @@
 import _ from "lodash";
+import Client from "@/net/Client";
 
 enum State {
     Disconnected,
@@ -178,10 +179,14 @@ export default class Net {
 
     /**
      * приходит сообщение от сервера в определенный канал
-     * @param {string} _channel
-     * @param _data
+     * @param {string} channel канал данных
+     * @param data
      */
-    protected onChannelMessage(_channel: string, _data: any) {
+    protected onChannelMessage(channel: string, data: any) {
+        if (channel == "map") {
+            let key = data.x + "_" + data.y;
+            Client.instance.map[key] = data.tiles;
+        }
     }
 
     private socketSend(data: any): void {

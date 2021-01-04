@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>ENTERING</div>
 </template>
 
 <script lang="ts">
@@ -19,7 +19,6 @@ export default defineComponent({
 
     Net.instance.onDisconnect = () => {
       console.log("onDisconnect")
-      Client.instance.clear()
       Game.stop()
       router.push({name: 'Characters'})
     }
