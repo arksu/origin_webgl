@@ -30,3 +30,7 @@ export function log2(n: number) {
     log = log + (n >>> 1);
     return log;
 }
+
+export function getRandomInt(max: number) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
