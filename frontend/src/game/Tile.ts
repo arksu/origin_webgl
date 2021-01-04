@@ -11,6 +11,8 @@ export default class Tile {
 
     public static readonly GRID_SIZE = 100;
 
+    public static readonly TILE_SIZE = 12;
+
     public static getTextureName(t: number): string {
         switch (t) {
             case 0 :

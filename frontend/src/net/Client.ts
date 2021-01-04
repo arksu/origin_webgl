@@ -1,4 +1,5 @@
 import router from "@/router";
+import {IPoint} from "pixi.js";
 
 export default class Client {
 
@@ -38,6 +39,8 @@ export default class Client {
      * данные карты (тайлы)
      */
     public map: { [key: string]: number[] } = {};
+
+    public playerPos?: IPoint;
 
     /**
      * ид выбранного персонажа

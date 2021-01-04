@@ -1,6 +1,7 @@
-import {Application, utils} from "pixi.js"
+import {Application, Container, utils} from "pixi.js"
 import Client from "@/net/Client";
 import Grid from "@/game/Grid";
+import Tile from "@/game/Tile";
 
 let PIXI = require("pixi.js");
 
@@ -18,6 +19,15 @@ export default class Game {
      * PIXI app
      */
     private app: Application;
+
+    /**
+     * контейнер в котором храним контейнеры с гридами и тайлами
+     * их координаты внутри абсолютные мировые экранные
+     * @private
+     */
+    private mapGrids: Container;
+
+    private grids: Grid[] = [];
 
     public static start() {
         console.warn("pixi start");
@@ -45,6 +55,9 @@ export default class Game {
         this.app.renderer.backgroundColor = 0x333333;
         this.app.renderer.resize(window.innerWidth, window.innerHeight);
 
+        this.mapGrids = new Container();
+        this.app.stage.addChild(this.mapGrids);
+
         let loader = this.app.loader;
 
         let img = utils.TextureCache['assets/tiles.json_image'];
@@ -61,6 +74,11 @@ export default class Game {
 
     private destroy() {
         this.app.destroy();
+        this.mapGrids.destroy({children: true})
+
+        // for (let i = 0; i < this.grids.length; i++) {
+        //     this.grids[i].destroy()
+        // }
     }
 
     private setup() {
@@ -70,7 +88,27 @@ export default class Game {
             let y: number = +splitted[1];
 
             let grid: Grid = new Grid(this.app, x, y);
-            this.app.stage.addChild(grid.container);
+
+            this.mapGrids.addChild(grid.container);
+            this.grids.push(grid);
         }
+
+        let px = Client.instance.playerPos!!.x;
+        let py = Client.instance.playerPos!!.y;
+        console.log("px=" + px + " py=" + py);
+
+        let sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
+        let sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
+
+        console.log("sx=" + sx + " sy=" + sy);
+
+        let mul = 1
+
+        this.mapGrids.x = this.app.renderer.width / 2 - sx * mul;
+        this.mapGrids.y = this.app.renderer.height / 2 - sy * mul;
+
+
+        this.mapGrids.scale.x = mul;
+        this.mapGrids.scale.y = mul;
     }
 }

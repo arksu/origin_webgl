@@ -17,19 +17,25 @@ export default class Grid {
         this.x = x;
         this.y = y;
 
-        let mul = 0.5;
+        let mul = 1;
 
-        this.container.x = 1000 + x * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE * mul - y * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE * mul;
-        this.container.y = -1600 + x * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE * mul + y * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE * mul;
+        // координаты грида ставим в абсолютные мировые в тайлах
+        this.container.x = x * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE - y * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE;
+        this.container.y = x * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE + y * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE;
 
-        console.log(this.container.x)
-        console.log(this.container.y)
+        // this.container.scale.x = mul;
+        // this.container.scale.y = mul;
 
-        this.container.scale.x = mul;
-        this.container.scale.y = mul;
-
+        console.log("grid x=" + this.container.x + " y=" + this.container.y)
 
         this.makeTiles();
+
+        // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
+        this.container.cacheAsBitmap = true
+    }
+
+    public destroy() {
+        this.container.destroy()
     }
 
     public makeTiles() {
@@ -44,7 +50,8 @@ export default class Grid {
                 let t = Texture.from(tn);
 
                 let s = Sprite.from(t);
-                s.roundPixels = true;
+                // s.roundPixels = true;
+                // s.tint = 50000 * (this.x % 2 + this.y % 2);
 
                 this.container.addChild(s)
 
