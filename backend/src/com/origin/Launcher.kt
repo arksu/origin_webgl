@@ -14,6 +14,7 @@ object Launcher {
     fun main(args: Array<String>) {
         Locale.setDefault(Locale.ROOT)
         ServerConfig.load()
+        EventBus.init()
         DatabaseFactory.init()
         GameServer.start()
     }
