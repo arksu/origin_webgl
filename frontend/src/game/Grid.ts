@@ -1,20 +1,20 @@
-import {Application, Container, Sprite} from "pixi.js";
+import * as PIXI from 'pixi.js';
 import Tile from "@/game/Tile";
 import Client from "@/net/Client";
 
 export default class Grid {
 
-    public container: Container;
+    public container: PIXI.Container;
 
-    private app: Application
+    private app: PIXI.Application
 
     private x: number
     private y: number
 
-    private tiles: Sprite[] = [];
+    private tiles: PIXI.Sprite[] = [];
 
-    constructor(app: Application, x: number, y: number) {
-        this.container = new Container();
+    constructor(app: PIXI.Application, x: number, y: number) {
+        this.container = new PIXI.Container();
         this.app = app;
         this.x = x;
         this.y = y;
@@ -22,13 +22,13 @@ export default class Grid {
         let mul = 1;
 
         // координаты грида ставим в абсолютные мировые в тайлах
-        this.container.x = x * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE - y * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE;
+        this.container.x = x * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE - y * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE - Tile.TILE_WIDTH_HALF;
         this.container.y = x * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE + y * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE;
 
         // this.container.scale.x = mul;
         // this.container.scale.y = mul;
 
-        console.log("grid x=" + this.container.x + " y=" + this.container.y)
+        console.log("grid screen x=" + this.container.x + " y=" + this.container.y)
 
         this.makeTiles();
 
@@ -49,8 +49,8 @@ export default class Grid {
 
                 let tn = Tile.getTextureName(data[y * Tile.GRID_SIZE + x])
 
-                let s = Sprite.from(tn);
-                // s.roundPixels = true;
+                let s = PIXI.Sprite.from(tn);
+                s.roundPixels = true;
                 // s.tint = 50000 * (this.x % 2 + this.y % 2);
 
                 this.container.addChild(s)

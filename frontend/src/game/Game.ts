@@ -1,9 +1,9 @@
-import {Application, Container, Sprite, utils} from "pixi.js"
+import * as PIXI from 'pixi.js';
+
 import Client from "@/net/Client";
 import Grid from "@/game/Grid";
 import Tile from "@/game/Tile";
 
-let PIXI = require("pixi.js");
 
 /**
  * основная игровая логика (графика и тд)
@@ -18,16 +18,18 @@ export default class Game {
     /**
      * PIXI app
      */
-    private app: Application;
+    private app: PIXI.Application;
 
     /**
      * контейнер в котором храним контейнеры с гридами и тайлами
      * их координаты внутри абсолютные мировые экранные
      * @private
      */
-    private mapGrids: Container;
+    private mapGrids: PIXI.Container;
 
     private grids: Grid[] = [];
+
+    private screenSprite: PIXI.Sprite;
 
     public static start() {
         console.warn("pixi start");
@@ -51,16 +53,41 @@ export default class Game {
     }
 
     constructor() {
-        this.app = new Application({view: Game.canvas, autoDensity: false});
-        this.app.renderer.backgroundColor = 0x333333;
+        this.app = new PIXI.Application({
+            view: Game.canvas,
+            autoDensity: true,
+            antialias: false,
+            backgroundColor: 0x333333
+        });
         this.app.renderer.resize(window.innerWidth, window.innerHeight);
+        console.warn('render set to ' + this.app.renderer.width + ' ' + this.app.renderer.height)
 
-        this.mapGrids = new Container();
+        this.mapGrids = new PIXI.Container();
+        // this.mapGrids.width = this.app.renderer.width
+        // this.mapGrids.height = this.app.renderer.height
+
         this.app.stage.addChild(this.mapGrids);
+
+
+        this.screenSprite = new PIXI.Sprite();
+        this.app.stage.addChild(this.screenSprite);
+        this.screenSprite.x = 0;
+        this.screenSprite.y = 0;
+        this.screenSprite.width = this.app.renderer.width
+        this.screenSprite.height = this.app.renderer.height
+        this.screenSprite.interactive = true;
+        // this.screenSprite.buttonMode = true;
+        this.screenSprite.on('mousedown', this.onMouseDown);
+        this.screenSprite.on('touchstart', this.onMouseDown);
+        this.screenSprite.on('mouseup', this.onMouseUp);
+        this.screenSprite.on('touchend', this.onMouseUp);
+        this.screenSprite.on('mousewheel', this.onMouseWheel);
+
 
         let loader = this.app.loader;
 
-        let img = utils.TextureCache['assets/tiles.json_image'];
+        let img = PIXI.utils.TextureCache['assets/tiles.json_image'];
+        // img = undefined
 
         if (img == undefined) {
             loader.add("assets/tiles.json")
@@ -73,12 +100,16 @@ export default class Game {
     }
 
     private destroy() {
-        this.app.destroy();
-        this.mapGrids.destroy({children: true})
+        this.app.destroy(false, {
+            children: true,
+            // texture: true,
+            // baseTexture: true
+        });
 
-        // for (let i = 0; i < this.grids.length; i++) {
-        //     this.grids[i].destroy()
-        // }
+        for (let i = 0; i < this.grids.length; i++) {
+            this.grids[i].destroy()
+        }
+        this.mapGrids.destroy({children: true})
     }
 
     private setup() {
@@ -102,21 +133,39 @@ export default class Game {
 
         console.log("sx=" + sx + " sy=" + sy);
 
-        let mul = 0.5
+        let mul = 0.7
 
         this.mapGrids.x = this.app.renderer.width / 2 - sx * mul;
         this.mapGrids.y = this.app.renderer.height / 2 - sy * mul;
+        // this.mapGrids.cacheAsBitmap = true;
 
 
         this.mapGrids.scale.x = mul;
         this.mapGrids.scale.y = mul;
 
-        let cross = Sprite.from("cross_temp.png");
-        console.log(cross)
+        let cross = PIXI.Sprite.from("cross_temp.png");
         this.app.stage.addChild(cross)
-        cross.pivot.x = 0.5
-        cross.pivot.y = 0.5
-        cross.x = this.app.renderer.width / 2
-        cross.y = this.app.renderer.height / 2 - 22
+        cross.x = this.app.renderer.width / 2 - 17
+        cross.y = this.app.renderer.height / 2 - 23
+    }
+
+    private onMouseDown(e: PIXI.InteractionEvent) {
+        let x = Math.round(e.data.global.x);
+        let y = Math.round(e.data.global.y);
+
+        console.log('onMouseDown ' + x + ' ' + y)
+        // console.log(e)
+    }
+
+    private onMouseUp(e: PIXI.InteractionEvent) {
+        let x = Math.round(e.data.global.x);
+        let y = Math.round(e.data.global.y);
+
+        console.log('onMouseUp ' + x + ' ' + y)
+        // console.log(e)
+    }
+
+    private onMouseWheel(e: PIXI.InteractionEvent) {
+        console.log(e)
     }
 }
