@@ -155,7 +155,11 @@ export default class Game {
     }
 
     private onMouseWheel(delta: number) {
-        this.scale += delta / (1000);
+        if (this.scale < 1) {
+            this.scale += delta / (1000) * (this.scale * 0.5);
+        } else {
+            this.scale += delta / (1000);
+        }
         if (this.scale < 0.05) this.scale = 0.05
         console.log("scale=" + this.scale)
         this.updateMapScalePos();
