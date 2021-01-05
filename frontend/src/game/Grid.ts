@@ -50,7 +50,7 @@ export default class Grid {
                 let tn = Tile.getTextureName(data[y * Tile.GRID_SIZE + x])
 
                 let s = PIXI.Sprite.from(tn);
-                s.roundPixels = true;
+                s.roundPixels = false;
                 // s.tint = 50000 * (this.x % 2 + this.y % 2);
 
                 this.container.addChild(s)

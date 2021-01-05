@@ -7,6 +7,7 @@ import App from "@/App.vue";
 import "@/scss/main.scss";
 import {createApp} from "vue";
 import Client from "@/net/Client";
+import Game from "@/game/Game";
 
 // формируем ссылку для работы с бекендом
 let gameServerPort = 8020;
@@ -16,6 +17,9 @@ Client.apiUrl = window.location.protocol + "//" + window.location.hostname + ":"
 
 // создадим синглтон для клиента где будем хранить наш игровой стейт
 Client.instance = new Client();
+
+// навешиваем на канвас обработчик колеса прокрутки
+Game.initCanvasZoom();
 
 const app = createApp(App);
 app.use(router)

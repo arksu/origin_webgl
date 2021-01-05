@@ -40,6 +40,9 @@ export default class Client {
      */
     public map: { [key: string]: number[] } = {};
 
+    /**
+     * позиция игрока в мире (абсолютные мировые координаты)
+     */
     public playerPos?: IPoint;
 
     /**

@@ -23,13 +23,25 @@ export default class Game {
     /**
      * контейнер в котором храним контейнеры с гридами и тайлами
      * их координаты внутри абсолютные мировые экранные
-     * @private
      */
     private mapGrids: PIXI.Container;
 
+    /**
+     * загруженные гриды
+     */
     private grids: Grid[] = [];
 
+    /**
+     * невидимый спрайт на весь экран для обработки кликов мыши
+     */
     private screenSprite: PIXI.Sprite;
+
+    /**
+     * масштаб карты и игровой графики
+     */
+    private scale: number = 1;
+
+    private crossTemp ?: PIXI.Sprite;
 
     public static start() {
         console.warn("pixi start");
@@ -67,7 +79,6 @@ export default class Game {
         // this.mapGrids.height = this.app.renderer.height
 
         this.app.stage.addChild(this.mapGrids);
-
 
         this.screenSprite = new PIXI.Sprite();
         this.app.stage.addChild(this.screenSprite);
@@ -123,7 +134,34 @@ export default class Game {
             this.mapGrids.addChild(grid.container);
             this.grids.push(grid);
         }
+        this.crossTemp = PIXI.Sprite.from("cross_temp.png");
+        this.app.stage.addChild(this.crossTemp)
 
+        this.updateMapScalePos();
+    }
+
+    private onMouseDown(e: PIXI.InteractionEvent) {
+        let x = Math.round(e.data.global.x);
+        let y = Math.round(e.data.global.y);
+
+        console.log('onMouseDown ' + x + ' ' + y)
+    }
+
+    private onMouseUp(e: PIXI.InteractionEvent) {
+        let x = Math.round(e.data.global.x);
+        let y = Math.round(e.data.global.y);
+
+        console.log('onMouseUp ' + x + ' ' + y)
+    }
+
+    private onMouseWheel(delta: number) {
+        this.scale += delta / (1000);
+        if (this.scale < 0.05) this.scale = 0.05
+        console.log("scale=" + this.scale)
+        this.updateMapScalePos();
+    }
+
+    private updateMapScalePos() {
         let px = Client.instance.playerPos!!.x;
         let py = Client.instance.playerPos!!.y;
         console.log("px=" + px + " py=" + py);
@@ -133,39 +171,26 @@ export default class Game {
 
         console.log("sx=" + sx + " sy=" + sy);
 
-        let mul = 0.7
+        this.mapGrids.x = this.app.renderer.width / 2 - sx * this.scale;
+        this.mapGrids.y = this.app.renderer.height / 2 - sy * this.scale;
 
-        this.mapGrids.x = this.app.renderer.width / 2 - sx * mul;
-        this.mapGrids.y = this.app.renderer.height / 2 - sy * mul;
-        // this.mapGrids.cacheAsBitmap = true;
+        this.mapGrids.scale.x = this.scale;
+        this.mapGrids.scale.y = this.scale;
 
-
-        this.mapGrids.scale.x = mul;
-        this.mapGrids.scale.y = mul;
-
-        let cross = PIXI.Sprite.from("cross_temp.png");
-        this.app.stage.addChild(cross)
-        cross.x = this.app.renderer.width / 2 - 17
-        cross.y = this.app.renderer.height / 2 - 23
+        if (this.crossTemp) {
+            this.crossTemp.scale.set(this.scale);
+            this.crossTemp.x = this.app.renderer.width / 2 - 17 * this.scale
+            this.crossTemp.y = this.app.renderer.height / 2 - 23 * this.scale
+        }
     }
 
-    private onMouseDown(e: PIXI.InteractionEvent) {
-        let x = Math.round(e.data.global.x);
-        let y = Math.round(e.data.global.y);
-
-        console.log('onMouseDown ' + x + ' ' + y)
-        // console.log(e)
-    }
-
-    private onMouseUp(e: PIXI.InteractionEvent) {
-        let x = Math.round(e.data.global.x);
-        let y = Math.round(e.data.global.y);
-
-        console.log('onMouseUp ' + x + ' ' + y)
-        // console.log(e)
-    }
-
-    private onMouseWheel(e: PIXI.InteractionEvent) {
-        console.log(e)
+    /**
+     * навешиваем на канвас обработчик колеса прокрутки
+     */
+    public static initCanvasZoom() {
+        this.canvas.addEventListener('wheel', (e: WheelEvent) => {
+            e.preventDefault();
+            this.instance?.onMouseWheel(-e.deltaY);
+        })
     }
 }
