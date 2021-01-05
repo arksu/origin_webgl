@@ -1,4 +1,4 @@
-import {Application, Container, Sprite, Texture} from "pixi.js";
+import {Application, Container, Sprite} from "pixi.js";
 import Tile from "@/game/Tile";
 import Client from "@/net/Client";
 
@@ -10,6 +10,8 @@ export default class Grid {
 
     private x: number
     private y: number
+
+    private tiles: Sprite[] = [];
 
     constructor(app: Application, x: number, y: number) {
         this.container = new Container();
@@ -47,9 +49,7 @@ export default class Grid {
 
                 let tn = Tile.getTextureName(data[y * Tile.GRID_SIZE + x])
 
-                let t = Texture.from(tn);
-
-                let s = Sprite.from(t);
+                let s = Sprite.from(tn);
                 // s.roundPixels = true;
                 // s.tint = 50000 * (this.x % 2 + this.y % 2);
 
@@ -57,6 +57,8 @@ export default class Grid {
 
                 s.x = x * Tile.TILE_WIDTH_HALF - y * Tile.TILE_WIDTH_HALF;
                 s.y = x * Tile.TILE_HEIGHT_HALF + y * Tile.TILE_HEIGHT_HALF;
+
+                this.tiles[y * Tile.GRID_SIZE + x] = s;
             }
         }
     }

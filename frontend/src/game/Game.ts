@@ -1,4 +1,4 @@
-import {Application, Container, utils} from "pixi.js"
+import {Application, Container, Sprite, utils} from "pixi.js"
 import Client from "@/net/Client";
 import Grid from "@/game/Grid";
 import Tile from "@/game/Tile";
@@ -102,7 +102,7 @@ export default class Game {
 
         console.log("sx=" + sx + " sy=" + sy);
 
-        let mul = 1
+        let mul = 0.5
 
         this.mapGrids.x = this.app.renderer.width / 2 - sx * mul;
         this.mapGrids.y = this.app.renderer.height / 2 - sy * mul;
@@ -110,5 +110,13 @@ export default class Game {
 
         this.mapGrids.scale.x = mul;
         this.mapGrids.scale.y = mul;
+
+        let cross = Sprite.from("cross_temp.png");
+        console.log(cross)
+        this.app.stage.addChild(cross)
+        cross.pivot.x = 0.5
+        cross.pivot.y = 0.5
+        cross.x = this.app.renderer.width / 2
+        cross.y = this.app.renderer.height / 2 - 22
     }
 }

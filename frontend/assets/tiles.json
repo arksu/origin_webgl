@@ -1,8 +1,16 @@
 {"frames": {
 
+"cross_temp.png":
+{
+	"frame": {"x":0,"y":0,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
 "grass1.png":
 {
-	"frame": {"x":0,"y":0,"w":63,"h":32},
+	"frame": {"x":32,"y":0,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -10,7 +18,7 @@
 },
 "grass2.png":
 {
-	"frame": {"x":63,"y":0,"w":63,"h":32},
+	"frame": {"x":95,"y":0,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -18,7 +26,7 @@
 },
 "stone1.png":
 {
-	"frame": {"x":126,"y":0,"w":63,"h":32},
+	"frame": {"x":158,"y":0,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -26,7 +34,7 @@
 },
 "swamp1.png":
 {
-	"frame": {"x":189,"y":0,"w":63,"h":32},
+	"frame": {"x":221,"y":0,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -37,8 +45,8 @@
 	"version": "1.0",
 	"image": "tiles.png",
 	"format": "RGBA8888",
-	"size": {"w":252,"h":32},
+	"size": {"w":284,"h":32},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:45d663700a7e1476d8e080b0cb22bd5a:bcea12fd52a4ee3e0b4773fc30394fcc:02ab132358d6d8b512e80119463a8329$"
+	"smartupdate": "$TexturePacker:SmartUpdate:d3dded8476ae341a95c0f6c6be11112d:f5da47f1f05f6bc8cf491ff15fb061e2:accbe1e7e294ded8391337fc1c446319$"
 }
 }
