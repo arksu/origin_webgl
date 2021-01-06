@@ -13,7 +13,7 @@ export default class Game {
     private static readonly canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("game");
     private static readonly appdiv: HTMLElement = <HTMLElement>document.getElementById("app");
 
-    private static instance?: Game;
+    public static instance?: Game = undefined;
 
     /**
      * PIXI app
@@ -190,6 +190,11 @@ export default class Game {
             this.crossTemp.x = this.app.renderer.width / 2 - 17 * this.scale
             this.crossTemp.y = this.app.renderer.height / 2 - 23 * this.scale
         }
+    }
+
+    public onResize() {
+        this.app.renderer.resize(window.innerWidth, window.innerHeight);
+        this.updateMapScalePos()
     }
 
     /**
