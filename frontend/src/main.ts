@@ -18,8 +18,8 @@ Client.apiUrl = window.location.protocol + "//" + window.location.hostname + ":"
 // создадим синглтон для клиента где будем хранить наш игровой стейт
 Client.instance = new Client();
 
-// навешиваем на канвас обработчик колеса прокрутки
-Game.initCanvasZoom();
+// навешиваем на канвас обработчики
+Game.initCanvasHandlers();
 
 const app = createApp(App);
 app.use(router)

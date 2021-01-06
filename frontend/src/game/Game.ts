@@ -165,6 +165,10 @@ export default class Game {
         this.updateMapScalePos();
     }
 
+    private onMouseRightClick(e: MouseEvent) {
+
+    }
+
     private updateMapScalePos() {
         let px = Client.instance.playerPos!!.x;
         let py = Client.instance.playerPos!!.y;
@@ -189,12 +193,20 @@ export default class Game {
     }
 
     /**
-     * навешиваем на канвас обработчик колеса прокрутки
+     * навешиваем на канвас обработчики
      */
-    public static initCanvasZoom() {
+    public static initCanvasHandlers() {
         this.canvas.addEventListener('wheel', (e: WheelEvent) => {
             e.preventDefault();
             this.instance?.onMouseWheel(-e.deltaY);
+        });
+        this.canvas.addEventListener('contextmenu', (e: Event) => {
+            e.preventDefault();
+            if (e instanceof MouseEvent) {
+                console.log("right click " + e.x + " " + e.y);
+                console.log(e.button + " alt=" + e.altKey + " shift=" + e.shiftKey + " meta=" + e.metaKey);
+                this.instance?.onMouseRightClick(e);
+            }
         })
     }
 }
