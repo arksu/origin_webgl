@@ -32,17 +32,3 @@ app.directive('focus', {
         el.focus();
     }
 })
-
-// обработчик resize
-let resizeTimeout: any = undefined;
-window.addEventListener('resize', () => {
-    if (resizeTimeout == undefined) {
-        resizeTimeout = setTimeout(() => {
-            resizeTimeout = undefined;
-            console.log("resize")
-            console.log(Game.instance)
-            let a = Game.instance?.onResize()
-            console.log(a)
-        }, 333);
-    }
-})

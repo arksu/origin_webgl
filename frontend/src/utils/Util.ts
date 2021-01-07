@@ -31,6 +31,21 @@ export function log2(n: number) {
     return log;
 }
 
-export function getRandomInt(max: number) {
+/**
+ * получить случайное число в диапазоне (0..max-1)
+ */
+export function getRandomInt(max: number): number {
     return Math.floor(Math.random() * Math.floor(max));
+}
+
+/**
+ * ориентация экран сейчас планшетная? (горизонтальная)
+ */
+export function isOrientationLandscape(): boolean {
+    if (window.screen.orientation !== undefined) {
+        const type = window.screen.orientation.type;
+        return type !== "portrait-primary" && type !== "portrait-secondary";
+    }
+    const mql = window.matchMedia("(orientation: portrait)");
+    return !mql.matches;
 }

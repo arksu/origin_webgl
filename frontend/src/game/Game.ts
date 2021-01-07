@@ -4,7 +4,6 @@ import Client from "@/net/Client";
 import Grid from "@/game/Grid";
 import Tile from "@/game/Tile";
 
-
 /**
  * основная игровая логика (графика и тд)
  */
@@ -13,7 +12,7 @@ export default class Game {
     private static readonly canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("game");
     private static readonly appdiv: HTMLElement = <HTMLElement>document.getElementById("app");
 
-    public static instance?: Game = undefined;
+    private static instance?: Game = undefined;
 
     /**
      * PIXI app
@@ -192,25 +191,40 @@ export default class Game {
         }
     }
 
-    public onResize() {
-        this.app.renderer.resize(window.innerWidth, window.innerHeight);
-        this.updateMapScalePos()
+    public static onResize() {
+        this.instance?.app.renderer.resize(window.innerWidth, window.innerHeight);
+        this.instance?.updateMapScalePos()
     }
 
     /**
      * навешиваем на канвас обработчики
      */
     public static initCanvasHandlers() {
+        // ловим прокрутку страницы и делаем скейл на основе этого
         this.canvas.addEventListener('wheel', (e: WheelEvent) => {
             e.preventDefault();
             this.instance?.onMouseWheel(-e.deltaY);
         });
+
+        // ловим правый клик за счет вызоыва context menu
         this.canvas.addEventListener('contextmenu', (e: Event) => {
             e.preventDefault();
             if (e instanceof MouseEvent) {
                 console.log("right click " + e.x + " " + e.y);
                 console.log(e.button + " alt=" + e.altKey + " shift=" + e.shiftKey + " meta=" + e.metaKey);
                 this.instance?.onMouseRightClick(e);
+            }
+        });
+
+        // обработчик resize
+        let resizeTimeout: any = undefined;
+        window.addEventListener('resize', () => {
+            if (resizeTimeout == undefined) {
+                resizeTimeout = setTimeout(() => {
+                    resizeTimeout = undefined;
+                    console.log("resize")
+                    Game.onResize()
+                }, 333);
             }
         })
     }
