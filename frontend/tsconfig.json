@@ -2,16 +2,15 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "allowJs": true,
+    "allowJs": false,
     "outDir": "./dist/",
     "sourceMap": true,
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "importHelpers": true,
+
     "strict": true,
-    "strictPropertyInitialization": true,
-    "strictNullChecks": true,
+
     "jsx": "preserve",
     "moduleResolution": "node",
     "baseUrl": ".",
@@ -26,8 +25,7 @@
     "lib": [
       "esnext",
       "dom",
-      "dom.iterable",
-      "scripthost"
+      "dom.iterable"
     ]
   },
   "include": [
