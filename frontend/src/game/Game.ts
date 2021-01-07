@@ -3,6 +3,8 @@ import * as PIXI from 'pixi.js';
 import Client from "@/net/Client";
 import Grid from "@/game/Grid";
 import Tile from "@/game/Tile";
+import Net from "@/net/Net";
+import Point from '@/utils/Point';
 
 /**
  * основная игровая логика (графика и тд)
@@ -41,6 +43,21 @@ export default class Game {
     private scale: number = 1;
 
     private crossTemp ?: PIXI.Sprite;
+
+    /**
+     * "перетаскивание" карты мышью
+     */
+    private dragStart ?: Point;
+    /**
+     * какой был отступ карты в начале перетаскивания
+     */
+    private dragOffset ?: Point;
+    private dragMoved: boolean = false;
+
+    /**
+     * отступ в координатах экрана от центра экрана до игрока
+     */
+    private offset: Point = new Point(0, 0);
 
     public static start() {
         console.warn("pixi start");
@@ -86,12 +103,14 @@ export default class Game {
         this.screenSprite.width = this.app.renderer.width
         this.screenSprite.height = this.app.renderer.height
         this.screenSprite.interactive = true;
-        // this.screenSprite.buttonMode = true;
-        this.screenSprite.on('mousedown', this.onMouseDown);
-        this.screenSprite.on('touchstart', this.onMouseDown);
-        this.screenSprite.on('mouseup', this.onMouseUp);
-        this.screenSprite.on('touchend', this.onMouseUp);
-        this.screenSprite.on('mousewheel', this.onMouseWheel);
+
+        this.screenSprite.on('mousedown', this.onMouseDown.bind(this));
+        this.screenSprite.on('touchstart', this.onMouseDown.bind(this));
+        this.screenSprite.on('mouseup', this.onMouseUp.bind(this));
+        this.screenSprite.on('touchend', this.onMouseUp.bind(this));
+        this.screenSprite.on('mousemove', this.onMouseMove.bind(this));
+        this.screenSprite.on('touchmove', this.onMouseMove.bind(this));
+        this.screenSprite.on('mousewheel', this.onMouseWheel.bind(this));
 
 
         let loader = this.app.loader;
@@ -140,17 +159,50 @@ export default class Game {
     }
 
     private onMouseDown(e: PIXI.InteractionEvent) {
-        let x = Math.round(e.data.global.x);
-        let y = Math.round(e.data.global.y);
-
-        console.log('onMouseDown ' + x + ' ' + y)
+        this.dragStart = new Point(e.data.global).round();
+        this.dragOffset = new Point(this.offset);
+        this.dragMoved = false;
+        console.log('onMouseDown ' + this.dragStart.toString());
     }
 
     private onMouseUp(e: PIXI.InteractionEvent) {
-        let x = Math.round(e.data.global.x);
-        let y = Math.round(e.data.global.y);
+        let p = new Point(e.data.global).round();
 
-        console.log('onMouseUp ' + x + ' ' + y)
+        console.log('onMouseUp ' + p.toString());
+
+        if (this.dragStart !== undefined && this.dragOffset !== undefined) {
+            p.dec(this.dragStart);
+
+            // мышь передвинулась достаточно далеко?
+            if (Math.abs(p.x) > 10 || Math.abs(p.y) > 10 || this.dragMoved) {
+                this.offset.set(this.dragOffset).plus(p);
+
+                this.updateMapScalePos();
+            } else {
+                // иначе это был просто клик
+                Net.remoteCall("mapclick", {
+                    x: p.x,
+                    y: p.y
+                })
+            }
+            this.dragStart = undefined;
+            this.dragOffset = undefined;
+        }
+    }
+
+    private onMouseMove(e: PIXI.InteractionEvent) {
+        if (this.dragStart !== undefined && this.dragOffset !== undefined) {
+            let p = new Point(e.data.global).round();
+
+            p.dec(this.dragStart);
+
+            if (Math.abs(p.x) > 10 || Math.abs(p.y) > 10 || this.dragMoved) {
+                this.dragMoved = true;
+                this.offset.set(this.dragOffset).plus(p);
+
+                this.updateMapScalePos();
+            }
+        }
     }
 
     private onMouseWheel(delta: number) {
@@ -171,24 +223,29 @@ export default class Game {
     private updateMapScalePos() {
         let px = Client.instance.playerPos!!.x;
         let py = Client.instance.playerPos!!.y;
-        console.log("px=" + px + " py=" + py);
 
         let sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
         let sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
 
-        console.log("sx=" + sx + " sy=" + sy);
-
-        this.mapGrids.x = this.app.renderer.width / 2 - sx * this.scale;
-        this.mapGrids.y = this.app.renderer.height / 2 - sy * this.scale;
+        this.mapGrids.x = this.app.renderer.width / 2 - sx * this.scale + this.offset.x;
+        this.mapGrids.y = this.app.renderer.height / 2 - sy * this.scale + this.offset.y;
 
         this.mapGrids.scale.x = this.scale;
         this.mapGrids.scale.y = this.scale;
 
         if (this.crossTemp) {
             this.crossTemp.scale.set(this.scale);
-            this.crossTemp.x = this.app.renderer.width / 2 - 17 * this.scale
-            this.crossTemp.y = this.app.renderer.height / 2 - 23 * this.scale
+            this.crossTemp.x = this.app.renderer.width / 2 - 17 * this.scale + this.offset.x;
+            this.crossTemp.y = this.app.renderer.height / 2 - 23 * this.scale + this.offset.y;
         }
+    }
+
+    /**
+     *
+     * @private
+     */
+    private coordScreen2Game() {
+
     }
 
     public static onResize() {
@@ -222,10 +279,14 @@ export default class Game {
             if (resizeTimeout == undefined) {
                 resizeTimeout = setTimeout(() => {
                     resizeTimeout = undefined;
-                    console.log("resize")
-                    Game.onResize()
+                    console.log("resize");
+                    Game.onResize();
                 }, 333);
             }
-        })
+        });
+
+        window.addEventListener("orientationchange", () => {
+            Game.onResize();
+        });
     }
 }

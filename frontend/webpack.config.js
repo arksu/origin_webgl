@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const {ProvidePlugin} = require("webpack");
+const {ProvidePlugin, HotModuleReplacementPlugin} = require("webpack");
 const {VueLoaderPlugin} = require('vue-loader')
 
 module.exports = {
@@ -42,12 +42,13 @@ module.exports = {
         ],
     },
     plugins: [
+        new HotModuleReplacementPlugin(),
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             hash: true,
             title: 'Origin',
             template: "./src/index.html",
-            filename: '../dist/index.html'
+            filename: 'index.html'
         }),
         new ProvidePlugin({
             process: 'process/browser',
@@ -71,7 +72,10 @@ module.exports = {
         hot: true,
         stats: 'minimal',
         compress: true,
-        overlay: true
+        overlay: true,
+        progress: true,
+        host: '0.0.0.0',
+        port: 3070
     },
     target: "web"
 };

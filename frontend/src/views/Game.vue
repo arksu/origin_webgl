@@ -36,7 +36,7 @@ export default defineComponent({
     }
   },
   unmounted() {
-    Net.instance?.disconnect();
+    if (Net.instance) Net.instance.disconnect();
   }
 });
 
