@@ -113,10 +113,8 @@ export default class Game {
         this.screenSprite.on('mousewheel', this.onMouseWheel.bind(this));
 
 
-        let loader = this.app.loader;
-
-        let img = PIXI.utils.TextureCache['assets/tiles.json_image'];
-        // img = undefined
+        const loader = this.app.loader;
+        const img = PIXI.utils.TextureCache['assets/tiles.json_image'];
 
         if (img == undefined) {
             loader.add("assets/tiles.json")
@@ -171,18 +169,19 @@ export default class Game {
         console.log('onMouseUp ' + p.toString());
 
         if (this.dragStart !== undefined && this.dragOffset !== undefined) {
-            p.dec(this.dragStart);
+            let d = new Point(p).dec(this.dragStart);
 
             // мышь передвинулась достаточно далеко?
-            if (Math.abs(p.x) > 10 || Math.abs(p.y) > 10 || this.dragMoved) {
-                this.offset.set(this.dragOffset).plus(p);
+            if (Math.abs(d.x) > 10 || Math.abs(d.y) > 10 || this.dragMoved) {
+                this.offset.set(this.dragOffset).plus(d);
 
                 this.updateMapScalePos();
             } else {
                 // иначе это был просто клик
+                let cp = this.coordScreen2Game(p);
                 Net.remoteCall("mapclick", {
-                    x: p.x,
-                    y: p.y
+                    x: cp.x,
+                    y: cp.y
                 })
             }
             this.dragStart = undefined;
@@ -241,11 +240,10 @@ export default class Game {
     }
 
     /**
-     *
-     * @private
+     * перевести экранные координаты в игровые
      */
-    private coordScreen2Game() {
-
+    private coordScreen2Game(p: Point): Point {
+        return new Point(0, 0);
     }
 
     public static onResize() {
