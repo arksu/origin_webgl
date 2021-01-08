@@ -173,12 +173,13 @@ export default class Game {
 
             // мышь передвинулась достаточно далеко?
             if (Math.abs(d.x) > 10 || Math.abs(d.y) > 10 || this.dragMoved) {
-                this.offset.set(this.dragOffset).plus(d);
+                this.offset.set(this.dragOffset).inc(d);
 
                 this.updateMapScalePos();
             } else {
                 // иначе это был просто клик
                 let cp = this.coordScreen2Game(p);
+                console.log("mapclick " + cp.toString());
                 Net.remoteCall("mapclick", {
                     x: cp.x,
                     y: cp.y
@@ -197,7 +198,7 @@ export default class Game {
 
             if (Math.abs(p.x) > 10 || Math.abs(p.y) > 10 || this.dragMoved) {
                 this.dragMoved = true;
-                this.offset.set(this.dragOffset).plus(p);
+                this.offset.set(this.dragOffset).inc(p);
 
                 this.updateMapScalePos();
             }
@@ -226,16 +227,19 @@ export default class Game {
         let sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
         let sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
 
-        this.mapGrids.x = this.app.renderer.width / 2 - sx * this.scale + this.offset.x;
-        this.mapGrids.y = this.app.renderer.height / 2 - sy * this.scale + this.offset.y;
+        let screenWidthHalf = this.app.renderer.width / 2 + this.offset.x;
+        let screenHeightHalf = this.app.renderer.height / 2 + this.offset.y;
+
+        this.mapGrids.x = screenWidthHalf - sx * this.scale;
+        this.mapGrids.y = screenHeightHalf - sy * this.scale;
 
         this.mapGrids.scale.x = this.scale;
         this.mapGrids.scale.y = this.scale;
 
         if (this.crossTemp) {
             this.crossTemp.scale.set(this.scale);
-            this.crossTemp.x = this.app.renderer.width / 2 - 17 * this.scale + this.offset.x;
-            this.crossTemp.y = this.app.renderer.height / 2 - 23 * this.scale + this.offset.y;
+            this.crossTemp.x = screenWidthHalf - 17 * this.scale;
+            this.crossTemp.y = screenHeightHalf - 23 * this.scale;
         }
     }
 
@@ -243,7 +247,23 @@ export default class Game {
      * перевести экранные координаты в игровые
      */
     private coordScreen2Game(p: Point): Point {
-        return new Point(0, 0);
+        console.log("coordScreen2Game " + p.toString())
+
+        p.dec(this.offset);
+
+        let px = Client.instance.playerPos!!.x;
+        let py = Client.instance.playerPos!!.y;
+
+        console.log("player pos " + px + " " + py)
+
+        let screenWidthHalf = this.app.renderer.width / 2;
+        let screenHeightHalf = this.app.renderer.height / 2;
+        p.decValue(screenWidthHalf, screenHeightHalf).mulValue(1 / this.scale);
+
+        return new Point(
+            p.y / Tile.TEXTURE_HEIGTH + p.x / Tile.TEXTURE_WIDTH,
+            p.y / Tile.TEXTURE_HEIGTH - p.x / Tile.TEXTURE_WIDTH
+        ).mulValue(Tile.TILE_SIZE).incValue(px, py).round();
     }
 
     public static onResize() {

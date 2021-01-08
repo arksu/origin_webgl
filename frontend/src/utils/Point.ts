@@ -27,21 +27,33 @@ export default class Point {
         return this;
     }
 
+    public decValue(x: number, y: number): Point {
+        this.x -= x;
+        this.y -= y;
+        return this;
+    }
+
     public inc(p: Point): Point {
         this.x += p.x;
         this.y += p.y;
         return this;
     }
 
-    public plus(p: Point): Point {
-        this.x += p.x;
-        this.y += p.y;
+    public incValue(x: number, y: number): Point {
+        this.x += x;
+        this.y += y;
         return this;
     }
 
     public set(p: Point): Point {
         this.x = p.x;
         this.y = p.y;
+        return this;
+    }
+
+    public mulValue(v: number): Point {
+        this.x *= v;
+        this.y *= v;
         return this;
     }
 
