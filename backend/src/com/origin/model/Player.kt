@@ -7,6 +7,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 class PlayerMsg {
     class Connected
     class Disconnected
+    class MapClick(val x: Int, val y: Int)
 }
 
 /**
@@ -33,13 +34,18 @@ class Player(
      */
     val paperdoll: Paperdoll = Paperdoll(this)
 
-    override suspend fun processMessages(msg: Any) {
-        logger.debug("Player msg ${msg.javaClass.simpleName}")
+    override suspend fun processMessage(msg: Any) {
+        logger.debug("Player $this msg ${msg.javaClass.simpleName}")
         when (msg) {
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
-            else -> super.processMessages(msg)
+            is PlayerMsg.MapClick -> mapClick(msg.x, msg.y)
+            else -> super.processMessage(msg)
         }
+    }
+
+    private fun mapClick(x: Int, y: Int) {
+        println("$x $y")
     }
 
     /**

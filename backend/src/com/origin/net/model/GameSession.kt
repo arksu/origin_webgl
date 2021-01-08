@@ -30,7 +30,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
     private var account: Account? = null
 
-    private var player: Player? = null
+    private lateinit var player: Player
 
     suspend fun received(r: GameRequest) {
         // инициализация сессии
@@ -71,6 +71,11 @@ class GameSession(private val connect: DefaultWebSocketSession) {
             }
         } else {
             when (r.target) {
+                "mapclick" -> {
+                    val x = (r.data["x"] as Long?) ?: throw BadRequest("wrong coord x")
+                    val y = (r.data["y"] as Long?) ?: throw BadRequest("wrong coord y")
+                    player.send(PlayerMsg.MapClick(x.toInt(), y.toInt()))
+                }
                 // TODO delete
                 "test" -> {
                     ack(r, "test")
@@ -88,7 +93,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
     suspend fun disconnected() {
         logger.warn("disconnected")
-        player?.send(PlayerMsg.Disconnected())
+        player.send(PlayerMsg.Disconnected())
     }
 
     /**
@@ -103,9 +108,13 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         connect.outgoing.send(Frame.Text(gsonSerializer.toJson(r)))
     }
 
+    suspend fun send(m: ClientMessage) {
+        send(GameResponse(m.channel, m))
+    }
+
     suspend fun kick() {
         logger.warn("kick")
         connect.close(CloseReason(CloseReason.Codes.NORMAL, "kicked"))
-        player?.send(PlayerMsg.Disconnected())
+        player.send(PlayerMsg.Disconnected())
     }
 }

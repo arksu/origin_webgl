@@ -5,7 +5,6 @@ import com.origin.collision.MoveType
 import com.origin.entity.GridEntity
 import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
-import com.origin.net.model.GameResponse
 import com.origin.net.model.MapGridData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CompletableJob
@@ -48,7 +47,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      */
     private val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
         channel.consumeEach {
-            processMessages(it)
+            processMessage(it)
         }
     }
 
@@ -62,8 +61,8 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         actor.send(msg)
     }
 
-    private suspend fun processMessages(msg: Any) {
-        logger.debug("grid processMessages ${msg.javaClass.simpleName}")
+    private suspend fun processMessage(msg: Any) {
+        logger.debug("grid processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
             is GridMsg.Activate -> {
@@ -171,7 +170,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
 
             activeObjects.add(human)
             if (human is Player) {
-                human.session.send(GameResponse("map", MapGridData(this)))
+                human.session.send(MapGridData(this))
             }
 
             World.addActiveGrid(this)

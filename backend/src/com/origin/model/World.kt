@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.model.move.Position
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.concurrent.ConcurrentHashMap

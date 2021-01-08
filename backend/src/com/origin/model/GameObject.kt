@@ -1,12 +1,14 @@
 package com.origin.model
 
 import com.origin.entity.EntityPosition
+import com.origin.model.move.Position
 import com.origin.net.model.GameResponse
-import com.origin.net.model.ObjectPosition
+import com.origin.net.model.ObjectAdd
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
@@ -27,7 +29,7 @@ sealed class GameObjectMsg {
 @ObsoleteCoroutinesApi
 open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
     companion object {
-        val logger = LoggerFactory.getLogger(GameObject::class.java)
+        val logger: Logger = LoggerFactory.getLogger(GameObject::class.java)
     }
 
     /**
@@ -49,7 +51,7 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
      * объект который несем над собой, или в котором едем. по сути это контейнер для вложенных объектов
      * они больше не находятся в гриде, а обслуживаются только объектом который их "несет/везет"
      * причем такое состояние только в рантайме. в базе все хранится по координатам. и при рестарте сервера
-     * все будет спавнится в одни и теже координаты
+     * все будет спавнится в одни и те же координаты
      */
     private val lift = ConcurrentHashMap<Int, GameObject>()
 
@@ -58,7 +60,7 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
      */
     protected val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
         channel.consumeEach {
-            processMessages(it)
+            processMessage(it)
         }
         logger.warn("game obj actor $this finished")
     }
@@ -90,13 +92,13 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
         actor.send(msg)
     }
 
-    protected open suspend fun processMessages(msg: Any) {
-        logger.warn("gameobject processMessages ${msg.javaClass.simpleName}")
+    protected open suspend fun processMessage(msg: Any) {
+        logger.warn("gameObject processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GameObjectMsg.Spawn -> {
                 val result = pos.spawn()
                 if (result && (this is Player)) {
-                    this.session.send(GameResponse("obj", ObjectPosition(this)))
+                    this.session.send(GameResponse("obj", ObjectAdd(this)))
                 }
                 msg.resp.complete(result)
             }
@@ -116,12 +118,11 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
      * удалить объект из мира
      */
     protected suspend fun remove() {
-        grid.sendJob(GridMsg.RemoveObject(this, Job()))
-            .join()
+        grid.sendJob(GridMsg.RemoveObject(this, Job())).join()
 //            .invokeOnCompletion {
         // если есть что-то вложенное внутри
         if (!lift.isEmpty()) {
-            lift.values.forEach {
+            lift.values.forEach { _ ->
                 // TODO
 //                    it.pos.set xy coord
                 // spawn it
@@ -143,14 +144,15 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
     /**
      * ДРУГОЙ добавили объект в грид в котором находится объект
      */
-    open fun onObjectAdded(obj: GameObject) {
+    open suspend fun onObjectAdded(obj: GameObject) {
         // TODO known list
     }
 
     /**
      * грид говорит что ДРУГОЙ объект был удален
      */
-    open fun onObjectRemoved(obj: GameObject) {
+    open suspend fun onObjectRemoved(obj: GameObject) {
         // TODO known list
+        logger.debug("onObjectRemoved $this")
     }
 }

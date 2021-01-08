@@ -3,6 +3,7 @@ package com.origin.model
 import com.origin.entity.EntityPosition
 import com.origin.model.GridMsg.Activate
 import com.origin.model.GridMsg.Deactivate
+import com.origin.model.move.MoveController
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
@@ -24,8 +25,13 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
      */
     private val grids = LinkedList<Grid>()
 
-    override suspend fun processMessages(msg: Any) {
-        logger.warn("MovingObject processMessages ${msg.javaClass.simpleName}")
+    /**
+     * контроллер который управляет передвижением объекта
+     */
+    private var moveController: MoveController? = null
+
+    override suspend fun processMessage(msg: Any) {
+        logger.warn("MovingObject processMessage ${msg.javaClass.simpleName}")
 
         when (msg) {
             is MovingObjectMsg.LoadGrids -> {
@@ -36,7 +42,7 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
                 unloadGrids()
                 msg.job?.complete()
             }
-            else -> super.processMessages(msg)
+            else -> super.processMessage(msg)
         }
     }
 
@@ -73,13 +79,17 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
      */
     protected suspend fun unloadGrids() {
         if (grids.isEmpty()) {
-            throw RuntimeException("uloadGrids - grids is empty")
+            throw RuntimeException("unloadGrids - grids is empty")
         }
 
-        if (this is Human) grids.forEach {
+        if (this is Human) grids.forEach { _ ->
             grid.sendJob(Deactivate(this, Job())).join()
         }
         grids.clear()
+    }
+
+    fun startMove(controller: MoveController) {
+
     }
 
     /**

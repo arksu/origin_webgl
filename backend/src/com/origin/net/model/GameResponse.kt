@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.origin.model.GameObject
 import com.origin.model.Grid
 import com.origin.utils.StringTypeAdapter
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 class GameResponse {
     @SerializedName("id")
@@ -49,15 +50,28 @@ class GameResponse {
     }
 }
 
-class MapGridData(grid: Grid) {
+abstract class ClientMessage(
+    @Transient
+    val channel: String,
+)
+
+@ObsoleteCoroutinesApi
+class MapGridData(grid: Grid) : ClientMessage("map") {
     val x: Int = grid.x
     val y: Int = grid.y
     val tiles: ByteArray = grid.tilesBlob
 }
 
-class ObjectPosition(obj: GameObject) {
+@ObsoleteCoroutinesApi
+class ObjectAdd(obj: GameObject) : ClientMessage("obj") {
     val id = obj.id
     val x = obj.pos.x
     val y = obj.pos.y
     val heading = obj.pos.heading
+    val type = obj.javaClass.simpleName
+}
+
+@ObsoleteCoroutinesApi
+class ObjectDel(obj: GameObject) : ClientMessage("objd") {
+    val id = obj.id
 }
