@@ -5,6 +5,8 @@ import java.util.concurrent.ThreadLocalRandom
 
 typealias ObjectID = Long
 
+typealias GameTime = Long
+
 fun String?.toObjectID(): ObjectID {
     return this?.toLong() ?: throw RuntimeException("no string value for ObjectID")
 }

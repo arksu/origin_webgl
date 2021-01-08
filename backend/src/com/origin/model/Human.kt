@@ -22,8 +22,6 @@ open class Human(id: ObjectID, pos: EntityPosition) : MovingObject(id, pos) {
      * любое добавление в этот список, а равно как и удаление из него должно быть
      * синхронизировано с клиентом
      */
-
-
     private val knownList by lazy { KnownList(this) }
 
     /**

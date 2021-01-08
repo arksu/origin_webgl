@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.entity.Character
+import com.origin.model.move.Move2Point
 import com.origin.net.model.GameSession
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
@@ -44,8 +45,12 @@ class Player(
         }
     }
 
+    /**
+     * клиент: клик по карте
+     */
     private fun mapClick(x: Int, y: Int) {
-        println("$x $y")
+        logger.debug("mapClick $x $y")
+        startMove(Move2Point(this, x, y))
     }
 
     /**

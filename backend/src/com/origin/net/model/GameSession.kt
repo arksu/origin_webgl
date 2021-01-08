@@ -76,14 +76,6 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     val y = (r.data["y"] as Long?) ?: throw BadRequest("wrong coord y")
                     player.send(PlayerMsg.MapClick(x.toInt(), y.toInt()))
                 }
-                // TODO delete
-                "test" -> {
-                    ack(r, "test")
-                }
-                // TODO delete
-                "bye" -> {
-                    connect.close(CloseReason(CloseReason.Codes.NORMAL, "said bye"))
-                }
                 else -> {
                     logger.warn("unknown target ${r.target}")
                 }

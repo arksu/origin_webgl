@@ -88,7 +88,23 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
         grids.clear()
     }
 
+    /**
+     * начать движение объекта
+     */
     fun startMove(controller: MoveController) {
+        if (controller.canStartMoving()) {
+            moveController?.stop()
+            moveController = controller
+            controller.start()
+        } else {
+            logger.debug("cant start move $this")
+        }
+    }
+
+    /**
+     * сохранить позицию объекта в базу (вызывается периодически в движении)
+     */
+    fun storePositionInDb() {
 
     }
 

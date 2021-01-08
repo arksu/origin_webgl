@@ -5,12 +5,20 @@ import com.origin.net.model.ObjectDel
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
+/**
+ * список игровых объектов о которых знает другой объект
+ * то есть эти объекты проецируются на клиент, список всех видимых объектов с точки зрения клиента
+ */
 @ObsoleteCoroutinesApi
-class KnownList(val activeObject: GameObject) {
+class KnownList(private val activeObject: GameObject) {
+
     private val knownObjects = HashMap<ObjectID, GameObject>()
 
     private val knownPlayers = HashMap<ObjectID, Player>()
 
+    /**
+     * известенли этот объект?
+     */
     fun isKnownObject(obj: GameObject): Boolean {
         return knownObjects.containsKey(obj.id)
     }

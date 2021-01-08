@@ -1,7 +1,7 @@
 package com.origin.model
 
 import com.origin.collision.CollisionResult
-import com.origin.collision.MoveType
+import com.origin.model.move.MoveType
 import com.origin.entity.GridEntity
 import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved

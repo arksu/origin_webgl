@@ -1,5 +1,6 @@
 package com.origin
 
+import com.origin.utils.TILE_SIZE
 import com.typesafe.config.ConfigFactory
 import java.io.File
 
@@ -9,7 +10,7 @@ object ServerConfig {
     const val PROTO_VERSION = "0.0.1"
 
     @JvmField
-    var PORT  = 0
+    var PORT = 0
 
     @JvmField
     var DB_HOST: String? = null
@@ -22,6 +23,16 @@ object ServerConfig {
 
     @JvmField
     var DB_NAME: String? = null
+
+    /**
+     * расстояние через которое будет обновлятся позиция в базе данных при передвижении
+     */
+    var UPDATE_DB_DISTANCE = TILE_SIZE * 5
+
+    /**
+     * дистанция которую нужно пройти чтобы произошел апдейт видимых объектов
+     */
+    var VISIBLE_UPDATE_DISTANCE = TILE_SIZE * 5
 
     @JvmStatic
     fun load() {
