@@ -34,7 +34,7 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
     private var moveController: MoveController? = null
 
     override suspend fun processMessage(msg: Any) {
-        logger.warn("MovingObject processMessage ${msg.javaClass.simpleName}")
+        logger.debug("MovingObject processMessage ${msg.javaClass.simpleName}")
 
         when (msg) {
             is MovingObjectMsg.MoveUpdate -> updateMove()
@@ -137,8 +137,10 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
     /**
      * текущая скорость передвижения (используется при вычислении перемещения за единицу времени)
      * тут надо учитывать статы и текущий режим перемещения
+     * сколько игровых координат проходим за 1 реальную секунду
      */
     fun getMovementSpeed(): Double {
+        // TODO учесть пересечение воды
         return when (getMovementMode()) {
             MoveMode.STEAL -> 50.0
             MoveMode.WALK -> 100.0

@@ -12,13 +12,15 @@ import com.origin.net.GameServer
 import com.origin.net.api.AuthorizationException
 import com.origin.net.api.BadRequest
 import com.origin.net.gsonSerializer
-import com.origin.net.logger
 import com.origin.utils.ObjectID
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.LoggerFactory
+
+val logger = LoggerFactory.getLogger(GameSession::class.java)
 
 /**
  * игровая сессия (коннект)
@@ -107,6 +109,6 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     suspend fun kick() {
         logger.warn("kick")
         connect.close(CloseReason(CloseReason.Codes.NORMAL, "kicked"))
-        player.send(PlayerMsg.Disconnected())
+//        player.send(PlayerMsg.Disconnected())
     }
 }

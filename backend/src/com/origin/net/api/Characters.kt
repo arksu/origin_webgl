@@ -57,8 +57,8 @@ fun Route.createCharacter() {
                 throw BadRequest("Characters limit exceed")
             }
 
+            // get new id from id factory
             Character.new(IdFactory.getNext()) {
-                // TODO get new id from id factory
                 account = acc
                 name = data.name
                 // TODO: spawn new character coordinates

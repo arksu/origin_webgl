@@ -5,7 +5,7 @@ import com.origin.model.Grid
 import com.origin.model.GridMsg
 import com.origin.model.MovingObject
 import com.origin.model.MovingObjectMsg
-import kotlinx.coroutines.GlobalScope
+import com.origin.utils.WorkerScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.launch
@@ -54,7 +54,7 @@ class TimeController : Thread("TimeController") {
         /**
          * сколько реальных мсек в игровом дне
          */
-        const val MILLIS_IN_GAME_DAY = SECONDS_IN_GAME_DAY * 1000
+//        const val MILLIS_IN_GAME_DAY = SECONDS_IN_GAME_DAY * 1000
 
         /**
          * сколько тиков в одном игровом дне
@@ -113,7 +113,7 @@ class TimeController : Thread("TimeController") {
     /**
      * сохранить информацию об игровом времени в базу
      */
-    private suspend fun store() {
+    private fun store() {
         logger.warn("store")
         GlobalVariables.saveLong(KEY, tickCount)
     }
@@ -198,7 +198,7 @@ class TimeController : Thread("TimeController") {
 
     override fun run() {
         var lastStoreTick = tickCount
-        var lastGridTick = getGridTicks();
+        var lastGridTick = getGridTicks()
 
         while (active) {
             val nextTickTime = (System.currentTimeMillis() / MILLIS_IN_TICK) * MILLIS_IN_TICK + MILLIS_IN_TICK
@@ -217,8 +217,8 @@ class TimeController : Thread("TimeController") {
 
             if (tickCount - lastStoreTick > STORE_TICKS_PERIOD) {
                 // запустим сохранение времени в базу в фоне (в корутине)
-                GlobalScope.launch {
-                    logger.debug("time minutes=${getGameTime()} time=${getGameHour()}:${getGameMinute()}")
+                WorkerScope.launch {
+                    logger.debug("time real hours=${tickCount / (TICKS_PER_SECOND * 3600)} game time=${getGameHour()}:${getGameMinute()}")
                     store()
                 }
                 lastStoreTick = tickCount
@@ -226,7 +226,6 @@ class TimeController : Thread("TimeController") {
 
             val sleepTime = nextTickTime - System.currentTimeMillis()
             if (sleepTime > 0) {
-                logger.debug("time to sleep $sleepTime")
                 try {
                     sleep(sleepTime)
                 } catch (e: InterruptedException) {

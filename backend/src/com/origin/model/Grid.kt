@@ -22,6 +22,14 @@ sealed class GridMsg {
     class Activate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class Deactivate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class RemoveObject(val obj: GameObject, job: CompletableJob? = null) : MessageWithJob(job)
+    class CheckCollsion(
+        val obj: GameObject,
+        val toX: Int,
+        val toY: Int,
+        val type: MoveType,
+        val resp: CompletableDeferred<CollisionResult>,
+    ) : GridMsg()
+
     class Update
 }
 
@@ -66,6 +74,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         logger.debug("grid processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
+            is GridMsg.CheckCollsion -> msg.resp.complete(checkCollsion(msg.obj, msg.toX, msg.toY, msg.type))
             is GridMsg.Activate -> {
                 this.activate(msg.human)
                 msg.job?.complete()
@@ -79,6 +88,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 msg.job?.complete()
             }
             is GridMsg.Update -> update()
+
         }
     }
 
@@ -96,7 +106,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         update()
 
         // проверим коллизию с объектами и тайлами грида
-        val collision = checkCollsion(obj, obj.pos.x, obj.pos.y, obj.pos.x, obj.pos.y, MoveType.SPAWN)
+        val collision = checkCollsion(obj, obj.pos.x, obj.pos.y, MoveType.SPAWN)
 
         if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
             addObject(obj)
@@ -108,7 +118,6 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      * обновление состояния грида и его объектов
      */
     private fun update() {
-
     }
 
     /**
@@ -116,14 +125,12 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      */
     private fun checkCollsion(
         obj: GameObject,
-        x: Int,
-        y: Int,
         toX: Int,
         toY: Int,
         moveType: MoveType,
     ): CollisionResult {
 
-        // TODO
+        // TODO checkCollsion
         return CollisionResult.NONE
     }
 

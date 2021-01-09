@@ -13,6 +13,12 @@ import kotlin.math.pow
 @ObsoleteCoroutinesApi
 abstract class MoveController(val target: MovingObject) {
 
+    val x
+        get() = target.pos.x
+
+    val y
+        get() = target.pos.y
+
     /**
      * последняя сохраненная в базу позиция
      */
@@ -31,6 +37,7 @@ abstract class MoveController(val target: MovingObject) {
 
     /**
      * внутренняя реализация движения. надо определить куда должны передвинутся за тик
+     * @param deltaTime сколько времени прошло с последнего апдейта движения (реальные секунды)
      * @return движение завершено? (истина ежели уперлись во чтото или прибыли в пункт назначения)
      */
     abstract fun implementation(deltaTime: Double): Boolean

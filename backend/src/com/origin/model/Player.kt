@@ -2,6 +2,7 @@ package com.origin.model
 
 import com.origin.entity.Character
 import com.origin.model.move.Move2Point
+import com.origin.model.move.MoveMode
 import com.origin.net.model.GameSession
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -29,12 +30,14 @@ class Player(
         None, Connected, Disconnected
     }
 
-    var state = State.None
+    private var state = State.None
+
+    private var moveMode = MoveMode.WALK
 
     /**
      * одежда (во что одет игрок)
      */
-    val paperdoll: Paperdoll = Paperdoll(this)
+    private val paperdoll: Paperdoll = Paperdoll(this)
 
     override suspend fun processMessage(msg: Any) {
         logger.debug("Player $this msg ${msg.javaClass.simpleName}")
@@ -51,7 +54,7 @@ class Player(
      */
     private fun mapClick(x: Int, y: Int) {
         logger.debug("mapClick $x $y")
-        startMove(Move2Point(this, x, y))
+        startMove(Move2Point(this, x, y, moveMode))
     }
 
     /**

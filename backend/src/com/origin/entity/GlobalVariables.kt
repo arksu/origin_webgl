@@ -30,7 +30,6 @@ object GlobalVariables : Table("globalVariables") {
     }
 
     fun saveLong(name: String, value: Long) {
-        println("saveLong $name $value")
         transaction {
             GlobalVariables.upsert(GlobalVariables.name) {
                 it[GlobalVariables.name] = name
