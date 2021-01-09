@@ -20,6 +20,9 @@ object World {
      */
     private val activeGrids = ConcurrentHashMap.newKeySet<Grid>(9)
 
+    /**
+     * активные игроки которые залогинены в мир
+     */
     private val players = ConcurrentHashMap<ObjectID, Player>()
 
     private fun getRegion(region: Int): Region {
@@ -64,6 +67,12 @@ object World {
 
     fun removePlayer(player: Player) {
         players.remove(player.id)
+    }
+
+    suspend fun disconnectAllCharacters() {
+        players.values.forEach {
+            it.session.kick()
+        }
     }
 
     private fun getRegionSize(region: Int): Pair<Int, Int> {

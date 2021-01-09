@@ -1,4 +1,4 @@
-package com.origin.scrypt;
+package com.origin.utils.scrypt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;

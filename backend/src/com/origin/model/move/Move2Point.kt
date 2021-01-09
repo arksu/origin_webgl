@@ -16,6 +16,6 @@ class Move2Point(target: MovingObject, val toX: Int, val toY: Int, val type: Mov
     }
 
     override fun implementation(deltaTime: Double): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 }

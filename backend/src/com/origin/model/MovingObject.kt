@@ -1,9 +1,11 @@
 package com.origin.model
 
+import com.origin.TimeController
 import com.origin.entity.EntityPosition
 import com.origin.model.GridMsg.Activate
 import com.origin.model.GridMsg.Deactivate
 import com.origin.model.move.MoveController
+import com.origin.model.move.MoveMode
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
@@ -11,6 +13,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.*
 
 sealed class MovingObjectMsg {
+    class MoveUpdate()
     class LoadGrids(job: CompletableJob) : MessageWithJob(job)
     class UnloadGrids(job: CompletableJob? = null) : MessageWithJob(job)
 }
@@ -34,6 +37,7 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
         logger.warn("MovingObject processMessage ${msg.javaClass.simpleName}")
 
         when (msg) {
+            is MovingObjectMsg.MoveUpdate -> updateMove()
             is MovingObjectMsg.LoadGrids -> {
                 loadGrids()
                 msg.job?.complete()
@@ -102,19 +106,52 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
     }
 
     /**
+     * обработка движения от TimeController
+     */
+    private fun updateMove() {
+        val result = moveController?.updateAndResult()
+        if (result != null && result) {
+            TimeController.instance.deleteMovingObject(this);
+        }
+    }
+
+    override suspend fun remove() {
+        moveController?.stop()
+        super.remove()
+    }
+
+    /**
      * сохранить позицию объекта в базу (вызывается периодически в движении)
      */
-    fun storePositionInDb() {
+    open fun storePositionInDb() {
 
+    }
+
+    /**
+     * текущий режим перемещения объекта
+     */
+    private fun getMovementMode(): MoveMode {
+        return MoveMode.WALK
+    }
+
+    /**
+     * текущая скорость передвижения (используется при вычислении перемещения за единицу времени)
+     * тут надо учитывать статы и текущий режим перемещения
+     */
+    fun getMovementSpeed(): Double {
+        return when (getMovementMode()) {
+            MoveMode.STEAL -> 50.0
+            MoveMode.WALK -> 100.0
+            MoveMode.RUN -> 160.0
+        }
     }
 
     /**
      * изменился грид в котором находимся. надо отреагировать
      */
-    fun gridChanged() {
+    fun onGridChanged() {
     }
 
     fun onLeaveGrid() {
-
     }
 }

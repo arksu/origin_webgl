@@ -1,4 +1,4 @@
-package com.origin.scrypt;
+package com.origin.utils.scrypt;
 
 import javax.crypto.Mac;
 import java.security.GeneralSecurityException;

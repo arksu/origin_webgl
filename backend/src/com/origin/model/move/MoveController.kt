@@ -1,6 +1,7 @@
 package com.origin.model.move
 
 import com.origin.ServerConfig
+import com.origin.TimeController
 import com.origin.model.MovingObject
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlin.math.pow
@@ -35,9 +36,11 @@ abstract class MoveController(val target: MovingObject) {
     abstract fun implementation(deltaTime: Double): Boolean
 
     fun start() {
+        TimeController.instance.addMovingObject(target)
     }
 
     fun stop() {
+        TimeController.instance.deleteMovingObject(target)
     }
 
     /**

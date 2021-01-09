@@ -115,11 +115,12 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
     }
 
     /**
-     * удалить объект из мира
+     * удалить объект из мира, это последнее что может сделать объект
+     * после этого его актор убивается
      */
-    protected suspend fun remove() {
+    protected open suspend fun remove() {
         grid.sendJob(GridMsg.RemoveObject(this, Job())).join()
-//            .invokeOnCompletion {
+
         // если есть что-то вложенное внутри
         if (!lift.isEmpty()) {
             lift.values.forEach { _ ->
@@ -129,8 +130,9 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
                 //it.pos.spawn()
                 // store pos into db
             }
-//            }
         }
+        // завершаем актора
+        actor.close()
     }
 
     /**

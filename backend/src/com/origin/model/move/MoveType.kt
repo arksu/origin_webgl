@@ -1,5 +1,8 @@
 package com.origin.model.move
 
+/**
+ * тип перемещения для вычисления коллизий
+ */
 enum class MoveType {
     // используется только когда объект спавнится в мир, или телепорт в другое место
     SPAWN,
@@ -11,5 +14,8 @@ enum class MoveType {
     WALK,
 
     // бегом
-    RUN
+    RUN,
+
+    // плывем
+    SWIMMING
 }

@@ -9,8 +9,8 @@ for Origin MMO game
 
 # Getting started
 
-Start local dev version:
+Start local development version:
 ```sh
-yarn run dev
+yarn dev
 ```
-
+It would be started on localhost port 3070

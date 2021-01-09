@@ -4,6 +4,7 @@ import com.origin.entity.Character
 import com.origin.model.move.Move2Point
 import com.origin.net.model.GameSession
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.jetbrains.exposed.sql.transactions.transaction
 
 class PlayerMsg {
     class Connected
@@ -74,10 +75,19 @@ class Player(
         unloadGrids()
         // удалить объект из мира
         remove()
-        // завершаем актора
-        actor.close()
 
         state = State.Disconnected
     }
 
+    override fun storePositionInDb() {
+        character.x = pos.x
+        character.y = pos.y
+        character.level = pos.level
+        character.region = pos.region
+        character.heading = pos.heading
+
+        transaction {
+            character.flush()
+        }
+    }
 }

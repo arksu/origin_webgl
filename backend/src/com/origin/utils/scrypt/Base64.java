@@ -1,4 +1,4 @@
-package com.origin.scrypt;
+package com.origin.utils.scrypt;
 
 import java.util.Arrays;
 

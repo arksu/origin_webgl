@@ -3,7 +3,7 @@ package com.origin.net.api
 import com.origin.entity.Account
 import com.origin.entity.Accounts
 import com.origin.net.GameServer
-import com.origin.scrypt.SCryptUtil
+import com.origin.utils.scrypt.SCryptUtil
 import io.ktor.application.*
 import io.ktor.request.*
 import io.ktor.response.*
