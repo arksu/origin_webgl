@@ -1,6 +1,5 @@
 package com.origin.model
 
-import com.origin.entity.EntityPosition
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
@@ -9,7 +8,8 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
  * обладает зрением (видимые объекты о которых "знает")
  */
 @ObsoleteCoroutinesApi
-open class Human(id: ObjectID, pos: EntityPosition) : MovingObject(id, pos) {
+abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Int) :
+    MovingObject(id, x, y, level, region, heading) {
 
     /**
      * дистанция на которой мы видим объекты

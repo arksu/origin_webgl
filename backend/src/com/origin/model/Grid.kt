@@ -22,7 +22,7 @@ sealed class GridMsg {
     class Activate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class Deactivate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class RemoveObject(val obj: GameObject, job: CompletableJob? = null) : MessageWithJob(job)
-    class CheckCollsion(
+    class CheckCollision(
         val obj: GameObject,
         val toX: Int,
         val toY: Int,
@@ -74,7 +74,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         logger.debug("grid processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
-            is GridMsg.CheckCollsion -> msg.resp.complete(checkCollsion(msg.obj, msg.toX, msg.toY, msg.type))
+            is GridMsg.CheckCollision -> msg.resp.complete(checkCollision(msg.obj, msg.toX, msg.toY, msg.type))
             is GridMsg.Activate -> {
                 this.activate(msg.human)
                 msg.job?.complete()
@@ -106,7 +106,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         update()
 
         // проверим коллизию с объектами и тайлами грида
-        val collision = checkCollsion(obj, obj.pos.x, obj.pos.y, MoveType.SPAWN)
+        val collision = checkCollision(obj, obj.pos.x, obj.pos.y, MoveType.SPAWN)
 
         if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
             addObject(obj)
@@ -123,14 +123,14 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     /**
      * проверить коллизию
      */
-    private fun checkCollsion(
+    private fun checkCollision(
         obj: GameObject,
         toX: Int,
         toY: Int,
         moveType: MoveType,
     ): CollisionResult {
 
-        // TODO checkCollsion
+        // TODO checkCollision implement
         return CollisionResult.NONE
     }
 

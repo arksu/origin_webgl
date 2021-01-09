@@ -61,7 +61,7 @@ fun Route.createCharacter() {
             Character.new(IdFactory.getNext()) {
                 account = acc
                 name = data.name
-                // TODO: spawn new character coordinates
+                // TODO: new character spawn coordinates
                 region = 0
                 x = 0
                 y = 0

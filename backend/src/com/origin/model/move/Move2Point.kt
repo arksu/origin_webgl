@@ -31,6 +31,7 @@ class Move2Point(target: MovingObject, val toX: Int, val toY: Int, val startMode
         val dx = x + (tdx / td) * distance
         val dy = y + (tdy / td) * distance
 
+        // TODO process
         target.pos.grid
 
         return false

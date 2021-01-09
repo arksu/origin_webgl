@@ -1,6 +1,5 @@
 package com.origin.model
 
-import com.origin.entity.EntityPosition
 import com.origin.model.move.Position
 import com.origin.net.model.GameResponse
 import com.origin.net.model.ObjectAdd
@@ -27,20 +26,16 @@ sealed class GameObjectMsg {
  * все игровые сущности наследуются от него
  */
 @ObsoleteCoroutinesApi
-open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
+open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Int) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(GameObject::class.java)
     }
 
     /**
-     * координаты кэшируем в объекте (потом периодически обновляем в сущности)
+     * координаты кэшируем в объекте (потом периодически обновляем)
+     * @see MovingObject.storePositionInDb
      */
-    val pos: Position = Position(entityPosition.x,
-        entityPosition.y,
-        entityPosition.level,
-        entityPosition.region,
-        entityPosition.heading,
-        this)
+    val pos by lazy { Position(x, y, level, region, heading, this) }
 
     /**
      * текущий активный грид в котором находится объект
@@ -58,7 +53,7 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
     /**
      * актор для обработки сообщений
      */
-    protected val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
+    private val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
         channel.consumeEach {
             processMessage(it)
         }
@@ -88,6 +83,9 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
         return msg.job!!
     }
 
+    /**
+     * отправить сообщение объекту
+     */
     suspend fun send(msg: Any) {
         actor.send(msg)
     }
@@ -124,8 +122,7 @@ open class GameObject(val id: ObjectID, entityPosition: EntityPosition) {
         // если есть что-то вложенное внутри
         if (!lift.isEmpty()) {
             lift.values.forEach { _ ->
-                // TODO
-//                    it.pos.set xy coord
+                // TODO remove when lift it.pos.set xy coord
                 // spawn it
                 //it.pos.spawn()
                 // store pos into db

@@ -177,7 +177,7 @@ class TimeController : Thread("TimeController") {
         if (movingObjects.size > 0) movingObjects.forEach {
             try {
                 runBlocking {
-                    it.send(MovingObjectMsg.MoveUpdate())
+                    it.send(MovingObjectMsg.UpdateMove())
                 }
             } catch (e: ClosedSendChannelException) {
                 logger.warn("ClosedSendChannelException")

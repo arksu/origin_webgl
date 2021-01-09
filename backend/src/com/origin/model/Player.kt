@@ -24,7 +24,7 @@ class Player(
     private val character: Character,
 
     val session: GameSession,
-) : Human(character.id.value, character) {
+) : Human(character.id.value, character.x, character.y, character.level, character.region, character.heading) {
 
     enum class State {
         None, Connected, Disconnected
@@ -55,6 +55,10 @@ class Player(
     private fun mapClick(x: Int, y: Int) {
         logger.debug("mapClick $x $y")
         startMove(Move2Point(this, x, y, moveMode))
+    }
+
+    override fun getMovementMode(): MoveMode {
+        return moveMode
     }
 
     /**

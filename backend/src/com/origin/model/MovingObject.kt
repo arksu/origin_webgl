@@ -1,7 +1,6 @@
 package com.origin.model
 
 import com.origin.TimeController
-import com.origin.entity.EntityPosition
 import com.origin.model.GridMsg.Activate
 import com.origin.model.GridMsg.Deactivate
 import com.origin.model.move.MoveController
@@ -13,7 +12,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.*
 
 sealed class MovingObjectMsg {
-    class MoveUpdate()
+    class UpdateMove
     class LoadGrids(job: CompletableJob) : MessageWithJob(job)
     class UnloadGrids(job: CompletableJob? = null) : MessageWithJob(job)
 }
@@ -22,7 +21,8 @@ sealed class MovingObjectMsg {
  * объект который может самостоятельно передвигаться
  */
 @ObsoleteCoroutinesApi
-open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos) {
+abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Int) :
+    GameObject(id, x, y, level, region, heading) {
     /**
      * список гридов в которых находится объект. max 9 штук.
      */
@@ -37,7 +37,7 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
         logger.debug("MovingObject processMessage ${msg.javaClass.simpleName}")
 
         when (msg) {
-            is MovingObjectMsg.MoveUpdate -> updateMove()
+            is MovingObjectMsg.UpdateMove -> updateMove()
             is MovingObjectMsg.LoadGrids -> {
                 loadGrids()
                 msg.job?.complete()
@@ -111,7 +111,7 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
     private fun updateMove() {
         val result = moveController?.updateAndResult()
         if (result != null && result) {
-            TimeController.instance.deleteMovingObject(this);
+            TimeController.instance.deleteMovingObject(this)
         }
     }
 
@@ -123,14 +123,12 @@ open class MovingObject(id: ObjectID, pos: EntityPosition) : GameObject(id, pos)
     /**
      * сохранить позицию объекта в базу (вызывается периодически в движении)
      */
-    open fun storePositionInDb() {
-
-    }
+    abstract fun storePositionInDb()
 
     /**
      * текущий режим перемещения объекта
      */
-    private fun getMovementMode(): MoveMode {
+    protected open fun getMovementMode(): MoveMode {
         return MoveMode.WALK
     }
 
