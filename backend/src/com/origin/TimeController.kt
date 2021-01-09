@@ -1,10 +1,14 @@
 package com.origin
 
 import com.origin.entity.GlobalVariables
+import com.origin.model.Grid
+import com.origin.model.GridMsg
 import com.origin.model.MovingObject
 import com.origin.model.MovingObjectMsg
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ClosedSendChannelException
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ConcurrentHashMap
 
@@ -28,6 +32,11 @@ class TimeController : Thread("TimeController") {
         const val TICKS_PER_SECOND = 5
 
         /**
+         * период обновления гридов и объектов в них (в тиках)
+         */
+        const val GRID_UPDATE_PERIOD = 10 * TICKS_PER_SECOND
+
+        /**
          * сколько мсек длится минимальный игровой тик (между итерациями движения)
          */
         const val MILLIS_IN_TICK = 1000 / TICKS_PER_SECOND
@@ -35,17 +44,27 @@ class TimeController : Thread("TimeController") {
         /**
          * сколько реальных часов длится игровой день
          */
-        const val GAME_DAY_IN_REAL_HOURS = 4;
+        private const val GAME_DAY_IN_REAL_HOURS = 8
 
         /**
          * сколько реальных секунд в игровом дне
          */
-        const val SECONDS_IN_GAME_DAY = GAME_DAY_IN_REAL_HOURS * 3600
+        private const val SECONDS_IN_GAME_DAY = GAME_DAY_IN_REAL_HOURS * 3600
 
         /**
          * сколько реальных мсек в игровом дне
          */
         const val MILLIS_IN_GAME_DAY = SECONDS_IN_GAME_DAY * 1000
+
+        /**
+         * сколько тиков в одном игровом дне
+         */
+        const val TICKS_IN_GAME_DAY = SECONDS_IN_GAME_DAY * TICKS_PER_SECOND
+
+        /**
+         * тиков в одной игровой минуте
+         */
+        const val TICKS_IN_GAME_MINUTE = TICKS_IN_GAME_DAY / 1440 // 24 * 60
 
         /**
          * сколько длится тик для игрового действия
@@ -55,7 +74,7 @@ class TimeController : Thread("TimeController") {
         /**
          * период в тиках между сохранением значения времени в базу
          */
-        private const val STORE_TICKS_PERIOD = TICKS_PER_SECOND * 5;
+        private const val STORE_TICKS_PERIOD = 5 * TICKS_PER_SECOND
     }
 
     /**
@@ -64,13 +83,18 @@ class TimeController : Thread("TimeController") {
     private val movingObjects = ConcurrentHashMap.newKeySet<MovingObject>()
 
     /**
+     * список активных гридов которые надо обновлять
+     */
+    private val activeGrids = ConcurrentHashMap.newKeySet<Grid>(9)
+
+    /**
      * активен ли еще мир (выключаем на shutdown server)
      */
     @Volatile
     private var active = true
 
     /**
-     * игровое время в тиках
+     * игровое время в тиках (сколько тиков с начала мира прошло)
      * @see TICKS_PER_SECOND
      */
     private var tickCount: Long = 0
@@ -89,9 +113,37 @@ class TimeController : Thread("TimeController") {
     /**
      * сохранить информацию об игровом времени в базу
      */
-    private fun store() {
-        println("store")
+    private suspend fun store() {
+        logger.warn("store")
         GlobalVariables.saveLong(KEY, tickCount)
+    }
+
+    /**
+     * текущее игровое время суток в игровых минутах (минут от начала дня)
+     */
+    fun getGameTime(): Int {
+        return ((tickCount % TICKS_IN_GAME_DAY) / TICKS_IN_GAME_MINUTE).toInt()
+    }
+
+    /**
+     * сколько тиков апдейтов гридов прошло с начала мира
+     */
+    private fun getGridTicks(): Int {
+        return (tickCount / GRID_UPDATE_PERIOD).toInt()
+    }
+
+    /**
+     * часов от начала игрового дня
+     */
+    fun getGameHour(): Int {
+        return getGameTime() / 60
+    }
+
+    /**
+     * минут в текущем часе
+     */
+    fun getGameMinute(): Int {
+        return getGameTime() % 60
     }
 
     fun addMovingObject(obj: MovingObject) {
@@ -100,6 +152,20 @@ class TimeController : Thread("TimeController") {
 
     fun deleteMovingObject(obj: MovingObject) {
         movingObjects.remove(obj)
+    }
+
+    /**
+     * добавить активный грид в список активных (для апдейта)
+     */
+    fun addActiveGrid(grid: Grid) {
+        activeGrids.add(grid)
+    }
+
+    /**
+     * удалить активный грид (больше не будет обновляться)
+     */
+    fun removeActiveGrid(grid: Grid) {
+        activeGrids.remove(grid)
     }
 
     fun shutdown() {
@@ -117,26 +183,44 @@ class TimeController : Thread("TimeController") {
                 logger.warn("ClosedSendChannelException")
                 // актор у объекта был убит, а нас не уведомили. исправим ситуацию
                 movingObjects.remove(it)
-            } catch (t: Throwable) {
-                logger.error("send move update error ${t.message}", t)
+            }
+        }
+    }
+
+    private fun updateGrids() {
+        logger.warn("updateGrids")
+        activeGrids.forEach {
+            runBlocking {
+                it.send(GridMsg.Update())
             }
         }
     }
 
     override fun run() {
         var lastStoreTick = tickCount
+        var lastGridTick = getGridTicks();
+
         while (active) {
             val nextTickTime = (System.currentTimeMillis() / MILLIS_IN_TICK) * MILLIS_IN_TICK + MILLIS_IN_TICK
             tickCount++
 
             try {
                 moveObjects()
+                if (getGridTicks() > lastGridTick) {
+                    updateGrids()
+                    lastGridTick = getGridTicks()
+                }
             } catch (t: Throwable) {
-
+                logger.error("TimeController update error ${t.message}", t)
+                Shutdown.start()
             }
 
             if (tickCount - lastStoreTick > STORE_TICKS_PERIOD) {
-                store()
+                // запустим сохранение времени в базу в фоне (в корутине)
+                GlobalScope.launch {
+                    logger.debug("time minutes=${getGameTime()} time=${getGameHour()}:${getGameMinute()}")
+                    store()
+                }
                 lastStoreTick = tickCount
             }
 

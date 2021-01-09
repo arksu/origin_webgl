@@ -1,10 +1,11 @@
 package com.origin.model
 
+import com.origin.TimeController
 import com.origin.collision.CollisionResult
-import com.origin.model.move.MoveType
 import com.origin.entity.GridEntity
 import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
+import com.origin.model.move.MoveType
 import com.origin.net.model.MapGridData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CompletableJob
@@ -173,7 +174,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 human.session.send(MapGridData(this))
             }
 
-            World.addActiveGrid(this)
+            TimeController.instance.addActiveGrid(this)
         }
     }
 
@@ -185,7 +186,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         activeObjects.remove(human)
 
         if (!isActive) {
-            World.removeActiveGrid(this)
+            TimeController.instance.removeActiveGrid(this)
         }
     }
 }

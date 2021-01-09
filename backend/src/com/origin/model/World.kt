@@ -16,11 +16,6 @@ object World {
     private val regions = ConcurrentHashMap<Int, Region>()
 
     /**
-     * список активных гридов которые надо обновлять
-     */
-    private val activeGrids = ConcurrentHashMap.newKeySet<Grid>(9)
-
-    /**
      * активные игроки которые залогинены в мир
      */
     private val players = ConcurrentHashMap<ObjectID, Player>()
@@ -45,20 +40,6 @@ object World {
      */
     fun getGrid(region: Int, level: Int, gx: Int, gy: Int): Grid {
         return getRegion(region).getLayer(level).getGrid(gx, gy)
-    }
-
-    /**
-     * добавить активный грид в список активных (для апдейта)
-     */
-    fun addActiveGrid(grid: Grid) {
-        activeGrids.add(grid)
-    }
-
-    /**
-     * удалить активный грид (больше не будет обновляться)
-     */
-    fun removeActiveGrid(grid: Grid) {
-        activeGrids.remove(grid)
     }
 
     fun addPlayer(player: Player) {
