@@ -5,11 +5,11 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 @ObsoleteCoroutinesApi
 class Move2Object(target: MovingObject) : MoveController(target) {
-    override fun canStartMoving(): Boolean {
+    override suspend fun canStartMoving(): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun implementation(deltaTime: Double): Boolean {
+    override suspend fun implementation(deltaTime: Double): Boolean {
         TODO("Not yet implemented")
     }
 }

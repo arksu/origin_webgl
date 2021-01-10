@@ -74,6 +74,20 @@ class Position(
         }
     }
 
+    fun setXY(x: Double, y: Double) {
+        setXY(x.roundToInt(), y.roundToInt())
+    }
+
+    private fun setXY(x: Int, y: Int) {
+        this.x = x
+        this.y = y
+        updateGrid()
+    }
+
+    private fun updateGrid() {
+
+    }
+
     fun clone(): Position {
         return Position(x, y, level, region, heading, parent)
     }

@@ -52,7 +52,7 @@ class Player(
     /**
      * клиент: клик по карте
      */
-    private fun mapClick(x: Int, y: Int) {
+    private suspend fun mapClick(x: Int, y: Int) {
         logger.debug("mapClick $x $y")
         startMove(Move2Point(this, x, y, moveMode))
     }

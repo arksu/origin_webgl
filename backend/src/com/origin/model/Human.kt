@@ -49,4 +49,13 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
         return obj.id == this.id || pos.getDistance(obj.pos) < visibleDistance
     }
 
+    /**
+     * обновить список видимых объектов
+     * все новые что увидим - отправятся клиенту. старые что перестали видеть - будут удалены
+     * @param force принудительно, иначе проверка будет только если отошли на значительное расстояние от точки последней проверки
+     */
+    fun updateVisibleObjects(force: Boolean) {
+        // TODO updateVisibleObjects
+    }
+
 }

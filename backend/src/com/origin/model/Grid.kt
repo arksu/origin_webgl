@@ -27,8 +27,12 @@ sealed class GridMsg {
         val toX: Int,
         val toY: Int,
         val type: MoveType,
+        val virtual: GameObject?,
         val resp: CompletableDeferred<CollisionResult>,
     ) : GridMsg()
+
+    class Broadcast : GridMsg()
+    class ObjectMoved(obj: GameObject, toX: Int, toY: Int, heading: Int, moveType: MoveType) : GridMsg()
 
     class Update
 }
@@ -74,7 +78,11 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         logger.debug("grid processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
-            is GridMsg.CheckCollision -> msg.resp.complete(checkCollision(msg.obj, msg.toX, msg.toY, msg.type))
+            is GridMsg.CheckCollision -> msg.resp.complete(checkCollision(msg.obj,
+                msg.toX,
+                msg.toY,
+                msg.type,
+                msg.virtual))
             is GridMsg.Activate -> {
                 this.activate(msg.human)
                 msg.job?.complete()
@@ -88,7 +96,12 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 msg.job?.complete()
             }
             is GridMsg.Update -> update()
-
+            is GridMsg.ObjectMoved -> {
+                // TODO ObjectMoved
+            }
+            is GridMsg.Broadcast -> {
+                // TODO Broadcast
+            }
         }
     }
 
@@ -106,7 +119,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         update()
 
         // проверим коллизию с объектами и тайлами грида
-        val collision = checkCollision(obj, obj.pos.x, obj.pos.y, MoveType.SPAWN)
+        val collision = checkCollision(obj, obj.pos.x, obj.pos.y, MoveType.SPAWN, null)
 
         if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
             addObject(obj)
@@ -128,6 +141,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         toX: Int,
         toY: Int,
         moveType: MoveType,
+        virtual: GameObject?,
     ): CollisionResult {
 
         // TODO checkCollision implement

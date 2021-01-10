@@ -5,6 +5,7 @@ import com.origin.model.GridMsg.Activate
 import com.origin.model.GridMsg.Deactivate
 import com.origin.model.move.MoveController
 import com.origin.model.move.MoveMode
+import com.origin.model.move.MoveType
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
@@ -95,7 +96,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     /**
      * начать движение объекта
      */
-    fun startMove(controller: MoveController) {
+    suspend fun startMove(controller: MoveController) {
         if (controller.canStartMoving()) {
             moveController?.stop()
             moveController = controller
@@ -108,7 +109,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     /**
      * обработка движения от TimeController
      */
-    private fun updateMove() {
+    private suspend fun updateMove() {
         val result = moveController?.updateAndResult()
         if (result != null && result) {
             TimeController.instance.deleteMovingObject(this)
@@ -130,6 +131,14 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      */
     protected open fun getMovementMode(): MoveMode {
         return MoveMode.WALK
+    }
+
+    /**
+     * текущий тип движения (идем, плывем и тд)
+     */
+    fun getMovementType(): MoveType {
+        // TODO проверить тайл подо мной, если это вода то SWIM иначе WALK
+        return MoveType.WALK
     }
 
     /**

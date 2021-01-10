@@ -2,7 +2,11 @@ package com.origin.model.move
 
 import com.origin.ServerConfig
 import com.origin.TimeController
+import com.origin.collision.CollisionResult
+import com.origin.model.GameObject
+import com.origin.model.GridMsg
 import com.origin.model.MovingObject
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlin.math.pow
 
@@ -33,14 +37,14 @@ abstract class MoveController(val target: MovingObject) {
     /**
      * возможно ли начать движение
      */
-    abstract fun canStartMoving(): Boolean
+    abstract suspend fun canStartMoving(): Boolean
 
     /**
      * внутренняя реализация движения. надо определить куда должны передвинутся за тик
      * @param deltaTime сколько времени прошло с последнего апдейта движения (реальные секунды)
      * @return движение завершено? (истина ежели уперлись во чтото или прибыли в пункт назначения)
      */
-    abstract fun implementation(deltaTime: Double): Boolean
+    abstract suspend fun implementation(deltaTime: Double): Boolean
 
     fun start() {
         TimeController.instance.addMovingObject(target)
@@ -54,7 +58,7 @@ abstract class MoveController(val target: MovingObject) {
      * обработать тик передвижения
      * @return движение завершено? (истина ежели уперлись во чтото или прибыли в пункт назначения)
      */
-    fun updateAndResult(): Boolean {
+    suspend fun updateAndResult(): Boolean {
         val currentTime = System.currentTimeMillis()
         if (currentTime > lastMoveTime) {
             // узнаем сколько времени прошло между апдейтами
@@ -81,5 +85,12 @@ abstract class MoveController(val target: MovingObject) {
             return result
         }
         return false
+    }
+
+    protected suspend fun checkCollision(toX: Int, toY: Int, virtual: GameObject?): CollisionResult {
+        // шлем сообщение гриду о необходимости проверить коллизию
+        val resp = CompletableDeferred<CollisionResult>()
+        target.pos.grid.send(GridMsg.CheckCollision(target, toX, toY, target.getMovementType(), virtual, resp))
+        return resp.await()
     }
 }
