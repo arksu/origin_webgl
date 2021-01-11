@@ -3,12 +3,14 @@ package com.origin.model.move
 import com.origin.ServerConfig
 import com.origin.TimeController
 import com.origin.collision.CollisionResult
+import com.origin.logger
 import com.origin.model.GameObject
 import com.origin.model.GridMsg
 import com.origin.model.MovingObject
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * реализует передвижения объектов
@@ -73,8 +75,9 @@ abstract class MoveController(val me: MovingObject) {
 
             // если движение не завершено - обновляем позицию в базе
             if (!result) {
-                val dx: Double = me.pos.x - storedY
+                val dx: Double = me.pos.x - storedX
                 val dy: Double = me.pos.y - storedY
+                logger.debug("move dx=$dx dy=$dy d=${sqrt(dx.pow(2) + dy.pow(2))}")
 
                 // если передвинулись достаточно далеко
                 if (dx.pow(2) + dy.pow(2) > ServerConfig.UPDATE_DB_DISTANCE.toDouble().pow(2)) {

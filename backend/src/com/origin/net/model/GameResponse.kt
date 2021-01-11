@@ -2,6 +2,7 @@ package com.origin.net.model
 
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
+import com.origin.model.BroadcastEvent
 import com.origin.model.GameObject
 import com.origin.model.Grid
 import com.origin.utils.StringTypeAdapter
@@ -79,4 +80,15 @@ class ObjectAdd(obj: GameObject) : ClientMessage("obj") {
 @ObsoleteCoroutinesApi
 class ObjectDel(obj: GameObject) : ClientMessage("objd") {
     val id = obj.id
+}
+
+@ObsoleteCoroutinesApi
+class ObjectMoved(m: BroadcastEvent.Moved) : ClientMessage("objm") {
+    val id = m.obj.id
+    val tx = m.toX
+    val ty = m.toY
+    val x = m.obj.pos.x
+    val y = m.obj.pos.y
+    val s = m.speed
+    val mt = m.moveType
 }

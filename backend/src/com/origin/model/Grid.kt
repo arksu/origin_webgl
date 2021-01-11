@@ -18,8 +18,13 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 @ObsoleteCoroutinesApi
 sealed class BroadcastEvent {
-    class Moved(obj: GameObject, toX: Int, toY: Int, speed: Double, heading: Int, moveType: MoveType) :
-        BroadcastEvent()
+    class Moved(
+        val obj: GameObject,
+        val toX: Int,
+        val toY: Int,
+        val speed: Double,
+        val moveType: MoveType,
+    ) : BroadcastEvent()
 }
 
 @ObsoleteCoroutinesApi
@@ -66,8 +71,13 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      */
     private val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
         channel.consumeEach {
-            processMessage(it)
+            try {
+                processMessage(it)
+            } catch (t: Throwable) {
+                logger.error("error process grid message: ${t.message}", t)
+            }
         }
+        logger.warn("grid actor $this finished")
     }
 
     suspend fun sendJob(msg: MessageWithJob): CompletableJob {
@@ -151,7 +161,9 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         // TODO checkCollision implement
 
 
-        obj.pos.setXY(toX, toY)
+        if (isMove) {
+            obj.pos.setXY(toX, toY)
+        }
 
         return CollisionResult.NONE
     }

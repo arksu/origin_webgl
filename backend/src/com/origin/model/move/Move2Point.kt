@@ -30,7 +30,9 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
     }
 
     override suspend fun implementation(deltaTime: Double): Boolean {
+        // запомним тип движеня на начало обсчетов. возможно он изменится после
         val moveType = me.getMovementType()
+        // также запомним скорость с которой шли
         val speed = me.getMovementSpeed()
         val (nx, ny) = calcNewPoint(deltaTime, speed)
 
@@ -42,22 +44,33 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
         when (c.result) {
             CollisionResult.CollisionType.COLLISION_NONE -> {
                 me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.Moved(
-                    me, nxi, nyi, speed, me.pos.heading, moveType
+                    me, nxi, nyi, speed, moveType
                 )))
 
                 if (me is Human) {
                     me.updateVisibleObjects(false)
                 }
+
+                // сколько осталось идти до конечной точки
+                val left = sqrt((toX - x).toDouble().pow(2) + (toY - y).toDouble().pow(2))
+                // расстояние до конечной точки при котором считаем что уже дошли куда надо
+                if (left <= 1.0) {
+                    me.stopMove()
+                    return true
+                }
+                return false
             }
             CollisionResult.CollisionType.COLLISION_FAIL -> {
-
+                // ошибка при обработке коллизии. надо остановить объект и удалить контроллер
+                me.stopMove()
+                return true
             }
             else -> {
-
+                // коллизия с чем то. надо остановить работу и обработать результат
+                me.stopMove()
+                return true
             }
         }
-
-        return false
     }
 
     private fun calcNewPoint(deltaTime: Double, speed: Double): Pair<Double, Double> {

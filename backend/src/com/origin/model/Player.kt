@@ -4,6 +4,7 @@ import com.origin.entity.Character
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.net.model.GameSession
+import com.origin.net.model.ObjectMoved
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -45,6 +46,9 @@ class Player(
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
             is PlayerMsg.MapClick -> mapClick(msg.x, msg.y)
+            is BroadcastEvent.Moved -> {
+                session.send(ObjectMoved(msg))
+            }
             else -> super.processMessage(msg)
         }
     }
@@ -85,13 +89,14 @@ class Player(
     }
 
     override fun storePositionInDb() {
-        character.x = pos.x
-        character.y = pos.y
-        character.level = pos.level
-        character.region = pos.region
-        character.heading = pos.heading
-
+        logger.warn("storePositionInDb")
         transaction {
+            character.x = pos.x
+            character.y = pos.y
+            character.level = pos.level
+            character.region = pos.region
+            character.heading = pos.heading
+
             character.flush()
         }
     }

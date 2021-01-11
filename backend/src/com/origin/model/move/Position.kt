@@ -79,6 +79,7 @@ class Position(
     }
 
     fun setXY(x: Int, y: Int) {
+        println("setXY")
         this.x = x
         this.y = y
         updateGrid()

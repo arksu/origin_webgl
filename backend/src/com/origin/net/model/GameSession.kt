@@ -98,9 +98,9 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         send(GameResponse(req.id, d))
     }
 
-    suspend fun send(r: GameResponse) {
-        logger.debug("send $r")
+    private suspend fun send(r: GameResponse) {
         if (!isDisconnected) {
+//            logger.debug("send $r")
             connect.outgoing.send(Frame.Text(gsonSerializer.toJson(r)))
         }
     }

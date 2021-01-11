@@ -33,7 +33,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     private var moveController: MoveController? = null
 
     override suspend fun processMessage(msg: Any) {
-        logger.debug("MovingObject processMessage ${msg.javaClass.simpleName}")
+//        logger.debug("MovingObject processMessage ${msg.javaClass.simpleName}")
 
         when (msg) {
             is MovingObjectMsg.UpdateMove -> updateMove()
@@ -104,12 +104,20 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         }
     }
 
+    fun stopMove() {
+        logger.warn("stopMove")
+        moveController?.stop()
+        storePositionInDb()
+        moveController = null
+    }
+
     /**
      * обработка движения от TimeController
      */
     private suspend fun updateMove() {
         val result = moveController?.updateAndResult()
-        if (result != null && result) {
+        // если контроллера нет. либо он завершил работу
+        if (result == null || result) {
             TimeController.instance.deleteMovingObject(this)
         }
     }
@@ -152,9 +160,9 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      */
     fun getMovementSpeed(): Double {
         val s = when (getMovementMode()) {
-            MoveMode.STEAL -> 50.0
-            MoveMode.WALK -> 100.0
-            MoveMode.RUN -> 160.0
+            MoveMode.STEAL -> 40.0
+            MoveMode.WALK -> 60.0
+            MoveMode.RUN -> 120.0
         }
         // по воде движемся в 2 раза медленее
         return if (getMovementType() == MoveType.SWIMMING) s / 2 else s
