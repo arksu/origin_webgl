@@ -69,7 +69,7 @@ class MapGridData(grid: Grid, add: Boolean) : ClientMessage("map") {
 }
 
 @ObsoleteCoroutinesApi
-class ObjectAdd(obj: GameObject) : ClientMessage("obj") {
+class ObjectAdd(obj: GameObject) : ClientMessage("obja") {
     val id = obj.id
     val x = obj.pos.x
     val y = obj.pos.y
@@ -91,4 +91,11 @@ class ObjectMoved(m: BroadcastEvent.Moved) : ClientMessage("objm") {
     val y = m.obj.pos.y
     val s = m.speed
     val mt = m.moveType
+}
+
+@ObsoleteCoroutinesApi
+class ObjectStopped(m: BroadcastEvent.Stopped) : ClientMessage("objs") {
+    val id = m.obj.id
+    val x = m.obj.pos.x
+    val y = m.obj.pos.y
 }

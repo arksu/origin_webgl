@@ -10,8 +10,9 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
-
 
 @ObsoleteCoroutinesApi
 class TimeController : Thread("TimeController") {
@@ -23,6 +24,7 @@ class TimeController : Thread("TimeController") {
 
     companion object {
         val instance = TimeController()
+        val logger: Logger = LoggerFactory.getLogger(TimeController::class.java)
 
         private const val KEY = "gameTime"
 
@@ -114,7 +116,6 @@ class TimeController : Thread("TimeController") {
      * сохранить информацию об игровом времени в базу
      */
     private fun store() {
-        logger.warn("store")
         GlobalVariables.saveLong(KEY, tickCount)
     }
 
@@ -188,7 +189,6 @@ class TimeController : Thread("TimeController") {
     }
 
     private fun updateGrids() {
-        logger.warn("updateGrids")
         activeGrids.forEach {
             runBlocking {
                 it.send(GridMsg.Update())

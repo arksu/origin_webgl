@@ -12,20 +12,20 @@ import Point from '@/utils/Point';
 export default class Game {
 
     private static readonly canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("game");
-    private static readonly appdiv: HTMLElement = <HTMLElement>document.getElementById("app");
+    private static readonly appDiv: HTMLElement = <HTMLElement>document.getElementById("app");
 
     private static instance?: Game = undefined;
 
     /**
      * PIXI app
      */
-    private app: PIXI.Application;
+    private readonly app: PIXI.Application;
 
     /**
      * контейнер в котором храним контейнеры с гридами и тайлами
      * их координаты внутри абсолютные мировые экранные
      */
-    private mapGrids: PIXI.Container;
+    private readonly mapGrids: PIXI.Container;
 
     /**
      * загруженные гриды
@@ -35,7 +35,7 @@ export default class Game {
     /**
      * невидимый спрайт на весь экран для обработки кликов мыши
      */
-    private screenSprite: PIXI.Sprite;
+    private readonly screenSprite: PIXI.Sprite;
 
     /**
      * масштаб карты и игровой графики
@@ -64,7 +64,7 @@ export default class Game {
 
 
         this.canvas.style.display = "block";
-        this.appdiv.style.display = "none";
+        this.appDiv.style.display = "none";
 
         this.instance = new Game();
     }
@@ -77,7 +77,7 @@ export default class Game {
         Client.instance.clear();
 
         this.canvas.style.display = "none";
-        this.appdiv.style.display = "block";
+        this.appDiv.style.display = "block";
     }
 
     constructor() {
@@ -141,9 +141,9 @@ export default class Game {
 
     private setup() {
         for (let key in Client.instance.map) {
-            let splitted = key.split("_");
-            let x: number = +splitted[0];
-            let y: number = +splitted[1];
+            let s = key.split("_");
+            let x: number = +s[0];
+            let y: number = +s[1];
 
             let grid: Grid = new Grid(this.app, x, y);
 
@@ -227,19 +227,20 @@ export default class Game {
         let sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
         let sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
 
-        let screenWidthHalf = this.app.renderer.width / 2 + this.offset.x;
-        let screenHeightHalf = this.app.renderer.height / 2 + this.offset.y;
+        let offx = this.app.renderer.width / 2 + this.offset.x;
+        let offy = this.app.renderer.height / 2 + this.offset.y;
 
-        this.mapGrids.x = screenWidthHalf - sx * this.scale;
-        this.mapGrids.y = screenHeightHalf - sy * this.scale;
+        this.mapGrids.x = offx - sx * this.scale;
+        this.mapGrids.y = offy - sy * this.scale;
 
         this.mapGrids.scale.x = this.scale;
         this.mapGrids.scale.y = this.scale;
 
         if (this.crossTemp) {
             this.crossTemp.scale.set(this.scale);
-            this.crossTemp.x = screenWidthHalf - 17 * this.scale;
-            this.crossTemp.y = screenHeightHalf - 23 * this.scale;
+            // TODO
+            this.crossTemp.x = offx - 17 * this.scale;
+            this.crossTemp.y = offy - 23 * this.scale;
         }
     }
 
@@ -306,5 +307,9 @@ export default class Game {
         window.addEventListener("orientationchange", () => {
             Game.onResize();
         });
+    }
+
+    public static onUpdatePlayerPos() {
+        this.instance?.updateMapScalePos();
     }
 }

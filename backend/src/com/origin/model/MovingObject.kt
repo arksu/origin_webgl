@@ -104,11 +104,13 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         }
     }
 
-    fun stopMove() {
+    suspend fun stopMove() {
         logger.warn("stopMove")
         moveController?.stop()
         storePositionInDb()
         moveController = null
+
+        grid.send(GridMsg.Broadcast(BroadcastEvent.Stopped(this)))
     }
 
     /**

@@ -1,6 +1,7 @@
 import _ from "lodash";
 import Client from "@/net/Client";
 import {Point} from "pixi.js";
+import Game from "@/game/Game";
 
 enum State {
     Disconnected,
@@ -184,12 +185,31 @@ export default class Net {
      * @param data
      */
     protected onChannelMessage(channel: string, data: any) {
-        if (channel == "map") {
-            let key = data.x + "_" + data.y;
-            Client.instance.map[key] = data.tiles;
-        } else if (channel == "obj") {
-            if (data.id == Client.instance.selectedCharacterId) {
-                Client.instance.playerPos = new Point(data.x, data.y);
+        switch (channel) {
+            case "map": {
+                let key = data.x + "_" + data.y;
+                Client.instance.map[key] = data.tiles;
+                break;
+            }
+            case "obja": { // object add
+                if (data.id == Client.instance.selectedCharacterId) {
+                    Client.instance.playerPos = new Point(data.x, data.y);
+                }
+                break;
+            }
+            case "objm" : { // object move
+                if (data.id == Client.instance.selectedCharacterId) {
+                    Client.instance.playerPos = new Point(data.x, data.y);
+                    Game.onUpdatePlayerPos()
+                }
+                break;
+            }
+            case "objs" : { // object stop
+                if (data.id == Client.instance.selectedCharacterId) {
+                    Client.instance.playerPos = new Point(data.x, data.y);
+                    Game.onUpdatePlayerPos()
+                }
+                break;
             }
         }
     }

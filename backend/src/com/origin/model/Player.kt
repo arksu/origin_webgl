@@ -5,7 +5,10 @@ import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.net.model.GameSession
 import com.origin.net.model.ObjectMoved
+import com.origin.net.model.ObjectStopped
+import com.origin.utils.WorkerScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class PlayerMsg {
@@ -49,6 +52,9 @@ class Player(
             is BroadcastEvent.Moved -> {
                 session.send(ObjectMoved(msg))
             }
+            is BroadcastEvent.Stopped -> {
+                session.send(ObjectStopped(msg))
+            }
             else -> super.processMessage(msg)
         }
     }
@@ -90,14 +96,16 @@ class Player(
 
     override fun storePositionInDb() {
         logger.warn("storePositionInDb")
-        transaction {
-            character.x = pos.x
-            character.y = pos.y
-            character.level = pos.level
-            character.region = pos.region
-            character.heading = pos.heading
+        WorkerScope.launch {
+            transaction {
+                character.x = pos.x
+                character.y = pos.y
+                character.level = pos.level
+                character.region = pos.region
+                character.heading = pos.heading
 
-            character.flush()
+                character.flush()
+            }
         }
     }
 }

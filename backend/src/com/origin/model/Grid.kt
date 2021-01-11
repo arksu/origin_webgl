@@ -14,6 +14,8 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
 import org.jetbrains.exposed.sql.ResultRow
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentLinkedQueue
 
 @ObsoleteCoroutinesApi
@@ -25,6 +27,8 @@ sealed class BroadcastEvent {
         val speed: Double,
         val moveType: MoveType,
     ) : BroadcastEvent()
+
+    class Stopped(val obj: GameObject) : BroadcastEvent()
 }
 
 @ObsoleteCoroutinesApi
@@ -50,6 +54,10 @@ sealed class GridMsg {
 
 @ObsoleteCoroutinesApi
 class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(Grid::class.java)
+    }
+
     /**
      * список активных объектов которые поддерживают этот грид активным
      * также всем активным объектам рассылаем уведомления о том что происходит в гриде (события)
@@ -91,7 +99,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     }
 
     private suspend fun processMessage(msg: Any) {
-        logger.debug("grid processMessage ${msg.javaClass.simpleName}")
+        logger.debug("processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
             is GridMsg.CheckCollision -> msg.resp.complete(checkCollision(msg.obj,

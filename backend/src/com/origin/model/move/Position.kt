@@ -8,6 +8,8 @@ import com.origin.model.World
 import com.origin.utils.GRID_FULL_SIZE
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -24,6 +26,9 @@ class Position(
     var heading: Int,
     val parent: GameObject,
 ) {
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(Position::class.java)
+    }
 
     /**
      * грид в котором находится объект
@@ -79,7 +84,7 @@ class Position(
     }
 
     fun setXY(x: Int, y: Int) {
-        println("setXY")
+        logger.debug("setXY")
         this.x = x
         this.y = y
         updateGrid()

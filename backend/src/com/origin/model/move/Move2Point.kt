@@ -2,6 +2,7 @@ package com.origin.model.move
 
 import com.origin.TimeController
 import com.origin.collision.CollisionResult
+import com.origin.logger
 import com.origin.model.BroadcastEvent
 import com.origin.model.GridMsg
 import com.origin.model.Human
@@ -20,7 +21,9 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
     override suspend fun canStartMoving(): Boolean {
         // берем новую точку через 1 тик
         // чтобы убедиться что мы можем туда передвигаться
-        val (nx, ny) = calcNewPoint(1000.0 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
+        val (nx, ny) = calcNewPoint(1.0 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
+
+        logger.debug("nx=$nx ny=$ny")
 
         // проверим коллизию с этой новой точкой
         val c = checkCollision(nx.roundToInt(), ny.roundToInt(), null, false)
@@ -34,6 +37,7 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
         val moveType = me.getMovementType()
         // также запомним скорость с которой шли
         val speed = me.getMovementSpeed()
+        // очередная точка на пути
         val (nx, ny) = calcNewPoint(deltaTime, speed)
 
         // проверим коллизию при движении в новую точку
