@@ -95,8 +95,11 @@ open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int,
         when (msg) {
             is GameObjectMsg.Spawn -> {
                 val result = pos.spawn()
-                if (result && (this is Player)) {
-                    this.session.send(GameResponse("obj", ObjectAdd(this)))
+                if (result) {
+                    afterSpawn()
+                    if (this is Player) {
+                        this.session.send(GameResponse("obj", ObjectAdd(this)))
+                    }
                 }
                 msg.resp.complete(result)
             }
@@ -111,6 +114,8 @@ open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int,
             else -> throw RuntimeException("unprocessed actor message ${msg.javaClass.simpleName}")
         }
     }
+
+    protected open suspend fun afterSpawn() {}
 
     /**
      * удалить объект из мира, это последнее что может сделать объект

@@ -15,19 +15,19 @@ import kotlin.math.pow
  * расчитывает новую позицию. ставит ее объекту и уведомляет всех о смене позиции
  */
 @ObsoleteCoroutinesApi
-abstract class MoveController(val target: MovingObject) {
+abstract class MoveController(val me: MovingObject) {
 
     val x
-        get() = target.pos.x
+        get() = me.pos.x
 
     val y
-        get() = target.pos.y
+        get() = me.pos.y
 
     /**
      * последняя сохраненная в базу позиция
      */
-    private var storedX: Double = target.pos.x.toDouble()
-    private var storedY: Double = target.pos.y.toDouble()
+    private var storedX: Double = me.pos.x.toDouble()
+    private var storedY: Double = me.pos.y.toDouble()
 
     /**
      * время последнего апдейта движения (в системных мсек)
@@ -46,12 +46,18 @@ abstract class MoveController(val target: MovingObject) {
      */
     abstract suspend fun implementation(deltaTime: Double): Boolean
 
+    /**
+     * начать работу контроллера (при начале движения)
+     */
     fun start() {
-        TimeController.instance.addMovingObject(target)
+        TimeController.instance.addMovingObject(me)
     }
 
+    /**
+     * остановить работу контроллера (принудительная остановка извне)
+     */
     fun stop() {
-        TimeController.instance.deleteMovingObject(target)
+        TimeController.instance.deleteMovingObject(me)
     }
 
     /**
@@ -67,19 +73,19 @@ abstract class MoveController(val target: MovingObject) {
 
             // если движение не завершено - обновляем позицию в базе
             if (!result) {
-                val dx: Double = target.pos.x - storedY
-                val dy: Double = target.pos.y - storedY
+                val dx: Double = me.pos.x - storedY
+                val dy: Double = me.pos.y - storedY
 
                 // если передвинулись достаточно далеко
                 if (dx.pow(2) + dy.pow(2) > ServerConfig.UPDATE_DB_DISTANCE.toDouble().pow(2)) {
-                    target.storePositionInDb()
-                    storedX = target.pos.x.toDouble()
-                    storedY = target.pos.y.toDouble()
+                    me.storePositionInDb()
+                    storedX = me.pos.x.toDouble()
+                    storedY = me.pos.y.toDouble()
                 }
             } else {
                 // движение завершено. внутри implementation сохранили позицию в базе, запомним и тут
-                storedX = target.pos.x.toDouble()
-                storedY = target.pos.y.toDouble()
+                storedX = me.pos.x.toDouble()
+                storedY = me.pos.y.toDouble()
             }
             lastMoveTime = currentTime
             return result
@@ -87,10 +93,15 @@ abstract class MoveController(val target: MovingObject) {
         return false
     }
 
-    protected suspend fun checkCollision(toX: Int, toY: Int, virtual: GameObject?): CollisionResult {
+    /**
+     * проверить коллизию и передвинуться через текущий грид
+     * всю работу выполняет грид, т.к. объекты для коллизий хранятся только там
+     * позицию изменит тоже он если isMove=true
+     */
+    protected suspend fun checkCollision(toX: Int, toY: Int, virtual: GameObject?, isMove: Boolean): CollisionResult {
         // шлем сообщение гриду о необходимости проверить коллизию
         val resp = CompletableDeferred<CollisionResult>()
-        target.pos.grid.send(GridMsg.CheckCollision(target, toX, toY, target.getMovementType(), virtual, resp))
+        me.pos.grid.send(GridMsg.CheckCollision(me, toX, toY, me.getMovementType(), virtual, isMove, resp))
         return resp.await()
     }
 }

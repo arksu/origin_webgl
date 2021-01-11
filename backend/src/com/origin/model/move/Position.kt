@@ -78,7 +78,7 @@ class Position(
         setXY(x.roundToInt(), y.roundToInt())
     }
 
-    private fun setXY(x: Int, y: Int) {
+    fun setXY(x: Int, y: Int) {
         this.x = x
         this.y = y
         updateGrid()

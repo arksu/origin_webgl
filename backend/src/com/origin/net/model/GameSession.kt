@@ -5,7 +5,6 @@ import com.origin.entity.Account
 import com.origin.entity.Character
 import com.origin.entity.Characters
 import com.origin.model.GameObjectMsg.Spawn
-import com.origin.model.MovingObjectMsg.LoadGrids
 import com.origin.model.Player
 import com.origin.model.PlayerMsg
 import com.origin.net.GameServer
@@ -33,6 +32,8 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     private var account: Account? = null
 
     private lateinit var player: Player
+
+    var isDisconnected = false
 
     suspend fun received(r: GameRequest) {
         // инициализация сессии
@@ -65,7 +66,6 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     throw BadRequest("failed spawn player into world")
                 }
 
-                player.sendJobAndJoin(LoadGrids::class)
                 this.player = player
                 player.send(PlayerMsg.Connected())
 
@@ -86,6 +86,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     }
 
     suspend fun disconnected() {
+        isDisconnected = true
         logger.warn("disconnected")
         player.send(PlayerMsg.Disconnected())
     }
@@ -99,7 +100,9 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
     suspend fun send(r: GameResponse) {
         logger.debug("send $r")
-        connect.outgoing.send(Frame.Text(gsonSerializer.toJson(r)))
+        if (!isDisconnected) {
+            connect.outgoing.send(Frame.Text(gsonSerializer.toJson(r)))
+        }
     }
 
     suspend fun send(m: ClientMessage) {

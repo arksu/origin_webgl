@@ -17,6 +17,12 @@ import org.jetbrains.exposed.sql.ResultRow
 import java.util.concurrent.ConcurrentLinkedQueue
 
 @ObsoleteCoroutinesApi
+sealed class BroadcastEvent {
+    class Moved(obj: GameObject, toX: Int, toY: Int, speed: Double, heading: Int, moveType: MoveType) :
+        BroadcastEvent()
+}
+
+@ObsoleteCoroutinesApi
 sealed class GridMsg {
     class Spawn(val obj: GameObject, val resp: CompletableDeferred<CollisionResult>) : GridMsg()
     class Activate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
@@ -28,11 +34,11 @@ sealed class GridMsg {
         val toY: Int,
         val type: MoveType,
         val virtual: GameObject?,
+        val isMove: Boolean,
         val resp: CompletableDeferred<CollisionResult>,
     ) : GridMsg()
 
-    class Broadcast : GridMsg()
-    class ObjectMoved(obj: GameObject, toX: Int, toY: Int, heading: Int, moveType: MoveType) : GridMsg()
+    class Broadcast(val e: BroadcastEvent) : GridMsg()
 
     class Update
 }
@@ -82,7 +88,8 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 msg.toX,
                 msg.toY,
                 msg.type,
-                msg.virtual))
+                msg.virtual,
+                msg.isMove))
             is GridMsg.Activate -> {
                 this.activate(msg.human)
                 msg.job?.complete()
@@ -96,12 +103,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 msg.job?.complete()
             }
             is GridMsg.Update -> update()
-            is GridMsg.ObjectMoved -> {
-                // TODO ObjectMoved
-            }
-            is GridMsg.Broadcast -> {
-                // TODO Broadcast
-            }
+            is GridMsg.Broadcast -> activeObjects.forEach { it.send(msg.e) }
         }
     }
 
@@ -119,7 +121,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         update()
 
         // проверим коллизию с объектами и тайлами грида
-        val collision = checkCollision(obj, obj.pos.x, obj.pos.y, MoveType.SPAWN, null)
+        val collision = checkCollision(obj, obj.pos.x, obj.pos.y, MoveType.SPAWN, null, false)
 
         if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
             addObject(obj)
@@ -131,6 +133,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      * обновление состояния грида и его объектов
      */
     private fun update() {
+        // TODO grid update
     }
 
     /**
@@ -142,15 +145,19 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         toY: Int,
         moveType: MoveType,
         virtual: GameObject?,
+        isMove: Boolean,
     ): CollisionResult {
 
         // TODO checkCollision implement
+
+
+        obj.pos.setXY(toX, toY)
+
         return CollisionResult.NONE
     }
 
     /**
      * добавить объект в грид
-     * перед вызовом грид обязательно должен быть залочен!!!
      */
     private suspend fun addObject(obj: GameObject) {
         if (!objects.contains(obj)) {
@@ -192,7 +199,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
 
             activeObjects.add(human)
             if (human is Player) {
-                human.session.send(MapGridData(this))
+                human.session.send(MapGridData(this, true))
             }
 
             TimeController.instance.addActiveGrid(this)
@@ -203,9 +210,11 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      * деактивировать грид
      * если в гриде не осталось ни одного активного объекта то он прекращает обновляться
      */
-    private fun deactivate(human: Human) {
+    private suspend fun deactivate(human: Human) {
         activeObjects.remove(human)
-
+        if (human is Player) {
+            human.session.send(MapGridData(this, false))
+        }
         if (!isActive) {
             TimeController.instance.removeActiveGrid(this)
         }

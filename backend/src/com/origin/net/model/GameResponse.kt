@@ -55,11 +55,16 @@ abstract class ClientMessage(
     val channel: String,
 )
 
+/**
+ * данные карты для клиента
+ * @param add добавляем или удаляем грид с клиента
+ */
 @ObsoleteCoroutinesApi
-class MapGridData(grid: Grid) : ClientMessage("map") {
+class MapGridData(grid: Grid, add: Boolean) : ClientMessage("map") {
     val x: Int = grid.x
     val y: Int = grid.y
-    val tiles: ByteArray = grid.tilesBlob
+    val a: Int = if (add) 1 else 0
+    val tiles: ByteArray? = if (add) grid.tilesBlob else null
 }
 
 @ObsoleteCoroutinesApi

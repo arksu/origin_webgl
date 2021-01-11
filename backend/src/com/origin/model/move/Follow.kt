@@ -5,10 +5,10 @@ import com.origin.model.MovingObject
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
- * движение к объекту и взаимодействие с ним если дошли
+ * постоянное следование за объектом "на привязке" на определенной дистанции
  */
 @ObsoleteCoroutinesApi
-class Move2Object(me: MovingObject, target: GameObject) : MoveController(me) {
+class Follow(me: MovingObject, target: GameObject, followDitance: Int) : MoveController(me) {
     override suspend fun canStartMoving(): Boolean {
         TODO("Not yet implemented")
     }

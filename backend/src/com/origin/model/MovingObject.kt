@@ -7,15 +7,12 @@ import com.origin.model.move.MoveController
 import com.origin.model.move.MoveMode
 import com.origin.model.move.MoveType
 import com.origin.utils.ObjectID
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.*
 
 sealed class MovingObjectMsg {
     class UpdateMove
-    class LoadGrids(job: CompletableJob) : MessageWithJob(job)
-    class UnloadGrids(job: CompletableJob? = null) : MessageWithJob(job)
 }
 
 /**
@@ -24,6 +21,7 @@ sealed class MovingObjectMsg {
 @ObsoleteCoroutinesApi
 abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Int) :
     GameObject(id, x, y, level, region, heading) {
+
     /**
      * список гридов в которых находится объект. max 9 штук.
      */
@@ -39,16 +37,15 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
 
         when (msg) {
             is MovingObjectMsg.UpdateMove -> updateMove()
-            is MovingObjectMsg.LoadGrids -> {
-                loadGrids()
-                msg.job?.complete()
-            }
-            is MovingObjectMsg.UnloadGrids -> {
-                unloadGrids()
-                msg.job?.complete()
-            }
             else -> super.processMessage(msg)
         }
+    }
+
+    /**
+     * после спавна сразу загружаем список гридов вокруг
+     */
+    override suspend fun afterSpawn() {
+        loadGrids()
     }
 
     /**
@@ -67,13 +64,13 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
             val gx = pos.gridX + x
             val gy = pos.gridY + y
             if (grid.layer.validateCoord(gx, gy)) {
-                val grid = World.getGrid(pos.region, pos.level, gx, gy)
-                grids.add(grid)
+                val g = World.getGrid(pos.region, pos.level, gx, gy)
+                grids.add(g)
 
                 if (this is Human) {
                     val h = this
-                    logger.debug("GridMsg.Activate ${grid.x} ${grid.y}")
-                    grid.sendJob(Activate(h, Job())).join()
+                    logger.debug("Activate ${g.x} ${g.y}")
+                    g.sendJob(Activate(h, Job())).join()
                 }
             }
         }
@@ -82,13 +79,14 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     /**
      * выгрузить все гриды в которых находимся
      */
-    protected suspend fun unloadGrids() {
+    private suspend fun unloadGrids() {
         if (grids.isEmpty()) {
             throw RuntimeException("unloadGrids - grids is empty")
         }
 
-        if (this is Human) grids.forEach { _ ->
-            grid.sendJob(Deactivate(this, Job())).join()
+        if (this is Human) grids.forEach {
+            logger.debug("Deactivate ${it.x} ${it.y}")
+            it.sendJob(Deactivate(this, Job())).join()
         }
         grids.clear()
     }
@@ -97,8 +95,8 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * начать движение объекта
      */
     suspend fun startMove(controller: MoveController) {
+        moveController?.stop()
         if (controller.canStartMoving()) {
-            moveController?.stop()
             moveController = controller
             controller.start()
         } else {
@@ -116,7 +114,13 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         }
     }
 
+    /**
+     * удаление объекта
+     */
     override suspend fun remove() {
+        // deactivate and unload grids
+        unloadGrids()
+
         moveController?.stop()
         super.remove()
     }
@@ -147,12 +151,13 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * сколько игровых координат проходим за 1 реальную секунду
      */
     fun getMovementSpeed(): Double {
-        // TODO учесть пересечение воды
-        return when (getMovementMode()) {
+        val s = when (getMovementMode()) {
             MoveMode.STEAL -> 50.0
             MoveMode.WALK -> 100.0
             MoveMode.RUN -> 160.0
         }
+        // по воде движемся в 2 раза медленее
+        return if (getMovementType() == MoveType.SWIMMING) s / 2 else s
     }
 
     /**

@@ -54,7 +54,7 @@ class Player(
      */
     private suspend fun mapClick(x: Int, y: Int) {
         logger.debug("mapClick $x $y")
-        startMove(Move2Point(this, x, y, moveMode))
+        startMove(Move2Point(this, x, y))
     }
 
     override fun getMovementMode(): MoveMode {
@@ -78,8 +78,6 @@ class Player(
 
         World.removePlayer(this)
 
-        // deactivate and unload grids
-        unloadGrids()
         // удалить объект из мира
         remove()
 

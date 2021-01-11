@@ -2,7 +2,6 @@ package com.origin
 
 import com.origin.entity.GlobalVariables
 import com.origin.model.Grid
-import com.origin.model.GridMsg
 import com.origin.model.MovingObject
 import com.origin.model.MovingObjectMsg
 import com.origin.utils.WorkerScope
@@ -191,7 +190,7 @@ class TimeController : Thread("TimeController") {
         logger.warn("updateGrids")
         activeGrids.forEach {
             runBlocking {
-                it.send(GridMsg.Update())
+//                it.send(GridMsg.Update())
             }
         }
     }
