@@ -91,11 +91,18 @@ export default class Game {
         this.app = new PIXI.Application({
             view: Game.canvas,
             autoDensity: true,
+            preserveDrawingBuffer: true,
+            powerPreference: 'high-performance',
+            resizeTo: window,
             antialias: false,
+            clearBeforeRender: true,
             backgroundColor: 0x333333
         });
-        this.app.renderer.resize(window.innerWidth, window.innerHeight);
+        // this.app.renderer.resize(Game.canvas.width, Game.canvas.height);
         console.warn('render size ' + this.app.renderer.width + ' ' + this.app.renderer.height)
+
+        this.app.ticker.maxFPS = 60
+        this.app.ticker.minFPS = 60
 
         PIXI.Ticker.shared.add(this.update.bind(this))
 
@@ -134,6 +141,7 @@ export default class Game {
     }
 
     private destroy() {
+        console.warn("Game destroy")
         this.app.destroy(false, {
             children: true,
             // texture: true,
@@ -164,6 +172,10 @@ export default class Game {
     }
 
     private onMouseDown(e: PIXI.InteractionEvent) {
+        // Net.remoteCall("touchdown", {
+        //     ee: e.data
+        // })
+
         this.dragStart = new Point(e.data.global).round();
         this.dragOffset = new Point(this.offset);
         this.dragMoved = false;
@@ -171,6 +183,10 @@ export default class Game {
     }
 
     private onMouseUp(e: PIXI.InteractionEvent) {
+        // Net.remoteCall("touchup", {
+        //     ee: e.data
+        // })
+
         let p = new Point(e.data.global).round();
 
         console.log('onMouseUp ' + p.toString());
@@ -198,6 +214,9 @@ export default class Game {
     }
 
     private onMouseMove(e: PIXI.InteractionEvent) {
+        // Net.remoteCall("touchmove", {
+        //     ee: e.data
+        // })
         if (this.dragStart !== undefined && this.dragOffset !== undefined) {
             let p = new Point(e.data.global).round();
 
@@ -254,7 +273,8 @@ export default class Game {
 
     private update() {
         // delta time in seconds
-        let dt = PIXI.Ticker.shared.deltaMS / 1000
+        // важно. берем elapsedMS т.к. у нас сервер управляет движением. и нам надо абсолютное время ни от чего не зависящее
+        let dt = PIXI.Ticker.shared.elapsedMS / 1000
 
         for (let key in this.movingObjects) {
             let moveController = this.movingObjects[key].moveController
@@ -288,7 +308,6 @@ export default class Game {
     }
 
     private static onResize() {
-        this.instance?.app.renderer.resize(window.innerWidth, window.innerHeight);
         this.instance?.updateMapScalePos()
     }
 

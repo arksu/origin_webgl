@@ -23,6 +23,8 @@ abstract class MoveController(val me: MovingObject) {
     val y
         get() = me.pos.y
 
+    protected var lastTime = System.currentTimeMillis()
+
     /**
      * последняя сохраненная в базу позиция
      */
@@ -49,7 +51,7 @@ abstract class MoveController(val me: MovingObject) {
     /**
      * начать работу контроллера (при начале движения)
      */
-    fun start() {
+    open suspend fun start() {
         TimeController.instance.addMovingObject(me)
     }
 

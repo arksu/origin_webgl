@@ -20,11 +20,12 @@ class TimeController : Thread("TimeController") {
         super.setDaemon(true)
         super.setPriority(MAX_PRIORITY)
         load()
+        logger.debug("TICKS_IN_GAME_DAY=$TICKS_IN_GAME_DAY TICKS_IN_GAME_MINUTE=$TICKS_IN_GAME_MINUTE")
     }
 
     companion object {
-        val instance = TimeController()
         val logger: Logger = LoggerFactory.getLogger(TimeController::class.java)
+        val instance = TimeController()
 
         private const val KEY = "gameTime"
 
@@ -218,7 +219,7 @@ class TimeController : Thread("TimeController") {
             if (tickCount - lastStoreTick > STORE_TICKS_PERIOD) {
                 // запустим сохранение времени в базу в фоне (в корутине)
                 WorkerScope.launch {
-                    logger.debug("time real hours=${tickCount / (TICKS_PER_SECOND * 3600)} game time=${getGameHour()}:${getGameMinute()}")
+                    logger.debug("time tick=$tickCount real hours=${(tickCount / (TICKS_PER_SECOND * 3600))} game day=${tickCount / TICKS_IN_GAME_DAY} time=${getGameHour()}:${getGameMinute()}")
                     store()
                 }
                 lastStoreTick = tickCount

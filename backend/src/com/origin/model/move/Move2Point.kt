@@ -31,6 +31,15 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
         return c.result == CollisionResult.CollisionType.COLLISION_NONE
     }
 
+    override suspend fun start() {
+        super.start()
+
+        // в самом начале движения пошлем пакет о том что объект уже начал движение
+        me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.Moved(
+            me, toX, toY, me.getMovementSpeed(), me.getMovementType()
+        )))
+    }
+
     override suspend fun implementation(deltaTime: Double): Boolean {
         // запомним тип движеня на начало обсчетов. возможно он изменится после
         val moveType = me.getMovementType()
@@ -46,10 +55,6 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
 
         when (c.result) {
             CollisionResult.CollisionType.COLLISION_NONE -> {
-                me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.Moved(
-                    me, toX, toY, speed, moveType
-                )))
-
                 if (me is Human) {
                     me.updateVisibleObjects(false)
                 }
@@ -57,11 +62,15 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
                 // сколько осталось идти до конечной точки
                 val left = sqrt((toX - x).toDouble().pow(2) + (toY - y).toDouble().pow(2))
                 // расстояние до конечной точки при котором считаем что уже дошли куда надо
-                if (left <= 1.0) {
+                return if (left <= 1.0) {
                     me.stopMove()
-                    return true
+                    true
+                } else {
+                    me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.Moved(
+                        me, toX, toY, speed, moveType
+                    )))
+                    false
                 }
-                return false
             }
             CollisionResult.CollisionType.COLLISION_FAIL -> {
                 // ошибка при обработке коллизии. надо остановить объект и удалить контроллер
