@@ -5,6 +5,7 @@ import Grid from "@/game/Grid";
 import Tile from "@/game/Tile";
 import Net from "@/net/Net";
 import Point from '@/utils/Point';
+import {GameObject} from "@/game/GameObject";
 
 /**
  * основная игровая логика (графика и тд)
@@ -59,6 +60,12 @@ export default class Game {
      */
     private offset: Point = new Point(0, 0);
 
+    /**
+     * список объектов которые в данный момент движутся
+     * апдейтим их позицию каждый тик через move controller
+     */
+    public movingObjects: { [key: number]: GameObject } = {}
+
     public static start() {
         console.warn("pixi start");
 
@@ -90,11 +97,9 @@ export default class Game {
         this.app.renderer.resize(window.innerWidth, window.innerHeight);
         console.warn('render size ' + this.app.renderer.width + ' ' + this.app.renderer.height)
 
-        PIXI.Ticker.shared.add(this.update)
+        PIXI.Ticker.shared.add(this.update.bind(this))
 
         this.mapGrids = new PIXI.Container();
-        // this.mapGrids.width = this.app.renderer.width
-        // this.mapGrids.height = this.app.renderer.height
 
         this.app.stage.addChild(this.mapGrids);
 
@@ -223,8 +228,9 @@ export default class Game {
     }
 
     public updateMapScalePos() {
-        let px = Client.instance.playerPos!!.x;
-        let py = Client.instance.playerPos!!.y;
+
+        let px = Client.instance.playerObject.x;
+        let py = Client.instance.playerObject.y;
 
         let sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
         let sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
@@ -247,10 +253,15 @@ export default class Game {
     }
 
     private update() {
+        // delta time in seconds
         let dt = PIXI.Ticker.shared.deltaMS / 1000
-        // console.log(dt)
 
-
+        for (let key in this.movingObjects) {
+            let moveController = this.movingObjects[key].moveController
+            if (moveController !== undefined) {
+                moveController.update(dt)
+            }
+        }
     }
 
     /**
@@ -261,8 +272,8 @@ export default class Game {
 
         p.dec(this.offset);
 
-        let px = Client.instance.playerPos!!.x;
-        let py = Client.instance.playerPos!!.y;
+        let px = Client.instance.playerObject.x;
+        let py = Client.instance.playerObject.y;
 
         console.log("player pos " + px + " " + py)
 

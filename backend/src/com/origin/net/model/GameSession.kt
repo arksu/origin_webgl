@@ -105,7 +105,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         }
     }
 
-    suspend fun send(m: ClientMessage) {
+    suspend fun send(m: ServerMessage) {
         send(GameResponse(m.channel, m))
     }
 

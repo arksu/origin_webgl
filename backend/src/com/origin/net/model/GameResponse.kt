@@ -1,3 +1,5 @@
+@file:Suppress("unused", "SpellCheckingInspection")
+
 package com.origin.net.model
 
 import com.google.gson.annotations.JsonAdapter
@@ -51,7 +53,7 @@ class GameResponse {
     }
 }
 
-abstract class ClientMessage(
+abstract class ServerMessage(
     @Transient
     val channel: String,
 )
@@ -61,7 +63,7 @@ abstract class ClientMessage(
  * @param add добавляем или удаляем грид с клиента
  */
 @ObsoleteCoroutinesApi
-class MapGridData(grid: Grid, add: Boolean) : ClientMessage("map") {
+class MapGridData(grid: Grid, add: Boolean) : ServerMessage("map") {
     val x: Int = grid.x
     val y: Int = grid.y
     val a: Int = if (add) 1 else 0
@@ -69,21 +71,21 @@ class MapGridData(grid: Grid, add: Boolean) : ClientMessage("map") {
 }
 
 @ObsoleteCoroutinesApi
-class ObjectAdd(obj: GameObject) : ClientMessage("obja") {
+class ObjectAdd(obj: GameObject) : ServerMessage("obja") {
     val id = obj.id
     val x = obj.pos.x
     val y = obj.pos.y
     val heading = obj.pos.heading
-    val type = obj.javaClass.simpleName
+    val type: String = obj.javaClass.simpleName
 }
 
 @ObsoleteCoroutinesApi
-class ObjectDel(obj: GameObject) : ClientMessage("objd") {
+class ObjectDel(obj: GameObject) : ServerMessage("objd") {
     val id = obj.id
 }
 
 @ObsoleteCoroutinesApi
-class ObjectMoved(m: BroadcastEvent.Moved) : ClientMessage("objm") {
+class ObjectMoved(m: BroadcastEvent.Moved) : ServerMessage("objm") {
     val id = m.obj.id
     val tx = m.toX
     val ty = m.toY
@@ -94,7 +96,7 @@ class ObjectMoved(m: BroadcastEvent.Moved) : ClientMessage("objm") {
 }
 
 @ObsoleteCoroutinesApi
-class ObjectStopped(m: BroadcastEvent.Stopped) : ClientMessage("objs") {
+class ObjectStopped(m: BroadcastEvent.Stopped) : ServerMessage("objs") {
     val id = m.obj.id
     val x = m.obj.pos.x
     val y = m.obj.pos.y

@@ -1,7 +1,7 @@
 import _ from "lodash";
 import Client from "@/net/Client";
-import {Point} from "pixi.js";
 import Game from "@/game/Game";
+import MoveController from "@/game/MoveController";
 
 enum State {
     Disconnected,
@@ -43,7 +43,7 @@ export default class Net {
      * ссылка для коннекта к вебсокет серверу
      * @private
      */
-    private url: string;
+    private readonly url: string;
 
     /**
      * сокет
@@ -230,11 +230,7 @@ export default class Net {
             }
             case "obja": { // object add
                 Client.instance.objects[data.id] = data
-
-                if (data.id == Client.instance.selectedCharacterId) {
-                    Client.instance.playerPos = new Point(data.x, data.y);
-                    Game.instance?.updateMapScalePos()
-                }
+                Game.instance?.updateMapScalePos()
                 break;
             }
             case "objd": { // object delete
@@ -242,22 +238,26 @@ export default class Net {
                 break;
             }
             case "objm" : { // object move
-                if (data.id == Client.instance.selectedCharacterId) {
-                    Client.instance.playerPos = new Point(data.x, data.y);
-                    Game.instance?.updateMapScalePos()
+                let obj = Client.instance.objects[data.id];
+                if (obj.moveController === undefined) {
+                    obj.moveController = new MoveController(obj, data)
+                } else {
+                    obj.moveController.applyData(data)
                 }
 
                 break;
             }
             case "objs" : { // object stop
                 let obj = Client.instance.objects[data.id];
+                if (obj.moveController !== undefined) {
+                    obj.moveController.stop()
+                    obj.moveController = undefined
+                }
                 obj.x = data.x
                 obj.y = data.y
 
-                if (data.id == Client.instance.selectedCharacterId) {
-                    Client.instance.playerPos = new Point(data.x, data.y);
-                    Game.instance?.updateMapScalePos()
-                }
+                Game.instance?.updateMapScalePos()
+
                 break;
             }
         }

@@ -1,5 +1,6 @@
 import router from "@/router";
-import {IPoint} from "pixi.js";
+import {GameObject} from "@/game/GameObject";
+
 
 export default class Client {
 
@@ -41,14 +42,13 @@ export default class Client {
     public map: { [key: string]: number[] } = {};
 
     /**
-     * позиция игрока в мире (абсолютные мировые координаты)
-     */
-    public playerPos?: IPoint;
-
-    /**
      * игровые объекты полученные с сервера
      */
-    public objects: { [key: number]: any } = {}
+    public objects: { [key: number]: GameObject } = {}
+
+    public get playerObject(): GameObject {
+        return this.objects[this.selectedCharacterId]
+    }
 
     /**
      * ид выбранного персонажа
