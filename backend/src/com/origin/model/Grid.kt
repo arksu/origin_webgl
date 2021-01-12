@@ -82,7 +82,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             try {
                 processMessage(it)
             } catch (t: Throwable) {
-                logger.error("error process grid message: ${t.message}", t)
+                logger.error("error while process grid message: ${t.message}", t)
             }
         }
         logger.warn("grid actor $this finished")

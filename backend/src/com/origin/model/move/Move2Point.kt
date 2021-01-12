@@ -2,7 +2,6 @@ package com.origin.model.move
 
 import com.origin.TimeController
 import com.origin.collision.CollisionResult
-import com.origin.logger
 import com.origin.model.BroadcastEvent
 import com.origin.model.GridMsg
 import com.origin.model.Human
@@ -23,7 +22,7 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
         // чтобы убедиться что мы можем туда передвигаться
         val (nx, ny) = calcNewPoint(1.0 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
 
-        logger.debug("nx=$nx ny=$ny")
+//        logger.debug("nx=$nx ny=$ny")
 
         // проверим коллизию с этой новой точкой
         val c = checkCollision(nx.roundToInt(), ny.roundToInt(), null, false)
@@ -48,7 +47,7 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
         when (c.result) {
             CollisionResult.CollisionType.COLLISION_NONE -> {
                 me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.Moved(
-                    me, nxi, nyi, speed, moveType
+                    me, toX, toY, speed, moveType
                 )))
 
                 if (me is Human) {

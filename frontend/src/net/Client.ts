@@ -46,6 +46,11 @@ export default class Client {
     public playerPos?: IPoint;
 
     /**
+     * игровые объекты полученные с сервера
+     */
+    public objects: { [key: number]: any } = {}
+
+    /**
      * ид выбранного персонажа
      */
     public get selectedCharacterId(): number {
@@ -99,5 +104,6 @@ export default class Client {
      */
     public clear() {
         this.map = {};
+        this.objects = {}
     }
 }

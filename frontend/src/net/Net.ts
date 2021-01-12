@@ -179,41 +179,6 @@ export default class Net {
         }
     }
 
-    /**
-     * приходит сообщение от сервера в определенный канал
-     * @param {string} channel канал данных
-     * @param data
-     */
-    protected onChannelMessage(channel: string, data: any) {
-        switch (channel) {
-            case "map": {
-                let key = data.x + "_" + data.y;
-                Client.instance.map[key] = data.tiles;
-                break;
-            }
-            case "obja": { // object add
-                if (data.id == Client.instance.selectedCharacterId) {
-                    Client.instance.playerPos = new Point(data.x, data.y);
-                }
-                break;
-            }
-            case "objm" : { // object move
-                if (data.id == Client.instance.selectedCharacterId) {
-                    Client.instance.playerPos = new Point(data.x, data.y);
-                    Game.onUpdatePlayerPos()
-                }
-                break;
-            }
-            case "objs" : { // object stop
-                if (data.id == Client.instance.selectedCharacterId) {
-                    Client.instance.playerPos = new Point(data.x, data.y);
-                    Game.onUpdatePlayerPos()
-                }
-                break;
-            }
-        }
-    }
-
     private socketSend(data: any): void {
         let d = JSON.stringify(data);
         console.log("%cSEND", 'color: red', _.cloneDeep(data));
@@ -244,5 +209,57 @@ export default class Net {
                 reject
             };
         });
+    }
+
+    /**
+     * приходит сообщение от сервера в определенный канал
+     * @param {string} channel канал данных
+     * @param data
+     */
+    protected onChannelMessage(channel: string, data: any) {
+        switch (channel) {
+            case "map": {
+                let key = data.x + "_" + data.y;
+                // a=1 это добавление куска карты
+                if (data.a == 1) {
+                    Client.instance.map[key] = data.tiles;
+                } else {
+                    delete Client.instance.map[key]
+                }
+                break;
+            }
+            case "obja": { // object add
+                Client.instance.objects[data.id] = data
+
+                if (data.id == Client.instance.selectedCharacterId) {
+                    Client.instance.playerPos = new Point(data.x, data.y);
+                    Game.instance?.updateMapScalePos()
+                }
+                break;
+            }
+            case "objd": { // object delete
+                delete Client.instance.objects[data.id];
+                break;
+            }
+            case "objm" : { // object move
+                if (data.id == Client.instance.selectedCharacterId) {
+                    Client.instance.playerPos = new Point(data.x, data.y);
+                    Game.instance?.updateMapScalePos()
+                }
+
+                break;
+            }
+            case "objs" : { // object stop
+                let obj = Client.instance.objects[data.id];
+                obj.x = data.x
+                obj.y = data.y
+
+                if (data.id == Client.instance.selectedCharacterId) {
+                    Client.instance.playerPos = new Point(data.x, data.y);
+                    Game.instance?.updateMapScalePos()
+                }
+                break;
+            }
+        }
     }
 }

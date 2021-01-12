@@ -40,7 +40,7 @@ fun Route.websockets() {
                 when (frame) {
                     is Frame.Text -> {
                         val text = frame.readText()
-                        logger.debug("RECV: $text")
+                        logger.warn("RECV: $text")
 
                         val req = gsonDeserializer.fromJson(text, GameRequest::class.java)
                         try {

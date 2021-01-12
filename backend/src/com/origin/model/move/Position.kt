@@ -91,7 +91,7 @@ class Position(
     }
 
     private fun updateGrid() {
-
+        // TODO updateGrid
     }
 
     fun clone(): Position {

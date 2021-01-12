@@ -1,16 +1,14 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ES2019",
+    "module": "ESNext",
     "allowJs": false,
     "outDir": "./dist/",
     "sourceMap": true,
     "esModuleInterop": true,
     "skipLibCheck": false,
     "importHelpers": true,
-
     "strict": true,
-
     "jsx": "preserve",
     "moduleResolution": "node",
     "baseUrl": ".",

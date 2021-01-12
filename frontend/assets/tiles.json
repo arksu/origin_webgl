@@ -24,6 +24,14 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
 	"sourceSize": {"w":63,"h":32}
 },
+"man.png":
+{
+	"frame": {"x":63,"y":32,"w":27,"h":59},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":59},
+	"sourceSize": {"w":27,"h":59}
+},
 "stone1.png":
 {
 	"frame": {"x":158,"y":0,"w":63,"h":32},
@@ -34,7 +42,7 @@
 },
 "swamp1.png":
 {
-	"frame": {"x":221,"y":0,"w":63,"h":32},
+	"frame": {"x":0,"y":32,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -45,8 +53,8 @@
 	"version": "1.0",
 	"image": "tiles.png",
 	"format": "RGBA8888",
-	"size": {"w":284,"h":32},
+	"size": {"w":256,"h":256},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:d3dded8476ae341a95c0f6c6be11112d:f5da47f1f05f6bc8cf491ff15fb061e2:accbe1e7e294ded8391337fc1c446319$"
+	"smartupdate": "$TexturePacker:SmartUpdate:79e98d3645912b70043ba5f6761673aa:c31a2d4f3de2c241c92eb70ec054cbc0:accbe1e7e294ded8391337fc1c446319$"
 }
 }

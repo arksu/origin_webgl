@@ -14,7 +14,7 @@ export default class Game {
     private static readonly canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("game");
     private static readonly appDiv: HTMLElement = <HTMLElement>document.getElementById("app");
 
-    private static instance?: Game = undefined;
+    public static instance?: Game = undefined;
 
     /**
      * PIXI app
@@ -88,7 +88,9 @@ export default class Game {
             backgroundColor: 0x333333
         });
         this.app.renderer.resize(window.innerWidth, window.innerHeight);
-        console.warn('render set to ' + this.app.renderer.width + ' ' + this.app.renderer.height)
+        console.warn('render size ' + this.app.renderer.width + ' ' + this.app.renderer.height)
+
+        PIXI.Ticker.shared.add(this.update)
 
         this.mapGrids = new PIXI.Container();
         // this.mapGrids.width = this.app.renderer.width
@@ -150,7 +152,7 @@ export default class Game {
             this.mapGrids.addChild(grid.container);
             this.grids.push(grid);
         }
-        this.crossTemp = PIXI.Sprite.from("cross_temp.png");
+        this.crossTemp = PIXI.Sprite.from("man.png");
         this.app.stage.addChild(this.crossTemp)
 
         this.updateMapScalePos();
@@ -220,7 +222,7 @@ export default class Game {
 
     }
 
-    private updateMapScalePos() {
+    public updateMapScalePos() {
         let px = Client.instance.playerPos!!.x;
         let py = Client.instance.playerPos!!.y;
 
@@ -240,8 +242,15 @@ export default class Game {
             this.crossTemp.scale.set(this.scale);
             // TODO
             this.crossTemp.x = offx - 17 * this.scale;
-            this.crossTemp.y = offy - 23 * this.scale;
+            this.crossTemp.y = offy - 57 * this.scale;
         }
+    }
+
+    private update() {
+        let dt = PIXI.Ticker.shared.deltaMS / 1000
+        // console.log(dt)
+
+
     }
 
     /**
@@ -267,7 +276,7 @@ export default class Game {
         ).mulValue(Tile.TILE_SIZE).incValue(px, py).round();
     }
 
-    public static onResize() {
+    private static onResize() {
         this.instance?.app.renderer.resize(window.innerWidth, window.innerHeight);
         this.instance?.updateMapScalePos()
     }
@@ -307,9 +316,5 @@ export default class Game {
         window.addEventListener("orientationchange", () => {
             Game.onResize();
         });
-    }
-
-    public static onUpdatePlayerPos() {
-        this.instance?.updateMapScalePos();
     }
 }

@@ -57,7 +57,7 @@ open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int,
             try {
                 processMessage(it)
             } catch (t: Throwable) {
-                logger.error("error process game object message: ${t.message}", t)
+                logger.error("error while process game object message: ${t.message}", t)
             }
         }
         logger.warn("game obj actor $this finished")
