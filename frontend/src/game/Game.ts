@@ -63,6 +63,13 @@ export default class Game {
     private offset: Point = new Point(0, 0);
 
     /**
+     * прикосновения к экрану
+     * для обработки мультитача для скейла на мобилках
+     */
+    private touchCurrent: { [key: number]: Point } = {}
+    private touchLength: number = -1
+
+    /**
      * список объектов которые в данный момент движутся
      * апдейтим их позицию каждый тик через move controller
      */
@@ -159,6 +166,7 @@ export default class Game {
             this.grids[i].destroy()
         }
         this.mapGrids.destroy({children: true})
+        this.touchCurrent = {}
         this.destroyed = true
     }
 
@@ -182,10 +190,7 @@ export default class Game {
     }
 
     private onMouseDown(e: PIXI.InteractionEvent) {
-        // Net.remoteCall("touchdown", {
-        //     ee: e.data
-        // })
-
+        this.touchCurrent[e.data.identifier] = new Point(e.data.global)
 
         this.dragStart = new Point(e.data.global).round();
         this.dragOffset = new Point(this.offset);
@@ -194,9 +199,9 @@ export default class Game {
     }
 
     private onMouseUp(e: PIXI.InteractionEvent) {
-        // Net.remoteCall("touchup", {
-        //     ee: e.data
-        // })
+        delete this.touchCurrent[e.data.identifier]
+
+        this.touchLength = -1
 
         let p = new Point(e.data.global).round();
 
@@ -225,19 +230,52 @@ export default class Game {
     }
 
     private onMouseMove(e: PIXI.InteractionEvent) {
-        // Net.remoteCall("touchmove", {
-        //     ee: e.data
-        // })
-        if (this.dragStart !== undefined && this.dragOffset !== undefined) {
-            let p = new Point(e.data.global).round();
+        let keys = Object.keys(this.touchCurrent);
+        if (keys.length == 2) {
+            this.dragStart = undefined;
+            this.dragOffset = undefined;
 
-            p.dec(this.dragStart);
+            let current = new Point(e.data.global)
+            this.touchCurrent[e.data.identifier] = current
 
-            if (Math.abs(p.x) > 10 || Math.abs(p.y) > 10 || this.dragMoved) {
-                this.dragMoved = true;
-                this.offset.set(this.dragOffset).inc(p);
+            let cx2 = 0
+            let cy2 = 0
+            // ищем вторую точку
+            for (let key of keys) {
+                let k = +key
+                if (k !== e.data.identifier) {
+                    cx2 = this.touchCurrent[k].x
+                    cy2 = this.touchCurrent[k].y
+                }
+            }
 
-                this.updateMapScalePos();
+            // touch len
+            let tl = Math.sqrt(Math.pow(current.x - cx2, 2) + Math.pow(current.y - cy2, 2))
+            if (this.touchLength < 0) {
+                this.touchLength = tl
+            }
+            // на сколько изменилась длина между касаниями
+            let dt = tl - this.touchLength
+            this.touchLength = tl
+
+            if (this.scale < 1) {
+                this.scale += dt * 0.007 * this.scale
+            } else {
+                this.scale += dt * 0.01
+            }
+            this.updateScale()
+        } else {
+            if (this.dragStart !== undefined && this.dragOffset !== undefined) {
+                let p = new Point(e.data.global).round();
+
+                p.dec(this.dragStart);
+
+                if (Math.abs(p.x) > 10 || Math.abs(p.y) > 10 || this.dragMoved) {
+                    this.dragMoved = true;
+                    this.offset.set(this.dragOffset).inc(p);
+
+                    this.updateMapScalePos();
+                }
             }
         }
     }
@@ -248,6 +286,10 @@ export default class Game {
         } else {
             this.scale += delta / (1000);
         }
+        this.updateScale()
+    }
+
+    private updateScale() {
         if (this.scale < 0.05) this.scale = 0.05
         console.log("scale=" + this.scale)
         this.updateMapScalePos();

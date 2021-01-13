@@ -20,7 +20,6 @@ class TimeController : Thread("TimeController") {
         super.setDaemon(true)
         super.setPriority(MAX_PRIORITY)
         load()
-        logger.debug("TICKS_IN_GAME_DAY=$TICKS_IN_GAME_DAY TICKS_IN_GAME_MINUTE=$TICKS_IN_GAME_MINUTE")
     }
 
     companion object {
