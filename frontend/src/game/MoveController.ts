@@ -77,7 +77,7 @@ export default class MoveController {
 
         // console.log("ld="+ld)
         // если осталось идти слишком мало - посчитаем что уже пришли в назначенную точку
-        if (ld < 2) {
+        if (ld <= 1) {
             this.me.x = this.toX
             this.me.y = this.toY
             this.stop()

@@ -31,7 +31,7 @@ class TimeController : Thread("TimeController") {
         /**
          * игровых тиков в реальной секунде (на передвижение)
          */
-        const val TICKS_PER_SECOND = 4
+        const val TICKS_PER_SECOND = 2
 
         /**
          * период обновления гридов и объектов в них (в тиках)

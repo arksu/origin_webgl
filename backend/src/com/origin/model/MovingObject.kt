@@ -95,7 +95,11 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * начать движение объекта
      */
     suspend fun startMove(controller: MoveController) {
-        moveController?.stop()
+        val c = moveController
+        if (c != null) {
+            c.updateAndResult()
+            c.stop()
+        }
         if (controller.canStartMoving()) {
             moveController = controller
             controller.start()
@@ -162,8 +166,8 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      */
     fun getMovementSpeed(): Double {
         val s = when (getMovementMode()) {
-            MoveMode.STEAL -> 40.0
-            MoveMode.WALK -> 60.0
+            MoveMode.STEAL -> 25.0
+            MoveMode.WALK -> 40.0
             MoveMode.RUN -> 120.0
         }
         // по воде движемся в 2 раза медленее

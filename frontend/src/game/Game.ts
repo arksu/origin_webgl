@@ -67,6 +67,10 @@ export default class Game {
      * для обработки мультитача для скейла на мобилках
      */
     private touchCurrent: { [key: number]: Point } = {}
+
+    /**
+     * текущее расстояние между пальцами при скейле на мобилках
+     */
     private touchLength: number = -1
 
     /**
@@ -77,7 +81,6 @@ export default class Game {
 
     public static start() {
         console.warn("pixi start");
-
 
         this.canvas.style.display = "block";
         this.appDiv.style.display = "none";
@@ -226,6 +229,7 @@ export default class Game {
             }
             this.dragStart = undefined;
             this.dragOffset = undefined;
+            this.touchCurrent = {}
         }
     }
 
@@ -300,7 +304,6 @@ export default class Game {
     }
 
     public updateMapScalePos() {
-
         let px = Client.instance.playerObject.x;
         let py = Client.instance.playerObject.y;
 
@@ -331,10 +334,12 @@ export default class Game {
         // важно. берем elapsedMS т.к. у нас сервер управляет движением. и нам надо абсолютное время ни от чего не зависящее
         let dt = PIXI.Ticker.shared.elapsedMS / 1000
 
+        // изменились размеры окна
         if (this.app.renderer.width !== this.screenSprite.width || this.app.renderer.height !== this.screenSprite.height) {
             this.onResize()
         }
 
+        // передвигаем все движущиеся объекты
         for (let key in this.movingObjects) {
             let moveController = this.movingObjects[key].moveController
             if (moveController !== undefined) {
@@ -367,9 +372,6 @@ export default class Game {
     }
 
     private onResize() {
-        // Game.canvas.height = window.innerHeight
-        // Game.canvas.width = window.innerWidth
-
         this.app.renderer.resize(window.innerWidth, window.innerHeight)
 
         this.screenSprite.width = this.app.renderer.width
@@ -409,6 +411,7 @@ export default class Game {
             }
         });
 
+        // переворот экрана
         window.addEventListener("orientationchange", () => {
             Game.instance?.onResize();
         });
