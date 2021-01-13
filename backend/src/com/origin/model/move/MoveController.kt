@@ -58,7 +58,7 @@ abstract class MoveController(val me: MovingObject) {
     /**
      * остановить работу контроллера (принудительная остановка извне)
      */
-    suspend fun stop() {
+    fun stop() {
         TimeController.instance.deleteMovingObject(me)
     }
 

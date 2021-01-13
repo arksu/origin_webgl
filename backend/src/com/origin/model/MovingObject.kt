@@ -25,12 +25,19 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     /**
      * список гридов в которых находится объект. max 9 штук.
      */
-    private val grids = LinkedList<Grid>()
+    protected val grids = LinkedList<Grid>()
 
     /**
      * контроллер который управляет передвижением объекта
      */
     private var moveController: MoveController? = null
+
+    /**
+     * объект с которым "столкнулись" (прилинковались), может быть виртуальный или реальный
+     * если реальный, то при удалении его из known списка должны занулить и здесь.
+     * то есть это реальный объект с которым мы взаимодействуем
+     */
+    private var linkedObject: GameObject? = null
 
     override suspend fun processMessage(msg: Any) {
 //        logger.debug("MovingObject processMessage ${msg.javaClass.simpleName}")
@@ -95,10 +102,10 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * начать движение объекта
      */
     suspend fun startMove(controller: MoveController) {
-        val c = moveController
-        if (c != null) {
-            c.updateAndResult()
-            c.stop()
+        val old = moveController
+        if (old != null) {
+            old.updateAndResult()
+            old.stop()
         }
         if (controller.canStartMoving()) {
             moveController = controller

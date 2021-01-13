@@ -6,21 +6,20 @@ import com.origin.model.Grid
 import com.origin.model.GridMsg
 import com.origin.model.World
 import com.origin.utils.GRID_FULL_SIZE
+import com.origin.utils.Vec2i
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.math.pow
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 /**
  * позиция объекта в игровом мире
  */
 @ObsoleteCoroutinesApi
 class Position(
-    var x: Int,
-    var y: Int,
+    initx: Int,
+    inity: Int,
     var level: Int,
     var region: Int,
     var heading: Int,
@@ -29,6 +28,11 @@ class Position(
     companion object {
         val logger: Logger = LoggerFactory.getLogger(Position::class.java)
     }
+
+    val point = Vec2i(initx, inity)
+
+    val x get() = point.x
+    val y get() = point.y
 
     /**
      * грид в котором находится объект
@@ -66,17 +70,8 @@ class Position(
         }
     }
 
-    /**
-     * получить дистанцию между позициями двух объектов
-     * @param other позиция другого объекта
-     * @return дистанция в единицах координат
-     */
-    fun getDistance(other: Position): Int {
-        return if (level != other.level) {
-            Int.MAX_VALUE
-        } else {
-            sqrt((other.x - x).toDouble().pow(2) + (other.y - y).toDouble().pow(2)).roundToInt()
-        }
+    fun dist(other: Position): Int {
+        return point.dist(other.point);
     }
 
     fun setXY(x: Double, y: Double) {
@@ -85,8 +80,8 @@ class Position(
 
     fun setXY(x: Int, y: Int) {
         logger.debug("setXY")
-        this.x = x
-        this.y = y
+        this.point.x = x
+        this.point.y = y
         updateGrid()
     }
 

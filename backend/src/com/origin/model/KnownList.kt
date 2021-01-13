@@ -46,4 +46,8 @@ class KnownList(private val activeObject: GameObject) {
         }
         return result
     }
+
+    fun getKnownObjects(): Collection<GameObject> {
+        return knownObjects.values
+    }
 }

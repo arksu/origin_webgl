@@ -1,7 +1,10 @@
 package com.origin.model
 
+import com.origin.ServerConfig
 import com.origin.utils.ObjectID
+import com.origin.utils.Vec2i
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import java.util.*
 
 /**
  * гуманоид
@@ -25,6 +28,12 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     private val knownList by lazy { KnownList(this) }
 
     /**
+     * последняя позиция в которой было обновление видимых объектов
+     * нужно чтобы часто не обновлять список видимых (слишком накладно)
+     */
+    private var lastPosUpdateVisible: Vec2i? = null
+
+    /**
      * добавили объект в грид в котором находится объект
      */
     override suspend fun onObjectAdded(obj: GameObject) {
@@ -46,7 +55,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      */
     private fun isObjectVisibleForMe(obj: GameObject): Boolean {
         // себя всегда видим!
-        return obj.id == this.id || pos.getDistance(obj.pos) < visibleDistance
+        return obj.id == this.id || pos.dist(obj.pos) < visibleDistance
     }
 
     /**
@@ -54,8 +63,39 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * все новые что увидим - отправятся клиенту. старые что перестали видеть - будут удалены
      * @param force принудительно, иначе проверка будет только если отошли на значительное расстояние от точки последней проверки
      */
-    fun updateVisibleObjects(force: Boolean) {
+    suspend fun updateVisibleObjects(force: Boolean) {
         // TODO updateVisibleObjects
-    }
 
+        if (force || (lastPosUpdateVisible != null
+                    && pos.point != lastPosUpdateVisible
+                    && pos.point.dist(lastPosUpdateVisible!!) > ServerConfig.VISIBLE_UPDATE_DISTANCE)
+        ) {
+            // запомним те объекты которые видимы при текущем апдейте
+            val newList = LinkedList<GameObject>()
+
+            var newCounter = 0
+            // проходим по всем гридам в которых находимся
+            for (grid in grids) {
+                // TODO grid objects
+                newCounter++
+            }
+
+            // какие объекты больше не видимы?
+            val del = LinkedList<GameObject>()
+            knownList.getKnownObjects().forEach {
+                // если в новом списке нет - значит больше не видим,
+                // пометим на удаление
+                if (!newList.contains(it)) {
+                    del.add(it)
+                }
+            }
+            // удалим объекты которые больше не видим
+            del.forEach {
+                knownList.removeKnownObject(it)
+            }
+
+            lastPosUpdateVisible = pos.point.clone()
+            logger.debug("updateVisibleObjects $this new=$newCounter vis=${newList.size} del=${del.size}")
+        }
+    }
 }
