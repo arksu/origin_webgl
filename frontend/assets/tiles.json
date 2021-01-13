@@ -10,23 +10,23 @@
 },
 "grass1.png":
 {
-	"frame": {"x":32,"y":0,"w":63,"h":32},
+	"frame": {"x":32,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
-	"sourceSize": {"w":63,"h":32}
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
+	"sourceSize": {"w":64,"h":32}
 },
 "grass2.png":
 {
-	"frame": {"x":95,"y":0,"w":63,"h":32},
+	"frame": {"x":95,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
-	"sourceSize": {"w":63,"h":32}
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
+	"sourceSize": {"w":64,"h":32}
 },
 "man.png":
 {
-	"frame": {"x":63,"y":32,"w":27,"h":59},
+	"frame": {"x":64,"y":32,"w":27,"h":59},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":59},
@@ -34,19 +34,19 @@
 },
 "stone1.png":
 {
-	"frame": {"x":158,"y":0,"w":63,"h":32},
+	"frame": {"x":158,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
-	"sourceSize": {"w":63,"h":32}
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
+	"sourceSize": {"w":64,"h":32}
 },
 "swamp1.png":
 {
-	"frame": {"x":0,"y":32,"w":63,"h":32},
+	"frame": {"x":0,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
-	"sourceSize": {"w":63,"h":32}
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
+	"sourceSize": {"w":64,"h":32}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
@@ -55,6 +55,6 @@
 	"format": "RGBA8888",
 	"size": {"w":256,"h":256},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:79e98d3645912b70043ba5f6761673aa:c31a2d4f3de2c241c92eb70ec054cbc0:accbe1e7e294ded8391337fc1c446319$"
+	"smartupdate": "$TexturePacker:SmartUpdate:79e98d3645912b70043ba5f6761673aa:c31a2d4f3de2c241c92eb70ec054cbc0:accbe1e7e294ded8391337fc1c446419$"
 }
 }

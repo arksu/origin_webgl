@@ -22,6 +22,8 @@ export default class Game {
      */
     private readonly app: PIXI.Application;
 
+    private destroyed: boolean = false
+
     /**
      * контейнер в котором храним контейнеры с гридами и тайлами
      * их координаты внутри абсолютные мировые экранные
@@ -89,13 +91,15 @@ export default class Game {
 
     constructor() {
         this.app = new PIXI.Application({
+            width: window.innerWidth,
+            height: window.innerHeight,
             view: Game.canvas,
             autoDensity: true,
             preserveDrawingBuffer: true,
             powerPreference: 'high-performance',
-            resizeTo: window,
+            // resizeTo: window,
             antialias: false,
-            clearBeforeRender: true,
+            // clearBeforeRender: true,
             backgroundColor: 0x333333
         });
         // this.app.renderer.resize(Game.canvas.width, Game.canvas.height);
@@ -120,10 +124,13 @@ export default class Game {
 
         this.screenSprite.on('mousedown', this.onMouseDown.bind(this));
         this.screenSprite.on('touchstart', this.onMouseDown.bind(this));
+
         this.screenSprite.on('mouseup', this.onMouseUp.bind(this));
         this.screenSprite.on('touchend', this.onMouseUp.bind(this));
+
         this.screenSprite.on('mousemove', this.onMouseMove.bind(this));
         this.screenSprite.on('touchmove', this.onMouseMove.bind(this));
+
         this.screenSprite.on('mousewheel', this.onMouseWheel.bind(this));
 
 
@@ -152,6 +159,7 @@ export default class Game {
             this.grids[i].destroy()
         }
         this.mapGrids.destroy({children: true})
+        this.destroyed = true
     }
 
     private setup() {
@@ -162,7 +170,9 @@ export default class Game {
 
             let grid: Grid = new Grid(this.app, x, y);
 
-            this.mapGrids.addChild(grid.container);
+            for (let i = 0; i < grid.containers.length; i++) {
+                this.mapGrids.addChild(grid.containers[i]);
+            }
             this.grids.push(grid);
         }
         this.crossTemp = PIXI.Sprite.from("man.png");
@@ -175,6 +185,7 @@ export default class Game {
         // Net.remoteCall("touchdown", {
         //     ee: e.data
         // })
+
 
         this.dragStart = new Point(e.data.global).round();
         this.dragOffset = new Point(this.offset);
@@ -272,9 +283,15 @@ export default class Game {
     }
 
     private update() {
+        if (this.destroyed) return
+
         // delta time in seconds
         // важно. берем elapsedMS т.к. у нас сервер управляет движением. и нам надо абсолютное время ни от чего не зависящее
         let dt = PIXI.Ticker.shared.elapsedMS / 1000
+
+        if (this.app.renderer.width !== this.screenSprite.width || this.app.renderer.height !== this.screenSprite.height) {
+            this.onResize()
+        }
 
         for (let key in this.movingObjects) {
             let moveController = this.movingObjects[key].moveController
@@ -307,8 +324,15 @@ export default class Game {
         ).mulValue(Tile.TILE_SIZE).incValue(px, py).round();
     }
 
-    private static onResize() {
-        this.instance?.updateMapScalePos()
+    private onResize() {
+        // Game.canvas.height = window.innerHeight
+        // Game.canvas.width = window.innerWidth
+
+        this.app.renderer.resize(window.innerWidth, window.innerHeight)
+
+        this.screenSprite.width = this.app.renderer.width
+        this.screenSprite.height = this.app.renderer.height
+        this.updateMapScalePos()
     }
 
     /**
@@ -338,13 +362,13 @@ export default class Game {
                 resizeTimeout = setTimeout(() => {
                     resizeTimeout = undefined;
                     console.log("resize");
-                    Game.onResize();
+                    Game.instance?.onResize();
                 }, 333);
             }
         });
 
         window.addEventListener("orientationchange", () => {
-            Game.onResize();
+            Game.instance?.onResize();
         });
     }
 }
