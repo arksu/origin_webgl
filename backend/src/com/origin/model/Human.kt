@@ -4,7 +4,6 @@ import com.origin.ServerConfig
 import com.origin.utils.ObjectID
 import com.origin.utils.Vec2i
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import java.util.*
 
 /**
  * гуманоид
@@ -32,6 +31,11 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * нужно чтобы часто не обновлять список видимых (слишком накладно)
      */
     private var lastPosUpdateVisible: Vec2i? = null
+
+    override suspend fun afterSpawn() {
+        super.afterSpawn()
+        updateVisibleObjects(true)
+    }
 
     /**
      * добавили объект в грид в котором находится объект
@@ -64,38 +68,27 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * @param force принудительно, иначе проверка будет только если отошли на значительное расстояние от точки последней проверки
      */
     suspend fun updateVisibleObjects(force: Boolean) {
-        // TODO updateVisibleObjects
-
         if (force || (lastPosUpdateVisible != null
                     && pos.point != lastPosUpdateVisible
                     && pos.point.dist(lastPosUpdateVisible!!) > ServerConfig.VISIBLE_UPDATE_DISTANCE)
         ) {
-            // запомним те объекты которые видимы при текущем апдейте
-            val newList = LinkedList<GameObject>()
-
             var newCounter = 0
+            var delCounter = 0
             // проходим по всем гридам в которых находимся
             for (grid in grids) {
-                // TODO grid objects
-                newCounter++
-            }
-
-            // какие объекты больше не видимы?
-            val del = LinkedList<GameObject>()
-            knownList.getKnownObjects().forEach {
-                // если в новом списке нет - значит больше не видим,
-                // пометим на удаление
-                if (!newList.contains(it)) {
-                    del.add(it)
+                // по всем объектам в гридах
+                for (o in grid.objects) {
+                    // если объект реально видим для меня
+                    if (isObjectVisibleForMe(o)) {
+                        if (knownList.addKnownObject(o)) newCounter++
+                    } else {
+                        if (knownList.removeKnownObject(o)) delCounter++
+                    }
                 }
-            }
-            // удалим объекты которые больше не видим
-            del.forEach {
-                knownList.removeKnownObject(it)
             }
 
             lastPosUpdateVisible = pos.point.clone()
-            logger.debug("updateVisibleObjects $this new=$newCounter vis=${newList.size} del=${del.size}")
+            logger.debug("updateVisibleObjects $this total vis=${knownList.size()} new=$newCounter del=${delCounter}")
         }
     }
 }

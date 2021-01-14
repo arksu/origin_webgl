@@ -1,7 +1,6 @@
 package com.origin.model
 
 import com.origin.model.move.Position
-import com.origin.net.model.ObjectAdd
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
@@ -98,12 +97,7 @@ open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int,
         when (msg) {
             is GameObjectMsg.Spawn -> {
                 val result = pos.spawn()
-                if (result) {
-                    afterSpawn()
-                    if (this is Player) {
-                        this.session.send(ObjectAdd(this))
-                    }
-                }
+                if (result) afterSpawn()
                 msg.resp.complete(result)
             }
             is GameObjectMsg.Remove -> {

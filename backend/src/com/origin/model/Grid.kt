@@ -67,7 +67,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     /**
      * список объектов в гриде
      */
-    private val objects = ConcurrentLinkedQueue<GameObject>()
+    val objects = ConcurrentLinkedQueue<GameObject>()
 
     /**
      * активен ли грид?

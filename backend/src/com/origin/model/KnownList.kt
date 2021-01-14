@@ -23,31 +23,60 @@ class KnownList(private val activeObject: GameObject) {
         return knownObjects.containsKey(obj.id)
     }
 
+    /**
+     * добавить объект в список известных мне
+     * @return true если объект еще НЕ был известен мне
+     */
     suspend fun addKnownObject(obj: GameObject): Boolean {
         if (isKnownObject(obj)) return false
 
-        val result = knownObjects.put(obj.id, obj) == null
-        if (result && obj is Player) {
+        knownObjects[obj.id] = obj
+
+        if (obj is Player) {
             knownPlayers[obj.id] = obj
         }
-        if (result && activeObject is Player) {
+        if (activeObject is Player) {
             activeObject.session.send(ObjectAdd(obj))
         }
-        return result
+
+        return true
     }
 
+    /**
+     * удалить объект из списка известных мне
+     * @return true если объект был известен мне
+     */
     suspend fun removeKnownObject(obj: GameObject): Boolean {
         val result = knownObjects.remove(obj.id) != null
-        if (result && obj is Player) {
-            knownPlayers.remove(obj.id)
-        }
-        if (result && activeObject is Player) {
-            activeObject.session.send(ObjectDel(obj))
+        if (result) {
+            if (obj is Player) {
+                knownPlayers.remove(obj.id)
+            }
+            if (activeObject is Player) {
+                activeObject.session.send(ObjectDel(obj))
+            }
         }
         return result
     }
 
-    fun getKnownObjects(): Collection<GameObject> {
+    private fun getKnownObjects(): Collection<GameObject> {
         return knownObjects.values
+    }
+
+    /**
+     * очистить список
+     * послать пакеты удаления объектов на клиент
+     */
+    suspend fun clear() {
+        if (activeObject is Player) {
+            for (o in knownObjects.values) {
+                activeObject.session.send(ObjectDel(o))
+            }
+        }
+        knownObjects.clear()
+    }
+
+    fun size(): Int {
+        return knownObjects.size
     }
 }
