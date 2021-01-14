@@ -57,6 +57,12 @@ export default class Point {
         return this;
     }
 
+    public divValue(v: number): Point {
+        this.x /= v;
+        this.y /= v;
+        return this;
+    }
+
     public round(): Point {
         this.x = Math.round(this.x);
         this.y = Math.round(this.y);

@@ -3,11 +3,11 @@ export default class Tile {
     /**
      * размеры текстуры тайла
      */
-    public static readonly TEXTURE_WIDTH = 64;
-    public static readonly TEXTURE_HEIGTH = 32;
+    public static readonly TEXTURE_WIDTH = 63;
+    public static readonly TEXTURE_HEIGHT = 32;
 
     public static readonly TILE_WIDTH_HALF = Tile.TEXTURE_WIDTH / 2;
-    public static readonly TILE_HEIGHT_HALF = Tile.TEXTURE_HEIGTH / 2;
+    public static readonly TILE_HEIGHT_HALF = Tile.TEXTURE_HEIGHT / 2;
 
     public static readonly GRID_SIZE = 100;
 

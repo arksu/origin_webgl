@@ -10,8 +10,8 @@ export default class Grid {
 
     private app: PIXI.Application
 
-    private x: number
-    private y: number
+    private readonly x: number
+    private readonly y: number
 
     private tiles: PIXI.Sprite[] = [];
 
@@ -20,6 +20,7 @@ export default class Grid {
         this.x = x;
         this.y = y;
 
+        // создаем чанки грида 4x4
         for (let cx = 0; cx < 2; cx++) {
             for (let cy = 0; cy < 2; cy++) {
                 let container = this.makeChunk(cx, cy)
@@ -36,12 +37,12 @@ export default class Grid {
 
     private makeChunk(cx: number, cy: number): PIXI.Container {
         let container = new PIXI.Container();
+        // координаты грида с учетом чанка
+        let x = this.x + cx * 0.5
+        let y = this.y + cy * 0.5
         // координаты грида ставим в абсолютные мировые в тайлах
-        let x = (this.x + cx * 0.5)
-        let y = (this.y + cy * 0.5)
         container.x = x * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE - y * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE - Tile.TILE_WIDTH_HALF;
         container.y = x * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE + y * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE;
-
 
         this.makeTiles(container, cx, cy);
         container.calculateBounds()

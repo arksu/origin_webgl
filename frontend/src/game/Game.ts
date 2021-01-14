@@ -45,8 +45,6 @@ export default class Game {
      */
     private scale: number = 1;
 
-    private crossTemp ?: PIXI.Sprite;
-
     /**
      * "перетаскивание" карты мышью
      */
@@ -78,6 +76,11 @@ export default class Game {
      * апдейтим их позицию каждый тик через move controller
      */
     public movingObjects: { [key: number]: GameObject } = {}
+
+    /**
+     * внешнее представление объектов (спрайты)
+     */
+    private objectsView: { [key: number]: PIXI.Sprite | PIXI.Container } = {}
 
     public static start() {
         console.warn("pixi start");
@@ -174,6 +177,7 @@ export default class Game {
     }
 
     private setup() {
+        // идем по всем полученным кусочкам карты
         for (let key in Client.instance.map) {
             let s = key.split("_");
             let x: number = +s[0];
@@ -186,9 +190,13 @@ export default class Game {
             }
             this.grids.push(grid);
         }
-        this.crossTemp = PIXI.Sprite.from("man.png");
-        this.app.stage.addChild(this.crossTemp)
 
+        // пройдем по всем уже полученным объектам и добавим их в игровой мир
+        for (let key in Client.instance.objects) {
+            this.onObjectAdd(Client.instance.objects[key])
+        }
+
+        // обновим положение карты
         this.updateMapScalePos();
     }
 
@@ -310,6 +318,7 @@ export default class Game {
         let sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
         let sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
 
+        // центр экрана с учетом отступа перетаскиванием
         let offx = this.app.renderer.width / 2 + this.offset.x;
         let offy = this.app.renderer.height / 2 + this.offset.y;
 
@@ -318,13 +327,6 @@ export default class Game {
 
         this.mapGrids.scale.x = this.scale;
         this.mapGrids.scale.y = this.scale;
-
-        if (this.crossTemp) {
-            this.crossTemp.scale.set(this.scale);
-            // TODO
-            this.crossTemp.x = offx - 17 * this.scale;
-            this.crossTemp.y = offy - 57 * this.scale;
-        }
     }
 
     private update() {
@@ -363,12 +365,18 @@ export default class Game {
 
         let screenWidthHalf = this.app.renderer.width / 2;
         let screenHeightHalf = this.app.renderer.height / 2;
-        p.decValue(screenWidthHalf, screenHeightHalf).mulValue(1 / this.scale);
+        p.decValue(screenWidthHalf, screenHeightHalf).divValue(this.scale);
 
         return new Point(
-            p.y / Tile.TEXTURE_HEIGTH + p.x / Tile.TEXTURE_WIDTH,
-            p.y / Tile.TEXTURE_HEIGTH - p.x / Tile.TEXTURE_WIDTH
-        ).mulValue(Tile.TILE_SIZE).incValue(px, py).round();
+            p.y / Tile.TEXTURE_HEIGHT + p.x / Tile.TEXTURE_WIDTH,
+            p.y / Tile.TEXTURE_HEIGHT - p.x / Tile.TEXTURE_WIDTH)
+            .mulValue(Tile.TILE_SIZE)
+            .incValue(px, py)
+            .round();
+    }
+
+    private coordGame2GameMap(p: Point) {
+
     }
 
     private onResize() {
@@ -377,6 +385,49 @@ export default class Game {
         this.screenSprite.width = this.app.renderer.width
         this.screenSprite.height = this.app.renderer.height
         this.updateMapScalePos()
+    }
+
+    public onObjectAdd(obj: GameObject) {
+        if (this.objectsView[obj.id] === undefined) {
+            let sprite = PIXI.Sprite.from("man.png");
+            let px = obj.x / Tile.TILE_SIZE;
+            let py = obj.y / Tile.TILE_SIZE;
+
+            sprite.x = px * Tile.TILE_WIDTH_HALF - py * Tile.TILE_WIDTH_HALF;
+            sprite.y = px * Tile.TILE_HEIGHT_HALF + py * Tile.TILE_HEIGHT_HALF;
+
+            sprite.x -= 17
+            sprite.y -= 57
+
+            this.objectsView[obj.id] = sprite
+            this.mapGrids.addChild(sprite)
+        }
+    }
+
+    public onObjectMoved(obj: GameObject) {
+        let sprite = this.objectsView[obj.id];
+        if (sprite !== undefined) {
+            let px = obj.x / Tile.TILE_SIZE;
+            let py = obj.y / Tile.TILE_SIZE;
+            
+            sprite.x = px * Tile.TILE_WIDTH_HALF - py * Tile.TILE_WIDTH_HALF;
+            sprite.y = px * Tile.TILE_HEIGHT_HALF + py * Tile.TILE_HEIGHT_HALF;
+            sprite.x -= 17
+            sprite.y -= 57
+        }
+    }
+
+    public onObjectDelete(obj: GameObject) {
+        if (this.objectsView[obj.id] !== undefined) {
+            this.objectsView[obj.id].destroy({
+                children: true
+            })
+            delete this.objectsView[obj.id]
+        }
+    }
+
+    public onObjectChange(obj: GameObject) {
+        // TODO onObjectChange
     }
 
     /**

@@ -230,11 +230,13 @@ export default class Net {
             }
             case "obja": { // object add
                 Client.instance.objects[data.id] = data
+                Game.instance?.onObjectAdd(data)
                 Game.instance?.updateMapScalePos()
                 break;
             }
             case "objd": { // object delete
                 delete Client.instance.objects[data.id];
+                Game.instance?.onObjectDelete(data)
                 break;
             }
             case "objm" : { // object move

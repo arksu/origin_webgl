@@ -1,5 +1,6 @@
 import {GameObject} from "@/game/GameObject";
 import Game from "@/game/Game";
+import Client from "@/net/Client";
 
 export default class MoveController {
 
@@ -93,6 +94,7 @@ export default class MoveController {
             this.me.x += dx;
             this.me.y += dy;
         }
-        Game.instance?.updateMapScalePos()
+        Game.instance?.onObjectMoved(this.me)
+        if (Client.instance.selectedCharacterId == this.me.id) Game.instance?.updateMapScalePos()
     }
 }
