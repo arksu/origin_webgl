@@ -115,7 +115,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         }
     }
 
-    suspend fun stopMove() {
+    open suspend fun stopMove() {
         logger.warn("stopMove")
         moveController?.stop()
         storePositionInDb()

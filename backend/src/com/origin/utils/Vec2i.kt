@@ -62,7 +62,7 @@ class Vec2i(
      * дистанция между этой точкой и другой
      */
     fun dist(p: Vec2i): Int {
-        return sqrt((p.x - x).toDouble().pow(2) + (p.y - x).toDouble().pow(2)).roundToInt()
+        return sqrt((p.x - x).toDouble().pow(2) + (p.y - y).toDouble().pow(2)).roundToInt()
     }
 
     fun clone(): Vec2i {

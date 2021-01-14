@@ -6,6 +6,7 @@ import com.origin.model.BroadcastEvent
 import com.origin.model.GridMsg
 import com.origin.model.Human
 import com.origin.model.MovingObject
+import com.origin.net.logger
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -22,7 +23,7 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
         // чтобы убедиться что мы можем туда передвигаться
         val (nx, ny) = calcNewPoint(1.0 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
 
-//        logger.debug("nx=$nx ny=$ny")
+        logger.debug("nx=$nx ny=$ny")
 
         // проверим коллизию с этой новой точкой
         val c = checkCollision(nx.roundToInt(), ny.roundToInt(), null, false)
@@ -55,9 +56,6 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
 
         when (c.result) {
             CollisionResult.CollisionType.COLLISION_NONE -> {
-                if (me is Human) {
-                    me.updateVisibleObjects(false)
-                }
 
                 // сколько осталось идти до конечной точки
                 val left = sqrt((toX - x).toDouble().pow(2) + (toY - y).toDouble().pow(2))
@@ -66,6 +64,9 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
                     me.stopMove()
                     true
                 } else {
+                    if (me is Human) {
+                        me.updateVisibleObjects(false)
+                    }
                     me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.Moved(
                         me, toX, toY, speed, moveType
                     )))

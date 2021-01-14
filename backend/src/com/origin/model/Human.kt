@@ -2,6 +2,7 @@ package com.origin.model
 
 import com.origin.ServerConfig
 import com.origin.utils.ObjectID
+import com.origin.utils.TILE_SIZE
 import com.origin.utils.Vec2i
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
@@ -17,7 +18,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * дистанция на которой мы видим объекты
      * может изменяться динамически (ночью видим хуже)
      */
-    private var visibleDistance = 500
+    private var visibleDistance = 6 * TILE_SIZE
 
     /**
      * объекты которые известны мне, инфа о которых отправляется и синхронизирована с клиентом
@@ -88,7 +89,12 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
             }
 
             lastPosUpdateVisible = pos.point.clone()
-            logger.debug("updateVisibleObjects $this total vis=${knownList.size()} new=$newCounter del=${delCounter}")
+            logger.warn("updateVisibleObjects $this total vis=${knownList.size()} new=$newCounter del=${delCounter}")
         }
+    }
+
+    override suspend fun stopMove() {
+        super.stopMove()
+        updateVisibleObjects(false)
     }
 }

@@ -32,7 +32,7 @@ object ServerConfig {
     /**
      * дистанция которую нужно пройти чтобы произошел апдейт видимых объектов
      */
-    var VISIBLE_UPDATE_DISTANCE = TILE_SIZE * 5
+    var VISIBLE_UPDATE_DISTANCE = TILE_SIZE * 1
 
     @JvmStatic
     fun load() {

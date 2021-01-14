@@ -241,10 +241,12 @@ export default class Net {
             }
             case "objm" : { // object move
                 let obj = Client.instance.objects[data.id];
-                if (obj.moveController === undefined) {
-                    obj.moveController = new MoveController(obj, data)
-                } else {
-                    obj.moveController.applyData(data)
+                if (obj !== undefined) {
+                    if (obj.moveController === undefined) {
+                        obj.moveController = new MoveController(obj, data)
+                    } else {
+                        obj.moveController.applyData(data)
+                    }
                 }
 
                 break;
