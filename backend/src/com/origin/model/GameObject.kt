@@ -137,23 +137,19 @@ open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int,
     /**
      * когда ЭТОТ объект удален из грида
      */
-    private fun onRemoved() {
+    protected open suspend fun onRemoved() {
         logger.warn("onRemoved")
-        // TODO known list
     }
 
     /**
      * ДРУГОЙ добавили объект в грид в котором находится объект
      */
     open suspend fun onObjectAdded(obj: GameObject) {
-        // TODO known list
     }
 
     /**
      * грид говорит что ДРУГОЙ объект был удален
      */
-    open suspend fun onObjectRemoved(obj: GameObject) {
-        // TODO known list
-        logger.debug("onObjectRemoved $this")
+    protected open suspend fun onObjectRemoved(obj: GameObject) {
     }
 }

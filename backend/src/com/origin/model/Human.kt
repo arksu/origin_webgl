@@ -39,9 +39,18 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     }
 
     /**
+     * когда ЭТОТ объект удален из грида
+     */
+    override suspend fun onRemoved() {
+        super.onRemoved()
+        knownList.clear()
+    }
+
+    /**
      * добавили объект в грид в котором находится объект
      */
     override suspend fun onObjectAdded(obj: GameObject) {
+        super.onObjectAdded(obj)
         if (isObjectVisibleForMe(obj)) {
             knownList.addKnownObject(obj)
         }
@@ -51,6 +60,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * грид говорит что какой то объект был удален
      */
     override suspend fun onObjectRemoved(obj: GameObject) {
+        super.onObjectRemoved(obj)
         logger.debug("human onObjectRemoved $obj")
         knownList.removeKnownObject(obj)
     }
