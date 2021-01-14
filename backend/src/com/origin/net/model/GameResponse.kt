@@ -85,6 +85,17 @@ class ObjectDel(obj: GameObject) : ServerMessage("objd") {
 }
 
 @ObsoleteCoroutinesApi
+class ObjectStartMove(m: BroadcastEvent.StartMove) : ServerMessage("objm") {
+    val id = m.obj.id
+    val tx = m.toX
+    val ty = m.toY
+    val x = m.obj.pos.x
+    val y = m.obj.pos.y
+    val s = m.speed
+    val mt = m.moveType
+}
+
+@ObsoleteCoroutinesApi
 class ObjectMoved(m: BroadcastEvent.Moved) : ServerMessage("objm") {
     val id = m.obj.id
     val tx = m.toX

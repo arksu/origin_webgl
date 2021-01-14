@@ -10,8 +10,8 @@ export default class Grid {
 
     private app: PIXI.Application
 
-    private readonly x: number
-    private readonly y: number
+    public readonly x: number
+    public readonly y: number
 
     private tiles: PIXI.Sprite[] = [];
 
@@ -31,7 +31,9 @@ export default class Grid {
 
     public destroy() {
         for (let container of this.containers) {
-            container.destroy()
+            container.destroy({
+                children: true
+            })
         }
     }
 

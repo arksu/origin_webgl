@@ -1,10 +1,7 @@
 package com.origin.model.move
 
 import com.origin.collision.CollisionResult
-import com.origin.model.GameObject
-import com.origin.model.Grid
-import com.origin.model.GridMsg
-import com.origin.model.World
+import com.origin.model.*
 import com.origin.utils.GRID_FULL_SIZE
 import com.origin.utils.Vec2i
 import kotlinx.coroutines.CompletableDeferred
@@ -44,8 +41,8 @@ class Position(
     /**
      * координаты грида
      */
-    val gridX = x / GRID_FULL_SIZE
-    val gridY = y / GRID_FULL_SIZE
+    val gridX get() = point.x / GRID_FULL_SIZE
+    val gridY get() = point.y / GRID_FULL_SIZE
 
     /**
      * заспавнить объект в мир
@@ -74,22 +71,33 @@ class Position(
         return point.dist(other.point);
     }
 
-    fun setXY(x: Double, y: Double) {
+    suspend fun setXY(x: Double, y: Double) {
         setXY(x.roundToInt(), y.roundToInt())
     }
 
-    fun setXY(x: Int, y: Int) {
+    /**
+     * установка новых координат
+     */
+    suspend fun setXY(x: Int, y: Int) {
         logger.debug("setXY")
+
+        // запомним координаты старого грида
+        val oldgx = gridX
+        val oldgy = gridY
+
+        // поставим новые координаты
         this.point.x = x
         this.point.y = y
-        updateGrid()
-    }
 
-    private fun updateGrid() {
-        // TODO updateGrid
-    }
-
-    fun clone(): Position {
-        return Position(x, y, level, region, heading, parent)
+        // если координаты грида изменились
+        if (oldgx != gridX || oldgy != gridY) {
+            val oldGrid = grid
+            // получим новый грид из мира
+            grid = World.getGrid(this)
+            if (parent is MovingObject) {
+                // уведомим объект о смене грида
+                parent.onGridChanged()
+            }
+        }
     }
 }

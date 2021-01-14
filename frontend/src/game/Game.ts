@@ -182,13 +182,7 @@ export default class Game {
             let s = key.split("_");
             let x: number = +s[0];
             let y: number = +s[1];
-
-            let grid: Grid = new Grid(this.app, x, y);
-
-            for (let i = 0; i < grid.containers.length; i++) {
-                this.mapGrids.addChild(grid.containers[i]);
-            }
-            this.grids.push(grid);
+            this.addGrid(x, y)
         }
 
         // пройдем по всем уже полученным объектам и добавим их в игровой мир
@@ -198,6 +192,25 @@ export default class Game {
 
         // обновим положение карты
         this.updateMapScalePos();
+    }
+
+    public addGrid(x: number, y: number) {
+        let grid: Grid = new Grid(this.app, x, y);
+
+        for (let i = 0; i < grid.containers.length; i++) {
+            this.mapGrids.addChild(grid.containers[i]);
+        }
+        this.grids.push(grid);
+    }
+
+    public deleteGrid(x: number, y: number) {
+        for (let i = 0; i < this.grids.length; i++) {
+            if (this.grids[i].x == x && this.grids[i].y == y) {
+                this.grids[i].destroy()
+                this.grids.splice(i, 1)
+                break
+            }
+        }
     }
 
     private onMouseDown(e: PIXI.InteractionEvent) {
@@ -303,7 +316,6 @@ export default class Game {
 
     private updateScale() {
         if (this.scale < 0.05) this.scale = 0.05
-        console.log("scale=" + this.scale)
         this.updateMapScalePos();
     }
 
@@ -409,7 +421,7 @@ export default class Game {
         if (sprite !== undefined) {
             let px = obj.x / Tile.TILE_SIZE;
             let py = obj.y / Tile.TILE_SIZE;
-            
+
             sprite.x = px * Tile.TILE_WIDTH_HALF - py * Tile.TILE_WIDTH_HALF;
             sprite.y = px * Tile.TILE_HEIGHT_HALF + py * Tile.TILE_HEIGHT_HALF;
             sprite.x -= 17

@@ -223,8 +223,10 @@ export default class Net {
                 // a=1 это добавление куска карты
                 if (data.a == 1) {
                     Client.instance.map[key] = data.tiles;
+                    Game.instance?.addGrid(data.x, data.y)
                 } else {
                     delete Client.instance.map[key]
+                    Game.instance?.deleteGrid(data.x, data.y)
                 }
                 break;
             }
@@ -253,12 +255,14 @@ export default class Net {
             }
             case "objs" : { // object stop
                 let obj = Client.instance.objects[data.id];
-                if (obj.moveController !== undefined) {
-                    obj.moveController.stop()
-                    obj.moveController = undefined
+                if (obj !== undefined) {
+                    if (obj.moveController !== undefined) {
+                        obj.moveController.stop()
+                        obj.moveController = undefined
+                    }
+                    obj.x = data.x
+                    obj.y = data.y
                 }
-                obj.x = data.x
-                obj.y = data.y
 
                 Game.instance?.updateMapScalePos()
 

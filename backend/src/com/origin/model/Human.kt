@@ -1,9 +1,13 @@
 package com.origin.model
 
 import com.origin.ServerConfig
+import com.origin.net.model.ObjectMoved
+import com.origin.net.model.ObjectStartMove
+import com.origin.net.model.ObjectStopped
 import com.origin.utils.ObjectID
 import com.origin.utils.TILE_SIZE
 import com.origin.utils.Vec2i
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
@@ -32,6 +36,52 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * нужно чтобы часто не обновлять список видимых (слишком накладно)
      */
     private var lastPosUpdateVisible: Vec2i? = null
+
+    override suspend fun processMessage(msg: Any) {
+        when (msg) {
+            is BroadcastEvent.StartMove -> {
+                if (this is Player) session.send(ObjectStartMove(msg))
+            }
+            is BroadcastEvent.Moved -> {
+                // если мы знаем объект
+                if (knownList.isKnownObject(msg.obj)) {
+                    // больше его не видим
+                    if (!isObjectVisibleForMe(msg.obj)) {
+                        // удаляем объект из видимых
+                        knownList.removeKnownObject(msg.obj)
+                    } else {
+                        if (this is Player) session.send(ObjectMoved(msg))
+                    }
+                } else {
+                    // объект не знаем. но видим
+                    if (isObjectVisibleForMe(msg.obj)) {
+                        knownList.addKnownObject(msg.obj)
+                    }
+                    if (this is Player) session.send(ObjectMoved(msg))
+                }
+            }
+            is BroadcastEvent.Stopped -> {
+                // если мы знаем объект
+                if (knownList.isKnownObject(msg.obj)) {
+                    // больше его не видим
+                    if (!isObjectVisibleForMe(msg.obj)) {
+                        // удаляем объект из видимых
+                        knownList.removeKnownObject(msg.obj)
+                    } else {
+                        if (this is Player) session.send(ObjectStopped(msg))
+                    }
+                } else {
+                    // объект не знаем. но видим
+                    if (isObjectVisibleForMe(msg.obj)) {
+                        knownList.addKnownObject(msg.obj)
+                    } else {
+                        if (this is Player) session.send(ObjectStopped(msg))
+                    }
+                }
+            }
+            else -> super.processMessage(msg)
+        }
+    }
 
     override suspend fun afterSpawn() {
         super.afterSpawn()
@@ -106,5 +156,17 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     override suspend fun stopMove() {
         super.stopMove()
         updateVisibleObjects(false)
+    }
+
+    override suspend fun onEnterGrid(grid: Grid) {
+        super.onEnterGrid(grid)
+        logger.warn("Activate ${grid.x} ${grid.y}")
+        grid.sendJob(GridMsg.Activate(this, Job())).join()
+    }
+
+    override suspend fun onLeaveGrid(grid: Grid) {
+        super.onLeaveGrid(grid)
+        logger.warn("Deactivate ${grid.x} ${grid.y}")
+        grid.sendJob(GridMsg.Deactivate(this, Job())).join()
     }
 }

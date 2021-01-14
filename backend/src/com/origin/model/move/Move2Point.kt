@@ -36,7 +36,7 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
         super.start()
 
         // в самом начале движения пошлем пакет о том что объект уже начал движение
-        me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.Moved(
+        me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.StartMove(
             me, toX, toY, me.getMovementSpeed(), me.getMovementType()
         )))
     }

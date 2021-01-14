@@ -7,6 +7,7 @@ import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
 import com.origin.model.move.MoveType
 import com.origin.net.model.MapGridData
+import com.origin.utils.Vec2i
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +22,14 @@ import java.util.concurrent.ConcurrentLinkedQueue
 @ObsoleteCoroutinesApi
 sealed class BroadcastEvent {
     class Moved(
+        val obj: GameObject,
+        val toX: Int,
+        val toY: Int,
+        val speed: Double,
+        val moveType: MoveType,
+    ) : BroadcastEvent()
+
+    class StartMove(
         val obj: GameObject,
         val toX: Int,
         val toY: Int,
@@ -57,6 +66,8 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(Grid::class.java)
     }
+
+    val pos = Vec2i(x, y)
 
     /**
      * список активных объектов которые поддерживают этот грид активным
@@ -157,7 +168,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     /**
      * проверить коллизию
      */
-    private fun checkCollision(
+    private suspend fun checkCollision(
         obj: GameObject,
         toX: Int,
         toY: Int,
@@ -167,7 +178,10 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     ): CollisionResult {
 
         // TODO checkCollision implement
-
+        // шлем сообщения всем гридам задетых в коллизии
+        // последний получивший и обработает коллизию вернет результат в deferred и остальные сделают также
+        // таким образом на момент обработки коллизии
+        // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
 
         if (isMove) {
             obj.pos.setXY(toX, toY)

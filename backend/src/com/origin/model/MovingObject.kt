@@ -1,15 +1,14 @@
 package com.origin.model
 
 import com.origin.TimeController
-import com.origin.model.GridMsg.Activate
-import com.origin.model.GridMsg.Deactivate
 import com.origin.model.move.MoveController
 import com.origin.model.move.MoveMode
 import com.origin.model.move.MoveType
 import com.origin.utils.ObjectID
-import kotlinx.coroutines.Job
+import com.origin.utils.Vec2i
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.*
+import kotlin.collections.ArrayList
 
 sealed class MovingObjectMsg {
     class UpdateMove
@@ -73,12 +72,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
             if (grid.layer.validateCoord(gx, gy)) {
                 val g = World.getGrid(pos.region, pos.level, gx, gy)
                 grids.add(g)
-
-                if (this is Human) {
-                    val h = this
-                    logger.debug("Activate ${g.x} ${g.y}")
-                    g.sendJob(Activate(h, Job())).join()
-                }
+                onEnterGrid(g)
             }
         }
     }
@@ -92,8 +86,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         }
 
         if (this is Human) grids.forEach {
-            logger.debug("Deactivate ${it.x} ${it.y}")
-            it.sendJob(Deactivate(this, Job())).join()
+            onLeaveGrid(it)
         }
         grids.clear()
     }
@@ -174,7 +167,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     fun getMovementSpeed(): Double {
         val s = when (getMovementMode()) {
             MoveMode.STEAL -> 25.0
-            MoveMode.WALK -> 40.0
+            MoveMode.WALK -> 80.0
             MoveMode.RUN -> 120.0
         }
         // по воде движемся в 2 раза медленее
@@ -184,9 +177,52 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     /**
      * изменился грид в котором находимся. надо отреагировать
      */
-    fun onGridChanged() {
+    suspend fun onGridChanged() {
+        // новый список гридов в которых находимся (координаты)
+        val newList = ArrayList<Vec2i>(5)
+        // идем вокруг нового грида
+        for (x in -1..1) for (y in -1..1) {
+            val gx = grid.x + x
+            val gy = grid.y + y
+
+            // если координаты не валидные - продолжаем дальше
+            if (!grid.layer.validateCoord(gx, gy)) continue
+
+            // добавим координаты в список новых гридов
+            newList.add(Vec2i(gx, gy))
+
+            // ищем среди текущих гридов
+            var found = false
+            for (g in grids) {
+                if (g.x == gx && g.y == gy) {
+                    found = true
+                    break
+                }
+            }
+            // если грида с такими координатами еще не было
+            if (!found) {
+                // получим его из мира
+                val grid = World.getGrid(pos.region, pos.level, gx, gy)
+                // и добавим в список
+                grids.add(grid)
+                onEnterGrid(grid)
+            }
+        }
+        if (newList.isNotEmpty()) {
+            val toRemove = ArrayList<Grid>(5)
+            for (g in grids) {
+                if (!newList.contains(g.pos)) {
+                    onLeaveGrid(g)
+                    toRemove.add(g)
+                }
+            }
+            grids.removeAll(toRemove)
+        }
     }
 
-    fun onLeaveGrid() {
+    protected open suspend fun onEnterGrid(grid: Grid) {
+    }
+
+    protected open suspend fun onLeaveGrid(grid: Grid) {
     }
 }
