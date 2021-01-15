@@ -1,6 +1,7 @@
 import {GameObject} from "@/game/GameObject";
 import Game from "@/game/Game";
 import Client from "@/net/Client";
+import {ObjectMoved} from "@/net/Packets";
 
 export default class MoveController {
 
@@ -18,7 +19,7 @@ export default class MoveController {
 
     stopped: boolean = false
 
-    constructor(obj: GameObject, data: any) {
+    constructor(obj: GameObject, data: ObjectMoved) {
         console.warn("create MoveController")
         this.me = obj
 
@@ -32,7 +33,7 @@ export default class MoveController {
         }
     }
 
-    public applyData(data: any) {
+    public applyData(data: ObjectMoved) {
         this.serverX = data.x
         this.serverY = data.y
         this.toX = data.tx

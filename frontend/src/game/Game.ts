@@ -6,6 +6,7 @@ import Tile from "@/game/Tile";
 import Net from "@/net/Net";
 import Point from '@/utils/Point';
 import {GameObject} from "@/game/GameObject";
+import {ObjectAdd, ObjectDel} from "@/net/Packets";
 
 /**
  * основная игровая логика (графика и тд)

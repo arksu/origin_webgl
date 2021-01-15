@@ -63,7 +63,7 @@ abstract class ServerMessage(
  * @param add добавляем или удаляем грид с клиента
  */
 @ObsoleteCoroutinesApi
-class MapGridData(grid: Grid, add: Boolean) : ServerMessage("map") {
+class MapGridData(grid: Grid, add: Boolean) : ServerMessage("m") {
     val x: Int = grid.x
     val y: Int = grid.y
     val a: Int = if (add) 1 else 0
@@ -71,7 +71,7 @@ class MapGridData(grid: Grid, add: Boolean) : ServerMessage("map") {
 }
 
 @ObsoleteCoroutinesApi
-class ObjectAdd(obj: GameObject) : ServerMessage("obja") {
+class ObjectAdd(obj: GameObject) : ServerMessage("oa") {
     val id = obj.id
     val x = obj.pos.x
     val y = obj.pos.y
@@ -80,12 +80,12 @@ class ObjectAdd(obj: GameObject) : ServerMessage("obja") {
 }
 
 @ObsoleteCoroutinesApi
-class ObjectDel(obj: GameObject) : ServerMessage("objd") {
+class ObjectDel(obj: GameObject) : ServerMessage("od") {
     val id = obj.id
 }
 
 @ObsoleteCoroutinesApi
-class ObjectStartMove(m: BroadcastEvent.StartMove) : ServerMessage("objm") {
+class ObjectStartMove(m: BroadcastEvent.StartMove) : ServerMessage("om") {
     val id = m.obj.id
     val tx = m.toX
     val ty = m.toY
@@ -96,7 +96,7 @@ class ObjectStartMove(m: BroadcastEvent.StartMove) : ServerMessage("objm") {
 }
 
 @ObsoleteCoroutinesApi
-class ObjectMoved(m: BroadcastEvent.Moved) : ServerMessage("objm") {
+class ObjectMoved(m: BroadcastEvent.Moved) : ServerMessage("om") {
     val id = m.obj.id
     val tx = m.toX
     val ty = m.toY
@@ -107,7 +107,7 @@ class ObjectMoved(m: BroadcastEvent.Moved) : ServerMessage("objm") {
 }
 
 @ObsoleteCoroutinesApi
-class ObjectStopped(m: BroadcastEvent.Stopped) : ServerMessage("objs") {
+class ObjectStopped(m: BroadcastEvent.Stopped) : ServerMessage("os") {
     val id = m.obj.id
     val x = m.obj.pos.x
     val y = m.obj.pos.y

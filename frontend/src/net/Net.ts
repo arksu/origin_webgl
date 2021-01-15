@@ -2,6 +2,7 @@ import _ from "lodash";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
 import MoveController from "@/game/MoveController";
+import {MapGridData, ObjectAdd, ObjectDel, ObjectMoved} from "@/net/Packets";
 
 enum State {
     Disconnected,
@@ -218,42 +219,43 @@ export default class Net {
      */
     protected onChannelMessage(channel: string, data: any) {
         switch (channel) {
-            case "map": {
-                let key = data.x + "_" + data.y;
+            case "m": {
+                let p = (<MapGridData>data)
+                let key = p.x + "_" + p.y;
                 // a=1 это добавление куска карты
-                if (data.a == 1) {
-                    Client.instance.map[key] = data.tiles;
-                    Game.instance?.addGrid(data.x, data.y)
+                if (p.a == 1) {
+                    Client.instance.map[key] = p.tiles;
+                    Game.instance?.addGrid(p.x, p.y)
                 } else {
                     delete Client.instance.map[key]
-                    Game.instance?.deleteGrid(data.x, data.y)
+                    Game.instance?.deleteGrid(p.x, p.y)
                 }
                 break;
             }
-            case "obja": { // object add
+            case "oa": { // object add
                 Client.instance.objects[data.id] = data
-                Game.instance?.onObjectAdd(data)
+                Game.instance?.onObjectAdd((<ObjectAdd>data))
                 Game.instance?.updateMapScalePos()
                 break;
             }
-            case "objd": { // object delete
-                delete Client.instance.objects[data.id];
-                Game.instance?.onObjectDelete(data)
+            case "od": { // object delete
+                Game.instance?.onObjectDelete(Client.instance.objects[(<ObjectDel>data).id])
+                delete Client.instance.objects[(<ObjectDel>data).id];
                 break;
             }
-            case "objm" : { // object move
+            case "om" : { // object move
                 let obj = Client.instance.objects[data.id];
                 if (obj !== undefined) {
                     if (obj.moveController === undefined) {
-                        obj.moveController = new MoveController(obj, data)
+                        obj.moveController = new MoveController(obj, (<ObjectMoved>data))
                     } else {
-                        obj.moveController.applyData(data)
+                        obj.moveController.applyData((<ObjectMoved>data))
                     }
                 }
 
                 break;
             }
-            case "objs" : { // object stop
+            case "os" : { // object stop
                 let obj = Client.instance.objects[data.id];
                 if (obj !== undefined) {
                     if (obj.moveController !== undefined) {

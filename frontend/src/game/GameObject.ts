@@ -1,8 +1,6 @@
 import MoveController from "@/game/MoveController";
+import {ObjectAdd} from "@/net/Packets";
 
-export interface GameObject {
-    id: number
-    x: number
-    y: number
+export interface GameObject extends ObjectAdd {
     moveController?: MoveController
 }
