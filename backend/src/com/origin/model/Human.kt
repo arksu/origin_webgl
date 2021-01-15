@@ -160,7 +160,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
 
     override suspend fun onEnterGrid(grid: Grid) {
         super.onEnterGrid(grid)
-        logger.warn("Activate ${grid.x} ${grid.y}")
+        logger.warn("Activate ${grid.x} ${grid.y} pos=$pos")
         grid.sendJob(GridMsg.Activate(this, Job())).join()
     }
 

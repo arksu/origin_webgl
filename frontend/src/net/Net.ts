@@ -2,7 +2,7 @@ import _ from "lodash";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
 import MoveController from "@/game/MoveController";
-import {MapGridData, ObjectAdd, ObjectDel, ObjectMoved} from "@/net/Packets";
+import {MapGridData, ObjectDel, ObjectMoved} from "@/net/Packets";
 
 enum State {
     Disconnected,
@@ -234,7 +234,7 @@ export default class Net {
             }
             case "oa": { // object add
                 Client.instance.objects[data.id] = data
-                Game.instance?.onObjectAdd((<ObjectAdd>data))
+                Game.instance?.onObjectAdd(Client.instance.objects[data.id])
                 Game.instance?.updateMapScalePos()
                 break;
             }
@@ -264,6 +264,7 @@ export default class Net {
                     }
                     obj.x = data.x
                     obj.y = data.y
+                    obj.view?.onMoved()
                 }
 
                 Game.instance?.updateMapScalePos()

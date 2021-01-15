@@ -8,7 +8,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.math.roundToInt
 
 /**
  * позиция объекта в игровом мире
@@ -71,10 +70,6 @@ class Position(
         return point.dist(other.point);
     }
 
-    suspend fun setXY(x: Double, y: Double) {
-        setXY(x.roundToInt(), y.roundToInt())
-    }
-
     /**
      * установка новых координат
      */
@@ -99,5 +94,9 @@ class Position(
                 parent.onGridChanged()
             }
         }
+    }
+
+    override fun toString(): String {
+        return "{pos $level $x $y ${this.hashCode()} $parent $point ${point.x} ${point.y} }"
     }
 }

@@ -24,6 +24,7 @@ export default class Grid {
         for (let cx = 0; cx < 2; cx++) {
             for (let cy = 0; cy < 2; cy++) {
                 let container = this.makeChunk(cx, cy)
+                // container.visible = false
                 this.containers.push(container)
             }
         }
@@ -48,7 +49,7 @@ export default class Grid {
 
         this.makeTiles(container, cx, cy);
         container.calculateBounds()
-        console.log("grid screen x=" + container.x + " y=" + container.y + " w=" + container.width + " h=" + container.height)
+        // console.log("grid screen x=" + container.x + " y=" + container.y + " w=" + container.width + " h=" + container.height)
 
         // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
         container.cacheAsBitmap = true

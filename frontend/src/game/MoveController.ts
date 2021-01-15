@@ -49,7 +49,7 @@ export default class MoveController {
 
         // корректировка скорости
         let diff = Math.abs(sd - ld)
-        if (sd > 2 && (diff > 10)) {
+        if (sd > 2 && (diff > 2)) {
             console.warn("speed correct")
             let k = ld / sd
             k = Math.max(0.4, k)
@@ -83,6 +83,9 @@ export default class MoveController {
             this.me.x = this.toX
             this.me.y = this.toY
             this.stop()
+        // } else if (Math.abs(sd - ld) > 5) {
+        //     this.me.x = this.serverX
+        //     this.me.y = this.serverY
         } else {
             // пройдем расстояение не больше чем осталось до конечной точки
             let nd = Math.min(ld, this.speed * dt)

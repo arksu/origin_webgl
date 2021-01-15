@@ -6,7 +6,7 @@ import Tile from "@/game/Tile";
 import Net from "@/net/Net";
 import Point from '@/utils/Point';
 import {GameObject} from "@/game/GameObject";
-import {ObjectAdd, ObjectDel} from "@/net/Packets";
+import ObjectView from "@/game/ObjectView";
 
 /**
  * основная игровая логика (графика и тд)
@@ -30,6 +30,8 @@ export default class Game {
      * их координаты внутри абсолютные мировые экранные
      */
     private readonly mapGrids: PIXI.Container;
+
+    private readonly objectsContainer: PIXI.Container
 
     /**
      * загруженные гриды
@@ -78,11 +80,6 @@ export default class Game {
      */
     public movingObjects: { [key: number]: GameObject } = {}
 
-    /**
-     * внешнее представление объектов (спрайты)
-     */
-    private objectsView: { [key: number]: PIXI.Sprite | PIXI.Container } = {}
-
     public static start() {
         console.warn("pixi start");
 
@@ -125,8 +122,10 @@ export default class Game {
         PIXI.Ticker.shared.add(this.update.bind(this))
 
         this.mapGrids = new PIXI.Container();
-
         this.app.stage.addChild(this.mapGrids);
+
+        this.objectsContainer = new PIXI.Container()
+        this.app.stage.addChild(this.objectsContainer)
 
         this.screenSprite = new PIXI.Sprite();
         this.app.stage.addChild(this.screenSprite);
@@ -173,6 +172,7 @@ export default class Game {
             this.grids[i].destroy()
         }
         this.mapGrids.destroy({children: true})
+        this.objectsContainer.destroy({children: true})
         this.touchCurrent = {}
         this.destroyed = true
     }
@@ -337,9 +337,13 @@ export default class Game {
 
         this.mapGrids.x = offx - sx * this.scale;
         this.mapGrids.y = offy - sy * this.scale;
+        this.objectsContainer.x = offx - sx * this.scale;
+        this.objectsContainer.y = offy - sy * this.scale;
 
         this.mapGrids.scale.x = this.scale;
         this.mapGrids.scale.y = this.scale;
+        this.objectsContainer.scale.x = this.scale;
+        this.objectsContainer.scale.y = this.scale;
     }
 
     private update() {
@@ -401,42 +405,18 @@ export default class Game {
     }
 
     public onObjectAdd(obj: GameObject) {
-        if (this.objectsView[obj.id] === undefined) {
-            let sprite = PIXI.Sprite.from("man.png");
-            let px = obj.x / Tile.TILE_SIZE;
-            let py = obj.y / Tile.TILE_SIZE;
-
-            sprite.x = px * Tile.TILE_WIDTH_HALF - py * Tile.TILE_WIDTH_HALF;
-            sprite.y = px * Tile.TILE_HEIGHT_HALF + py * Tile.TILE_HEIGHT_HALF;
-
-            sprite.x -= 17
-            sprite.y -= 57
-
-            this.objectsView[obj.id] = sprite
-            this.mapGrids.addChild(sprite)
+        if (obj.view === undefined) {
+            obj.view = new ObjectView(obj)
+            this.objectsContainer.addChild(obj.view.view)
         }
     }
 
     public onObjectMoved(obj: GameObject) {
-        let sprite = this.objectsView[obj.id];
-        if (sprite !== undefined) {
-            let px = obj.x / Tile.TILE_SIZE;
-            let py = obj.y / Tile.TILE_SIZE;
-
-            sprite.x = px * Tile.TILE_WIDTH_HALF - py * Tile.TILE_WIDTH_HALF;
-            sprite.y = px * Tile.TILE_HEIGHT_HALF + py * Tile.TILE_HEIGHT_HALF;
-            sprite.x -= 17
-            sprite.y -= 57
-        }
+        obj.view?.onMoved()
     }
 
     public onObjectDelete(obj: GameObject) {
-        if (this.objectsView[obj.id] !== undefined) {
-            this.objectsView[obj.id].destroy({
-                children: true
-            })
-            delete this.objectsView[obj.id]
-        }
+        obj.view?.destroy()
     }
 
     public onObjectChange(obj: GameObject) {

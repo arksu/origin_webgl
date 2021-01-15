@@ -2,6 +2,7 @@ package com.origin.model
 
 import com.origin.net.model.ObjectAdd
 import com.origin.net.model.ObjectDel
+import com.origin.net.model.logger
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
@@ -36,6 +37,7 @@ class KnownList(private val activeObject: GameObject) {
             knownPlayers[obj.id] = obj
         }
         if (activeObject is Player) {
+            logger.debug("object add ${obj.pos}")
             activeObject.session.send(ObjectAdd(obj))
         }
 

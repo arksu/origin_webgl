@@ -149,6 +149,8 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         // в любом случае обновим грид до начала проверок коллизий
         update()
 
+        logger.debug("spawn obj ${obj.pos}")
+
         // проверим коллизию с объектами и тайлами грида
         val collision = checkCollision(obj, obj.pos.x, obj.pos.y, MoveType.SPAWN, null, false)
 
@@ -207,14 +209,14 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      * удалить объект из грида
      */
     private suspend fun removeObject(obj: GameObject) {
-        if (objects.contains(obj)) {
-            objects.remove(obj)
+        if (objects.remove(obj)) {
             obj.send(GameObjectMsg.OnRemoved())
 
             if (isActive) activeObjects.forEach {
                 it.send(OnObjectRemoved(obj))
             }
         }
+        logger.debug("objects size=${objects.size}")
     }
 
     /**
