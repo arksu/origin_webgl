@@ -66,7 +66,7 @@ export default class Grid {
                 let x = cx * this.CHUNK_SIZE + tx;
                 let y = cy * this.CHUNK_SIZE + ty;
 
-                let tn = Tile.getTextureName(data[y * Tile.GRID_SIZE + x])
+                let tn = Tile.getTextureName(data[y * Tile.GRID_SIZE + x], x, y)
 
                 let s = PIXI.Sprite.from(tn);
                 s.roundPixels = false;

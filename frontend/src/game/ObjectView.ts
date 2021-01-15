@@ -13,7 +13,7 @@ export default class ObjectView {
     constructor(obj: GameObject) {
         this.obj = obj
 
-        this.view = PIXI.Sprite.from("man.png")
+        this.view = PIXI.Sprite.from("man")
         this.onMoved()
     }
 
