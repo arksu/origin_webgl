@@ -5,6 +5,7 @@ import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.net.model.GameSession
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class PlayerMsg {
@@ -87,17 +88,17 @@ class Player(
 
     override fun storePositionInDb() {
         logger.warn("storePositionInDb ${pos.x} ${pos.y}")
-//        WorkerScope.launch {
-        transaction {
-            character.x = pos.x
-            character.y = pos.y
-            character.level = pos.level
-            character.region = pos.region
-            character.heading = pos.heading
+        WorkerScope.launch {
+            transaction {
+                character.x = pos.x
+                character.y = pos.y
+                character.level = pos.level
+                character.region = pos.region
+                character.heading = pos.heading
 
-            character.flush()
+                character.flush()
+            }
         }
-//        }
     }
 
     override suspend fun onEnterGrid(grid: Grid) {

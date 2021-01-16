@@ -83,10 +83,10 @@ export default class Game {
     public static start() {
         console.warn("pixi start");
 
+        this.instance = new Game();
+
         this.canvas.style.display = "block";
         this.appDiv.style.display = "none";
-
-        this.instance = new Game();
     }
 
     public static stop() {
@@ -113,6 +113,7 @@ export default class Game {
             // clearBeforeRender: true,
             backgroundColor: 0x333333
         });
+
         // this.app.renderer.resize(Game.canvas.width, Game.canvas.height);
         console.warn('render size ' + this.app.renderer.width + ' ' + this.app.renderer.height)
 
@@ -371,8 +372,6 @@ export default class Game {
      * перевести экранные координаты в игровые
      */
     private coordScreen2Game(p: Point): Point {
-        console.log("coordScreen2Game " + p.toString())
-
         p.dec(this.offset);
 
         let px = Client.instance.playerObject.x;
@@ -390,10 +389,6 @@ export default class Game {
             .mulValue(Tile.TILE_SIZE)
             .incValue(px, py)
             .round();
-    }
-
-    private coordGame2GameMap(p: Point) {
-
     }
 
     private onResize() {

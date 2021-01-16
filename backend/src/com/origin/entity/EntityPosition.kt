@@ -28,7 +28,7 @@ abstract class EntityPositions(name: String = "", columnName: String = "id") : L
     /**
      * угол поворота
      */
-    val heading = integer("heading")
+    val heading = short("heading")
 }
 
 abstract class EntityPosition(id: EntityID<Long>) : LongEntity(id) {

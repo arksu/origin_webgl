@@ -1,12 +1,9 @@
 package com.origin.utils
 
-import kotlinx.coroutines.GlobalScope
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
 typealias ObjectID = Long
-
-val WorkerScope = GlobalScope
 
 fun String?.toObjectID(): ObjectID {
     return this?.toLong() ?: throw RuntimeException("no string value for ObjectID")

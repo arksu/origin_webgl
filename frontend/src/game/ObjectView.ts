@@ -13,7 +13,11 @@ export default class ObjectView {
     constructor(obj: GameObject) {
         this.obj = obj
 
-        this.view = PIXI.Sprite.from("man")
+        if (obj.t == "Player") {
+            this.view = PIXI.Sprite.from("man")
+        } else {
+            throw Error("unknown type object "+obj.t)
+        }
         this.onMoved()
     }
 

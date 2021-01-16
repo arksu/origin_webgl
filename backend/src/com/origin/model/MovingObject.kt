@@ -18,7 +18,7 @@ sealed class MovingObjectMsg {
  * объект который может самостоятельно передвигаться
  */
 @ObsoleteCoroutinesApi
-abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Int) :
+abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) :
     GameObject(id, x, y, level, region, heading) {
 
     /**

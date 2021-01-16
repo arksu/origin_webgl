@@ -1,11 +1,7 @@
 package com.origin
 
 import com.origin.entity.GlobalVariables
-import com.origin.model.Grid
-import com.origin.model.GridMsg
-import com.origin.model.MovingObject
-import com.origin.model.MovingObjectMsg
-import com.origin.utils.WorkerScope
+import com.origin.model.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.launch

@@ -1,5 +1,9 @@
 <template>
-  <div>ENTERING</div>
+  <div class="padding-all">
+    <div class="login-panel">
+      <div>ENTERING...</div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

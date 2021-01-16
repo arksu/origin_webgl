@@ -31,6 +31,7 @@ object DatabaseFactory {
                 Accounts,
                 Grids,
                 Characters,
+                EntityObjects,
                 InventoryItems,
                 GlobalVariables
             )

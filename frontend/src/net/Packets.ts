@@ -9,7 +9,8 @@ export interface ObjectAdd {
     id: number
     x: number
     y: number
-    heading: number
+    h: number
+    t: string
 }
 
 export interface ObjectDel {

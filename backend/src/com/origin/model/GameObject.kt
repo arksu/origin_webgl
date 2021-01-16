@@ -24,7 +24,7 @@ sealed class GameObjectMsg {
  * все игровые сущности наследуются от него
  */
 @ObsoleteCoroutinesApi
-open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Int) {
+open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(GameObject::class.java)
     }

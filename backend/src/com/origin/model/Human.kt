@@ -15,7 +15,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
  * обладает зрением (видимые объекты о которых "знает")
  */
 @ObsoleteCoroutinesApi
-abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Int) :
+abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) :
     MovingObject(id, x, y, level, region, heading) {
 
     /**

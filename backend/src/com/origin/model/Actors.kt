@@ -2,8 +2,11 @@ package com.origin.model
 
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 
 abstract class MessageWithJob(val job: CompletableJob?)
+
+val WorkerScope = GlobalScope
 
 /**
  * каким диспатчером обрабатываем очереди акторов

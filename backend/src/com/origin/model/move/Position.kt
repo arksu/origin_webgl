@@ -18,7 +18,7 @@ class Position(
     inity: Int,
     var level: Int,
     var region: Int,
-    var heading: Int,
+    var heading: Short,
     val parent: GameObject,
 ) {
     companion object {

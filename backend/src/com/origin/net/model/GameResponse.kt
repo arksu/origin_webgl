@@ -75,8 +75,8 @@ class ObjectAdd(obj: GameObject) : ServerMessage("oa") {
     val id = obj.id
     val x = obj.pos.x
     val y = obj.pos.y
-    val heading = obj.pos.heading
-    val type: String = obj.javaClass.simpleName
+    val h = obj.pos.heading
+    val t: String = obj.javaClass.simpleName
 }
 
 @ObsoleteCoroutinesApi
