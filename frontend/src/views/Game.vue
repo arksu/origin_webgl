@@ -1,9 +1,15 @@
 <template>
-  <div class="padding-all">
+  <div v-if="!active" class="padding-all">
     <div class="login-panel">
       <div>ENTERING...</div>
     </div>
   </div>
+
+  <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px" @submit.prevent="submit"
+        action="#">
+    <input style="width: 300px; font-size: 20px" type="text" v-model="chatText">
+    <input type="submit" value=">">
+  </form>
 </template>
 
 <script lang="ts">
@@ -15,6 +21,12 @@ import Game from "@/game/Game";
 
 export default defineComponent({
   name: "Game",
+  data() {
+    return {
+      active: false as boolean,
+      chatText: "" as string
+    }
+  },
   mounted() {
     Client.instance.clear()
     Net.instance = new Net(Client.wsUrl)
@@ -23,6 +35,7 @@ export default defineComponent({
 
     Net.instance.onDisconnect = () => {
       console.log("onDisconnect")
+      this.active = false
       Game.stop()
       router.push({name: 'Characters'})
     }
@@ -35,12 +48,22 @@ export default defineComponent({
       })
           .then(r => {
             console.log(r)
+            this.active = true
             Game.start();
           })
     }
   },
   unmounted() {
     if (Net.instance) Net.instance.disconnect();
+  },
+  methods: {
+    submit() {
+      console.log("submit " + this.chatText)
+      Net.remoteCall("chat", {
+        text: this.chatText
+      })
+      this.chatText = ""
+    }
   }
 });
 

@@ -78,6 +78,11 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     val y = (r.data["y"] as Long?) ?: throw BadRequest("wrong coord y")
                     player.send(PlayerMsg.MapClick(x.toInt(), y.toInt()))
                 }
+                "chat" -> {
+                    val text = (r.data["text"] as String?) ?: throw BadRequest("no text")
+                    logger.debug("CHAT: $text")
+                    // TODO chat
+                }
                 else -> {
                     logger.warn("unknown target ${r.target}")
                 }

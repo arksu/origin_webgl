@@ -86,7 +86,7 @@ export default class Game {
         this.instance = new Game();
 
         this.canvas.style.display = "block";
-        this.appDiv.style.display = "none";
+        // this.appDiv.style.display = "none";\
     }
 
     public static stop() {
@@ -97,7 +97,7 @@ export default class Game {
         Client.instance.clear();
 
         this.canvas.style.display = "none";
-        this.appDiv.style.display = "block";
+        // this.appDiv.style.display = "block";
     }
 
     constructor() {
