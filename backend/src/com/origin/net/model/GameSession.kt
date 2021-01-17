@@ -4,6 +4,7 @@ import com.origin.ServerConfig
 import com.origin.entity.Account
 import com.origin.entity.Character
 import com.origin.entity.Characters
+import com.origin.model.BroadcastEvent
 import com.origin.model.GameObjectMsg.Spawn
 import com.origin.model.Player
 import com.origin.model.PlayerMsg
@@ -80,8 +81,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 }
                 "chat" -> {
                     val text = (r.data["text"] as String?) ?: throw BadRequest("no text")
-                    logger.debug("CHAT: $text")
-                    // TODO chat
+                    player.grid.broadcast(BroadcastEvent.ChatMessage(player, 0, text))
                 }
                 else -> {
                     logger.warn("unknown target ${r.target}")

@@ -3,6 +3,7 @@ package com.origin.model
 import com.origin.entity.Character
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
+import com.origin.net.model.CreatureSay
 import com.origin.net.model.GameSession
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
@@ -46,6 +47,7 @@ class Player(
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
             is PlayerMsg.MapClick -> mapClick(msg.x, msg.y)
+            is BroadcastEvent.ChatMessage -> chatMessage(msg)
 
             else -> super.processMessage(msg)
         }
@@ -57,6 +59,12 @@ class Player(
     private suspend fun mapClick(x: Int, y: Int) {
         logger.debug("mapClick $x $y")
         startMove(Move2Point(this, x, y))
+    }
+
+    private suspend fun chatMessage(msg: BroadcastEvent.ChatMessage) {
+        if (knownList.isKnownObject(msg.obj)) {
+            session.send(CreatureSay(msg))
+        }
     }
 
     override fun getMovementMode(): MoveMode {

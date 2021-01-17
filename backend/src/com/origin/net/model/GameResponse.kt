@@ -112,3 +112,9 @@ class ObjectStopped(m: BroadcastEvent.Stopped) : ServerMessage("os") {
     val x = m.obj.pos.x
     val y = m.obj.pos.y
 }
+
+@ObsoleteCoroutinesApi
+class CreatureSay(m: BroadcastEvent.ChatMessage) : ServerMessage("cs") {
+    val id = m.obj.id
+    val t = m.text
+}

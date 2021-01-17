@@ -7,7 +7,7 @@
 
   <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px" @submit.prevent="submit"
         action="#">
-    <input style="width: 300px; font-size: 20px" type="text" v-model="chatText">
+    <input style="width: 300px; font-size: 20px" type="text" v-model="chatText" id="inputChat">
     <input type="submit" value=">">
   </form>
 </template>

@@ -114,7 +114,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         storePositionInDb()
         moveController = null
 
-        grid.send(GridMsg.Broadcast(BroadcastEvent.Stopped(this)))
+        grid.broadcast(BroadcastEvent.Stopped(this))
     }
 
     /**

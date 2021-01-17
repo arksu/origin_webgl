@@ -38,7 +38,7 @@ open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int,
     /**
      * текущий активный грид в котором находится объект
      */
-    protected val grid: Grid get() = pos.grid
+    val grid: Grid get() = pos.grid
 
     /**
      * объект который несем над собой, или в котором едем. по сути это контейнер для вложенных объектов

@@ -316,6 +316,19 @@ export default class Game {
         this.updateScale()
     }
 
+    private onKeyDown(e: KeyboardEvent) {
+        console.log(e.key)
+        switch (e.key) {
+            case "Enter":
+                document.getElementById("inputChat")?.focus();
+                break;
+            case "Home":
+                this.scale = 1
+                this.updateScale()
+                break;
+        }
+    }
+
     private updateScale() {
         if (this.scale < 0.05) this.scale = 0.05
         this.updateMapScalePos();
@@ -454,5 +467,11 @@ export default class Game {
         window.addEventListener("orientationchange", () => {
             Game.instance?.onResize();
         });
+
+        document.addEventListener('keydown', (e: Event) => {
+            if (e.target == document.body && e instanceof KeyboardEvent) {
+                Game.instance?.onKeyDown(e)
+            }
+        })
     }
 }

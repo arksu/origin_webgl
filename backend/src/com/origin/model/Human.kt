@@ -29,7 +29,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * любое добавление в этот список, а равно как и удаление из него должно быть
      * синхронизировано с клиентом
      */
-    private val knownList by lazy { KnownList(this) }
+    protected val knownList by lazy { KnownList(this) }
 
     /**
      * последняя позиция в которой было обновление видимых объектов

@@ -38,6 +38,8 @@ sealed class BroadcastEvent {
     ) : BroadcastEvent()
 
     class Stopped(val obj: GameObject) : BroadcastEvent()
+
+    class ChatMessage(val obj: GameObject, val channel: Int, val text: String) : BroadcastEvent()
 }
 
 @ObsoleteCoroutinesApi
@@ -107,6 +109,10 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
 
     suspend fun send(msg: Any) {
         actor.send(msg)
+    }
+
+    suspend fun broadcast(msg: BroadcastEvent) {
+        actor.send(GridMsg.Broadcast(msg))
     }
 
     private suspend fun processMessage(msg: Any) {

@@ -3,7 +3,6 @@ package com.origin.model.move
 import com.origin.TimeController
 import com.origin.collision.CollisionResult
 import com.origin.model.BroadcastEvent
-import com.origin.model.GridMsg
 import com.origin.model.Human
 import com.origin.model.MovingObject
 import com.origin.net.logger
@@ -36,9 +35,9 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
         super.start()
 
         // в самом начале движения пошлем пакет о том что объект уже начал движение
-        me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.StartMove(
+        me.pos.grid.broadcast(BroadcastEvent.StartMove(
             me, toX, toY, me.getMovementSpeed(), me.getMovementType()
-        )))
+        ))
     }
 
     override suspend fun implementation(deltaTime: Double): Boolean {
@@ -67,9 +66,9 @@ class Move2Point(me: MovingObject, private val toX: Int, private val toY: Int) :
                     if (me is Human) {
                         me.updateVisibleObjects(false)
                     }
-                    me.pos.grid.send(GridMsg.Broadcast(BroadcastEvent.Moved(
+                    me.pos.grid.broadcast(BroadcastEvent.Moved(
                         me, toX, toY, speed, moveType
-                    )))
+                    ))
                     false
                 }
             }
