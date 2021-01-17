@@ -116,4 +116,11 @@ class Player(
     override suspend fun onLeaveGrid(grid: Grid) {
         super.onLeaveGrid(grid)
     }
+
+    /**
+     * обработка команд в консоли
+     */
+    fun consoleCommand(cmd: String) {
+        logger.warn("adminCommand $cmd")
+    }
 }

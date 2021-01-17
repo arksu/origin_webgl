@@ -81,7 +81,13 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 }
                 "chat" -> {
                     val text = (r.data["text"] as String?) ?: throw BadRequest("no text")
-                    player.grid.broadcast(BroadcastEvent.ChatMessage(player, 0, text))
+                    if (text.isNotEmpty()) {
+                        if (text.startsWith("/")) {
+                            player.consoleCommand(text)
+                        } else {
+                            player.grid.broadcast(BroadcastEvent.ChatMessage(player, 0, text))
+                        }
+                    }
                 }
                 else -> {
                     logger.warn("unknown target ${r.target}")
