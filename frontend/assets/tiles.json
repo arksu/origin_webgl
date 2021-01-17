@@ -2,7 +2,7 @@
 
 "cross_temp":
 {
-	"frame": {"x":27,"y":0,"w":32,"h":32},
+	"frame": {"x":0,"y":0,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -10,7 +10,7 @@
 },
 "forest_grass_1":
 {
-	"frame": {"x":311,"y":0,"w":64,"h":32},
+	"frame": {"x":32,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -18,7 +18,7 @@
 },
 "forest_grass_2":
 {
-	"frame": {"x":0,"y":91,"w":64,"h":32},
+	"frame": {"x":96,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -26,7 +26,7 @@
 },
 "forest_grass_3":
 {
-	"frame": {"x":64,"y":91,"w":64,"h":32},
+	"frame": {"x":160,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -34,7 +34,7 @@
 },
 "forest_grass_4":
 {
-	"frame": {"x":128,"y":91,"w":64,"h":32},
+	"frame": {"x":224,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -42,7 +42,7 @@
 },
 "forest_grass_5":
 {
-	"frame": {"x":192,"y":91,"w":64,"h":32},
+	"frame": {"x":288,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -50,7 +50,7 @@
 },
 "forest_grass_6":
 {
-	"frame": {"x":256,"y":91,"w":64,"h":32},
+	"frame": {"x":352,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -58,7 +58,7 @@
 },
 "forest_grass_7":
 {
-	"frame": {"x":320,"y":91,"w":64,"h":32},
+	"frame": {"x":416,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -66,7 +66,7 @@
 },
 "forest_grass_8":
 {
-	"frame": {"x":384,"y":91,"w":64,"h":32},
+	"frame": {"x":0,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -74,7 +74,7 @@
 },
 "forest_grass_9":
 {
-	"frame": {"x":448,"y":91,"w":64,"h":32},
+	"frame": {"x":64,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -82,7 +82,7 @@
 },
 "forest_grass_10":
 {
-	"frame": {"x":375,"y":0,"w":64,"h":32},
+	"frame": {"x":128,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -90,7 +90,7 @@
 },
 "forest_grass_11":
 {
-	"frame": {"x":439,"y":0,"w":64,"h":32},
+	"frame": {"x":192,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -98,7 +98,7 @@
 },
 "forest_grass_12":
 {
-	"frame": {"x":0,"y":59,"w":64,"h":32},
+	"frame": {"x":256,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -106,7 +106,7 @@
 },
 "forest_grass_13":
 {
-	"frame": {"x":64,"y":59,"w":64,"h":32},
+	"frame": {"x":320,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -114,7 +114,7 @@
 },
 "forest_grass_14":
 {
-	"frame": {"x":128,"y":59,"w":64,"h":32},
+	"frame": {"x":384,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -122,7 +122,7 @@
 },
 "forest_grass_15":
 {
-	"frame": {"x":192,"y":59,"w":64,"h":32},
+	"frame": {"x":448,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -130,7 +130,7 @@
 },
 "forest_grass_16":
 {
-	"frame": {"x":256,"y":59,"w":64,"h":32},
+	"frame": {"x":0,"y":64,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -138,7 +138,7 @@
 },
 "forest_grass_17":
 {
-	"frame": {"x":320,"y":59,"w":64,"h":32},
+	"frame": {"x":64,"y":64,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -146,7 +146,7 @@
 },
 "forest_grass_18":
 {
-	"frame": {"x":384,"y":59,"w":64,"h":32},
+	"frame": {"x":128,"y":64,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -154,7 +154,15 @@
 },
 "forest_grass_19":
 {
-	"frame": {"x":448,"y":59,"w":64,"h":32},
+	"frame": {"x":192,"y":64,"w":64,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
+	"sourceSize": {"w":64,"h":32}
+},
+"forest_leaf_1":
+{
+	"frame": {"x":256,"y":64,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -162,7 +170,7 @@
 },
 "grass1":
 {
-	"frame": {"x":59,"y":0,"w":63,"h":32},
+	"frame": {"x":320,"y":64,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -170,7 +178,7 @@
 },
 "grass2":
 {
-	"frame": {"x":122,"y":0,"w":63,"h":32},
+	"frame": {"x":383,"y":64,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -178,7 +186,7 @@
 },
 "man":
 {
-	"frame": {"x":0,"y":0,"w":27,"h":59},
+	"frame": {"x":446,"y":64,"w":27,"h":59},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":59},
@@ -186,7 +194,7 @@
 },
 "stone1":
 {
-	"frame": {"x":185,"y":0,"w":63,"h":32},
+	"frame": {"x":0,"y":123,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -194,11 +202,19 @@
 },
 "swamp1":
 {
-	"frame": {"x":248,"y":0,"w":63,"h":32},
+	"frame": {"x":63,"y":123,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
 	"sourceSize": {"w":63,"h":32}
+},
+"test_water_1":
+{
+	"frame": {"x":126,"y":123,"w":64,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
+	"sourceSize": {"w":64,"h":32}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
@@ -207,6 +223,6 @@
 	"format": "RGBA8888",
 	"size": {"w":512,"h":512},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:127b67c8e513cea1ffef42099292b16d:8ead653d765b3222b47fcc9eee93faf7:accbe1e7e294ded8391337fc1c446319$"
+	"smartupdate": "$TexturePacker:SmartUpdate:bb8f559d8dc3f4f0c09b9bf73be2ab2e:8c9f018695c6627995e4c633d964e2ac:accbe1e7e294ded8391337fc1c446319$"
 }
 }

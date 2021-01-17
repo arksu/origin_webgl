@@ -40,7 +40,9 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     override suspend fun processMessage(msg: Any) {
         when (msg) {
             is BroadcastEvent.StartMove -> {
-                if (this is Player) session.send(ObjectStartMove(msg))
+                if (knownList.isKnownObject(msg.obj)) {
+                    if (this is Player) session.send(ObjectStartMove(msg))
+                }
             }
             is BroadcastEvent.Moved -> {
                 // если мы знаем объект
@@ -56,8 +58,8 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
                     // объект не знаем. но видим
                     if (isObjectVisibleForMe(msg.obj)) {
                         knownList.addKnownObject(msg.obj)
+                        if (this is Player) session.send(ObjectMoved(msg))
                     }
-                    if (this is Player) session.send(ObjectMoved(msg))
                 }
             }
             is BroadcastEvent.Stopped -> {
@@ -74,7 +76,6 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
                     // объект не знаем. но видим
                     if (isObjectVisibleForMe(msg.obj)) {
                         knownList.addKnownObject(msg.obj)
-                    } else {
                         if (this is Player) session.send(ObjectStopped(msg))
                     }
                 }

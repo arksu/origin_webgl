@@ -20,6 +20,10 @@ export default class Tile {
             case 0 :
                 return 'grass1'
             case 1 :
+                return 'forest_leaf_1'
+            case 2:
+                return 'test_water_1'
+            case 3:
                 return 'stone1'
             default :
                 // let r = getRandomInt(3) + 1

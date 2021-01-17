@@ -239,7 +239,9 @@ export default class Net {
                 break;
             }
             case "od": { // object delete
-                Game.instance?.onObjectDelete(Client.instance.objects[(<ObjectDel>data).id])
+                let obj = Client.instance.objects[(<ObjectDel>data).id];
+                obj.moveController?.stop()
+                Game.instance?.onObjectDelete(obj)
                 delete Client.instance.objects[(<ObjectDel>data).id];
                 break;
             }

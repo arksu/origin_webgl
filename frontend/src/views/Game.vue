@@ -1,7 +1,7 @@
 <template>
   <div v-if="!active" class="padding-all">
     <div class="login-panel">
-      <div>ENTERING...</div>
+      <div>LOADING...</div>
     </div>
   </div>
 
