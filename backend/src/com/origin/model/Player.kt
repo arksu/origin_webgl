@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.entity.Character
+import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.net.model.CreatureSay
@@ -27,12 +28,6 @@ class Player(
 
     val session: GameSession,
 ) : Human(character.id.value, character.x, character.y, character.level, character.region, character.heading) {
-
-    enum class State {
-        None, Connected, Disconnected
-    }
-
-    private var state = State.None
 
     private var moveMode = MoveMode.WALK
 
@@ -62,8 +57,10 @@ class Player(
     }
 
     private suspend fun chatMessage(msg: BroadcastEvent.ChatMessage) {
-        if (knownList.isKnownObject(msg.obj)) {
-            session.send(CreatureSay(msg))
+        if (msg.channel == 0) {
+            if (knownList.isKnownObject(msg.obj)) {
+                session.send(CreatureSay(msg))
+            }
         }
     }
 
@@ -76,7 +73,6 @@ class Player(
      * когда уже все прогружено и заспавнено, гриды активированы
      */
     private fun connected() {
-        state = State.Connected
         World.addPlayer(this)
     }
 
@@ -84,14 +80,10 @@ class Player(
      * игровой клиент (аккаунт) отключился от игрока
      */
     private suspend fun disconnected() {
-        if (state == State.Disconnected) return
-
         World.removePlayer(this)
 
         // удалить объект из мира
         remove()
-
-        state = State.Disconnected
     }
 
     override fun storePositionInDb() {
@@ -109,18 +101,18 @@ class Player(
         }
     }
 
-    override suspend fun onEnterGrid(grid: Grid) {
-        super.onEnterGrid(grid)
-    }
-
-    override suspend fun onLeaveGrid(grid: Grid) {
-        super.onLeaveGrid(grid)
-    }
-
     /**
      * обработка команд в консоли
      */
-    fun consoleCommand(cmd: String) {
+    suspend fun consoleCommand(cmd: String) {
         logger.warn("adminCommand $cmd")
+        when (cmd) {
+            "online" -> {
+                session.send(CreatureSay(0, "online: ${World.getPlayersCount()}", SYSTEM))
+            }
+            "spawn" -> {
+
+            }
+        }
     }
 }

@@ -39,7 +39,12 @@ sealed class BroadcastEvent {
 
     class Stopped(val obj: GameObject) : BroadcastEvent()
 
-    class ChatMessage(val obj: GameObject, val channel: Int, val text: String) : BroadcastEvent()
+    class ChatMessage(val obj: GameObject, val channel: Int, val text: String) : BroadcastEvent() {
+        companion object {
+            const val GENERAL = 0
+            const val SYSTEM = 0xff
+        }
+    }
 }
 
 @ObsoleteCoroutinesApi

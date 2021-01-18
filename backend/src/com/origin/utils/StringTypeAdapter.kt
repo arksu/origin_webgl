@@ -4,7 +4,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.origin.utils.Utils.isEmpty
 import java.lang.reflect.Type
 
 /**
@@ -14,7 +13,7 @@ class StringTypeAdapter : JsonSerializer<Any?> {
     override fun serialize(src: Any?, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
         // строку передаем как есть.
         return if (src is String) {
-            if (!isEmpty(src) && src.contains("{")) {
+            if (src.isNotEmpty() && src.contains("{")) {
                 JsonParser.parseString(src).asJsonObject
             } else {
                 context.serialize(src)

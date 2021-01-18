@@ -46,6 +46,9 @@ export default class Client {
      */
     public objects: { [key: number]: GameObject } = {}
 
+    public chatHistory: string[] = []
+    public onChatMessage ?: Callback
+
     public get playerObject(): GameObject {
         return this.objects[this.selectedCharacterId]
     }
@@ -105,5 +108,6 @@ export default class Client {
     public clear() {
         this.map = {};
         this.objects = {}
+        this.chatHistory = []
     }
 }

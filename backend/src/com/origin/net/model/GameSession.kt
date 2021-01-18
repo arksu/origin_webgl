@@ -5,6 +5,7 @@ import com.origin.entity.Account
 import com.origin.entity.Character
 import com.origin.entity.Characters
 import com.origin.model.BroadcastEvent
+import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
 import com.origin.model.GameObjectMsg.Spawn
 import com.origin.model.Player
 import com.origin.model.PlayerMsg
@@ -83,9 +84,9 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     val text = (r.data["text"] as String?) ?: throw BadRequest("no text")
                     if (text.isNotEmpty()) {
                         if (text.startsWith("/")) {
-                            player.consoleCommand(text)
+                            player.consoleCommand(text.substring(1))
                         } else {
-                            player.grid.broadcast(BroadcastEvent.ChatMessage(player, 0, text))
+                            player.grid.broadcast(BroadcastEvent.ChatMessage(player, GENERAL, text))
                         }
                     }
                 }
@@ -97,9 +98,11 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     }
 
     suspend fun disconnected() {
-        isDisconnected = true
-        logger.warn("disconnected")
-        player.send(PlayerMsg.Disconnected())
+        if (!isDisconnected) {
+            isDisconnected = true
+            logger.warn("disconnected")
+            player.send(PlayerMsg.Disconnected())
+        }
     }
 
     /**

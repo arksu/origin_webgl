@@ -7,6 +7,13 @@
 
   <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px" @submit.prevent="submit"
         action="#">
+    <div>
+      <li v-for="r in chatRows">
+        <span>{{ r }}</span>
+      </li>
+      <!-- hack for refresh chatRows value -->
+      <span style="display: none">{{ cnt }}</span>
+    </div>
     <input style="width: 300px; font-size: 20px" type="text" v-model="chatText" id="inputChat">
     <input type="submit" value=">">
   </form>
@@ -24,7 +31,9 @@ export default defineComponent({
   data() {
     return {
       active: false as boolean,
-      chatText: "" as string
+      chatText: "" as string,
+      chatRows: [] as string[],
+      cnt: 0 as number
     }
   },
   mounted() {
@@ -52,9 +61,20 @@ export default defineComponent({
             Game.start();
           })
     }
+
+    Client.instance.onChatMessage = () => {
+      this.chatRows = Client.instance.chatHistory.reverse()
+      this.cnt = this.cnt + 1
+      console.log(this.chatRows)
+    }
   },
   unmounted() {
     if (Net.instance) Net.instance.disconnect();
+  },
+  computed: {
+    // chatRows: function () {
+    //   return Client.instance.chatHistory
+    // }
   },
   methods: {
     submit() {

@@ -5,8 +5,10 @@ package com.origin.net.model
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import com.origin.model.BroadcastEvent
+import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
 import com.origin.model.GameObject
 import com.origin.model.Grid
+import com.origin.utils.ObjectID
 import com.origin.utils.StringTypeAdapter
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
@@ -114,7 +116,9 @@ class ObjectStopped(m: BroadcastEvent.Stopped) : ServerMessage("os") {
 }
 
 @ObsoleteCoroutinesApi
-class CreatureSay(m: BroadcastEvent.ChatMessage) : ServerMessage("cs") {
-    val id = m.obj.id
-    val t = m.text
+class CreatureSay(val id: ObjectID, text: String, channel: Int) : ServerMessage("cs") {
+    constructor(m: BroadcastEvent.ChatMessage) : this(m.obj.id, m.text, GENERAL)
+
+    val t = text
+    val c = channel
 }

@@ -254,7 +254,6 @@ export default class Net {
                         obj.moveController.applyData((<ObjectMoved>data))
                     }
                 }
-
                 break;
             }
             case "os" : { // object stop
@@ -270,7 +269,16 @@ export default class Net {
                 }
 
                 Game.instance?.updateMapScalePos()
+                break;
+            }
 
+            case "cs" : { // creature say
+                // канал в который пришло сообщение
+                let c = data.c == 0xff ? "System" : "player"
+                let msg = c + ": " + data.t
+                Client.instance.chatHistory.splice(0, 0, msg)
+                Client.instance.chatHistory.splice(7)
+                Client.instance.onChatMessage?.()
                 break;
             }
         }

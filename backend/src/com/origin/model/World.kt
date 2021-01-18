@@ -56,6 +56,10 @@ object World {
         }
     }
 
+    fun getPlayersCount(): Int {
+        return players.size
+    }
+
     private fun getRegionSize(region: Int): Pair<Int, Int> {
         return when (region) {
             0 -> Pair(50, 50) // TODO region sizes

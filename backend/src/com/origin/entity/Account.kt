@@ -32,7 +32,7 @@ class Account(id: EntityID<Int>) : IntEntity(id) {
     var selectedCharacter by Accounts.selectedCharacter
 
     fun generateSessionId() {
-        ssid = Utils.generatString(32)
+        ssid = Utils.generateString(32)
     }
 
     fun appendOnlineTime(v: Int) {
