@@ -34,7 +34,7 @@ class LandLayer(
     fun getGrid(gx: Int, gy: Int): Grid {
         if (gx < 0 || gy < 0) throw RuntimeException("wrong grid coords")
 
-        // TODO:
+        // TODO: getGrid
         //  ищем ТУПО, но в будущем надо бы переделать на hashmap или еще как с компаратором
         //  по координатам
         //  а также предусмотреть выгрузку гридов из памяти и удаление из списка grids

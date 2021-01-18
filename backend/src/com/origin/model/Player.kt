@@ -10,6 +10,7 @@ import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.net.model.CreatureSay
 import com.origin.net.model.GameSession
+import com.origin.utils.Rect
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
@@ -20,6 +21,8 @@ class PlayerMsg {
     class Disconnected
     class MapClick(val x: Int, val y: Int)
 }
+
+private val PLAYER_RECT = Rect(10)
 
 /**
  * инстанс персонажа игрока в игровом мире (игрок)
@@ -71,6 +74,10 @@ class Player(
 
     override fun getMovementMode(): MoveMode {
         return moveMode
+    }
+
+    override fun getBoundRect(): Rect {
+        return PLAYER_RECT
     }
 
     /**

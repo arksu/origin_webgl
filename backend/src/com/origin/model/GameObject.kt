@@ -2,6 +2,7 @@ package com.origin.model
 
 import com.origin.model.move.Position
 import com.origin.utils.ObjectID
+import com.origin.utils.Rect
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
@@ -24,7 +25,7 @@ sealed class GameObjectMsg {
  * все игровые сущности наследуются от него
  */
 @ObsoleteCoroutinesApi
-open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) {
+abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(GameObject::class.java)
     }
@@ -111,6 +112,8 @@ open class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int,
             else -> throw RuntimeException("unprocessed actor message ${msg.javaClass.simpleName}")
         }
     }
+
+    abstract fun getBoundRect() : Rect
 
     protected open suspend fun afterSpawn() {}
 

@@ -9,6 +9,8 @@ import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
 import com.origin.model.move.MoveType
 import com.origin.net.model.MapGridData
+import com.origin.utils.GRID_FULL_SIZE
+import com.origin.utils.Rect
 import com.origin.utils.Vec2i
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CompletableJob
@@ -58,6 +60,18 @@ sealed class GridMsg {
     class Deactivate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class RemoveObject(val obj: GameObject, job: CompletableJob? = null) : MessageWithJob(job)
     class CheckCollision(
+        val obj: GameObject,
+        val toX: Int,
+        val toY: Int,
+        val type: MoveType,
+        val virtual: GameObject?,
+        val isMove: Boolean,
+        val resp: CompletableDeferred<CollisionResult>,
+    ) : GridMsg()
+
+    class CheckCollisionInternal(
+        val list: Array<Grid>,
+        val locked: ArrayList<Grid>,
         val obj: GameObject,
         val toX: Int,
         val toY: Int,
@@ -132,7 +146,17 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         logger.debug("processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
-            is GridMsg.CheckCollision -> msg.resp.complete(checkCollision(msg.obj,
+            is GridMsg.CheckCollision -> msg.resp.complete(checkCollision(
+                msg.obj,
+                msg.toX,
+                msg.toY,
+                msg.type,
+                msg.virtual,
+                msg.isMove))
+            is GridMsg.CheckCollisionInternal -> msg.resp.complete(checkCollisionInternal(
+                msg.list,
+                msg.locked,
+                msg.obj,
                 msg.toX,
                 msg.toY,
                 msg.type,
@@ -152,6 +176,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             }
             is GridMsg.Update -> update()
             is GridMsg.Broadcast -> activeObjects.forEach { it.send(msg.e) }
+            else -> logger.warn("Unknown Grid message $msg")
         }
     }
 
@@ -207,18 +232,69 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         virtual: GameObject?,
         isMove: Boolean,
     ): CollisionResult {
+        // посмотрим сколько нам нужно гридов для проверки коллизий
+        val rect = Rect(obj.pos.x, obj.pos.y, toX, toY)
+        rect.add(obj.getBoundRect())
+        val grids = LinkedHashSet<Grid>(4)
+        grids.add(World.getGrid(region, level, rect.left / GRID_FULL_SIZE, rect.top / GRID_FULL_SIZE))
+        grids.add(World.getGrid(region, level, rect.right / GRID_FULL_SIZE, rect.top / GRID_FULL_SIZE))
+        grids.add(World.getGrid(region, level, rect.right / GRID_FULL_SIZE, rect.bottom / GRID_FULL_SIZE))
+        grids.add(World.getGrid(region, level, rect.left / GRID_FULL_SIZE, rect.bottom / GRID_FULL_SIZE))
 
-        // TODO checkCollision implement
-        // шлем сообщения всем гридам задетых в коллизии
-        // последний получивший и обработает коллизию вернет результат в deferred и остальные сделают также
-        // таким образом на момент обработки коллизии
-        // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
+        val locked = ArrayList<Grid>(4)
+        val list = grids.toTypedArray()
 
-        if (isMove) {
-            obj.pos.setXY(toX, toY)
+        // если в списке нужных гридов 2 и более
+        if (list.size > 1) {
+            // ищем себя
+            val idx = list.indexOf(this)
+            // и ставим в 0 индекс. так чтобы обработка началась с этого грида
+            // для того чтобы не слать сообщение checkCollisionInternal самому себе
+            if (idx != 0) {
+                val temp = list[0]
+                list[0] = list[idx]
+                list[idx] = temp
+            }
         }
 
-        return CollisionResult.NONE
+        // шлем сообщения всем гридам задетых в коллизии
+        return checkCollisionInternal(list, locked, obj, toX, toY, moveType, virtual, isMove)
+    }
+
+    /**
+     * внутренняя обработка коллизии на заблокированных гридах
+     */
+    private suspend fun checkCollisionInternal(
+        list: Array<Grid>,
+        locked: ArrayList<Grid>,
+        obj: GameObject,
+        toX: Int,
+        toY: Int,
+        moveType: MoveType,
+        virtual: GameObject?,
+        isMove: Boolean,
+    ): CollisionResult {
+        val current = list[locked.size]
+        locked.add(current)
+
+        // последний получивший и обработает коллизию вернет результат в deferred и остальные сделают также
+        return if (locked.size < list.size) {
+            val next = list[locked.size]
+            logger.warn("delegate collision to next $next")
+            val resp = CompletableDeferred<CollisionResult>()
+            next.send(GridMsg.CheckCollisionInternal(list, locked, obj, toX, toY, moveType, virtual, isMove, resp))
+            resp.await()
+        } else {
+            // таким образом на момент обработки коллизии
+            // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
+
+            // TODO checkCollisionInternal implement
+
+            if (isMove) {
+                obj.pos.setXY(toX, toY)
+            }
+            CollisionResult.NONE
+        }
     }
 
     /**
