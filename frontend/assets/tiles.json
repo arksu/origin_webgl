@@ -1,5 +1,21 @@
 {"frames": {
 
+"box":
+{
+	"frame": {"x":127,"y":96,"w":41,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":41,"h":44},
+	"sourceSize": {"w":41,"h":44}
+},
+"box_open":
+{
+	"frame": {"x":168,"y":96,"w":53,"h":58},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":53,"h":58},
+	"sourceSize": {"w":53,"h":58}
+},
 "cross_temp":
 {
 	"frame": {"x":0,"y":0,"w":32,"h":32},
@@ -18,7 +34,7 @@
 },
 "forest_grass_2":
 {
-	"frame": {"x":96,"y":0,"w":64,"h":32},
+	"frame": {"x":256,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -26,7 +42,7 @@
 },
 "forest_grass_3":
 {
-	"frame": {"x":160,"y":0,"w":64,"h":32},
+	"frame": {"x":320,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -34,7 +50,7 @@
 },
 "forest_grass_4":
 {
-	"frame": {"x":224,"y":0,"w":64,"h":32},
+	"frame": {"x":384,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -42,7 +58,7 @@
 },
 "forest_grass_5":
 {
-	"frame": {"x":288,"y":0,"w":64,"h":32},
+	"frame": {"x":448,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -50,7 +66,7 @@
 },
 "forest_grass_6":
 {
-	"frame": {"x":352,"y":0,"w":64,"h":32},
+	"frame": {"x":0,"y":64,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -58,7 +74,7 @@
 },
 "forest_grass_7":
 {
-	"frame": {"x":416,"y":0,"w":64,"h":32},
+	"frame": {"x":64,"y":64,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -66,7 +82,7 @@
 },
 "forest_grass_8":
 {
-	"frame": {"x":0,"y":32,"w":64,"h":32},
+	"frame": {"x":128,"y":64,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -74,7 +90,7 @@
 },
 "forest_grass_9":
 {
-	"frame": {"x":64,"y":32,"w":64,"h":32},
+	"frame": {"x":192,"y":64,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -82,7 +98,7 @@
 },
 "forest_grass_10":
 {
-	"frame": {"x":128,"y":32,"w":64,"h":32},
+	"frame": {"x":96,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -90,7 +106,7 @@
 },
 "forest_grass_11":
 {
-	"frame": {"x":192,"y":32,"w":64,"h":32},
+	"frame": {"x":160,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -98,7 +114,7 @@
 },
 "forest_grass_12":
 {
-	"frame": {"x":256,"y":32,"w":64,"h":32},
+	"frame": {"x":224,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -106,7 +122,7 @@
 },
 "forest_grass_13":
 {
-	"frame": {"x":320,"y":32,"w":64,"h":32},
+	"frame": {"x":288,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -114,7 +130,7 @@
 },
 "forest_grass_14":
 {
-	"frame": {"x":384,"y":32,"w":64,"h":32},
+	"frame": {"x":352,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -122,7 +138,7 @@
 },
 "forest_grass_15":
 {
-	"frame": {"x":448,"y":32,"w":64,"h":32},
+	"frame": {"x":416,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -130,7 +146,7 @@
 },
 "forest_grass_16":
 {
-	"frame": {"x":0,"y":64,"w":64,"h":32},
+	"frame": {"x":0,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -138,7 +154,7 @@
 },
 "forest_grass_17":
 {
-	"frame": {"x":64,"y":64,"w":64,"h":32},
+	"frame": {"x":64,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -146,7 +162,7 @@
 },
 "forest_grass_18":
 {
-	"frame": {"x":128,"y":64,"w":64,"h":32},
+	"frame": {"x":128,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -154,7 +170,7 @@
 },
 "forest_grass_19":
 {
-	"frame": {"x":192,"y":64,"w":64,"h":32},
+	"frame": {"x":192,"y":32,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -186,7 +202,7 @@
 },
 "man":
 {
-	"frame": {"x":446,"y":64,"w":27,"h":59},
+	"frame": {"x":221,"y":96,"w":27,"h":59},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":59},
@@ -194,7 +210,7 @@
 },
 "stone1":
 {
-	"frame": {"x":0,"y":123,"w":63,"h":32},
+	"frame": {"x":446,"y":64,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -202,7 +218,7 @@
 },
 "swamp1":
 {
-	"frame": {"x":63,"y":123,"w":63,"h":32},
+	"frame": {"x":0,"y":96,"w":63,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":63,"h":32},
@@ -210,11 +226,19 @@
 },
 "test_water_1":
 {
-	"frame": {"x":126,"y":123,"w":64,"h":32},
+	"frame": {"x":63,"y":96,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
 	"sourceSize": {"w":64,"h":32}
+},
+"tree1":
+{
+	"frame": {"x":248,"y":96,"w":123,"h":130},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":123,"h":130},
+	"sourceSize": {"w":123,"h":130}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
@@ -223,6 +247,6 @@
 	"format": "RGBA8888",
 	"size": {"w":512,"h":512},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:d82dad0e4decaa7d6a623ee4eefdd30c:8c9f018695c6627995e4c633d964e2ac:accbe1e7e294ded8391337fc1c446319$"
+	"smartupdate": "$TexturePacker:SmartUpdate:2c481fabb69ddccc0bf6206a70328c22:211d59b8ed341a2e4e79c7af359b85b1:accbe1e7e294ded8391337fc1c446319$"
 }
 }

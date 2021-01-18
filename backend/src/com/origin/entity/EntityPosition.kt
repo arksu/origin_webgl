@@ -1,14 +1,12 @@
 package com.origin.entity
 
-import org.jetbrains.exposed.dao.LongEntity
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 
 /**
  * позиция объектов в игровом мире
  * общие поля для всех игровых объектов
  */
-abstract class EntityPositions(name: String = "", columnName: String = "id") : LongIdTable(name, columnName) {
+open class EntityPositions(name: String = "", columnName: String = "id") : LongIdTable(name, columnName) {
     /**
      * на каком континенте находится объект, либо ид дома (инстанса, локации)
      */
@@ -29,12 +27,4 @@ abstract class EntityPositions(name: String = "", columnName: String = "id") : L
      * угол поворота
      */
     val heading = short("heading")
-}
-
-abstract class EntityPosition(id: EntityID<Long>) : LongEntity(id) {
-    var region by Characters.region
-    var x by Characters.x
-    var y by Characters.y
-    var level by Characters.level
-    var heading by Characters.heading
 }

@@ -1,6 +1,7 @@
 package com.origin.entity
 
 import com.origin.timestamp
+import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
@@ -30,8 +31,14 @@ object Characters : EntityPositions("characters") {
     val onlineTime = long("onlineTime").default(0)
 }
 
-class Character(id: EntityID<Long>) : EntityPosition(id) {
+class Character(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Character>(Characters)
+
+    var region by Characters.region
+    var x by Characters.x
+    var y by Characters.y
+    var level by Characters.level
+    var heading by Characters.heading
 
     var account by Account referencedOn Characters.account
     var name by Characters.name

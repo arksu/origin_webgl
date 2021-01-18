@@ -8,6 +8,7 @@ import com.origin.model.BroadcastEvent
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
 import com.origin.model.GameObject
 import com.origin.model.Grid
+import com.origin.model.StaticObject
 import com.origin.utils.ObjectID
 import com.origin.utils.StringTypeAdapter
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -78,7 +79,8 @@ class ObjectAdd(obj: GameObject) : ServerMessage("oa") {
     val x = obj.pos.x
     val y = obj.pos.y
     val h = obj.pos.heading
-    val t: String = obj.javaClass.simpleName
+    val c: String = obj.javaClass.simpleName
+    val t = if (obj is StaticObject) obj.type else 0
 }
 
 @ObsoleteCoroutinesApi

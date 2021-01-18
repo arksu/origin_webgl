@@ -1,9 +1,11 @@
 package com.origin.model
 
-import com.origin.utils.ObjectID
+import com.origin.entity.EntityObject
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 @ObsoleteCoroutinesApi
-class StaticObject(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) :
-    GameObject(id, x, y, level, region, heading) {
+class StaticObject(entity: EntityObject) :
+    GameObject(entity.id.value, entity.x, entity.y, entity.level, entity.region, entity.heading) {
+
+    val type = entity.type
 }

@@ -1,5 +1,6 @@
 package com.origin.entity
 
+import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
@@ -7,6 +8,12 @@ import org.jetbrains.exposed.dao.id.EntityID
  * игровые объекты на карте
  */
 object EntityObjects : EntityPositions("objects") {
+
+    /**
+     * координаты грида в котором находится объект
+     */
+    val gridx = integer("gridx")
+    val gridy = integer("gridy")
 
     /**
      * тип объекта
@@ -27,26 +34,35 @@ object EntityObjects : EntityPositions("objects") {
      * время создания, игровой тик сервера
      * @see com.origin.TimeController.tickCount
      */
-    val createTick = integer("createTick")
+    val createTick = long("createTick")
 
     /**
      * время последнего апдейта объекта
      * если логика объекта требует периодического обновления
      */
-    val lastTick = integer("lastTick").default(0)
+    val lastTick = long("lastTick").default(0)
 
     /**
      * внутренние данные объекта в json формате
      */
-    val data = text("data")
+    val data = text("data").nullable()
 
     init {
         index(false, region, x, y, level)
     }
 }
 
-class EntityObject(id: EntityID<Long>) : EntityPosition(id) {
+class EntityObject(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<EntityObject>(EntityObjects)
+
+    var region by EntityObjects.region
+    var x by EntityObjects.x
+    var y by EntityObjects.y
+    var level by EntityObjects.level
+    var heading by EntityObjects.heading
+
+    var gridx by EntityObjects.gridx
+    var gridy by EntityObjects.gridy
 
     var type by EntityObjects.type
     var quality by EntityObjects.quality

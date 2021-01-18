@@ -13,10 +13,22 @@ export default class ObjectView {
     constructor(obj: GameObject) {
         this.obj = obj
 
-        if (obj.t == "Player") {
+        if (obj.c == "Player") {
             this.view = PIXI.Sprite.from("man")
+        } else if (obj.c == "StaticObject") {
+            switch (obj.t) {
+                case 23 :
+                    this.view = PIXI.Sprite.from("box")
+                    break
+                case 1 :
+                    this.view = PIXI.Sprite.from("tree1")
+                    break
+                default :
+                    this.view = PIXI.Sprite.from("box")
+                    break
+            }
         } else {
-            throw Error("unknown type object "+obj.t)
+            throw Error("unknown class object " + obj.c)
         }
         this.onMoved()
     }

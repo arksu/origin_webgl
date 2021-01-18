@@ -95,7 +95,8 @@ class TimeController : Thread("TimeController") {
      * игровое время в тиках (сколько тиков с начала мира прошло)
      * @see TICKS_PER_SECOND
      */
-    private var tickCount: Long = 0
+    var tickCount: Long = 0
+        private set
 
     /**
      * загрузка информации о времени из базы

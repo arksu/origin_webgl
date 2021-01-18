@@ -2,6 +2,8 @@ package com.origin.model
 
 import com.origin.TimeController
 import com.origin.collision.CollisionResult
+import com.origin.entity.EntityObject
+import com.origin.entity.EntityObjects
 import com.origin.entity.GridEntity
 import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
@@ -15,6 +17,8 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -92,6 +96,10 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      */
     private val isActive: Boolean get() = !activeObjects.isEmpty()
 
+    init {
+        loadObjects()
+    }
+
     /**
      * актор для обработки сообщений
      */
@@ -144,6 +152,16 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             }
             is GridMsg.Update -> update()
             is GridMsg.Broadcast -> activeObjects.forEach { it.send(msg.e) }
+        }
+    }
+
+    private fun loadObjects() {
+        transaction {
+            val list =
+                EntityObject.find { (EntityObjects.gridx eq x) and (EntityObjects.gridy eq y) and (EntityObjects.region eq region) and (EntityObjects.level eq level) }
+            list.forEach {
+                objects.add(StaticObject(it))
+            }
         }
     }
 

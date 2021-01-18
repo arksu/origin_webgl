@@ -10,7 +10,8 @@ export interface ObjectAdd {
     x: number
     y: number
     h: number
-    t: string
+    c: string
+    t: number
 }
 
 export interface ObjectDel {
