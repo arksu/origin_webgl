@@ -101,6 +101,8 @@ export default class Game {
     }
 
     constructor() {
+        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
+
         this.app = new PIXI.Application({
             width: window.innerWidth,
             height: window.innerHeight,
