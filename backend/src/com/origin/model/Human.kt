@@ -149,7 +149,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
                 }
             }
 
-            lastPosUpdateVisible = pos.point.clone()
+            lastPosUpdateVisible = pos.point.copy()
             logger.warn("updateVisibleObjects $this total vis=${knownList.size()} new=$newCounter del=${delCounter}")
         }
     }

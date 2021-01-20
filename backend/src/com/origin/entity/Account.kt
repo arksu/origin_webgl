@@ -1,6 +1,6 @@
 package com.origin.entity
 
-import com.origin.timestamp
+import com.origin.database.timestamp
 import com.origin.utils.Utils
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass

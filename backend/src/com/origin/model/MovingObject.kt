@@ -124,7 +124,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         val result = moveController?.updateAndResult()
         // если контроллера нет. либо он завершил работу
         if (result == null || result) {
-            TimeController.instance.deleteMovingObject(this)
+            TimeController.deleteMovingObject(this)
         }
     }
 
@@ -167,7 +167,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     fun getMovementSpeed(): Double {
         val s = when (getMovementMode()) {
             MoveMode.STEAL -> 25.0
-            MoveMode.WALK -> 80.0
+            MoveMode.WALK -> 800.0
             MoveMode.RUN -> 120.0
         }
         // по воде движемся в 2 раза медленее

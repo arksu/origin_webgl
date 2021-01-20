@@ -1,10 +1,13 @@
-package com.origin
+package com.origin.database
 
+import com.origin.ServerConfig
 import com.origin.entity.*
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.sql.Timestamp
 
 class TimestampColumnType(private val defaultCurrentTimestamp: Boolean) : ColumnType() {
@@ -21,6 +24,7 @@ fun Table.timestamp(name: String, defaultCurrentTimestamp: Boolean = false): Col
 
 
 object DatabaseFactory {
+    val logger: Logger = LoggerFactory.getLogger(DatabaseFactory::class.java)
 
     fun init() {
         logger.info("Database init...")

@@ -12,7 +12,7 @@ object EventBus {
      * инициализировать EventBus на старте сервера
      */
     fun init() {
-
+        subscribe()
     }
 
     /**

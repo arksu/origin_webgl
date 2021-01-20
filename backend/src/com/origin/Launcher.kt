@@ -1,15 +1,17 @@
 package com.origin
 
+import com.origin.database.DatabaseFactory
 import com.origin.net.GameServer
 import io.ktor.util.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
-val logger = LoggerFactory.getLogger(Launcher::class.java)
 
 @ObsoleteCoroutinesApi
 object Launcher {
+    val logger: Logger = LoggerFactory.getLogger(Launcher::class.java)
 
     @KtorExperimentalAPI
     @JvmStatic
@@ -18,7 +20,7 @@ object Launcher {
         ServerConfig.load()
         EventBus.init()
         DatabaseFactory.init()
-        TimeController.instance.start()
+        TimeController.start()
         GameServer.start()
     }
 }

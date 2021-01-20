@@ -2,9 +2,13 @@ package com.origin
 
 import com.origin.utils.TILE_SIZE
 import com.typesafe.config.ConfigFactory
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 
 object ServerConfig {
+    val logger: Logger = LoggerFactory.getLogger(ServerConfig::class.java)
+
     private const val WORK_DIR = "./"
 
     const val PROTO_VERSION = "0.0.1"

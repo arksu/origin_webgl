@@ -134,7 +134,7 @@ class Player(
                         heading = 0
                         type = 23
                         quality = 10
-                        createTick = TimeController.instance.tickCount
+                        createTick = TimeController.tickCount
                     }
                     val obj = StaticObject(o)
                     obj
@@ -155,7 +155,7 @@ class Player(
                         heading = 0
                         type = 1
                         quality = 10
-                        createTick = TimeController.instance.tickCount
+                        createTick = TimeController.tickCount
                     }
                     val obj = StaticObject(o)
                     obj

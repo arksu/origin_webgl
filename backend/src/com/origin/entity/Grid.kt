@@ -73,7 +73,7 @@ open class GridEntity(r: ResultRow, val layer: LandLayer) {
             val row = transaction {
                 Grids.select { (Grids.x eq gx) and (Grids.y eq gy) and (Grids.level eq layer.level) and (Grids.region eq layer.region.id) }
                     .firstOrNull()
-                    ?: throw RuntimeException("grid $gx $gx level=${layer.level} region=${layer.region.id} is not found")
+                    ?: throw RuntimeException("grid ($gx, $gy) level=${layer.level} region=${layer.region.id} is not found")
             }
             return Grid(row, layer)
         }

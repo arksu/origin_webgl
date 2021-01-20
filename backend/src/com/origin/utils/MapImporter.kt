@@ -1,6 +1,6 @@
 package com.origin.utils
 
-import com.origin.DatabaseFactory
+import com.origin.database.DatabaseFactory
 import com.origin.ServerConfig
 import com.origin.entity.Grids
 import com.origin.utils.TileColors.CLAY

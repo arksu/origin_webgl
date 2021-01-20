@@ -28,7 +28,7 @@ class Rect {
         bottom = size
     }
 
-    fun normalize() {
+    private fun normalize() {
         if (right < left) {
             val t = left
             left = right

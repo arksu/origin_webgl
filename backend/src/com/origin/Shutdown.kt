@@ -21,7 +21,7 @@ class Shutdown : Thread() {
         runBlocking {
             World.disconnectAllCharacters()
         }
-        TimeController.instance.shutdown()
+        TimeController.shutdown()
     }
 
 }

@@ -236,10 +236,15 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         val rect = Rect(obj.pos.x, obj.pos.y, toX, toY)
         rect.add(obj.getBoundRect())
         val grids = LinkedHashSet<Grid>(4)
-        grids.add(World.getGrid(region, level, rect.left / GRID_FULL_SIZE, rect.top / GRID_FULL_SIZE))
-        grids.add(World.getGrid(region, level, rect.right / GRID_FULL_SIZE, rect.top / GRID_FULL_SIZE))
-        grids.add(World.getGrid(region, level, rect.right / GRID_FULL_SIZE, rect.bottom / GRID_FULL_SIZE))
-        grids.add(World.getGrid(region, level, rect.left / GRID_FULL_SIZE, rect.bottom / GRID_FULL_SIZE))
+
+        fun addGrid(gx: Int, gy: Int) {
+            if (layer.validateCoord(gx, gy)) grids.add(World.getGrid(region, level, gx, gy))
+        }
+
+        addGrid(rect.left / GRID_FULL_SIZE, rect.top / GRID_FULL_SIZE)
+        addGrid(rect.right / GRID_FULL_SIZE, rect.top / GRID_FULL_SIZE)
+        addGrid(rect.right / GRID_FULL_SIZE, rect.bottom / GRID_FULL_SIZE)
+        addGrid(rect.left / GRID_FULL_SIZE, rect.bottom / GRID_FULL_SIZE)
 
         val locked = ArrayList<Grid>(4)
         val list = grids.toTypedArray()
@@ -343,7 +348,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 human.session.send(MapGridData(this, true))
             }
 
-            TimeController.instance.addActiveGrid(this)
+            TimeController.addActiveGrid(this)
         }
     }
 
@@ -357,7 +362,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             human.session.send(MapGridData(this, false))
         }
         if (!isActive) {
-            TimeController.instance.removeActiveGrid(this)
+            TimeController.removeActiveGrid(this)
         }
     }
 }

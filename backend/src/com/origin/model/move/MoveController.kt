@@ -52,14 +52,14 @@ abstract class MoveController(val me: MovingObject) {
      * начать работу контроллера (при начале движения)
      */
     open suspend fun start() {
-        TimeController.instance.addMovingObject(me)
+        TimeController.addMovingObject(me)
     }
 
     /**
      * остановить работу контроллера (принудительная остановка извне)
      */
     fun stop() {
-        TimeController.instance.deleteMovingObject(me)
+        TimeController.deleteMovingObject(me)
     }
 
     /**

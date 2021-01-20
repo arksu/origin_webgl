@@ -54,6 +54,6 @@ class LandLayer(
     }
 
     fun validateCoord(gx: Int, gy: Int): Boolean {
-        return !(gx < 0 || gy < 0 || gx > width || gy > height)
+        return !(gx < 0 || gy < 0 || gx >= width || gy >= height)
     }
 }
