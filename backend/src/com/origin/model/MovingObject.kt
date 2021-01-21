@@ -167,7 +167,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     fun getMovementSpeed(): Double {
         val s = when (getMovementMode()) {
             MoveMode.STEAL -> 25.0
-            MoveMode.WALK -> 800.0
+            MoveMode.WALK -> 60.0
             MoveMode.RUN -> 120.0
         }
         // по воде движемся в 2 раза медленее

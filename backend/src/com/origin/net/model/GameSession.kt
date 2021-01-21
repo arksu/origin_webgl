@@ -123,6 +123,5 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     suspend fun kick() {
         logger.warn("kick")
         connect.close(CloseReason(CloseReason.Codes.NORMAL, "kicked"))
-//        player.send(PlayerMsg.Disconnected())
     }
 }

@@ -18,7 +18,7 @@
 },
 "cross_temp":
 {
-	"frame": {"x":0,"y":0,"w":32,"h":32},
+	"frame": {"x":20,"y":0,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -26,7 +26,7 @@
 },
 "forest_grass_1":
 {
-	"frame": {"x":32,"y":0,"w":64,"h":32},
+	"frame": {"x":52,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -98,7 +98,7 @@
 },
 "forest_grass_10":
 {
-	"frame": {"x":96,"y":0,"w":64,"h":32},
+	"frame": {"x":116,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -106,7 +106,7 @@
 },
 "forest_grass_11":
 {
-	"frame": {"x":160,"y":0,"w":64,"h":32},
+	"frame": {"x":180,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -114,7 +114,7 @@
 },
 "forest_grass_12":
 {
-	"frame": {"x":224,"y":0,"w":64,"h":32},
+	"frame": {"x":244,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -122,7 +122,7 @@
 },
 "forest_grass_13":
 {
-	"frame": {"x":288,"y":0,"w":64,"h":32},
+	"frame": {"x":308,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -130,15 +130,16 @@
 },
 "forest_grass_14":
 {
-	"frame": {"x":352,"y":0,"w":64,"h":32},
+	"frame": {"x":372,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
 	"sourceSize": {"w":64,"h":32}
+	
 },
 "forest_grass_15":
 {
-	"frame": {"x":416,"y":0,"w":64,"h":32},
+	"frame": {"x":436,"y":0,"w":64,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
@@ -159,6 +160,7 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":32},
 	"sourceSize": {"w":64,"h":32}
+	
 },
 "forest_grass_18":
 {
@@ -208,6 +210,14 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":27,"h":59},
 	"sourceSize": {"w":27,"h":59}
 },
+"question":
+{
+	"frame": {"x":0,"y":0,"w":20,"h":25},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":25},
+	"sourceSize": {"w":20,"h":25}
+},
 "stone1":
 {
 	"frame": {"x":446,"y":64,"w":63,"h":32},
@@ -247,6 +257,6 @@
 	"format": "RGBA8888",
 	"size": {"w":512,"h":512},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:980ff40a92af73a0647c56ab0277ee0d:78a19ea2b22d87f151af4ed19d4833a3:accbe1e7e294ded8391337fc1c446319$"
+	"smartupdate": "$TexturePacker:SmartUpdate:273563699d784886b63ee21bf0fb3655:3b206eb42bbfa44ffdfad6be6dc324bd:accbe1e7e294ded8391337fc1c446319$"
 }
 }

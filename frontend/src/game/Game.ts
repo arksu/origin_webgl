@@ -127,11 +127,12 @@ export default class Game {
         this.mapGrids = new PIXI.Container();
         this.app.stage.addChild(this.mapGrids);
 
+        this.screenSprite = new PIXI.Sprite();
+        this.app.stage.addChild(this.screenSprite);
+
         this.objectsContainer = new PIXI.Container()
         this.app.stage.addChild(this.objectsContainer)
 
-        this.screenSprite = new PIXI.Sprite();
-        this.app.stage.addChild(this.screenSprite);
         this.screenSprite.x = 0;
         this.screenSprite.y = 0;
         this.screenSprite.width = this.app.renderer.width
@@ -218,6 +219,7 @@ export default class Game {
     }
 
     private onMouseDown(e: PIXI.InteractionEvent) {
+        console.log(e)
         this.touchCurrent[e.data.identifier] = new Point(e.data.global)
 
         this.dragStart = new Point(e.data.global).round();
