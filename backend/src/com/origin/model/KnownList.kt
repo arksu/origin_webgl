@@ -25,6 +25,14 @@ class KnownList(private val activeObject: GameObject) {
     }
 
     /**
+     * получить объект по его ид
+     * @return null если объект не известен
+     */
+    fun getKnownObject(id: ObjectID): GameObject? {
+        return knownObjects[id]
+    }
+
+    /**
      * добавить объект в список известных мне
      * @return true если объект еще НЕ был известен мне
      */

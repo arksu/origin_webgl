@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import Tile from "@/game/Tile";
 import {GameObject} from "@/game/GameObject";
+import Net from "@/net/Net";
 
 /**
  * внешнее представлениен объекта в игре
@@ -18,6 +19,7 @@ export default class ObjectView {
 
         if (obj.c == "Player") {
             this.view = PIXI.Sprite.from("man")
+            this.setInteractive()
         } else if (obj.c == "StaticObject") {
             switch (obj.t) {
                 case 23 :
@@ -26,6 +28,7 @@ export default class ObjectView {
                     break
                 case 1 :
                     this.view = PIXI.Sprite.from("tree1")
+                    this.setInteractive()
                     break
                 default :
                     this.view = PIXI.Sprite.from("question")
@@ -93,10 +96,14 @@ export default class ObjectView {
     }
 
     private onClick() {
-
+        Net.remoteCall("objclick", {
+            id: this.obj.id
+        })
     }
 
     private onRightClick() {
-        this.view.visible = false
+        Net.remoteCall("objrclick", {
+            id: this.obj.id
+        })
     }
 }

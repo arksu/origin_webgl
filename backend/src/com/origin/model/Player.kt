@@ -6,10 +6,12 @@ import com.origin.entity.Character
 import com.origin.entity.EntityObject
 import com.origin.idfactory.IdFactory
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
+import com.origin.model.move.Move2Object
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.net.model.CreatureSay
 import com.origin.net.model.GameSession
+import com.origin.utils.ObjectID
 import com.origin.utils.Rect
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -20,6 +22,8 @@ class PlayerMsg {
     class Connected
     class Disconnected
     class MapClick(val x: Int, val y: Int)
+    class ObjectClick(val id: ObjectID)
+    class ObjectRightClick(val id: ObjectID)
 }
 
 private val PLAYER_RECT = Rect(10)
@@ -50,6 +54,8 @@ class Player(
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
             is PlayerMsg.MapClick -> mapClick(msg.x, msg.y)
+            is PlayerMsg.ObjectClick -> objectClick(msg.id)
+            is PlayerMsg.ObjectRightClick -> objectRightClick(msg.id)
             is BroadcastEvent.ChatMessage -> chatMessage(msg)
 
             else -> super.processMessage(msg)
@@ -62,6 +68,23 @@ class Player(
     private suspend fun mapClick(x: Int, y: Int) {
         logger.debug("mapClick $x $y")
         startMove(Move2Point(this, x, y))
+    }
+
+    /**
+     * клик по объекту в мире
+     */
+    private suspend fun objectClick(id: ObjectID) {
+        logger.debug("objectClick $id")
+        val obj = knownList.getKnownObject(id)
+        if (obj != null) {
+            // пока просто движемся к объекту
+            startMove(Move2Object(this, obj))
+        }
+    }
+
+    private suspend fun objectRightClick(id: ObjectID) {
+        logger.debug("objectRightClick $id")
+
     }
 
     private suspend fun chatMessage(msg: BroadcastEvent.ChatMessage) {

@@ -1,10 +1,14 @@
 package com.origin.collision
 
-class CollisionResult(val result: CollisionType) {
+import com.origin.model.GameObject
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+
+@ObsoleteCoroutinesApi
+class CollisionResult(val result: CollisionType, val obj: GameObject?) {
 
     companion object {
-        val FAIL = CollisionResult(CollisionType.COLLISION_FAIL)
-        val NONE = CollisionResult(CollisionType.COLLISION_NONE)
+        val FAIL = CollisionResult(CollisionType.COLLISION_FAIL, null)
+        val NONE = CollisionResult(CollisionType.COLLISION_NONE, null)
     }
 
 

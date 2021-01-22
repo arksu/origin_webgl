@@ -80,6 +80,14 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     val y = (r.data["y"] as Long?) ?: throw BadRequest("wrong coord y")
                     player.send(PlayerMsg.MapClick(x.toInt(), y.toInt()))
                 }
+                "objclick" -> {
+                    val id = (r.data["id"] as Long?) ?: throw BadRequest("wrong obj id")
+                    player.send(PlayerMsg.ObjectClick(id))
+                }
+                "objrclick" -> {
+                    val id = (r.data["id"] as Long?) ?: throw BadRequest("wrong obj id")
+                    player.send(PlayerMsg.ObjectRightClick(id))
+                }
                 "chat" -> {
                     val text = (r.data["text"] as String?) ?: throw BadRequest("no text")
                     if (text.isNotEmpty()) {
