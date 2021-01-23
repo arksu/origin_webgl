@@ -78,8 +78,20 @@ class ObjectAdd(obj: GameObject) : ServerMessage("oa") {
     val id = obj.id
     val x = obj.pos.x
     val y = obj.pos.y
+
+    /**
+     * heading
+     */
     val h = obj.pos.heading
+
+    /**
+     * class name of object
+     */
     val c: String = obj.javaClass.simpleName
+
+    /**
+     * type id
+     */
     val t = if (obj is StaticObject) obj.type else 0
 }
 

@@ -23,7 +23,7 @@ export default class ObjectView {
         } else if (obj.c == "StaticObject") {
             switch (obj.t) {
                 case 23 :
-                    this.view = PIXI.Sprite.from("box")
+                    this.view = PIXI.Sprite.from("pot")
                     this.setInteractive()
                     break
                 case 1 :

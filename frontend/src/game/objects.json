@@ -1,0 +1,119 @@
+{
+  "trees": {
+    "birch": {
+      "1": {
+        "size": [22, 33],
+        "offset": [9, 28],
+        "layers": [
+          {
+            "img": "trees/birch/1.png",
+            "offset": [
+              7,
+              0
+            ],
+            "z": 12
+          },
+          {
+            "img": "trees/birch/1_.png",
+            "offset": [18, 117],
+            "shadow": true
+          }
+        ]
+      },
+      "2": {
+        "size": [44, 63],
+        "offset": [22, 49],
+        "layers": [
+          {
+            "img": "trees/birch/2.png",
+            "offset": [1, 6],
+            "z": 12
+          },
+          {
+            "img": "trees/birch/2_.png",
+            "offset": [11, 48],
+            "shadow": true
+          }
+        ]
+      },
+      "3": {
+        "size": [66, 82],
+        "offset": [31, 66],
+        "layers": [
+          {
+            "img": "trees/birch/3.png",
+            "offset": [4, 1],
+            "z": 12
+          },
+          {
+            "img": "trees/birch/3_.png",
+            "offset": [10, 66],
+            "shadow": true
+          }
+        ]
+      },
+      "4": {
+        "size": [75, 109],
+        "offset": [36, 88],
+        "layers": [
+          {
+            "img": "trees/birch/4.png",
+            "offset": [6, 2],
+            "z": 12
+          },
+          {
+            "img": "trees/birch/4_.png",
+            "offset": [7, 84],
+            "shadow": true
+          }
+        ]
+      },
+      "5": {
+        "size": [111, 156],
+        "offset": [59, 124],
+        "layers": [
+          {
+            "img": "trees/birch/5.png",
+            "offset": [13, 22],
+            "z": 12
+          },
+          {
+            "img": "trees/birch/5_.png",
+            "offset": [18, 117],
+            "shadow": true
+          }
+        ]
+      },
+      "6": {
+        "size": [111, 156],
+        "offset": [59, 124],
+        "layers": [
+          {
+            "img": "trees/birch/6.png",
+            "offset": [7, 0],
+            "z": 12
+          },
+          {
+            "img": "trees/birch/6_.png",
+            "offset": [18, 117],
+            "shadow": true
+          }
+        ]
+      }
+    },
+    "fir": {
+    }
+  },
+  "well": {
+    "layers": [
+      {
+        "img": "dfs",
+        "z": 1
+      },
+      {
+        "img": "ddd",
+        "shadow": true
+      }
+    ]
+  }
+}
