@@ -4,6 +4,20 @@ export interface Coord extends Array<number | string> {
     length: 2; // это литеральный тип '2', это не значение!
 }
 
+export interface Layer {
+    img: string
+    interactive?: boolean
+    offset?: Coord
+    z?: number
+    shadow?: boolean
+}
+
+export interface Resource {
+    size?: Coord
+    offset?: Coord
+    layers: Layer[]
+}
+
 export function hexToBase64(hexStr: string): string {
     const hexStrLen = hexStr.length;
     let hexAsciiCharsStr = '';

@@ -13,4 +13,8 @@ class StaticObject(entity: EntityObject) :
         // TODO getBoundRect
         return Rect(10)
     }
+
+    override fun getResourcePath(): String {
+        return "trees/birch/6"
+    }
 }

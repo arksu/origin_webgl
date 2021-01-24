@@ -133,6 +133,7 @@ export default class Game {
         this.app.stage.addChild(this.screenSprite);
 
         this.objectsContainer = new PIXI.Container()
+        this.objectsContainer.sortableChildren = true
         this.app.stage.addChild(this.objectsContainer)
 
         this.screenSprite.x = 0;
@@ -380,11 +381,16 @@ export default class Game {
         }
 
         // передвигаем все движущиеся объекты
+        let cnt = 0
         for (let key in this.movingObjects) {
             let moveController = this.movingObjects[key].moveController
             if (moveController !== undefined) {
                 moveController.update(dt)
             }
+            cnt++
+        }
+        if (cnt > 0) {
+            this.objectsContainer.sortChildren()
         }
     }
 
@@ -428,7 +434,10 @@ export default class Game {
     public onObjectAdd(obj: GameObject) {
         if (obj.view === undefined) {
             obj.view = new ObjectView(obj)
-            this.objectsContainer.addChild(obj.view.view)
+            for (let i = 0; i < obj.view.view.length; i++) {
+                console.log(obj.view.view)
+                this.objectsContainer.addChild(obj.view.view[i])
+            }
         }
     }
 

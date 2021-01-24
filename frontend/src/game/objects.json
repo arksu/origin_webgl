@@ -2,8 +2,9 @@
   "trees": {
     "birch": {
       "1": {
+        "interactive": 1,
         "size": [22, 33],
-        "offset": [9, 28],
+        "offset": [16, 26],
         "layers": [
           {
             "img": "trees/birch/1.png",
@@ -15,12 +16,13 @@
           },
           {
             "img": "trees/birch/1_.png",
-            "offset": [18, 117],
+            "offset": [9, 23],
             "shadow": true
           }
         ]
       },
       "2": {
+        "interactive": 1,
         "size": [44, 63],
         "offset": [22, 49],
         "layers": [
@@ -89,6 +91,7 @@
         "offset": [59, 124],
         "layers": [
           {
+            "interactive": 0,
             "img": "trees/birch/6.png",
             "offset": [7, 0],
             "z": 12
@@ -113,6 +116,22 @@
       {
         "img": "ddd",
         "shadow": true
+      }
+    ]
+  },
+  "player": {
+    "offset": [17, 57],
+    "layers": [
+      {
+        "img": "man"
+      }
+    ]
+  },
+  "unknown": {
+    "offset": [17, 57],
+    "layers": [
+      {
+        "img": "question.png"
       }
     ]
   }

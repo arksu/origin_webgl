@@ -93,6 +93,11 @@ class ObjectAdd(obj: GameObject) : ServerMessage("oa") {
      * type id
      */
     val t = if (obj is StaticObject) obj.type else 0
+
+    /**
+     * path to resource
+     */
+    val r = obj.getResourcePath()
 }
 
 @ObsoleteCoroutinesApi

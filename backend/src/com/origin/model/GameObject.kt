@@ -115,6 +115,8 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
 
     abstract fun getBoundRect() : Rect
 
+    abstract fun getResourcePath() : String
+
     protected open suspend fun afterSpawn() {}
 
     /**

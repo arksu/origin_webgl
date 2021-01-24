@@ -22,7 +22,7 @@ export default class MoveController {
     private stopped: boolean = false
     private serverStopped: boolean = false
 
-    private lineView: PIXI.Graphics
+    private readonly lineView: PIXI.Graphics
 
     constructor(obj: GameObject, data: ObjectMoved) {
         console.warn("create MoveController")
@@ -30,7 +30,7 @@ export default class MoveController {
 
         this.startX = obj.x
         this.startY = obj.y
-        
+
         this.lineView = new PIXI.Graphics()
         Game.instance?.objectsContainer.addChild(this.lineView)
 

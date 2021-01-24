@@ -103,6 +103,10 @@ class Player(
         return PLAYER_RECT
     }
 
+    override fun getResourcePath(): String {
+        return "player"
+    }
+
     /**
      * вызывается в самую последнюю очередь при спавне игрока в мир
      * когда уже все прогружено и заспавнено, гриды активированы

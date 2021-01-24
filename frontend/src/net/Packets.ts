@@ -9,9 +9,26 @@ export interface ObjectAdd {
     id: number
     x: number
     y: number
+
+    /**
+     * heading
+     */
     h: number
+
+    /**
+     * class
+     */
     c: string
+
+    /**
+     * type id
+     */
     t: number
+
+    /**
+     * resource path
+     */
+    r: string
 }
 
 export interface ObjectDel {

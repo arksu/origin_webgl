@@ -3,49 +3,87 @@ import {GameObject} from "@/game/GameObject";
 import Net from "@/net/Net";
 import objects from "./objects.json"
 import Game from "@/game/Game";
+import {Coord, Layer, Resource} from "@/utils/Util";
 
 /**
  * внешнее представлениен объекта в игре
  */
 export default class ObjectView {
     obj: GameObject
-    view: PIXI.Sprite | PIXI.Container
+    view: PIXI.Sprite[] = []
     isDestroyed: boolean = false
 
     private isTouched: boolean = false
     private touchTimer: number = -1
 
+    private readonly res: Resource
+    private layersOffset: Coord[] = []
+
     constructor(obj: GameObject) {
         this.obj = obj
-        // TODO
-        let l = objects["trees"]["birch"]["4"].layers
 
-        if (obj.c == "Player") {
-            this.view = PIXI.Sprite.from("man")
-            this.setInteractive()
-        } else if (obj.c == "StaticObject") {
-            switch (obj.t) {
-                case 23 :
-                    this.view = PIXI.Sprite.from("pot")
-                    this.setInteractive()
-                    break
-                case 1 :
-                    this.view = PIXI.Sprite.from("tree1")
-                    this.setInteractive()
-                    break
-                default :
-                    this.view = PIXI.Sprite.from("question")
-                    break
+        console.log("make object: " + obj.r)
+
+        this.res = this.makeFrom(obj.r)
+        if (this.res == undefined) {
+            this.res = this.makeFrom("unknown")
+        }
+
+        this.onMoved()
+    }
+
+    private makeFrom(r: string): Resource {
+        let strings = r.split("/");
+
+        // берем первый уровень вложенности
+        // @ts-ignore
+        let res = <Resource>objects[strings[0]]
+        if (res == undefined) return res
+
+        // идем по всем последующим
+        for (let i = 1; i < strings.length; i++) {
+            // @ts-ignore
+            res = res[strings[i]]
+            if (res == undefined) return res
+        }
+
+        // если слоев больше одного
+        if (res.layers.length > 1) {
+            // идем по слоям
+            for (let i = 0; i < res.layers.length; i++) {
+                this.addLayer(res.layers[i])
             }
         } else {
-            throw Error("unknown class object " + obj.c)
+            this.addLayer(res.layers[0])
         }
-        this.onMoved()
+        return res
+    }
+
+    private addLayer(l: Layer) {
+        let path = l.img
+        // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
+        if (path.includes(".")) path = "assets/" + path
+
+        // если есть оффсет надо его проставить
+        if (l.offset != undefined) {
+            this.layersOffset.push(l.offset)
+        } else {
+            this.layersOffset.push([0, 0])
+        }
+        // создаем спрайт для каждого слоя
+        let spr = PIXI.Sprite.from(path);
+        if (l.interactive) this.setInteractive(spr)
+        if (l.shadow) {
+            spr.zIndex = -1
+        }
+        this.view.push(spr)
     }
 
     public destroy() {
         if (!this.isDestroyed) {
-            this.view.destroy();
+            for (let i = 0; i < this.view.length; i++) {
+                this.view[i].destroy();
+            }
             this.isDestroyed = true
         }
     }
@@ -53,18 +91,26 @@ export default class ObjectView {
     public onMoved() {
         let coord = Game.coordGame2Screen(this.obj.x, this.obj.y)
 
-        this.view.x = coord[0]
-        this.view.y = coord[1]
-        this.view.x -= 17
-        this.view.y -= 57
+        for (let i = 0; i < this.view.length; i++) {
+            // оффсет слоя
+            this.view[i].x = coord[0] + this.layersOffset[i][0]
+            this.view[i].y = coord[1] + this.layersOffset[i][1]
+
+            // добавим оффсет для объекта
+            if (this.res.offset != undefined) {
+                this.view[i].x -= this.res.offset[0]
+                this.view[i].y -= this.res.offset[1]
+            }
+            this.view[i].zIndex = coord[1]
+        }
     }
 
-    private setInteractive() {
-        this.view.interactive = true
-        this.view.on("rightclick", () => {
+    private setInteractive(target: PIXI.Sprite | PIXI.Container) {
+        target.interactive = true
+        target.on("rightclick", () => {
             this.onRightClick()
         })
-        this.view.on("touchstart", () => {
+        target.on("touchstart", () => {
             this.isTouched = true
             this.touchTimer = setTimeout(() => {
                 if (this.isTouched) {
@@ -77,7 +123,7 @@ export default class ObjectView {
                 }
             }, 1000)
         })
-        this.view.on("touchend", () => {
+        target.on("touchend", () => {
             this.isTouched = false
             if (this.touchTimer != -1) {
                 clearTimeout(this.touchTimer)
@@ -85,14 +131,14 @@ export default class ObjectView {
             }
             this.onClick()
         })
-        this.view.on("touchendoutside", () => {
+        target.on("touchendoutside", () => {
             this.isTouched = false
             if (this.touchTimer != -1) {
                 clearTimeout(this.touchTimer)
                 this.touchTimer = -1
             }
         })
-        this.view.on("mouseup", () => {
+        target.on("mouseup", () => {
             this.onClick()
         })
     }
