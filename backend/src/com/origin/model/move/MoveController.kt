@@ -48,6 +48,7 @@ abstract class MoveController(val me: MovingObject) {
      * начать работу контроллера (при начале движения)
      */
     open suspend fun start() {
+        lastMoveTime = System.currentTimeMillis()
         TimeController.addMovingObject(me)
 
         // в самом начале движения пошлем пакет о том что объект уже начал движение
@@ -92,6 +93,7 @@ abstract class MoveController(val me: MovingObject) {
         if (currentTime > lastMoveTime) {
             // узнаем сколько времени прошло между апдейтами
             val deltaTime: Double = (currentTime - lastMoveTime) / 1000.0
+            lastMoveTime = currentTime
 
             // запомним тип движеня на начало обсчетов. возможно он изменится после
             val moveType = me.getMovementType()
@@ -139,7 +141,6 @@ abstract class MoveController(val me: MovingObject) {
                 storedX = me.pos.x.toDouble()
                 storedY = me.pos.y.toDouble()
             }
-            lastMoveTime = currentTime
             return result
         }
         return false
@@ -169,6 +170,7 @@ abstract class MoveController(val me: MovingObject) {
 
         // сколько прошли: либо расстояние пройденное за тик, либо оставшееся до конечной точки. что меньше
         val distance = (deltaTime * speed).coerceAtMost(td)
+        com.origin.net.model.logger.warn("calcNewPoint $deltaTime $distance")
 
         // помножим расстояние которое должны пройти на единичный вектор
         return if (td == 0.0) {

@@ -1,7 +1,7 @@
 import {GameObject} from "@/game/GameObject";
 import Game from "@/game/Game";
 import Client from "@/net/Client";
-import {ObjectMoved} from "@/net/Packets";
+import {ObjectMoved, ObjectStopped} from "@/net/Packets";
 
 export default class MoveController {
 
@@ -18,6 +18,7 @@ export default class MoveController {
     moveType!: string
 
     stopped: boolean = false
+    serverStopped: boolean = false
 
     constructor(obj: GameObject, data: ObjectMoved) {
         console.warn("create MoveController")
@@ -34,6 +35,7 @@ export default class MoveController {
     }
 
     public applyData(data: ObjectMoved) {
+        this.serverStopped = false
         this.serverX = data.x
         this.serverY = data.y
         this.toX = data.tx
@@ -49,43 +51,77 @@ export default class MoveController {
 
         // корректировка скорости
         let diff = Math.abs(sd - ld)
-        if (sd > 2 && (diff > 2)) {
-            console.warn("speed correct")
+        if (sd > 2 && (diff > 1)) {
             let k = ld / sd
             k = Math.max(0.4, k)
             k = Math.min(1.4, k)
+            console.warn("speed correct k=" + k.toFixed(2))
             this.speed = this.speed * k
         }
         console.log("diff=" + diff.toFixed(2) + " ld=" + ld.toFixed(2) + " sd=" + sd.toFixed(2) + " speed=" + this.speed.toFixed(2))
     }
 
+    /**
+     * сервер говорит что объект остановился
+     */
+    public serverStop(data: ObjectStopped) {
+        this.toX = data.x
+        this.toY = data.y
+        this.serverX = data.x
+        this.serverY = data.y
+        this.serverStopped = true
+
+        // local distance
+        let ld = Math.sqrt(Math.pow(this.toX - this.me.x, 2) + Math.pow(this.toY - this.me.y, 2))
+        console.warn("serverStop ld=" + ld.toFixed(2))
+        if (ld > 5 || ld < 1) {
+            this.me.x = data.x
+            this.me.y = data.y
+            console.warn("hard stop ld=" + ld.toFixed(2))
+            this.stop()
+            Game.instance?.onObjectMoved(this.me)
+        }
+    }
+
     public stop() {
-        if (this.stopped) return
+        if (this.stopped) {
+            console.warn("was stopped")
+            return
+        }
         console.warn("stop move")
+
+        if (this.serverStopped) {
+            this.me.x = this.toX
+            this.me.y = this.toY
+        }
+
         if (Game.instance !== undefined) {
             delete Game.instance.movingObjects[this.me.id]
         }
         this.stopped = true
+        this.me.moveController = undefined
     }
 
     public update(dt: number) {
-        // console.log("dt=" + Math.round(dt * 1000))
-        // console.log(this)
+        if (this.stopped) return
+        // if (this.serverStopped) console.log("dt=" + Math.round(dt * 1000))
+        // if (this.serverStopped) console.log(this)
+
         // дистанция до конечной точки по данным сервера
         // server distance
         let sd = Math.sqrt(Math.pow(this.toX - this.serverX, 2) + Math.pow(this.toY - this.serverY, 2))
         // local distance
-        let ld = Math.sqrt(Math.pow(this.toX - this.me.x, 2) + Math.pow(this.toY - this.me.y, 2))
+        let dx = this.toX - this.me.x
+        let dy = this.toY - this.me.y
+        let ld = (dx == 0 && dy == 0) ? 0 : Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
 
-        // console.log("ld="+ld)
+        // if (this.serverStopped) console.log("ld=" + ld)
         // если осталось идти слишком мало - посчитаем что уже пришли в назначенную точку
-        if (ld <= 1) {
+        if (ld <= 1 || Number.isNaN(ld)) {
             this.me.x = this.toX
             this.me.y = this.toY
+            console.warn("stop by low distance")
             this.stop()
-        // } else if (Math.abs(sd - ld) > 5) {
-        //     this.me.x = this.serverX
-        //     this.me.y = this.serverY
         } else {
             // пройдем расстояение не больше чем осталось до конечной точки
             let nd = Math.min(ld, this.speed * dt)

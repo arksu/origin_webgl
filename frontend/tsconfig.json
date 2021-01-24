@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "skipLibCheck": false,
     "importHelpers": true,
+    "resolveJsonModule": true,
     "strict": true,
     "jsx": "preserve",
     "moduleResolution": "node",

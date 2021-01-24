@@ -27,3 +27,9 @@ export interface ObjectMoved {
     readonly s: number
     readonly mt: string
 }
+
+export interface ObjectStopped {
+    readonly id: number
+    readonly x: number
+    readonly y: number
+}

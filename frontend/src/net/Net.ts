@@ -2,7 +2,7 @@ import _ from "lodash";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
 import MoveController from "@/game/MoveController";
-import {MapGridData, ObjectDel, ObjectMoved} from "@/net/Packets";
+import {MapGridData, ObjectDel, ObjectMoved, ObjectStopped} from "@/net/Packets";
 
 enum State {
     Disconnected,
@@ -260,12 +260,13 @@ export default class Net {
                 let obj = Client.instance.objects[data.id];
                 if (obj !== undefined) {
                     if (obj.moveController !== undefined) {
-                        obj.moveController.stop()
-                        obj.moveController = undefined
+                        obj.moveController.serverStop(<ObjectStopped>data)
+                    } else {
+                        console.warn("stopped: set pos")
+                        obj.x = data.x
+                        obj.y = data.y
+                        Game.instance?.onObjectMoved(obj)
                     }
-                    obj.x = data.x
-                    obj.y = data.y
-                    obj.view?.onMoved()
                 }
 
                 Game.instance?.updateMapScalePos()

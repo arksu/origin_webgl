@@ -102,6 +102,7 @@ export default class Game {
 
     constructor() {
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
+        PIXI.settings.ROUND_PIXELS = false
 
         this.app = new PIXI.Application({
             width: window.innerWidth,
@@ -143,7 +144,9 @@ export default class Game {
         this.screenSprite.on('touchstart', this.onMouseDown.bind(this));
 
         this.screenSprite.on('mouseup', this.onMouseUp.bind(this));
+        this.screenSprite.on('mouseupoutside', this.onMouseUp.bind(this));
         this.screenSprite.on('touchend', this.onMouseUp.bind(this));
+        this.screenSprite.on('touchendoutside', this.onMouseUp.bind(this));
 
         this.screenSprite.on('mousemove', this.onMouseMove.bind(this));
         this.screenSprite.on('touchmove', this.onMouseMove.bind(this));
@@ -219,7 +222,6 @@ export default class Game {
     }
 
     private onMouseDown(e: PIXI.InteractionEvent) {
-        console.log(e)
         this.touchCurrent[e.data.identifier] = new Point(e.data.global)
 
         this.dragStart = new Point(e.data.global).round();

@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import Tile from "@/game/Tile";
 import {GameObject} from "@/game/GameObject";
 import Net from "@/net/Net";
+import objects from "./objects.json"
 
 /**
  * внешнее представлениен объекта в игре
@@ -16,6 +17,8 @@ export default class ObjectView {
 
     constructor(obj: GameObject) {
         this.obj = obj
+        // TODO
+        let l = objects["trees"]["birch"]["4"].layers
 
         if (obj.c == "Player") {
             this.view = PIXI.Sprite.from("man")
