@@ -1,3 +1,5 @@
+import * as PIXI from 'pixi.js';
+
 import {GameObject} from "@/game/GameObject";
 import Game from "@/game/Game";
 import Client from "@/net/Client";
@@ -7,18 +9,20 @@ export default class MoveController {
 
     private readonly me: GameObject
 
-    startX: number
-    startY: number
+    private readonly startX: number
+    private readonly startY: number
 
-    toX!: number
-    toY!: number
-    serverX!: number
-    serverY!: number
-    speed!: number
-    moveType!: string
+    private toX!: number
+    private toY!: number
+    private serverX!: number
+    private serverY!: number
+    private speed!: number
+    private moveType!: string
 
-    stopped: boolean = false
-    serverStopped: boolean = false
+    private stopped: boolean = false
+    private serverStopped: boolean = false
+
+    private lineView: PIXI.Graphics
 
     constructor(obj: GameObject, data: ObjectMoved) {
         console.warn("create MoveController")
@@ -26,6 +30,9 @@ export default class MoveController {
 
         this.startX = obj.x
         this.startY = obj.y
+        
+        this.lineView = new PIXI.Graphics()
+        Game.instance?.objectsContainer.addChild(this.lineView)
 
         this.applyData(data)
 
@@ -43,16 +50,20 @@ export default class MoveController {
         this.speed = data.s
         this.moveType = data.mt
 
-
         // server distance
         let sd = Math.sqrt(Math.pow(this.toX - this.serverX, 2) + Math.pow(this.toY - this.serverY, 2))
         // local distance
         let ld = Math.sqrt(Math.pow(this.toX - this.me.x, 2) + Math.pow(this.toY - this.me.y, 2))
 
+        let c1 = Game.coordGame2Screen(this.me.x, this.me.y)
+        let c2 = Game.coordGame2Screen(this.toX, this.toY)
+        this.lineView.clear().lineStyle(2, 0x00ff00).moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1])
+
         // корректировка скорости
         let diff = Math.abs(sd - ld)
         if (sd > 2 && (diff > 1)) {
             let k = ld / sd
+            // ограничиваем максимальную и минимальную корректировку, чтобы сильно не дергалось
             k = Math.max(0.4, k)
             k = Math.min(1.4, k)
             console.warn("speed correct k=" + k.toFixed(2))
@@ -98,6 +109,7 @@ export default class MoveController {
         if (Game.instance !== undefined) {
             delete Game.instance.movingObjects[this.me.id]
         }
+        this.lineView.destroy({children: true, texture: true})
         this.stopped = true
         this.me.moveController = undefined
     }
@@ -109,7 +121,7 @@ export default class MoveController {
 
         // дистанция до конечной точки по данным сервера
         // server distance
-        let sd = Math.sqrt(Math.pow(this.toX - this.serverX, 2) + Math.pow(this.toY - this.serverY, 2))
+        // let sd = Math.sqrt(Math.pow(this.toX - this.serverX, 2) + Math.pow(this.toY - this.serverY, 2))
         // local distance
         let dx = this.toX - this.me.x
         let dy = this.toY - this.me.y

@@ -7,6 +7,7 @@ import Net from "@/net/Net";
 import Point from '@/utils/Point';
 import {GameObject} from "@/game/GameObject";
 import ObjectView from "@/game/ObjectView";
+import {Coord} from "@/utils/Util";
 
 /**
  * основная игровая логика (графика и тд)
@@ -31,7 +32,7 @@ export default class Game {
      */
     private readonly mapGrids: PIXI.Container;
 
-    private readonly objectsContainer: PIXI.Container
+    public readonly objectsContainer: PIXI.Container
 
     /**
      * загруженные гриды
@@ -408,6 +409,12 @@ export default class Game {
             .mulValue(Tile.TILE_SIZE)
             .incValue(px, py)
             .round();
+    }
+
+    public static coordGame2Screen(x: number, y: number): Coord {
+        let px = x / Tile.TILE_SIZE;
+        let py = y / Tile.TILE_SIZE;
+        return [px * Tile.TILE_WIDTH_HALF - py * Tile.TILE_WIDTH_HALF, px * Tile.TILE_HEIGHT_HALF + py * Tile.TILE_HEIGHT_HALF];
     }
 
     private onResize() {

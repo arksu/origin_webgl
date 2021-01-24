@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js';
-import Tile from "@/game/Tile";
 import {GameObject} from "@/game/GameObject";
 import Net from "@/net/Net";
 import objects from "./objects.json"
+import Game from "@/game/Game";
 
 /**
  * внешнее представлениен объекта в игре
@@ -51,11 +51,10 @@ export default class ObjectView {
     }
 
     public onMoved() {
-        let px = this.obj.x / Tile.TILE_SIZE;
-        let py = this.obj.y / Tile.TILE_SIZE;
+        let coord = Game.coordGame2Screen(this.obj.x, this.obj.y)
 
-        this.view.x = px * Tile.TILE_WIDTH_HALF - py * Tile.TILE_WIDTH_HALF;
-        this.view.y = px * Tile.TILE_HEIGHT_HALF + py * Tile.TILE_HEIGHT_HALF;
+        this.view.x = coord[0]
+        this.view.y = coord[1]
         this.view.x -= 17
         this.view.y -= 57
     }
