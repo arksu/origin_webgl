@@ -15,6 +15,6 @@ open class StaticObject(entity: EntityObject) :
     }
 
     override fun getResourcePath(): String {
-        return "trees/fir/6"
+        return "unknown"
     }
 }

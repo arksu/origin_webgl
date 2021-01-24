@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.Const
 import com.origin.collision.CollisionResult
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
@@ -149,9 +150,10 @@ class Player(
                 session.send(CreatureSay(0, "online: ${World.getPlayersCount()}", SYSTEM))
             }
             "spawn" -> {
+                val t: Int = params[1].toInt()
                 val obj = transaction {
-                    val e = EntityObject.makeNew(pos, 1)
-                    StaticObject(e)
+                    val e = EntityObject.makeNew(pos, t)
+                    Const.getObjectByType(e)
                 }
                 val resp = CompletableDeferred<CollisionResult>()
                 grid.send(GridMsg.Spawn(obj, resp))

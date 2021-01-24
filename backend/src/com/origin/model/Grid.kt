@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.Const
 import com.origin.TimeController
 import com.origin.collision.CollisionResult
 import com.origin.entity.EntityObject
@@ -185,7 +186,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             val list =
                 EntityObject.find { (EntityObjects.gridx eq x) and (EntityObjects.gridy eq y) and (EntityObjects.region eq region) and (EntityObjects.level eq level) }
             list.forEach {
-                objects.add(StaticObject(it))
+                objects.add(Const.getObjectByType(it))
             }
         }
     }
