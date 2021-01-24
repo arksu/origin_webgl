@@ -5,7 +5,7 @@ import com.origin.utils.Rect
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 @ObsoleteCoroutinesApi
-class StaticObject(entity: EntityObject) :
+open class StaticObject(entity: EntityObject) :
     GameObject(entity.id.value, entity.x, entity.y, entity.level, entity.region, entity.heading) {
 
     val type = entity.type
@@ -15,6 +15,6 @@ class StaticObject(entity: EntityObject) :
     }
 
     override fun getResourcePath(): String {
-        return "trees/birch/6"
+        return "trees/fir/6"
     }
 }

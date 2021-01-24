@@ -1,5 +1,9 @@
 package com.origin.entity
 
+import com.origin.TimeController
+import com.origin.idfactory.IdFactory
+import com.origin.model.move.Position
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -52,8 +56,24 @@ object EntityObjects : EntityPositions("objects") {
     }
 }
 
+@ObsoleteCoroutinesApi
 class EntityObject(id: EntityID<Long>) : LongEntity(id) {
-    companion object : LongEntityClass<EntityObject>(EntityObjects)
+    companion object : LongEntityClass<EntityObject>(EntityObjects) {
+        fun makeNew(pos: Position, t: Int, q: Short = 10): EntityObject {
+            return EntityObject.new(IdFactory.getNext()) {
+                x = pos.x
+                y = pos.y
+                gridx = pos.gridX
+                gridy = pos.gridY
+                level = pos.level
+                region = pos.region
+                heading = 0
+                type = t
+                quality = q
+                createTick = TimeController.tickCount
+            }
+        }
+    }
 
     var region by EntityObjects.region
     var x by EntityObjects.x

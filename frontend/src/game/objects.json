@@ -2,17 +2,12 @@
   "trees": {
     "birch": {
       "1": {
-        "interactive": 1,
-        "size": [22, 33],
         "offset": [16, 26],
         "layers": [
           {
             "img": "trees/birch/1.png",
-            "offset": [
-              7,
-              0
-            ],
-            "z": 12
+            "offset": [7, 0],
+            "z": 0
           },
           {
             "img": "trees/birch/1_.png",
@@ -22,14 +17,12 @@
         ]
       },
       "2": {
-        "interactive": 1,
-        "size": [44, 63],
         "offset": [22, 49],
         "layers": [
           {
             "img": "trees/birch/2.png",
             "offset": [1, 6],
-            "z": 12
+            "z": 0
           },
           {
             "img": "trees/birch/2_.png",
@@ -39,13 +32,12 @@
         ]
       },
       "3": {
-        "size": [66, 82],
         "offset": [31, 66],
         "layers": [
           {
             "img": "trees/birch/3.png",
             "offset": [4, 1],
-            "z": 12
+            "z": 0
           },
           {
             "img": "trees/birch/3_.png",
@@ -55,13 +47,12 @@
         ]
       },
       "4": {
-        "size": [75, 109],
         "offset": [36, 88],
         "layers": [
           {
             "img": "trees/birch/4.png",
             "offset": [6, 2],
-            "z": 12
+            "z": 0
           },
           {
             "img": "trees/birch/4_.png",
@@ -71,13 +62,12 @@
         ]
       },
       "5": {
-        "size": [111, 156],
         "offset": [59, 124],
         "layers": [
           {
             "img": "trees/birch/5.png",
             "offset": [13, 22],
-            "z": 12
+            "z": 0
           },
           {
             "img": "trees/birch/5_.png",
@@ -87,14 +77,13 @@
         ]
       },
       "6": {
-        "size": [111, 156],
         "offset": [59, 124],
         "layers": [
           {
             "interactive": 0,
             "img": "trees/birch/6.png",
             "offset": [7, 0],
-            "z": 12
+            "z": 0
           },
           {
             "img": "trees/birch/6_.png",
@@ -102,22 +91,131 @@
             "shadow": true
           }
         ]
+      },
+      "stump": {
+        "offset": [34, 16],
+        "layers": [
+          {
+            "interactive": 0,
+            "img": "trees/birch/stump.png",
+            "offset": [7, 6],
+            "z": 0
+          },
+          {
+            "img": "trees/birch/stump_.png",
+            "offset": [10, 13],
+            "shadow": true
+          }
+        ]
       }
     },
     "fir": {
-    }
-  },
-  "well": {
-    "layers": [
-      {
-        "img": "dfs",
-        "z": 1
+      "1": {
+        "offset": [3, 11],
+        "layers": [
+          {
+            "img": "trees/fir/1.png",
+            "z": 0
+          },
+          {
+            "img": "trees/fir/1_.png",
+            "offset": [0, 9],
+            "shadow": true
+          }
+        ]
       },
-      {
-        "img": "ddd",
-        "shadow": true
+      "2": {
+        "offset": [11, 33],
+        "layers": [
+          {
+            "img": "trees/fir/2.png",
+            "z": 0
+          },
+          {
+            "img": "trees/fir/2_.png",
+            "offset": [3, 31],
+            "shadow": true
+          }
+        ]
+      },
+      "3": {
+        "offset": [16, 47],
+        "layers": [
+          {
+            "img": "trees/fir/3.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/fir/3_.png",
+            "offset": [1, 45],
+            "shadow": true
+          }
+        ]
+      },
+      "4": {
+        "offset": [22, 76],
+        "layers": [
+          {
+            "img": "trees/fir/4.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/fir/4_.png",
+            "offset": [2, 68],
+            "shadow": true
+          }
+        ]
+      },
+      "5": {
+        "offset": [33, 109],
+        "layers": [
+          {
+            "img": "trees/fir/5.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/fir/5_.png",
+            "offset": [9, 96],
+            "shadow": true
+          }
+        ]
+      },
+      "6": {
+        "offset": [45, 150],
+        "layers": [
+          {
+            "interactive": 0,
+            "img": "trees/fir/6.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/fir/6_.png",
+            "offset": [6, 134],
+            "shadow": true
+          }
+        ]
+      },
+      "stump": {
+        "offset": [28, 20],
+        "layers": [
+          {
+            "interactive": 0,
+            "img": "trees/fir/stump.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/fir/stump_.png",
+            "offset": [2, 9],
+            "shadow": true
+          }
+        ]
       }
-    ]
+    }
   },
   "player": {
     "offset": [17, 57],

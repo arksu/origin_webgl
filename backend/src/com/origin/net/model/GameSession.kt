@@ -92,6 +92,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     val text = (r.data["text"] as String?) ?: throw BadRequest("no text")
                     if (text.isNotEmpty()) {
                         if (text.startsWith("/")) {
+                            // удаляем слеш в начале строки
                             player.consoleCommand(text.substring(1))
                         } else {
                             player.grid.broadcast(BroadcastEvent.ChatMessage(player, GENERAL, text))

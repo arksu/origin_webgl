@@ -1,10 +1,8 @@
 package com.origin.model
 
-import com.origin.TimeController
 import com.origin.collision.CollisionResult
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
-import com.origin.idfactory.IdFactory
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
 import com.origin.model.move.Move2Object
 import com.origin.model.move.Move2Point
@@ -145,50 +143,19 @@ class Player(
      */
     suspend fun consoleCommand(cmd: String) {
         logger.warn("adminCommand $cmd")
-        when (cmd) {
+        val params = cmd.split(" ")
+        when (params[0]) {
             "online" -> {
                 session.send(CreatureSay(0, "online: ${World.getPlayersCount()}", SYSTEM))
             }
             "spawn" -> {
                 val obj = transaction {
-                    val o = EntityObject.new(IdFactory.getNext()) {
-                        x = pos.x
-                        y = pos.y
-                        gridx = pos.gridX
-                        gridy = pos.gridY
-                        level = pos.level
-                        region = pos.region
-                        heading = 0
-                        type = 23
-                        quality = 10
-                        createTick = TimeController.tickCount
-                    }
-                    val obj = StaticObject(o)
-                    obj
+                    val e = EntityObject.makeNew(pos, 1)
+                    StaticObject(e)
                 }
                 val resp = CompletableDeferred<CollisionResult>()
                 grid.send(GridMsg.Spawn(obj, resp))
-            }
-
-            "spawn2" -> {
-                val obj = transaction {
-                    val o = EntityObject.new(IdFactory.getNext()) {
-                        x = pos.x
-                        y = pos.y
-                        gridx = pos.gridX
-                        gridy = pos.gridY
-                        level = pos.level
-                        region = pos.region
-                        heading = 0
-                        type = 1
-                        quality = 10
-                        createTick = TimeController.tickCount
-                    }
-                    val obj = StaticObject(o)
-                    obj
-                }
-                val resp = CompletableDeferred<CollisionResult>()
-                grid.send(GridMsg.Spawn(obj, resp))
+                resp.await()
             }
         }
     }
