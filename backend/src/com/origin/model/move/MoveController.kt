@@ -170,7 +170,7 @@ abstract class MoveController(val me: MovingObject) {
 
         // сколько прошли: либо расстояние пройденное за тик, либо оставшееся до конечной точки. что меньше
         val distance = (deltaTime * speed).coerceAtMost(td)
-        com.origin.net.model.logger.warn("calcNewPoint $deltaTime $distance")
+//        com.origin.net.model.logger.warn("calcNewPoint $deltaTime $distance")
 
         // помножим расстояние которое должны пройти на единичный вектор
         return if (td == 0.0) {

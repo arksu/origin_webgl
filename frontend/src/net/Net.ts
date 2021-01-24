@@ -282,6 +282,13 @@ export default class Net {
                 Client.instance.onChatMessage?.()
                 break;
             }
+
+            case "fc" : { // file changed
+                let f: string = data.f
+                for (let key in Client.instance.objects) {
+                    Client.instance.objects[key].view?.onAssetsChanged(f)
+                }
+            }
         }
     }
 }

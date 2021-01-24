@@ -30,51 +30,52 @@ object FileWatcher {
 
         logger.debug("start dev file watcher...")
         val len = ServerConfig.ASSETS_DIR.length
-        Files.find(Paths.get(ServerConfig.ASSETS_DIR), Int.MAX_VALUE,
-            { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile })
-            .forEach { x: Path ->
-                run {
-                    val f = x.toString().substring(len)
-                    logger.debug("process file $f")
-
-                    hash[f] = getCRC(x)
-                }
-            }
-
-        // запустим поток который периодически проверяет хэши
-        // и если изменилось отсылает на клиент уведомление
-        val thread = Thread {
-            while (true) {
-                try {
-                    Thread.sleep(1000)
-                } catch (e: InterruptedException) {
-                    break
+        try {
+            Files.find(Paths.get(ServerConfig.ASSETS_DIR), Int.MAX_VALUE,
+                { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile })
+                .forEach { x: Path ->
+                    run {
+                        val f = x.toString().substring(len)
+                        hash[f] = getCRC(x)
+                    }
                 }
 
-                Files.find(Paths.get(ServerConfig.ASSETS_DIR), Int.MAX_VALUE,
-                    { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile })
-                    .forEach { x: Path ->
-                        run {
-                            val f = x.toString().substring(len)
-//                            logger.debug("process file $f")
+            // запустим поток который периодически проверяет хэши
+            // и если изменилось отсылает на клиент уведомление
+            val thread = Thread {
+                while (true) {
+                    try {
+                        Thread.sleep(1000)
+                    } catch (e: InterruptedException) {
+                        break
+                    }
 
-                            if (hash.containsKey(f)) {
-                                val crc = getCRC(x)
-                                if (hash[f] != crc) {
-                                    logger.warn("changed file $f")
-                                    sendChanged(f)
-                                    hash[f] = crc
+                    Files.find(Paths.get(ServerConfig.ASSETS_DIR), Int.MAX_VALUE,
+                        { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile })
+                        .forEach { x: Path ->
+                            run {
+                                val f = x.toString().substring(len)
+
+                                if (hash.containsKey(f)) {
+                                    val crc = getCRC(x)
+                                    if (hash[f] != crc) {
+                                        logger.warn("changed file $f")
+                                        sendChanged(f)
+                                        hash[f] = crc
+                                    }
+                                } else {
+                                    logger.warn("new file $f")
+                                    sendAdded(f)
+                                    hash[f] = getCRC(x)
                                 }
-                            } else {
-                                logger.warn("new file $f")
-                                sendAdded(f)
-                                hash[f] = getCRC(x)
                             }
                         }
-                    }
+                }
             }
+            thread.start()
+        } catch (e: Exception) {
+            logger.error("error ${e.message}", e)
         }
-        thread.start()
     }
 
     private fun getCRC(x: Path): Long {
@@ -85,6 +86,7 @@ object FileWatcher {
         while (fin.read(buffer).also { bytesRead = it } != -1) {
             crc.update(buffer, 0, bytesRead)
         }
+        fin.close()
         return crc.value
     }
 

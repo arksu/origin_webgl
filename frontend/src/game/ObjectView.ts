@@ -22,17 +22,15 @@ export default class ObjectView {
     constructor(obj: GameObject) {
         this.obj = obj
 
-        console.log("make object: " + obj.r)
-
-        this.res = this.makeFrom(obj.r)
+        this.res = this.getResource(obj.r)
         if (this.res == undefined) {
-            this.res = this.makeFrom("unknown")
+            this.res = this.getResource("unknown")
         }
-
+        this.makeLayers()
         this.onMoved()
     }
 
-    private makeFrom(r: string): Resource {
+    private getResource(r: string): Resource {
         let strings = r.split("/");
 
         // берем первый уровень вложенности
@@ -46,17 +44,14 @@ export default class ObjectView {
             res = res[strings[i]]
             if (res == undefined) return res
         }
-
-        // если слоев больше одного
-        if (res.layers.length > 1) {
-            // идем по слоям
-            for (let i = 0; i < res.layers.length; i++) {
-                this.addLayer(res.layers[i])
-            }
-        } else {
-            this.addLayer(res.layers[0])
-        }
         return res
+    }
+
+    private makeLayers() {
+        // идем по слоям
+        for (let i = 0; i < this.res.layers.length; i++) {
+            this.addLayer(this.res.layers[i])
+        }
     }
 
     private addLayer(l: Layer) {
@@ -101,7 +96,32 @@ export default class ObjectView {
                 this.view[i].x -= this.res.offset[0]
                 this.view[i].y -= this.res.offset[1]
             }
-            this.view[i].zIndex = coord[1]
+            let z = coord[1]
+            if (this.res.layers[i].shadow) {
+                z = -1
+            }
+            this.view[i].zIndex = z
+        }
+    }
+
+    /**
+     * сервер уведомил о том что изменился файл в ассетах
+     * @param f путь до текстуры
+     */
+    public onAssetsChanged(f: string) {
+        // идем по слоям
+        for (let i = 0; i < this.res.layers.length; i++) {
+            if (this.res.layers[i].img == f) {
+                let l = this.res.layers[i]
+                let path = l.img
+                // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
+                if (path.includes(".")) path = "assets/" + path
+
+
+                // создаем спрайт для каждого слоя
+                PIXI.Texture.removeFromCache(this.view[i].texture)
+                this.view[i].texture = PIXI.Texture.from(path)
+            }
         }
     }
 

@@ -87,7 +87,6 @@ export default class Game {
         this.instance = new Game();
 
         this.canvas.style.display = "block";
-        // this.appDiv.style.display = "none";\
     }
 
     public static stop() {
@@ -98,12 +97,10 @@ export default class Game {
         Client.instance.clear();
 
         this.canvas.style.display = "none";
-        // this.appDiv.style.display = "block";
     }
 
     constructor() {
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
-        PIXI.settings.ROUND_PIXELS = false
 
         this.app = new PIXI.Application({
             width: window.innerWidth,
@@ -435,7 +432,6 @@ export default class Game {
         if (obj.view === undefined) {
             obj.view = new ObjectView(obj)
             for (let i = 0; i < obj.view.view.length; i++) {
-                console.log(obj.view.view)
                 this.objectsContainer.addChild(obj.view.view[i])
             }
         }
