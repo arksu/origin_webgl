@@ -127,8 +127,8 @@ export default class MoveController {
             let nd = Math.min(ld, this.speed * dt)
 
             // сколько прошли
-            let dx = nd * ((this.toX - this.serverX) / sd);
-            let dy = nd * ((this.toY - this.serverY) / sd);
+            let dx = nd * ((this.toX - this.me.x) / ld);
+            let dy = nd * ((this.toY - this.me.y) / ld);
 
             // добавим к координатам объекта дельту
             this.me.x += dx;
