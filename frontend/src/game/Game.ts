@@ -325,7 +325,7 @@ export default class Game {
     }
 
     private onKeyDown(e: KeyboardEvent) {
-        console.log(e.key)
+        console.log("onKeyDown:", e.key)
         switch (e.key) {
             case "Enter":
                 document.getElementById("inputChat")?.focus();

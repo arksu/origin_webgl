@@ -141,3 +141,9 @@ class CreatureSay(val id: ObjectID, text: String, channel: Int) : ServerMessage(
     val t = text
     val c = channel
 }
+
+/**
+ * уведомления об изменениях в папке с ассетами
+ */
+class FileChanged(val f: String) : ServerMessage("fc")
+class FileAdded(val f: String) : ServerMessage("fa")

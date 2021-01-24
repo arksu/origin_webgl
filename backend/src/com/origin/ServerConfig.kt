@@ -38,6 +38,13 @@ object ServerConfig {
      */
     var VISIBLE_UPDATE_DISTANCE = TILE_SIZE * 1
 
+    /**
+     * сервер запущен в дев режиме (слежение за каталогами с графикой и др фичи)
+     */
+    var IS_DEV = false
+
+    lateinit var ASSETS_DIR: String
+
     @JvmStatic
     fun load() {
         logger.info("Load config...")
@@ -57,5 +64,7 @@ object ServerConfig {
         DB_PASSWORD = conf.getString("origin.db.password")
         DB_NAME = conf.getString("origin.db.name")
         PORT = conf.getInt("origin.net.port")
+        IS_DEV = conf.getBoolean("origin.dev.mode")
+        ASSETS_DIR = conf.getString("origin.dev.assets_dir")
     }
 }

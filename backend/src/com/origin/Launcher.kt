@@ -18,6 +18,7 @@ object Launcher {
     fun main(args: Array<String>) {
         Locale.setDefault(Locale.ROOT)
         ServerConfig.load()
+        FileWatcher.start()
         EventBus.init()
         DatabaseFactory.init()
         TimeController.start()

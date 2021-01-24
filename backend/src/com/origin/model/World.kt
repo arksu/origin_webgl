@@ -18,7 +18,7 @@ object World {
     /**
      * активные игроки которые залогинены в мир
      */
-    private val players = ConcurrentHashMap<ObjectID, Player>()
+    val players = ConcurrentHashMap<ObjectID, Player>()
 
     private fun getRegion(region: Int): Region {
         if (region < 0) throw RuntimeException("wrong grid region")
