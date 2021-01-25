@@ -161,7 +161,7 @@ export default class Game {
 
         if (img == undefined) {
             // TODO
-            for (let i = 1; i <= 1; i++) {
+            for (let i = 1; i <= 4; i++) {
                 loader.add("assets/tiles/water" + i + ".png")
             }
             for (let i = 1; i <= 3; i++) {

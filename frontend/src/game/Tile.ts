@@ -22,7 +22,7 @@ export default class Tile {
             case 1 :
                 return this.randomNames('tiles/grass', 2)
             case 2:
-                return this.randomNames('tiles/water', 1)
+                return this.randomNames('tiles/water', 4)
             case 3:
                 return this.randomNames('tiles/stone', 3)
             case 4 :
