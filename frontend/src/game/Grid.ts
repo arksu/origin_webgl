@@ -22,7 +22,6 @@ export default class Grid {
         this.y = y;
 
         this.makeChunks()
-        console.log(this.tiles[2])
     }
 
     private makeChunks() {

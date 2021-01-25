@@ -117,8 +117,6 @@ export default class ObjectView {
                 // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
                 if (path.includes(".")) path = "assets/" + path + "?" + (+new Date())
 
-                // создаем спрайт для каждого слоя
-                // PIXI.Texture.removeFromCache(this.view[i].texture)
                 this.view[i].texture = PIXI.Texture.from(path)
             }
         }
