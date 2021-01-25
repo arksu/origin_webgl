@@ -165,6 +165,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * сколько игровых координат проходим за 1 реальную секунду
      */
     fun getMovementSpeed(): Double {
+        // TODO : смотреть тайл, если мощеный камень - увеличиваем скорость
         val s = when (getMovementMode()) {
             MoveMode.STEAL -> 25.0
             MoveMode.WALK -> 60.0
