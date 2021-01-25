@@ -22,6 +22,11 @@ export default class Grid {
         this.y = y;
 
         this.makeChunks()
+
+        // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
+        for (let i = 0; i < this.containers.length; i++) {
+            this.containers[i].cacheAsBitmap = true
+        }
     }
 
     private makeChunks() {
@@ -57,8 +62,6 @@ export default class Grid {
         container.calculateBounds()
         // console.log("grid screen x=" + container.x + " y=" + container.y + " w=" + container.width + " h=" + container.height)
 
-        // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
-        container.cacheAsBitmap = true
         return container;
     }
 

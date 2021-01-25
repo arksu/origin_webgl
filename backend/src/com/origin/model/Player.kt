@@ -150,9 +150,14 @@ class Player(
                 session.send(CreatureSay(0, "online: ${World.getPlayersCount()}", SYSTEM))
             }
             "spawn" -> {
+                // param 1 - type id
                 val t: Int = params[1].toInt()
+                val d = if (params.size >= 3) params[2] else null
                 val obj = transaction {
                     val e = EntityObject.makeNew(pos, t)
+                    if (d != null) {
+                        e.data = d
+                    }
                     Const.getObjectByType(e)
                 }
                 val resp = CompletableDeferred<CollisionResult>()

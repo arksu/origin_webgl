@@ -17,19 +17,23 @@ export default class Tile {
 
     public static getTextureName(t: number, x: number, y: number): string {
         switch (t) {
-            case 0 :
-                return 'grass1'
+            // case 0 :
+            //     return this.randomNames('tiles/grass', 2)
             case 1 :
-                return 'forest_leaf_1'
+                return this.randomNames('tiles/grass', 2)
             case 2:
-                return 'test_water_1'
+                return this.randomNames('tiles/water', 1)
             case 3:
-                return 'stone1'
+                return this.randomNames('tiles/stone', 3)
+            case 4 :
+                return this.randomNames('tiles/forest_grass_', 1)
             default :
-                // let r = getRandomInt(3) + 1
-                // return 'test_tile_' + r
-                let r = getRandomInt(19) + 1
-                return 'tiles/forest_grass_' + r + '.png'
+                return 'unknown'
         }
+    }
+
+    private static randomNames(s: string, n: number): string {
+        let r = getRandomInt(n) + 1
+        return s + r + '.png'
     }
 }

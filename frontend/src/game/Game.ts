@@ -153,11 +153,23 @@ export default class Game {
         this.screenSprite.on('mousewheel', this.onMouseWheel.bind(this));
 
 
+        PIXI.utils.destroyTextureCache()
+        PIXI.utils.clearTextureCache()
+
         const loader = this.app.loader;
         const img = PIXI.utils.TextureCache['assets/tiles.json_image'];
 
         if (img == undefined) {
             // TODO
+            for (let i = 1; i <= 1; i++) {
+                loader.add("assets/tiles/water" + i + ".png")
+            }
+            for (let i = 1; i <= 3; i++) {
+                loader.add("assets/tiles/stone" + i + ".png")
+            }
+            for (let i = 1; i <= 2; i++) {
+                loader.add("assets/tiles/grass" + i + ".png")
+            }
             for (let i = 1; i <= 19; i++) {
                 loader.add("assets/tiles/forest_grass_" + i + ".png")
             }
