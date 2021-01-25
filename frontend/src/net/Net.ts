@@ -288,6 +288,7 @@ export default class Net {
                 for (let key in Client.instance.objects) {
                     Client.instance.objects[key].view?.onAssetsChanged(f)
                 }
+                Game.instance?.onFileChange(f)
             }
         }
     }

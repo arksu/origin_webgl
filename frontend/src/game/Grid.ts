@@ -13,6 +13,7 @@ export default class Grid {
     public readonly x: number
     public readonly y: number
 
+    private spriteTextureNames: string[] = []
     private tiles: PIXI.Sprite[] = [];
 
     constructor(app: PIXI.Application, x: number, y: number) {
@@ -20,6 +21,11 @@ export default class Grid {
         this.x = x;
         this.y = y;
 
+        this.makeChunks()
+        console.log(this.tiles[2])
+    }
+
+    private makeChunks() {
         // создаем чанки грида 4x4
         for (let cx = 0; cx < 2; cx++) {
             for (let cy = 0; cy < 2; cy++) {
@@ -36,6 +42,7 @@ export default class Grid {
                 children: true
             })
         }
+        this.containers = []
     }
 
     private makeChunk(cx: number, cy: number): PIXI.Container {
@@ -65,20 +72,47 @@ export default class Grid {
 
                 let x = cx * this.CHUNK_SIZE + tx;
                 let y = cy * this.CHUNK_SIZE + ty;
+                const idx = y * Tile.GRID_SIZE + x
 
-                let tn = Tile.getTextureName(data[y * Tile.GRID_SIZE + x], x, y)
+                const tn = Tile.getTextureName(data[y * Tile.GRID_SIZE + x], x, y)
+                this.spriteTextureNames[idx] = tn
 
-                let s = PIXI.Sprite.from(tn);
-                s.roundPixels = false;
-                // s.tint = 50000 * (this.x % 2 + this.y % 2);
+                let path = tn
+                if (path.includes(".")) path = "assets/" + path
 
-                container.addChild(s)
+                let spr = PIXI.Sprite.from(path);
 
-                s.x = tx * Tile.TILE_WIDTH_HALF - ty * Tile.TILE_WIDTH_HALF;
-                s.y = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF;
+                // spr.tint = 50000 * (this.x % 2 + this.y % 2);
 
-                this.tiles[y * Tile.GRID_SIZE + x] = s;
+                container.addChild(spr)
+
+                spr.x = tx * Tile.TILE_WIDTH_HALF - ty * Tile.TILE_WIDTH_HALF;
+                spr.y = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF;
+
+                this.tiles[idx] = spr;
             }
         }
+    }
+
+    public onFileChange(fn: string) {
+        let path = "assets/" + fn + "?" + (+new Date())
+
+        for (let i = 0; i < this.containers.length; i++) {
+            this.containers[i].cacheAsBitmap = false
+        }
+        PIXI.Texture.fromURL(path).then(() => {
+
+            for (let i = 0; i < this.tiles.length; i++) {
+                let spr = this.tiles[i]
+
+                if (this.spriteTextureNames[i] == fn) {
+                    spr.texture = PIXI.Texture.from(path)
+                }
+            }
+
+            for (let i = 0; i < this.containers.length; i++) {
+                this.containers[i].cacheAsBitmap = true
+            }
+        })
     }
 }

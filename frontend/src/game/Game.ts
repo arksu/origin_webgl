@@ -157,6 +157,10 @@ export default class Game {
         const img = PIXI.utils.TextureCache['assets/tiles.json_image'];
 
         if (img == undefined) {
+            // TODO
+            for (let i = 1; i <= 19; i++) {
+                loader.add("assets/tiles/forest_grass_" + i + ".png")
+            }
             loader.add("assets/tiles.json")
             loader.load((_, __) => {
                 this.setup();
@@ -447,6 +451,12 @@ export default class Game {
 
     public onObjectChange(obj: GameObject) {
         // TODO onObjectChange
+    }
+
+    public onFileChange(fn: string) {
+        for (let i = 0; i < this.grids.length; i++) {
+            this.grids[i].onFileChange(fn)
+        }
     }
 
     /**

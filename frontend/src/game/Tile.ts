@@ -29,7 +29,7 @@ export default class Tile {
                 // let r = getRandomInt(3) + 1
                 // return 'test_tile_' + r
                 let r = getRandomInt(19) + 1
-                return 'forest_grass_' + r
+                return 'tiles/forest_grass_' + r + '.png'
         }
     }
 }
