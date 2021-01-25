@@ -60,12 +60,12 @@ object FileWatcher {
                                     val crc = getCRC(x)
                                     if (hash[f] != crc) {
                                         logger.warn("changed file $f")
-                                        sendChanged(f)
+                                        sendChanged(f.replace("\\", "/"))
                                         hash[f] = crc
                                     }
                                 } else {
                                     logger.warn("new file $f")
-                                    sendAdded(f)
+                                    sendAdded(f.replace("\\", "/"))
                                     hash[f] = getCRC(x)
                                 }
                             }

@@ -120,7 +120,7 @@ export default class ObjectView {
 
                 // создаем спрайт для каждого слоя
                 PIXI.Texture.removeFromCache(this.view[i].texture)
-                this.view[i].texture = PIXI.Texture.from(path)
+                this.view[i].texture = PIXI.Texture.from(path + "?" + (+new Date()))
             }
         }
     }
