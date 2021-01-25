@@ -5,7 +5,7 @@
     </div>
   </div>
 
-  <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px" @submit.prevent="submit"
+  <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px" @submit.prevent="chatSubmit"
         action="#">
     <div>
       <li v-for="r in chatRows">
@@ -14,7 +14,8 @@
       <!-- hack for refresh chatRows value -->
       <span style="display: none">{{ cnt }}</span>
     </div>
-    <input style="width: 300px; font-size: 20px" type="text" v-model="chatText" id="inputChat">
+    <input style="width: 300px; font-size: 20px" type="text" v-model="chatText" id="inputChat"
+           v-on:keyup.prevent="keyup">
     <input type="submit" value=">">
   </form>
 </template>
@@ -33,7 +34,9 @@ export default defineComponent({
       active: false as boolean,
       chatText: "" as string,
       chatRows: [] as string[],
-      cnt: 0 as number
+      cnt: 0 as number,
+      chatHistory: [] as string[],
+      chatHistoryIndex: 0 as number
     }
   },
   mounted() {
@@ -63,8 +66,10 @@ export default defineComponent({
     }
 
     Client.instance.onChatMessage = () => {
-      this.chatRows = Client.instance.chatHistory.reverse()
+      console.log(Client.instance.chatHistory)
+      this.chatRows = [...Client.instance.chatHistory].reverse()
       this.cnt = this.cnt + 1
+      console.log("chat:")
       console.log(this.chatRows)
     }
   },
@@ -77,12 +82,30 @@ export default defineComponent({
     // }
   },
   methods: {
-    submit() {
-      console.log("submit " + this.chatText)
-      Net.remoteCall("chat", {
-        text: this.chatText
-      })
-      this.chatText = ""
+    chatSubmit() {
+      if (this.chatText !== undefined && this.chatText.length > 0) {
+        console.log("chat submit " + this.chatText)
+        this.chatHistory.unshift(this.chatText)
+        this.chatHistoryIndex = -1
+        Net.remoteCall("chat", {
+          text: this.chatText
+        })
+        this.chatText = ""
+      }
+    },
+    keyup(e: KeyboardEvent) {
+      // navigate by chat history
+      if (e.key == "ArrowUp") {
+        if (this.chatHistory.length > 0 && this.chatHistoryIndex < this.chatHistory.length - 1) {
+          this.chatHistoryIndex++
+          this.chatText = this.chatHistory[this.chatHistoryIndex]
+        }
+      } else if (e.key == "ArrowDown") {
+        if (this.chatHistory.length > 0 && this.chatHistoryIndex > 0) {
+          this.chatHistoryIndex--
+          this.chatText = this.chatHistory[this.chatHistoryIndex]
+        }
+      }
     }
   }
 });

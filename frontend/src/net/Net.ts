@@ -277,7 +277,7 @@ export default class Net {
                 // канал в который пришло сообщение
                 let c = data.c == 0xff ? "System" : "player"
                 let msg = c + ": " + data.t
-                Client.instance.chatHistory.splice(0, 0, msg)
+                Client.instance.chatHistory.unshift(msg)
                 Client.instance.chatHistory.splice(7)
                 Client.instance.onChatMessage?.()
                 break;
