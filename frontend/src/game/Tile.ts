@@ -84,7 +84,7 @@ export default class Tile {
         Tile.sets[4] = new TileSet(forest_pine)
     }
 
-    public static getTextureName(t: number, x: number, y: number): string {
+    public static getGroundTexture(t: number): string {
         const set = Tile.sets[t]
         if (set !== undefined) {
             return set.ground.get(getRandomInt(25000))
