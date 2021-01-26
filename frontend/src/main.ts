@@ -8,12 +8,16 @@ import "@/scss/main.scss";
 import {createApp} from "vue";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
+import Tile from "@/game/Tile";
 
 // формируем ссылку для работы с бекендом
 let gameServerPort = 8020;
 let proto = "https:" === window.location.protocol ? "wss:" : "ws:";
 Client.wsUrl = proto + "//" + window.location.hostname + ":" + gameServerPort + "/game";
 Client.apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + gameServerPort
+
+// сформируем правильные тайлсеты
+Tile.init()
 
 // создадим синглтон для клиента где будем хранить наш игровой стейт
 Client.instance = new Client();

@@ -1,0 +1,48 @@
+{
+  "ground": [
+    {
+      "img": "tiles/water/water1.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/water/water2.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/water/water3.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/water/water4.png",
+      "w": 1
+    }
+  ],
+  "borders": [
+  ],
+  "corners": [
+    [
+      {
+        "img": "tiles/water/c1.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/c2.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/c3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/c4.png",
+        "w": 1
+      }
+    ]
+  ]
+}

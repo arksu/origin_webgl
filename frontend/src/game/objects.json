@@ -215,6 +215,40 @@
           }
         ]
       }
+    },
+    "pine" : {
+      "6" : {
+        "offset": [92, 291],
+        "layers": [
+          {
+            "interactive": 0,
+            "img": "trees/pine/6.png",
+            "offset": [9, 12],
+            "z": 0
+          },
+          {
+            "img": "trees/pine/6_.png",
+            "offset": [33, 281],
+            "shadow": true
+          }
+        ]
+      },
+      "stump": {
+        "offset": [54, 34],
+        "layers": [
+          {
+            "interactive": 0,
+            "img": "trees/pine/stump.png",
+            "offset": [22, 28],
+            "z": 0
+          },
+          {
+            "img": "trees/pine/stump_.png",
+            "offset": [19, 31],
+            "shadow": true
+          }
+        ]
+      }
     }
   },
   "player": {

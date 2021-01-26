@@ -1,0 +1,16 @@
+{
+  "ground": [
+    {
+      "img": "tiles/forest_leaf/grass1.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/forest_leaf/grass2.png",
+      "w": 1
+    }
+  ],
+  "borders": [
+  ],
+  "corners": [
+  ]
+}
