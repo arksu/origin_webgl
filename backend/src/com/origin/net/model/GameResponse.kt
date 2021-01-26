@@ -73,6 +73,8 @@ class MapGridData(grid: Grid, add: Boolean) : ServerMessage("m") {
     val tiles: ByteArray? = if (add) grid.tilesBlob else null
 }
 
+class MapGridConfirm : ServerMessage("mc")
+
 @ObsoleteCoroutinesApi
 class ObjectAdd(obj: GameObject) : ServerMessage("oa") {
     val id = obj.id

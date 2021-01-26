@@ -10,6 +10,7 @@ import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.net.model.CreatureSay
 import com.origin.net.model.GameSession
+import com.origin.net.model.MapGridConfirm
 import com.origin.utils.ObjectID
 import com.origin.utils.Rect
 import kotlinx.coroutines.CompletableDeferred
@@ -122,6 +123,16 @@ class Player(
 
         // удалить объект из мира
         remove()
+    }
+
+    override suspend fun loadGrids() {
+        super.loadGrids()
+        session.send(MapGridConfirm())
+    }
+
+    override suspend fun onGridChanged() {
+        super.onGridChanged()
+        session.send(MapGridConfirm())
     }
 
     override fun storePositionInDb() {

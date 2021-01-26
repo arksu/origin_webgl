@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import Tile from "@/game/Tile";
 import Client from "@/net/Client";
+import {getRandomByCoord} from "@/utils/Util";
 
 export default class Grid {
 
@@ -9,12 +10,21 @@ export default class Grid {
     // 2 4 5
     private static readonly DIVIDER = 4
 
+    /**
+     * размер одной стороны чанка
+     */
     private readonly CHUNK_SIZE = Tile.GRID_SIZE / Grid.DIVIDER
+
+    private static readonly bx = [0, 1, 1, 2]
+    private static readonly by = [1, 0, 2, 1]
+    private static readonly cx = [0, 0, 2, 2]
+    private static readonly cy = [0, 2, 2, 0]
 
     private app: PIXI.Application
 
     public readonly x: number
     public readonly y: number
+    public readonly key: string
 
     private spriteTextureNames: string[] = []
     private tiles: PIXI.Sprite[] = [];
@@ -23,6 +33,7 @@ export default class Grid {
         this.app = app;
         this.x = x;
         this.y = y;
+        this.key = this.x + "_" + this.y
 
         this.makeChunks()
 
@@ -70,32 +81,117 @@ export default class Grid {
     }
 
     private makeTiles(container: PIXI.Container, cx: number, cy: number, chunk: number) {
-        let key = this.x + "_" + this.y;
-        let data = Client.instance.map[key];
+        const data = Client.instance.map[this.key];
 
         for (let tx = 0; tx < this.CHUNK_SIZE; tx++) {
             for (let ty = 0; ty < this.CHUNK_SIZE; ty++) {
 
                 let x = cx * this.CHUNK_SIZE + tx;
                 let y = cy * this.CHUNK_SIZE + ty;
+                // индекс в массиве тайлов
                 const idx = y * Tile.GRID_SIZE + x
 
-                const tn = Tile.getGroundTexture(data[y * Tile.GRID_SIZE + x])
-                this.spriteTextureNames[idx] = tn
+                const tn = Tile.getGroundTexture(data[idx])
+                if (tn !== undefined) {
+                    this.spriteTextureNames[idx] = tn
 
-                let path = tn
-                if (path.includes(".")) path = "assets/" + path
+                    let path = tn
+                    if (path.includes(".")) path = "assets/" + path
 
-                let spr = PIXI.Sprite.from(path);
+                    let spr = PIXI.Sprite.from(path);
 
-                // spr.tint = 500000 * chunk;
+                    // spr.tint = 500000 * chunk;
 
-                container.addChild(spr)
+                    const sx = tx * Tile.TILE_WIDTH_HALF - ty * Tile.TILE_WIDTH_HALF
+                    const sy = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF
+                    spr.x = sx;
+                    spr.y = sy;
+                    container.addChild(spr)
 
-                spr.x = tx * Tile.TILE_WIDTH_HALF - ty * Tile.TILE_WIDTH_HALF;
-                spr.y = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF;
+                    this.tiles[idx] = spr;
 
-                this.tiles[idx] = spr;
+                    this.makeTransparentTiles(container, data, idx, x, y, sx, sy)
+                }
+
+            }
+        }
+    }
+
+    private makeTransparentTiles(container: PIXI.Container, data: number[], idx: number, x: number, y: number, sx: number, sy: number) {
+        let tr: number[][] = []
+        // идем по тайлам вокруг целевого
+        for (let rx = -1; rx <= 1; rx++) {
+            tr[rx + 1] = []
+            for (let ry = -1; ry <= 1; ry++) {
+                if (rx == 0 && ry == 0) continue
+
+                const dx = x + rx
+                const dy = y + ry
+                // это тайл еще текущего грида
+                let tn = -1
+                if (dx >= 0 && dx < Tile.GRID_SIZE && dy >= 0 && dy < Tile.GRID_SIZE) {
+                    tn = data[dy * Tile.GRID_SIZE + dx]
+                } else {
+                    // тайл соседнего грида
+                    // смещение тайла который вылез за границы относительно текущего грида
+                    let ox = dx < 0 ? -1 : (dx >= Tile.GRID_SIZE ? 1 : 0)
+                    let oy = dy < 0 ? -1 : (dy >= Tile.GRID_SIZE ? 1 : 0)
+                    const ndata = Client.instance.map[(this.x + ox) + "_" + (this.y + oy)];
+                    // можем выйти за границы карты и такого грида не будет
+                    if (ndata !== undefined) {
+                        let ix = dx < 0 ? Tile.GRID_SIZE + dx : (dx >= Tile.GRID_SIZE ? dx - Tile.GRID_SIZE : dx)
+                        let iy = dy < 0 ? Tile.GRID_SIZE + dy : (dy >= Tile.GRID_SIZE ? dy - Tile.GRID_SIZE : dy)
+                        tn = ndata[iy * Tile.GRID_SIZE + ix]
+                    }
+                }
+                tr[rx + 1][ry + 1] = tn
+            }
+        }
+
+        if (tr[0][0] >= tr[1][0]) tr[0][0] = -1
+        if (tr[0][0] >= tr[0][1]) tr[0][0] = -1
+        if (tr[2][0] >= tr[1][0]) tr[2][0] = -1
+        if (tr[2][0] >= tr[2][1]) tr[2][0] = -1
+        if (tr[0][2] >= tr[0][1]) tr[0][2] = -1
+        if (tr[0][2] >= tr[1][2]) tr[0][2] = -1
+        if (tr[2][2] >= tr[2][1]) tr[2][2] = -1
+        if (tr[2][2] >= tr[1][2]) tr[2][2] = -1
+
+        for (let i = data[idx]; i >= 0; i--) {
+            const ts = Tile.sets[i]
+            if (ts == undefined || ts.corners == undefined || ts.borders == undefined) continue
+            let bm = 0
+            let cm = 0
+            for (let o = 0; o < 4; o++) {
+                if (tr[Grid.bx[o]][Grid.by[o]] == i) bm |= 1 << o
+                if (tr[Grid.cx[o]][Grid.cy[o]] == i) cm |= 1 << o
+            }
+            if (bm !== 0) {
+                const arr = ts.borders[bm - 1];
+                if (arr !== undefined) {
+                    let path = arr.get(getRandomByCoord(x, y))
+                    if (path !== undefined) {
+                        if (path.includes(".")) path = "assets/" + path
+                        let spr = PIXI.Sprite.from(path)
+                        spr.x = sx
+                        spr.y = sy
+                        container.addChild(spr)
+                    }
+                }
+            }
+            if (cm !== 0) {
+                const arr = ts.corners[cm - 1];
+                if (cm > 1) console.log("cm ", cm, ts.corners)
+                if (arr !== undefined) {
+                    let path = arr.get(getRandomByCoord(x, y))
+                    if (path !== undefined) {
+                        if (path.includes(".")) path = "assets/" + path
+                        let spr = PIXI.Sprite.from(path)
+                        spr.x = sx
+                        spr.y = sy
+                        container.addChild(spr)
+                    }
+                }
             }
         }
     }

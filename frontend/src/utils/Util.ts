@@ -58,6 +58,11 @@ export function getRandomInt(max: number): number {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
+export function getRandomByCoord(x: number, y: number): number {
+    // TODO детерменированный рандом на основании координат
+    return getRandomInt(10000);
+}
+
 /**
  * ориентация экран сейчас планшетная? (горизонтальная)
  */

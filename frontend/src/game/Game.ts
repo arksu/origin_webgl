@@ -37,7 +37,7 @@ export default class Game {
     /**
      * загруженные гриды
      */
-    private grids: Grid[] = [];
+    private grids: { [key: string]: Grid } = {};
 
     /**
      * невидимый спрайт на весь экран для обработки кликов мыши
@@ -195,8 +195,8 @@ export default class Game {
             // baseTexture: true
         });
 
-        for (let i = 0; i < this.grids.length; i++) {
-            this.grids[i].destroy()
+        for (let gridsKey in this.grids) {
+            this.grids[gridsKey].destroy()
         }
         this.mapGrids.destroy({children: true})
         this.objectsContainer.destroy({children: true})
@@ -228,14 +228,14 @@ export default class Game {
         for (let i = 0; i < grid.containers.length; i++) {
             this.mapGrids.addChild(grid.containers[i]);
         }
-        this.grids.push(grid);
+        this.grids[grid.key] = grid
     }
 
     public deleteGrid(x: number, y: number) {
-        for (let i = 0; i < this.grids.length; i++) {
-            if (this.grids[i].x == x && this.grids[i].y == y) {
-                this.grids[i].destroy()
-                this.grids.splice(i, 1)
+        for (let gridsKey in this.grids) {
+            if (this.grids[gridsKey].x == x && this.grids[gridsKey].y == y) {
+                this.grids[gridsKey].destroy()
+                delete this.grids[gridsKey]
                 break
             }
         }
@@ -471,8 +471,8 @@ export default class Game {
     }
 
     public onFileChange(fn: string) {
-        for (let i = 0; i < this.grids.length; i++) {
-            this.grids[i].onFileChange(fn)
+        for (let gridsKey in this.grids) {
+            this.grids[gridsKey].onFileChange(fn)
         }
     }
 

@@ -225,12 +225,22 @@ export default class Net {
                 // a=1 это добавление куска карты
                 if (p.a == 1) {
                     Client.instance.map[key] = p.tiles;
-                    Game.instance?.addGrid(p.x, p.y)
+                    // Game.instance?.addGrid(p.x, p.y)
                 } else {
                     delete Client.instance.map[key]
-                    Game.instance?.deleteGrid(p.x, p.y)
+                    // Game.instance?.deleteGrid(p.x, p.y)
                 }
                 break;
+            }
+            case "mc" : { // map confirmed
+                for (let mapKey in Client.instance.map) {
+                    console.log(mapKey)
+                    let s = mapKey.split("_");
+                    let x: number = +s[0];
+                    let y: number = +s[1];
+                    Game.instance?.addGrid(x, y)
+                }
+                break
             }
             case "oa": { // object add
                 Client.instance.objects[data.id] = data

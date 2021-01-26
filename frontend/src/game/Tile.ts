@@ -31,7 +31,8 @@ class TileArray {
         }
     }
 
-    public get(t: number): string {
+    public get(t: number): string | undefined {
+        if (this.tw == 0) return undefined
         let w = t % this.tw
         let i = 0
         while (true) {
@@ -84,12 +85,12 @@ export default class Tile {
         Tile.sets[4] = new TileSet(forest_pine)
     }
 
-    public static getGroundTexture(t: number): string {
+    public static getGroundTexture(t: number): string | undefined {
         const set = Tile.sets[t]
         if (set !== undefined) {
             return set.ground.get(getRandomInt(25000))
         }
-        return 'unknown'
+        return undefined
     }
 
     private static randomNames(s: string, n: number): string {

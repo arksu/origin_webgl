@@ -59,7 +59,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * вызываться может только если еще не был заполнен этот список
      * в случае телепорта объекта надо очистить этот список
      */
-    private suspend fun loadGrids() {
+    protected open suspend fun loadGrids() {
         // грузить гриды можем только если ничего еще не было загружено
         if (!grids.isEmpty()) {
             throw RuntimeException("activateGrids - grids is not empty")
@@ -168,7 +168,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         // TODO : смотреть тайл, если мощеный камень - увеличиваем скорость
         val s = when (getMovementMode()) {
             MoveMode.STEAL -> 25.0
-            MoveMode.WALK -> 60.0
+            MoveMode.WALK -> 600.0
             MoveMode.RUN -> 120.0
         }
         // по воде движемся в 2 раза медленее
@@ -178,7 +178,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     /**
      * изменился грид в котором находимся. надо отреагировать
      */
-    suspend fun onGridChanged() {
+    open suspend fun onGridChanged() {
         // новый список гридов в которых находимся (координаты)
         val newList = ArrayList<Vec2i>(5)
         // идем вокруг нового грида
