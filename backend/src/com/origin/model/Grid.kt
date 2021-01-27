@@ -10,7 +10,6 @@ import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
 import com.origin.model.move.MoveType
 import com.origin.model.move.Position
-import com.origin.net.model.MapGridConfirm
 import com.origin.net.model.MapGridData
 import com.origin.utils.GRID_FULL_SIZE
 import com.origin.utils.Rect
@@ -185,8 +184,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 }
                 activeObjects.forEach {
                     if (it is Player) {
-                        it.session.send(MapGridData(this, true))
-                        it.session.send(MapGridConfirm())
+                        it.session.send(MapGridData(this, 2))
                     }
                 }
                 msg.job?.complete()
@@ -362,7 +360,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
 
             activeObjects.add(human)
             if (human is Player) {
-                human.session.send(MapGridData(this, true))
+                human.session.send(MapGridData(this, 1))
             }
 
             TimeController.addActiveGrid(this)
@@ -376,7 +374,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     private suspend fun deactivate(human: Human) {
         activeObjects.remove(human)
         if (human is Player) {
-            human.session.send(MapGridData(this, false))
+            human.session.send(MapGridData(this, 0))
         }
         if (!isActive) {
             TimeController.removeActiveGrid(this)

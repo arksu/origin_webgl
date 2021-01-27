@@ -222,19 +222,29 @@ export default class Net {
             case "m": {
                 let p = (<MapGridData>data)
                 let key = p.x + "_" + p.y;
-                // a=1 это добавление куска карты
-                if (p.a == 1) {
-                    Client.instance.map[key] = p.tiles;
-                    // Game.instance?.addGrid(p.x, p.y)
-                } else {
-                    delete Client.instance.map[key]
-                    // Game.instance?.deleteGrid(p.x, p.y)
+                switch (p.a) {
+                    case 0 : // delete
+                        delete Client.instance.map[key]
+                        Game.instance?.deleteGrid(p.x, p.y)
+                        break
+                    case 1: // add
+                        Client.instance.map[key] = {
+                            x: p.x,
+                            y: p.y,
+                            tiles: p.tiles,
+                            isChanged: false
+                        };
+                        break
+                    case 2: // change
+                        Client.instance.map[key].tiles = p.tiles;
+                        Client.instance.map[key].isChanged = true
+                        Game.instance?.addGrid(p.x, p.y)
+                        break
                 }
                 break;
             }
             case "mc" : { // map confirmed
                 for (let mapKey in Client.instance.map) {
-                    console.log(mapKey)
                     let s = mapKey.split("_");
                     let x: number = +s[0];
                     let y: number = +s[1];

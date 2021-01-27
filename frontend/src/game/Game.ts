@@ -222,20 +222,41 @@ export default class Game {
         this.updateMapScalePos();
     }
 
+    /**
+     * добавить ранее полученный от сервера грид в игру
+     */
     public addGrid(x: number, y: number) {
-        let grid: Grid = new Grid(this.app, x, y);
-
-        for (let i = 0; i < grid.containers.length; i++) {
-            this.mapGrids.addChild(grid.containers[i]);
+        let k = x + "_" + y
+        // такой грид уже есть и создан
+        if (this.grids[k] !== undefined) {
+            let g = this.grids[k]
+            // сделаем его видимым
+            if (!g.visible) {
+                g.visible = true
+            }
+            // а если еще и изменился - перестроим его
+            if (Client.instance.map[k].isChanged) {
+                g.rebuild()
+            }
+        } else {
+            // такого грида еще нет - надо создать
+            this.grids[k] = new Grid(this.mapGrids, x, y)
         }
-        this.grids[grid.key] = grid
+        Client.instance.map[k].isChanged = false
     }
 
+    /**
+     * удалить грид из игры (скрыть его до поры до времени)
+     */
     public deleteGrid(x: number, y: number) {
         for (let gridsKey in this.grids) {
             if (this.grids[gridsKey].x == x && this.grids[gridsKey].y == y) {
-                this.grids[gridsKey].destroy()
-                delete this.grids[gridsKey]
+                console.log("delete grid", gridsKey)
+                this.grids[gridsKey].visible = false
+
+                // TODO старые гриды надо удалять, а не скрывать
+                // this.grids[gridsKey].destroy()
+                // delete this.grids[gridsKey]
                 break
             }
         }

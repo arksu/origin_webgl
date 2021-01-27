@@ -1,5 +1,6 @@
 import router from "@/router";
 import {GameObject} from "@/game/GameObject";
+import {MapData} from "@/game/Grid";
 
 
 export default class Client {
@@ -39,7 +40,7 @@ export default class Client {
     /**
      * данные карты (тайлы)
      */
-    public map: { [key: string]: number[] } = {};
+    public map: { [key: string]: MapData } = {};
 
     /**
      * игровые объекты полученные с сервера

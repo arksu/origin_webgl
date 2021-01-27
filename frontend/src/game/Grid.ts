@@ -3,10 +3,22 @@ import Tile from "@/game/Tile";
 import Client from "@/net/Client";
 import {getRandomByCoord} from "@/utils/Util";
 
+export interface MapData {
+    x: number
+    y: number
+
+    /**
+     * массив тайлов
+     */
+    tiles: number[]
+
+    /**
+     * было ли изменение тайлов
+     */
+    isChanged: boolean
+}
+
 export default class Grid {
-
-    public containers: PIXI.Container[] = [];
-
     // 2 4 5
     private static readonly DIVIDER = 4
 
@@ -20,26 +32,37 @@ export default class Grid {
     private static readonly cx = [0, 0, 2, 2]
     private static readonly cy = [0, 2, 2, 0]
 
-    private app: PIXI.Application
+    /**
+     * чанки-контейнеры на которые делим грид (иначе по размеру текстуры целый грид не влезает в память)
+     */
+    public containers: PIXI.Container[] = [];
+
+    private parent: PIXI.Container
 
     public readonly x: number
     public readonly y: number
     public readonly key: string
 
     private spriteTextureNames: string[] = []
-    private tiles: PIXI.Sprite[] = [];
+    private sprites: PIXI.Sprite[] = [];
 
-    constructor(app: PIXI.Application, x: number, y: number) {
-        this.app = app;
+    private _visible: boolean = true
+
+    constructor(parent: PIXI.Container, x: number, y: number) {
+        this.parent = parent;
         this.x = x;
         this.y = y;
         this.key = this.x + "_" + this.y
+        console.log("new grid", this.key)
 
         this.makeChunks()
 
         // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
         for (let i = 0; i < this.containers.length; i++) {
-            this.containers[i].cacheAsBitmap = true
+            const c = this.containers[i];
+            setTimeout(() => {
+                c.cacheAsBitmap = true
+            }, i * 40)
         }
     }
 
@@ -51,6 +74,7 @@ export default class Grid {
                 let container = this.makeChunk(cx, cy, idx)
                 // container.visible = false
                 this.containers.push(container)
+                this.parent.addChild(container)
             }
         }
     }
@@ -62,6 +86,41 @@ export default class Grid {
             })
         }
         this.containers = []
+    }
+
+    /**
+     * управление видимостью грида (скрываем для кэширования)
+     */
+    public set visible(v: boolean) {
+        if (this._visible != v) {
+            this._visible = v
+            for (let i = 0; i < this.containers.length; i++) {
+                this.containers[i].visible = v
+            }
+        }
+    }
+
+    public get visible() {
+        return this._visible
+    }
+
+    /**
+     * перестроить грид (данные тайлов изменились)
+     */
+    public rebuild() {
+        console.log("grid rebuild", this.key)
+        // TODO перестраивать только ту часть грида которая реально изменилась
+        //  надо делать дифф тайлов по которым построли чанки и актуальными тайлами
+
+        this.destroy()
+        this.makeChunks()
+        // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
+        for (let i = 0; i < this.containers.length; i++) {
+            const c = this.containers[i];
+            setTimeout(() => {
+                c.cacheAsBitmap = true
+            }, i * 30)
+        }
     }
 
     private makeChunk(cx: number, cy: number, idx: number): PIXI.Container {
@@ -81,7 +140,7 @@ export default class Grid {
     }
 
     private makeTiles(container: PIXI.Container, cx: number, cy: number, chunk: number) {
-        const data = Client.instance.map[this.key];
+        const data = Client.instance.map[this.key].tiles;
 
         for (let tx = 0; tx < this.CHUNK_SIZE; tx++) {
             for (let ty = 0; ty < this.CHUNK_SIZE; ty++) {
@@ -108,7 +167,7 @@ export default class Grid {
                     spr.y = sy;
                     container.addChild(spr)
 
-                    this.tiles[idx] = spr;
+                    this.sprites[idx] = spr;
 
                     this.makeTransparentTiles(container, data, idx, x, y, sx, sy)
                 }
@@ -141,7 +200,7 @@ export default class Grid {
                     if (ndata !== undefined) {
                         let ix = dx < 0 ? Tile.GRID_SIZE + dx : (dx >= Tile.GRID_SIZE ? dx - Tile.GRID_SIZE : dx)
                         let iy = dy < 0 ? Tile.GRID_SIZE + dy : (dy >= Tile.GRID_SIZE ? dy - Tile.GRID_SIZE : dy)
-                        tn = ndata[iy * Tile.GRID_SIZE + ix]
+                        tn = ndata.tiles[iy * Tile.GRID_SIZE + ix]
                     }
                 }
                 tr[rx + 1][ry + 1] = tn
@@ -181,7 +240,7 @@ export default class Grid {
             }
             if (cm !== 0) {
                 const arr = ts.corners[cm - 1];
-                if (cm > 1) console.log("cm ", cm, ts.corners)
+                // if (cm > 1) console.log("cm ", cm, ts.corners)
                 if (arr !== undefined) {
                     let path = arr.get(getRandomByCoord(x, y))
                     if (path !== undefined) {
@@ -204,8 +263,8 @@ export default class Grid {
         }
         PIXI.Texture.fromURL(path).then(() => {
 
-            for (let i = 0; i < this.tiles.length; i++) {
-                let spr = this.tiles[i]
+            for (let i = 0; i < this.sprites.length; i++) {
+                let spr = this.sprites[i]
 
                 if (this.spriteTextureNames[i] == fn) {
                     spr.texture = PIXI.Texture.from(path)

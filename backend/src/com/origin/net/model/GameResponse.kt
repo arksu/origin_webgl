@@ -63,14 +63,14 @@ abstract class ServerMessage(
 
 /**
  * данные карты для клиента, если такой грид уже есть - надо заменить в кэше клиента
- * @param add добавляем или удаляем грид с клиента
+ * @param flag добавляем, удаляем или изменяем грид на клиенте
  */
 @ObsoleteCoroutinesApi
-class MapGridData(grid: Grid, add: Boolean) : ServerMessage("m") {
+class MapGridData(grid: Grid, flag: Int) : ServerMessage("m") {
     val x: Int = grid.x
     val y: Int = grid.y
-    val a: Int = if (add) 1 else 0
-    val tiles: ByteArray? = if (add) grid.tilesBlob else null
+    val a: Int = flag
+    val tiles: ByteArray? = if (flag > 0) grid.tilesBlob else null
 }
 
 /**

@@ -1,6 +1,10 @@
 export interface MapGridData {
     readonly x: number
     readonly y: number
+
+    /**
+     * flag: 0-delete 1-add 2-change
+     */
     readonly a: number
     readonly tiles: number[]
 }
