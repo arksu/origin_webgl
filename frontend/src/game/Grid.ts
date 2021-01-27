@@ -171,7 +171,6 @@ export default class Grid {
 
                     this.makeTransparentTiles(container, data, idx, x, y, sx, sy)
                 }
-
             }
         }
     }
