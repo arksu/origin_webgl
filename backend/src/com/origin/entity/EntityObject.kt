@@ -67,7 +67,7 @@ class EntityObject(id: EntityID<Long>) : LongEntity(id) {
                 gridy = pos.gridY
                 level = pos.level
                 region = pos.region
-                heading = 0
+                heading = pos.heading
                 type = t
                 quality = q
                 createTick = TimeController.tickCount

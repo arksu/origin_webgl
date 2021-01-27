@@ -33,9 +33,18 @@ data class Vec2i(
         return Vec2i(x * v, y * v)
     }
 
+    fun mul(ax: Int, ay: Int): Vec2i {
+        return Vec2i(x * ax, y * ay)
+    }
+
     fun div(v: Int): Vec2i {
         return Vec2i(x / v, y / v)
     }
+
+    fun mod(v: Int): Vec2i {
+        return Vec2i(x % v, y % v)
+    }
+
 
     /**
      * получить направление на указанную точку

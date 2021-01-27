@@ -3,11 +3,10 @@ package com.origin.entity
 import com.origin.model.Grid
 import com.origin.model.LandLayer
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
@@ -78,6 +77,15 @@ open class GridEntity(r: ResultRow, val layer: LandLayer) {
             return Grid(row, layer)
         }
 
-        val logger = LoggerFactory.getLogger(Grid::class.java)
+        val logger: Logger = LoggerFactory.getLogger(Grid::class.java)
+    }
+
+    /**
+     * обновить blob с тайлами в базе
+     */
+    protected fun updateTiles() {
+        Grids.update({ (Grids.x eq x) and (Grids.y eq y) and (Grids.region eq region) and (Grids.level eq level) }) {
+            it[tilesBlob] = ExposedBlob(this@GridEntity.tilesBlob)
+        }
     }
 }

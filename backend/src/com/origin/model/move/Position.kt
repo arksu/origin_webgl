@@ -3,6 +3,8 @@ package com.origin.model.move
 import com.origin.collision.CollisionResult
 import com.origin.model.*
 import com.origin.utils.GRID_FULL_SIZE
+import com.origin.utils.GRID_SIZE
+import com.origin.utils.TILE_SIZE
 import com.origin.utils.Vec2i
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -19,11 +21,13 @@ class Position(
     var level: Int,
     var region: Int,
     var heading: Short,
-    val parent: GameObject,
+    private val parent: GameObject,
 ) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(Position::class.java)
     }
+
+    constructor(ix: Int, iy: Int, pos: Position) : this(ix, iy, pos.level, pos.region, pos.heading, pos.parent)
 
     val point = Vec2i(initx, inity)
 
@@ -42,6 +46,15 @@ class Position(
      */
     val gridX get() = point.x / GRID_FULL_SIZE
     val gridY get() = point.y / GRID_FULL_SIZE
+
+    /**
+     * индекс тайла грида в котором находятся данные координаты
+     */
+    val tileIndex: Int
+        get() {
+            val p = point.mod(GRID_FULL_SIZE).div(TILE_SIZE)
+            return p.x + p.y * GRID_SIZE
+        }
 
     /**
      * заспавнить объект в мир

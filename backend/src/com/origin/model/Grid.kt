@@ -9,6 +9,8 @@ import com.origin.entity.GridEntity
 import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
 import com.origin.model.move.MoveType
+import com.origin.model.move.Position
+import com.origin.net.model.MapGridConfirm
 import com.origin.net.model.MapGridData
 import com.origin.utils.GRID_FULL_SIZE
 import com.origin.utils.Rect
@@ -60,6 +62,7 @@ sealed class GridMsg {
     class Activate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class Deactivate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class RemoveObject(val obj: GameObject, job: CompletableJob? = null) : MessageWithJob(job)
+    class SetTile(val pos: Position, val tile: Byte, job: CompletableJob? = null) : MessageWithJob(job)
     class CheckCollision(
         val obj: GameObject,
         val toX: Int,
@@ -173,6 +176,19 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             }
             is GridMsg.RemoveObject -> {
                 this.removeObject(msg.obj)
+                msg.job?.complete()
+            }
+            is GridMsg.SetTile -> {
+                tilesBlob[msg.pos.tileIndex] = msg.tile
+                transaction {
+                    updateTiles()
+                }
+                activeObjects.forEach {
+                    if (it is Player) {
+                        it.session.send(MapGridData(this, true))
+                        it.session.send(MapGridConfirm())
+                    }
+                }
                 msg.job?.complete()
             }
             is GridMsg.Update -> update()

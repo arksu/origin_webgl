@@ -8,6 +8,7 @@ import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
 import com.origin.model.move.Move2Object
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
+import com.origin.model.move.Position
 import com.origin.net.model.CreatureSay
 import com.origin.net.model.GameSession
 import com.origin.net.model.MapGridConfirm
@@ -44,6 +45,11 @@ class Player(
     private var moveMode = MoveMode.WALK
 
     /**
+     * команда для отложенного выполнения (клик по карте)
+     */
+    private var commandToExecute: String? = null
+
+    /**
      * одежда (во что одет игрок)
      */
     private val paperdoll: Paperdoll = Paperdoll(this)
@@ -67,7 +73,13 @@ class Player(
      */
     private suspend fun mapClick(x: Int, y: Int) {
         logger.debug("mapClick $x $y")
-        startMove(Move2Point(this, x, y))
+
+        if (commandToExecute != null) {
+            executeCommand(x, y)
+            commandToExecute = null
+        } else {
+            startMove(Move2Point(this, x, y))
+        }
     }
 
     /**
@@ -161,11 +173,24 @@ class Player(
                 session.send(CreatureSay(0, "online: ${World.getPlayersCount()}", SYSTEM))
             }
             "spawn" -> {
+                commandToExecute = cmd
+            }
+            "tile" -> {
+                commandToExecute = cmd
+            }
+        }
+    }
+
+    private suspend fun executeCommand(x: Int, y: Int) {
+        val params = commandToExecute!!.split(" ")
+        when (params[0]) {
+            "spawn" -> {
                 // param 1 - type id
                 val t: Int = params[1].toInt()
+                // param 2 - data for object
                 val d = if (params.size >= 3) params[2] else null
                 val obj = transaction {
-                    val e = EntityObject.makeNew(pos, t)
+                    val e = EntityObject.makeNew(Position(x, y, pos), t)
                     if (d != null) {
                         e.data = d
                     }
@@ -174,6 +199,12 @@ class Player(
                 val resp = CompletableDeferred<CollisionResult>()
                 grid.send(GridMsg.Spawn(obj, resp))
                 resp.await()
+            }
+            "tile" -> {
+                // param 1 - tile type
+                val t = params[1].toByte()
+                val p = Position(x, y, pos)
+                World.getGrid(p).send(GridMsg.SetTile(p, t))
             }
         }
     }
