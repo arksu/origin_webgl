@@ -176,17 +176,20 @@ export default class Grid {
     }
 
     private makeTransparentTiles(container: PIXI.Container, data: number[], idx: number, x: number, y: number, sx: number, sy: number) {
-        let tr: number[][] = []
-        // идем по тайлам вокруг целевого
+        const tr: number[][] = []
+        // идем по тайлам вокруг целевого и заполним массив окружающих тайлов tr
         for (let rx = -1; rx <= 1; rx++) {
             tr[rx + 1] = []
             for (let ry = -1; ry <= 1; ry++) {
-                if (rx == 0 && ry == 0) continue
+                if (rx == 0 && ry == 0) {
+                    tr[rx + 1][ry + 1] = 0
+                    continue
+                }
 
                 const dx = x + rx
                 const dy = y + ry
-                // это тайл еще текущего грида
                 let tn = -1
+                // это тайл еще текущего грида
                 if (dx >= 0 && dx < Tile.GRID_SIZE && dy >= 0 && dy < Tile.GRID_SIZE) {
                     tn = data[dy * Tile.GRID_SIZE + dx]
                 } else {
@@ -215,7 +218,8 @@ export default class Grid {
         if (tr[2][2] >= tr[2][1]) tr[2][2] = -1
         if (tr[2][2] >= tr[1][2]) tr[2][2] = -1
 
-        for (let i = data[idx]; i >= 0; i--) {
+        // текущий (центральный тайл)
+        for (let i = data[idx] - 1; i >= 0; i--) {
             const ts = Tile.sets[i]
             if (ts == undefined || ts.corners == undefined || ts.borders == undefined) continue
             let bm = 0

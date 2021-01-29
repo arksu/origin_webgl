@@ -38,6 +38,9 @@ const val GRID_BLOB_SIZE = GRID_SQUARE * 3
 
 // TILES
 object TileColors {
+    // пустшь, степь
+    const val HEATH = 0x0
+
     // луг (низкие травы)
     const val MEADOW_LOW = 0xd97cc0
 
@@ -70,4 +73,16 @@ object TileColors {
 
     // глубокая вода
     const val WATER_DEEP = 0x0000ff
+}
+
+object Tile {
+    const val WATER_DEEP: Byte = 1
+    const val WATER: Byte = 3
+
+    const val FOREST_LEAF: Byte = 10
+    const val FOREST_PINE: Byte = 15
+
+    const val MEADOW_LOW: Byte = 18
+
+    const val CLAY: Byte = 20
 }

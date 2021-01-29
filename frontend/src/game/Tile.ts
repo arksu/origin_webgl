@@ -79,10 +79,10 @@ export default class Tile {
     public static readonly TILE_SIZE = 12;
 
     public static init() {
-        Tile.sets[1] = new TileSet(forest_leaf)
-        Tile.sets[2] = new TileSet(water)
-        Tile.sets[3] = new TileSet(stone)
-        Tile.sets[4] = new TileSet(forest_pine)
+        Tile.sets[10] = new TileSet(forest_leaf)
+        Tile.sets[15] = new TileSet(forest_pine)
+        Tile.sets[3] = new TileSet(water)
+        Tile.sets[18] = new TileSet(stone)
     }
 
     public static getGroundTexture(t: number): string | undefined {

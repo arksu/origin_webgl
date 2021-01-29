@@ -1,21 +1,20 @@
 package com.origin.utils
 
-import com.origin.database.DatabaseFactory
 import com.origin.ServerConfig
+import com.origin.database.DatabaseFactory
 import com.origin.entity.Grids
-import com.origin.utils.TileColors.CLAY
-import com.origin.utils.TileColors.FOREST_LEAF
-import com.origin.utils.TileColors.FOREST_PINE
-import com.origin.utils.TileColors.MEADOW_LOW
-import com.origin.utils.TileColors.WATER
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import javax.imageio.ImageIO
 
 object MapImporter {
+    val logger: Logger = LoggerFactory.getLogger(MapImporter::class.java)
+
     @JvmStatic
     fun main(args: Array<String>) {
         ServerConfig.load()
@@ -41,6 +40,7 @@ object MapImporter {
 
         // идем по гридам
         for (sx in 0 until SUPERGRID_SIZE) {
+            logger.info("process grid x $sx")
             for (sy in 0 until SUPERGRID_SIZE) {
 
                 val ba = ByteArray(GRID_BLOB_SIZE)
@@ -60,16 +60,11 @@ object MapImporter {
 
                         // берем тип тайла из цвета
                         val tileType: Byte = when (c) {
-                            MEADOW_LOW ->
-                                3
-                            FOREST_PINE ->
-                                4
-                            FOREST_LEAF ->
-                                1
-                            CLAY ->
-                                5
-                            WATER ->
-                                2
+                            TileColors.MEADOW_LOW -> Tile.MEADOW_LOW
+                            TileColors.FOREST_PINE -> Tile.FOREST_PINE
+                            TileColors.FOREST_LEAF -> Tile.FOREST_LEAF
+                            TileColors.CLAY -> Tile.CLAY
+                            TileColors.WATER -> Tile.WATER
                             else ->
                                 throw RuntimeException("unknown tile $c")
                         }
@@ -91,6 +86,6 @@ object MapImporter {
             }
         }
 
-        println("map import done")
+        logger.info("map import done")
     }
 }
