@@ -27,8 +27,8 @@ export default class Grid {
      */
     private readonly CHUNK_SIZE = Tile.GRID_SIZE / Grid.DIVIDER
 
-    private static readonly bx = [0, 1, 1, 2]
-    private static readonly by = [1, 0, 2, 1]
+    private static readonly bx = [0, 1, 2, 1]
+    private static readonly by = [1, 0, 1, 2]
     private static readonly cx = [0, 0, 2, 2]
     private static readonly cy = [0, 2, 2, 0]
 

@@ -30,17 +30,81 @@
         "w": 1
       }
     ],
-    [],
-    [{
-      "img": "tiles/water/b4.png",
-      "w": 1
-    }],
-    [],
-    [],
-    [],
+    [
+      {
+        "img": "tiles/water/b3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b4.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b5.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b6.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b7.png",
+        "w": 1
+      }
+    ],
     [
       {
         "img": "tiles/water/b8.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b9.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b10.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b11.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b12.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b13.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b14.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water/b15.png",
         "w": 1
       }
     ]
