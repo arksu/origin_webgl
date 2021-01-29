@@ -99,12 +99,15 @@ class Position(
 
         // если координаты грида изменились
         if (oldgx != gridX || oldgy != gridY) {
+            val old = grid
             // получим новый грид из мира
             grid = World.getGrid(this)
             if (parent is MovingObject) {
                 // уведомим объект о смене грида
                 parent.onGridChanged()
             }
+            old.objects.remove(parent)
+            grid.objects.add(parent)
         }
     }
 

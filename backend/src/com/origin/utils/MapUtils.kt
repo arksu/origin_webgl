@@ -85,4 +85,5 @@ object Tile {
     const val MEADOW_LOW: Byte = 18
 
     const val CLAY: Byte = 20
+    const val SAND = 22
 }

@@ -79,9 +79,9 @@ export default class Tile {
     public static readonly TILE_SIZE = 12;
 
     public static init() {
+        Tile.sets[3] = new TileSet(water)
         Tile.sets[10] = new TileSet(forest_leaf)
         Tile.sets[15] = new TileSet(forest_pine)
-        Tile.sets[3] = new TileSet(water)
         Tile.sets[18] = new TileSet(stone)
     }
 

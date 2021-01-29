@@ -310,6 +310,21 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
 
             // TODO checkCollisionInternal implement
 
+            // определяем вектор движения для отсечения объектов которые находятся за пределами вектора
+            val dx = toX - obj.pos.x
+            val dy = toY - obj.pos.y
+            logger.debug("d $dx, $dy")
+            list.forEach {
+                logger.debug("$it")
+            }
+
+            val a = list.flatMap {
+                it.objects
+            }
+            a.forEach {
+                logger.debug("$it")
+            }
+
             if (isMove) {
                 obj.pos.setXY(toX, toY)
             }

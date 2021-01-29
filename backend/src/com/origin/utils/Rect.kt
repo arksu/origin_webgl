@@ -71,9 +71,18 @@ class Rect {
         return Rect(left, top, right, bottom)
     }
 
+//    fun isIntersect(r2: Rect): Boolean {
+//        return (left > r2.left && left <= r2.right || right > r2.left && right <= r2.right ||
+//                r2.left > left && r2.left <= right || r2.right > left && r2.right <= right)
+//                && (top > r2.top && top <= r2.bottom || bottom > r2.top && bottom <= r2.bottom ||
+//                r2.top > top && r2.top <= bottom || r2.bottom > top && r2.bottom <= bottom)
+//    }
+
+    /**
+     * пересекаются ли эти 2 прямоугольника
+     * используется в детекте коллизий
+     */
     fun isIntersect(r2: Rect): Boolean {
-        return (left > r2.left && left <= r2.right || right > r2.left && right <= r2.right ||
-                r2.left > left && r2.left <= right || r2.right > left && r2.right <= right) && (top > r2.top && top <= r2.bottom || bottom > r2.top && bottom <= r2.bottom ||
-                r2.top > top && r2.top <= bottom || r2.bottom > top && r2.bottom <= bottom)
+        return left < r2.right && right > r2.left && top < r2.bottom && bottom > r2.top
     }
 }
