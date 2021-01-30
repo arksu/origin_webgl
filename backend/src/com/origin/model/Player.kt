@@ -142,6 +142,11 @@ class Player(
         session.send(MapGridConfirm())
     }
 
+    override suspend fun onGridChanged() {
+        super.onGridChanged()
+        session.send(MapGridConfirm())
+    }
+
     override fun storePositionInDb() {
         logger.warn("storePositionInDb ${pos.x} ${pos.y}")
         WorkerScope.launch {
