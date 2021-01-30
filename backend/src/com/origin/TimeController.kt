@@ -214,7 +214,7 @@ object TimeController : Thread("TimeController") {
             if (tickCount - lastStoreTick > STORE_TICKS_PERIOD) {
                 // запустим сохранение времени в базу в фоне (в корутине)
                 WorkerScope.launch {
-                    logger.debug("time tick=$tickCount real hours=${(tickCount / (TICKS_PER_SECOND * 3600))} game day=${tickCount / TICKS_IN_GAME_DAY} time=${getGameHour()}:${getGameMinute()}")
+//                    logger.debug("time tick=$tickCount real hours=${(tickCount / (TICKS_PER_SECOND * 3600))} game day=${tickCount / TICKS_IN_GAME_DAY} time=${getGameHour()}:${getGameMinute()}")
                     store()
                 }
                 lastStoreTick = tickCount

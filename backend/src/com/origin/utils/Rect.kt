@@ -28,6 +28,13 @@ class Rect {
         bottom = size
     }
 
+    constructor(r: Rect) {
+        left = r.left
+        right = r.right
+        top = r.top
+        bottom = r.bottom
+    }
+
     private fun normalize() {
         if (right < left) {
             val t = left
@@ -53,6 +60,14 @@ class Rect {
         top -= dist
         right += dist
         bottom += dist
+    }
+
+    fun add(p: Vec2i): Rect {
+        left += p.x
+        right += p.x
+        top += p.y
+        bottom += p.y
+        return this
     }
 
     fun isPointInside(x: Int, y: Int): Boolean {
@@ -84,5 +99,9 @@ class Rect {
      */
     fun isIntersect(r2: Rect): Boolean {
         return left < r2.right && right > r2.left && top < r2.bottom && bottom > r2.top
+    }
+
+    override fun toString(): String {
+        return "($left $top $right $bottom)"
     }
 }

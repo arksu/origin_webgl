@@ -146,7 +146,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     }
 
     private suspend fun processMessage(msg: Any) {
-        logger.debug("processMessage ${msg.javaClass.simpleName}")
+//        logger.debug("processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
             is GridMsg.CheckCollision -> msg.resp.complete(checkCollision(
@@ -314,15 +314,29 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             val dx = toX - obj.pos.x
             val dy = toY - obj.pos.y
             logger.debug("d $dx, $dy")
+            logger.debug("obj $obj")
+            val or = Rect(obj.getBoundRect()).add(obj.pos.point)
             list.forEach {
                 logger.debug("$it")
             }
 
-            val a = list.flatMap {
-                it.objects
+            logger.warn("obj rect $or")
+            // получаем список объектов для обсчета коллизий из списка гридов
+            val a = list.flatMap { it ->
+                it.objects.filter {
+                    if (obj == it) return@filter false
+                    val r = Rect(it.getBoundRect()).add(it.pos.point)
+                    // границы объекта должны быть в границах вектора движения объекта
+                    val cx = if (dx > 0) r.right > or.left else r.left < or.right
+                    val cy = if (dy > 0) r.bottom > or.top else r.top < or.bottom
+                    logger.debug("$it $r")
+                    logger.debug("cx=$cx cy=$cy")
+                    cx && cy
+                }
             }
+            logger.warn("filtered:")
             a.forEach {
-                logger.debug("$it")
+                logger.warn("$it")
             }
 
             if (isMove) {

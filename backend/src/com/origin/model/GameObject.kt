@@ -113,9 +113,9 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
         }
     }
 
-    abstract fun getBoundRect() : Rect
+    abstract fun getBoundRect(): Rect
 
-    abstract fun getResourcePath() : String
+    abstract fun getResourcePath(): String
 
     protected open suspend fun afterSpawn() {}
 
@@ -156,5 +156,9 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
      * грид говорит что ДРУГОЙ объект был удален
      */
     protected open suspend fun onObjectRemoved(obj: GameObject) {
+    }
+
+    override fun toString(): String {
+        return "${this::class.simpleName} $id ${pos.point}"
     }
 }
