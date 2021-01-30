@@ -308,34 +308,37 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             // таким образом на момент обработки коллизии
             // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
 
-            // TODO checkCollisionInternal implement
-
             // определяем вектор движения для отсечения объектов которые находятся за пределами вектора
             val dx = toX - obj.pos.x
             val dy = toY - obj.pos.y
             logger.debug("d $dx, $dy")
             logger.debug("obj $obj")
-            val or = Rect(obj.getBoundRect()).add(obj.pos.point)
+            // прямоугольник по границам объекта захватывающий начальную и конечную точку движения
+            val or = Rect(obj.getBoundRect()).add(obj.pos.point).extend(dx, dy)
             list.forEach {
                 logger.debug("$it")
             }
 
-            logger.warn("obj rect $or")
+            logger.warn("obj move rect $or")
             // получаем список объектов для обсчета коллизий из списка гридов
-            val a = list.flatMap { it ->
+            val filtered = list.flatMap { it ->
+                // фильтруем список объектов. вернем только те которые ТОЧНО МОГУТ дать коллизию
+                // те которые далеко или не попадают в прямоугольник движения - отсечем их
                 it.objects.filter {
+                    // сами себе точно не даем коллизию
                     if (obj == it) return@filter false
                     val r = Rect(it.getBoundRect()).add(it.pos.point)
-                    // границы объекта должны быть в границах вектора движения объекта
-                    val cx = if (dx > 0) r.right > or.left else r.left < or.right
-                    val cy = if (dy > 0) r.bottom > or.top else r.top < or.bottom
                     logger.debug("$it $r")
-                    logger.debug("cx=$cx cy=$cy")
-                    cx && cy
+                    // границы объекта должны быть в границах вектора движения объекта
+                    // то есть пересекаться с областью движения объекта
+                    or.isIntersect(r)
                 }
             }
+            // TODO checkCollisionInternal implement
+
             logger.warn("filtered:")
-            a.forEach {
+            filtered.forEach {
+                // ищем минимальное расстояние от движущегося до объекта который может дать коллизию
                 logger.warn("$it")
             }
 

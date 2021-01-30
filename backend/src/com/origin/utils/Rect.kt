@@ -55,6 +55,9 @@ class Rect {
         bottom += b.bottom
     }
 
+    /**
+     * добавить (увеличить в размере)
+     */
     fun add(dist: Int) {
         left -= dist
         top -= dist
@@ -62,12 +65,37 @@ class Rect {
         bottom += dist
     }
 
+    /**
+     * добавить (переместить) по координатам
+     */
     fun add(p: Vec2i): Rect {
         left += p.x
         right += p.x
         top += p.y
         bottom += p.y
         return this
+    }
+
+    /**
+     * расширить (меньше нуля расширяют влево, вверх. больше нуля вправо, вниз)
+     */
+    fun extend(x: Int, y: Int): Rect {
+        if (x < 0) left += x else right += x
+        if (y < 0) top += y else bottom += y
+        return this
+    }
+
+    /**
+     * минимальное расстояние между двумя прямоугольниками
+     */
+    fun min(r: Rect): Pair<Int, Int> {
+        // TODO
+        val dx = if (r.left < left) {
+            left - r.right
+        } else {
+            right - r.left
+        }
+        return Pair(dx, dx)
     }
 
     fun isPointInside(x: Int, y: Int): Boolean {
