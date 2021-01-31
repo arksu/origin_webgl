@@ -9,7 +9,7 @@
         action="#">
     <div>
       <li v-for="r in chatRows">
-        <span>{{ r }}</span>
+        <span class="chat-line">{{ r }}</span>
       </li>
       <!-- hack for refresh chatRows value -->
       <span style="display: none">{{ cnt }}</span>
@@ -44,6 +44,11 @@ export default defineComponent({
     Net.instance = new Net(Client.wsUrl)
 
     console.log("selectedCharacterId=" + Client.instance.selectedCharacterId)
+    let historyStr = localStorage.getItem("chatHistory")
+    if (historyStr !== null) {
+      this.chatHistory = JSON.parse(historyStr)
+      this.chatHistoryIndex = -1
+    }
 
     Net.instance.onDisconnect = () => {
       console.log("onDisconnect")
@@ -86,7 +91,9 @@ export default defineComponent({
       if (this.chatText !== undefined && this.chatText.length > 0) {
         console.log("chat submit " + this.chatText)
         this.chatHistory.unshift(this.chatText)
+        this.chatHistory.splice(7)
         this.chatHistoryIndex = -1
+        localStorage.setItem("chatHistory", JSON.stringify(this.chatHistory))
         Net.remoteCall("chat", {
           text: this.chatText
         })
