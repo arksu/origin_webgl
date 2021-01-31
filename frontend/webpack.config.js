@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const {ProvidePlugin, HotModuleReplacementPlugin} = require("webpack");
 const {VueLoaderPlugin} = require('vue-loader')
@@ -42,6 +44,14 @@ module.exports = {
         ],
     },
     plugins: [
+        new CleanWebpackPlugin(),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: "assets/**/*"
+                }
+            ]
+        }),
         new HotModuleReplacementPlugin(),
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({

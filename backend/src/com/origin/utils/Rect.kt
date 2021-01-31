@@ -76,6 +76,14 @@ class Rect {
         return this
     }
 
+    fun add(x: Int, y: Int): Rect {
+        left += x
+        right += x
+        top += y
+        bottom += y
+        return this
+    }
+
     /**
      * расширить (меньше нуля расширяют влево, вверх. больше нуля вправо, вниз)
      */
@@ -87,15 +95,15 @@ class Rect {
 
     /**
      * минимальное расстояние между двумя прямоугольниками
+     * если прямоугольник перескается по какой то из осей - вернет -1
      */
     fun min(r: Rect): Pair<Int, Int> {
-        // TODO
-        val dx = if (r.left < left) {
-            left - r.right
-        } else {
-            right - r.left
-        }
-        return Pair(dx, dx)
+        val dx =
+            if (left < r.right && right > r.left) -1 else Math.min(Math.abs(left - r.right), Math.abs(right - r.left))
+        val dy =
+            if (top < r.bottom && bottom > r.top) -1 else Math.min(Math.abs(top - r.bottom), Math.abs(bottom - r.top))
+
+        return Pair(dx, dy)
     }
 
     fun isPointInside(x: Int, y: Int): Boolean {
@@ -126,7 +134,7 @@ class Rect {
      * используется в детекте коллизий
      */
     fun isIntersect(r2: Rect): Boolean {
-        return left < r2.right && right > r2.left && top < r2.bottom && bottom > r2.top
+        return left <= r2.right && right >= r2.left && top <= r2.bottom && bottom >= r2.top
     }
 
     override fun toString(): String {

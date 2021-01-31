@@ -11,7 +11,7 @@ open class StaticObject(entity: EntityObject) :
     val type = entity.type
     override fun getBoundRect(): Rect {
         // TODO getBoundRect
-        return Rect(10)
+        return Rect(4)
     }
 
     override fun getResourcePath(): String {

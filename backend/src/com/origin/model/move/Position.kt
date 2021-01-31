@@ -87,7 +87,7 @@ class Position(
      * установка новых координат
      */
     suspend fun setXY(x: Int, y: Int) {
-        logger.debug("setXY")
+        logger.debug("setXY $x $y")
 
         // запомним координаты старого грида
         val oldgx = gridX

@@ -27,7 +27,7 @@ class PlayerMsg {
     class ObjectRightClick(val id: ObjectID)
 }
 
-private val PLAYER_RECT = Rect(10)
+private val PLAYER_RECT = Rect(3)
 
 /**
  * инстанс персонажа игрока в игровом мире (игрок)

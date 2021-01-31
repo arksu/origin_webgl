@@ -70,11 +70,11 @@ abstract class MoveController(val me: MovingObject) {
     suspend fun canStartMoving(): Boolean {
         // берем новую точку через 1 тик
         // чтобы убедиться что мы можем туда передвигаться
-        val (nx, ny) = calcNewPoint(1.0 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
+        val (nx, ny) = calcNewPoint(0.2 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
 
         logger.debug("nx=$nx ny=$ny")
         if (nx == x && ny == y) {
-            return false
+//            return false
         }
 
         // проверим коллизию с этой новой точкой
@@ -170,7 +170,7 @@ abstract class MoveController(val me: MovingObject) {
 
         // сколько прошли: либо расстояние пройденное за тик, либо оставшееся до конечной точки. что меньше
         val distance = (deltaTime * speed).coerceAtMost(td)
-//        com.origin.net.model.logger.warn("calcNewPoint $deltaTime $distance")
+        com.origin.net.model.logger.warn("calcNewPoint $deltaTime $distance")
 
         // помножим расстояние которое должны пройти на единичный вектор
         return if (td == 0.0) {
