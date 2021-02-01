@@ -85,7 +85,14 @@ module.exports = {
         overlay: true,
         progress: true,
         host: '0.0.0.0',
-        port: 3070
+        port: 3070,
+        proxy : {
+            '/api' : 'http://0.0.0.0:8020',
+            '/api/game' : {
+                target: 'ws://0.0.0.0:8020',
+                ws: true
+            }
+        }
     },
     target: "web"
 };

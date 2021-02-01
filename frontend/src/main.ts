@@ -11,9 +11,9 @@ import Game from "@/game/Game";
 import Tile from "@/game/Tile";
 
 // формируем ссылку для работы с бекендом
-let gameServerPort = 8020;
+let gameServerPort = window.location.port;
 let proto = "https:" === window.location.protocol ? "wss:" : "ws:";
-Client.wsUrl = proto + "//" + window.location.hostname + ":" + gameServerPort + "/game";
+Client.wsUrl = proto + "//" + window.location.hostname + ":" + gameServerPort + "/api/game";
 Client.apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + gameServerPort
 
 // сформируем правильные тайлсеты

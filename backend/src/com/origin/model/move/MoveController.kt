@@ -4,9 +4,10 @@ import com.origin.ServerConfig
 import com.origin.TimeController
 import com.origin.collision.CollisionResult
 import com.origin.model.*
-import com.origin.net.logger
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -17,6 +18,9 @@ import kotlin.math.sqrt
  */
 @ObsoleteCoroutinesApi
 abstract class MoveController(val me: MovingObject) {
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(MoveController::class.java)
+    }
 
     val x
         get() = me.pos.x

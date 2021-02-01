@@ -30,7 +30,7 @@ val gsonSerializer = Gson()
 @ObsoleteCoroutinesApi
 fun Route.websockets() {
 
-    webSocket("/game") {
+    webSocket("/api/game") {
         val session = GameSession(this)
         gameSessions += session
         logger.debug("ws connected $this.")
