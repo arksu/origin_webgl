@@ -19,15 +19,18 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-val logger = LoggerFactory.getLogger(GameSession::class.java)
 
 /**
  * игровая сессия (коннект)
  */
 @ObsoleteCoroutinesApi
 class GameSession(private val connect: DefaultWebSocketSession) {
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(GameSession::class.java)
+    }
+
     var ssid: String? = null
         private set
 

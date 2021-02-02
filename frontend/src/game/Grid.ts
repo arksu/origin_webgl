@@ -39,8 +39,17 @@ export default class Grid {
 
     private parent: PIXI.Container
 
+    /**
+     * координаты грида (в координатах гридов)
+     */
     public readonly x: number
     public readonly y: number
+    /**
+     * абсолютные игровые координаты
+     */
+    public readonly absoluteX: number
+    public readonly absoluteY: number
+
     public readonly key: string
 
     private spriteTextureNames: string[] = []
@@ -52,6 +61,8 @@ export default class Grid {
         this.parent = parent;
         this.x = x;
         this.y = y;
+        this.absoluteX = x * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
+        this.absoluteY = y * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.key = this.x + "_" + this.y
         console.log("new grid", this.key)
 

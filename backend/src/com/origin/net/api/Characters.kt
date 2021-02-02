@@ -13,15 +13,18 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
 
 
+@ObsoleteCoroutinesApi
 fun PipelineContext<Unit, ApplicationCall>.getAccountBySsid(): Account {
     return GameServer.accountCache.get(call.request.headers[SSID_HEADER]) ?: throw AuthorizationException()
 }
 
 data class CharacterResponse(val id: ObjectID, val name: String)
 
+@ObsoleteCoroutinesApi
 fun Route.getCharactersList() {
     get("/characters") {
         val account = getAccountBySsid()
@@ -43,6 +46,7 @@ data class CreateCharacter(val name: String) {
 
 data class CreateCharacterResponse(val name: String, val id: ObjectID)
 
+@ObsoleteCoroutinesApi
 fun Route.createCharacter() {
     put("/characters") {
         val acc = getAccountBySsid()
@@ -74,6 +78,7 @@ fun Route.createCharacter() {
     }
 }
 
+@ObsoleteCoroutinesApi
 fun Route.deleteCharacter() {
     delete("/characters/{id}") {
         val account = getAccountBySsid()

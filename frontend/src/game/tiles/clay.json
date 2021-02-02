@@ -1,0 +1,20 @@
+{
+  "ground": [
+    {
+      "img": "tiles/clay/clay1.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/clay/clay2.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/clay/clay3.png",
+      "w": 1
+    }
+  ],
+  "borders": [
+  ],
+  "corners": [
+  ]
+}

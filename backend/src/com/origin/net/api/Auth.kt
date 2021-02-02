@@ -8,6 +8,7 @@ import io.ktor.application.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -20,6 +21,7 @@ data class UserLogin(val login: String, val hash: String)
 data class UserSignup(val login: String, val email: String?, val password: String)
 data class LoginResponse(val ssid: String)
 
+@ObsoleteCoroutinesApi
 fun Route.login() {
     post("/login") {
         val userLogin = call.receive<UserLogin>()
@@ -41,6 +43,7 @@ fun Route.login() {
     }
 }
 
+@ObsoleteCoroutinesApi
 fun Route.signup() {
     post("/signup") {
         val userSignup = call.receive<UserSignup>()

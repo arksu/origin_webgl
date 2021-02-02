@@ -1,6 +1,7 @@
 import {getRandomInt} from "@/utils/Util";
 import water from "./tiles/water.json"
 import stone from "./tiles/stone.json"
+import clay from "./tiles/clay.json"
 import forest_leaf from "./tiles/forest_leaf.json"
 import forest_pine from "./tiles/forest_pine.json"
 
@@ -78,11 +79,14 @@ export default class Tile {
 
     public static readonly TILE_SIZE = 12;
 
+    public static readonly FULL_GRID_SIZE = Tile.GRID_SIZE * Tile.TILE_SIZE
+
     public static init() {
         Tile.sets[3] = new TileSet(water)
         Tile.sets[10] = new TileSet(forest_leaf)
         Tile.sets[15] = new TileSet(forest_pine)
         Tile.sets[18] = new TileSet(stone)
+        Tile.sets[20] = new TileSet(clay)
     }
 
     public static getGroundTexture(t: number): string | undefined {

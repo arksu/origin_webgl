@@ -77,9 +77,9 @@ abstract class MoveController(val me: MovingObject) {
         val (nx, ny) = calcNewPoint(0.2 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
 
         logger.debug("nx=$nx ny=$ny")
-        if (nx == x && ny == y) {
+//        if (nx == x && ny == y) {
 //            return false
-        }
+//        }
 
         // проверим коллизию с этой новой точкой
         val c = checkCollision(nx, ny, null, false)
@@ -174,7 +174,7 @@ abstract class MoveController(val me: MovingObject) {
 
         // сколько прошли: либо расстояние пройденное за тик, либо оставшееся до конечной точки. что меньше
         val distance = (deltaTime * speed).coerceAtMost(td)
-        com.origin.net.model.logger.warn("calcNewPoint $deltaTime $distance")
+        logger.warn("calcNewPoint $deltaTime $distance")
 
         // помножим расстояние которое должны пройти на единичный вектор
         return if (td == 0.0) {

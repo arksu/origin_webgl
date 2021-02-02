@@ -2,9 +2,10 @@ package com.origin.model
 
 import com.origin.net.model.ObjectAdd
 import com.origin.net.model.ObjectDel
-import com.origin.net.model.logger
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * список игровых объектов о которых знает другой объект
@@ -12,6 +13,9 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
  */
 @ObsoleteCoroutinesApi
 class KnownList(private val activeObject: GameObject) {
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(KnownList::class.java)
+    }
 
     private val knownObjects = HashMap<ObjectID, GameObject>()
 

@@ -243,8 +243,22 @@ export default class Game {
         } else {
             // такого грида еще нет - надо создать
             this.grids[k] = new Grid(this.mapGrids, x, y)
+
+            // зачистим старые гриды, которые давно уже не видели
+            for (let gridsKey in this.grids) {
+                const grid = this.grids[gridsKey];
+                const dist = Math.sqrt(Math.pow(Client.instance.playerObject.x - grid.absoluteX, 2) + Math.pow(Client.instance.playerObject.y - grid.absoluteY, 2))
+                // дистанция от игрока на которой начнем удалять гриды иэ кэша
+                const limit = 5 * Tile.FULL_GRID_SIZE
+                if (!grid.visible && dist > limit) {
+                    grid.destroy()
+                    delete this.grids[gridsKey]
+                    console.warn("old grid delete ", gridsKey)
+                }
+            }
         }
         Client.instance.map[k].isChanged = false
+
     }
 
     /**
@@ -255,10 +269,6 @@ export default class Game {
             if (this.grids[gridsKey].x == x && this.grids[gridsKey].y == y) {
                 console.log("delete grid", gridsKey)
                 this.grids[gridsKey].visible = false
-
-                // TODO старые гриды надо удалять, а не скрывать
-                // this.grids[gridsKey].destroy()
-                // delete this.grids[gridsKey]
                 break
             }
         }
