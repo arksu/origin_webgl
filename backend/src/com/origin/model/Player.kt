@@ -54,6 +54,11 @@ class Player(
      */
     private val paperdoll: Paperdoll = Paperdoll(this)
 
+    /**
+     * внешний вид персонажа (имя, пол, волосы и тд)
+     */
+    val appearance: PcAppearance = PcAppearance(character.name, "", 0)
+
     override suspend fun processMessage(msg: Any) {
         logger.debug("Player $this msg ${msg.javaClass.simpleName}")
         when (msg) {

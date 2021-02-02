@@ -4,11 +4,8 @@ package com.origin.net.model
 
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
-import com.origin.model.BroadcastEvent
+import com.origin.model.*
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
-import com.origin.model.GameObject
-import com.origin.model.Grid
-import com.origin.model.StaticObject
 import com.origin.utils.ObjectID
 import com.origin.utils.StringTypeAdapter
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -107,6 +104,11 @@ class ObjectAdd(obj: GameObject) : ServerMessage("oa") {
      * path to resource
      */
     val r = obj.getResourcePath()
+
+    /**
+     * appearance
+     */
+    val a = if (obj is Player) obj.appearance else null
 }
 
 @ObsoleteCoroutinesApi

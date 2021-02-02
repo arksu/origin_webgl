@@ -9,6 +9,12 @@ export interface MapGridData {
     readonly tiles: number[]
 }
 
+export interface PcAppearance {
+    readonly n: string
+    readonly vt: string
+    readonly s: number
+}
+
 export interface ObjectAdd {
     id: number
     x: number
@@ -33,6 +39,8 @@ export interface ObjectAdd {
      * resource path
      */
     r: string
+
+    a?: PcAppearance
 }
 
 export interface ObjectDel {

@@ -294,8 +294,9 @@ export default class Net {
             }
 
             case "cs" : { // creature say
+                let obj = Client.instance.objects[data.id]
                 // канал в который пришло сообщение
-                let c = data.c == 0xff ? "System" : "player"
+                let c = data.c == 0xff ? "System" : ((obj !== undefined && obj.a !== undefined) ? obj.a.n : "unknown")
                 let msg = c + ": " + data.t
                 Client.instance.chatHistory.unshift(msg)
                 Client.instance.chatHistory.splice(7)

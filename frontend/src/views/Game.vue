@@ -5,7 +5,7 @@
     </div>
   </div>
 
-  <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px" @submit.prevent="chatSubmit"
+  <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px; pointer-events: none;" @submit.prevent="chatSubmit"
         action="#">
     <div>
       <li v-for="r in chatRows">
@@ -14,9 +14,9 @@
       <!-- hack for refresh chatRows value -->
       <span style="display: none">{{ cnt }}</span>
     </div>
-    <input style="width: 300px; font-size: 20px" type="text" v-model="chatText" id="inputChat"
+    <input style="width: 300px; font-size: 20px; pointer-events: auto;" type="text" v-model="chatText" id="inputChat"
            v-on:keyup.prevent="keyup">
-    <input type="submit" value=">">
+    <input style="pointer-events: auto;" type="submit" value=">">
   </form>
 </template>
 

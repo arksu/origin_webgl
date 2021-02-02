@@ -276,6 +276,7 @@ canvas {
 }
 
 .chat-line {
+  pointer-events: none;
   font-size: 25px;
   -webkit-text-stroke: 1px black;
   color: white;
