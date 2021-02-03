@@ -345,18 +345,24 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 if (mx == -1 && my == -1) {
                     return CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, it)
                 } else {
+                    // если хотябы по одной из осей нет пересечения
                     if (mx >= 0) {
+                        // вычислим расстояние до пересечения по другой оси
                         val k: Double = dy.toDouble() / dx.toDouble()
                         val kd = Math.abs(Math.round(k * mx).toInt())
                         val fx = if (dx < 0) -mx else mx
                         val fy = if (dy < 0) -kd else kd
+                        // передвинем рект игрока в позицию предполагаемого пересечения
                         val tr = Rect(or).add(fx, fy)
 //                        logger.warn("temp rect $tr k=$k kd=$kd")
+                        // вычислим фактическое расстояние между двумя ректами еще раз
                         val (mmx, mmy) = tr.min(r)
 //                        logger.warn("min $mmx $mmy")
+                        // если оно довольно мало считаем что пересечение есть. и это коллизия с объектом
                         if (mmx <= 1 && mmy <= 1) {
 //                            logger.warn("collision!")
                             if (isMove && (fx != 0 || fy != 0)) {
+                                // немного сдвинем назад чтобы точно был оступ от коллизии в 1 единицу
                                 val cx = Math.max(0, mx - 1)
                                 obj.pos.setXY(obj.pos.x + (if (dx < 0) -cx else cx), obj.pos.y + fy)
                             }
