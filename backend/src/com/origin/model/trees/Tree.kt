@@ -18,7 +18,18 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
      */
     var stage: Int = entity.data?.toInt() ?: 6
 
-    override suspend fun contextMenu(p: Player): ContextMenu {
-        return ContextMenu("chop", "takeBranch")
+    override fun contextMenu(p: Player): ContextMenu {
+        return ContextMenu(this, "chop", "takeBranch")
+    }
+
+    override fun processContextItem(item: String) {
+        when (item) {
+            "chop" -> {
+
+            }
+            "takeBranch" -> {
+
+            }
+        }
     }
 }

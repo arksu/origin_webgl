@@ -25,6 +25,7 @@ class PlayerMsg {
     class MapClick(val x: Int, val y: Int)
     class ObjectClick(val id: ObjectID)
     class ObjectRightClick(val id: ObjectID)
+    class ContextMenuItem(val item: String)
 }
 
 private val PLAYER_RECT = Rect(3)
@@ -72,6 +73,7 @@ class Player(
             is PlayerMsg.MapClick -> mapClick(msg.x, msg.y)
             is PlayerMsg.ObjectClick -> objectClick(msg.id)
             is PlayerMsg.ObjectRightClick -> objectRightClick(msg.id)
+            is PlayerMsg.ContextMenuItem -> contextMenuItem(msg.item)
             is BroadcastEvent.ChatMessage -> chatMessage(msg)
 
             else -> super.processMessage(msg)
@@ -104,9 +106,22 @@ class Player(
         }
     }
 
+    /**
+     * правый клик по объекту
+     */
     private suspend fun objectRightClick(id: ObjectID) {
         logger.debug("objectRightClick $id")
         contextMenu = knownList.getKnownObject(id)?.contextMenu(this)
+        if (contextMenu != null) {
+            session.send(com.origin.net.model.ContextMenu(contextMenu!!))
+        }
+    }
+
+    /**
+     * вырбан пункт контекстного меню
+     */
+    private suspend fun contextMenuItem(item: String) {
+        contextMenu?.processItem(item)
     }
 
     private suspend fun chatMessage(msg: BroadcastEvent.ChatMessage) {

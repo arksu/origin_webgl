@@ -158,8 +158,12 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     protected open suspend fun onObjectRemoved(obj: GameObject) {
     }
 
-    open suspend fun contextMenu(p: Player): ContextMenu? {
+    open fun contextMenu(p: Player): ContextMenu? {
         return null
+    }
+
+    open fun processContextItem(item: String) {
+
     }
 
     override fun toString(): String {

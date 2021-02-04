@@ -93,6 +93,11 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     val id = (r.data["id"] as Long?) ?: throw BadRequest("wrong obj id")
                     player.send(PlayerMsg.ObjectRightClick(id))
                 }
+                // context menu item selected
+                "cmselect" -> {
+                    val item = (r.data["item"] as String?) ?: throw BadRequest("no item")
+                    player.send(PlayerMsg.ContextMenuItem(item))
+                }
                 "chat" -> {
                     val text = (r.data["text"] as String?) ?: throw BadRequest("no text")
                     if (text.isNotEmpty()) {

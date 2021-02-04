@@ -6,6 +6,7 @@ import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import com.origin.model.*
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
+import com.origin.model.ContextMenu
 import com.origin.utils.ObjectID
 import com.origin.utils.StringTypeAdapter
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -151,6 +152,12 @@ class CreatureSay(val id: ObjectID, text: String, channel: Int) : ServerMessage(
 
     val t = text
     val c = channel
+}
+
+@ObsoleteCoroutinesApi
+class ContextMenu(cm: ContextMenu) : ServerMessage("cm") {
+    val id = cm.obj.id
+    val l = cm.items
 }
 
 /**
