@@ -158,6 +158,10 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     protected open suspend fun onObjectRemoved(obj: GameObject) {
     }
 
+    open suspend fun contextMenu(p: Player): ContextMenu? {
+        return null
+    }
+
     override fun toString(): String {
         return "${this::class.simpleName} $id ${pos.point}"
     }

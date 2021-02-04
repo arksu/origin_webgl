@@ -55,6 +55,11 @@ class Player(
     private val paperdoll: Paperdoll = Paperdoll(this)
 
     /**
+     * контекстное меню активное в данный момент
+     */
+    private var contextMenu: ContextMenu? = null
+
+    /**
      * внешний вид персонажа (имя, пол, волосы и тд)
      */
     val appearance: PcAppearance = PcAppearance(character.name, "", 0)
@@ -101,7 +106,7 @@ class Player(
 
     private suspend fun objectRightClick(id: ObjectID) {
         logger.debug("objectRightClick $id")
-
+        contextMenu = knownList.getKnownObject(id)?.contextMenu(this)
     }
 
     private suspend fun chatMessage(msg: BroadcastEvent.ChatMessage) {

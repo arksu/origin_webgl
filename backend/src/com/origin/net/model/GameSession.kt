@@ -83,10 +83,12 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     val y = (r.data["y"] as Long?) ?: throw BadRequest("wrong coord y")
                     player.send(PlayerMsg.MapClick(x.toInt(), y.toInt()))
                 }
+                // клик по объекту
                 "objclick" -> {
                     val id = (r.data["id"] as Long?) ?: throw BadRequest("wrong obj id")
                     player.send(PlayerMsg.ObjectClick(id))
                 }
+                // right click
                 "objrclick" -> {
                     val id = (r.data["id"] as Long?) ?: throw BadRequest("wrong obj id")
                     player.send(PlayerMsg.ObjectRightClick(id))
