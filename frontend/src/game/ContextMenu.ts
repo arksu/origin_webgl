@@ -66,6 +66,9 @@ export default class ContextMenu {
         spr1.interactive = true
         spr2.interactive = true
         spr3.interactive = true
+        spr1.buttonMode = true
+        spr2.buttonMode = true
+        spr3.buttonMode = true
 
         spr1.on("click", () => {
             this.click(t)

@@ -9,6 +9,7 @@ for Origin MMO game
 - [Exposed](https://github.com/JetBrains/Exposed/) as Kotlin ORM Framework
 - [Gson](https://github.com/google/gson) for handling JSON
 - [Ktor](https://github.com/ktorio/ktor) as web framework
+- [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) config files
 
 # Getting started
 

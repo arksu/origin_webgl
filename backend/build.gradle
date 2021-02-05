@@ -33,9 +33,9 @@ repositories {
 
 buildscript {
     ext {
-        kotlin_version = '1.4.21'
-        ktor_version = '1.5.0'
-        exposed_version = '0.28.1'
+        kotlin_version = '1.4.30'
+        ktor_version = '1.5.1'
+        exposed_version = '0.29.1'
         slf4j_version = '1.7.30'
     }
 
@@ -43,7 +43,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.20"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30"
     }
 }
 
