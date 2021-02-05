@@ -49,9 +49,5 @@ class Character(id: EntityID<Long>) : LongEntity(id) {
     var name by Characters.name
     var deleted by Characters.deleted
 
-    private var onlineTime by Characters.onlineTime
-
-    fun appendOnlineTime(v: Int) {
-        onlineTime += v.toLong()
-    }
+    var onlineTime by Characters.onlineTime
 }

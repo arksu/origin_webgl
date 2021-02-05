@@ -18,6 +18,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.concurrent.TimeUnit
 
 class PlayerMsg {
     class Connected
@@ -53,7 +54,7 @@ class Player(
     /**
      * одежда (во что одет игрок)
      */
-    private val paperdoll: Paperdoll = Paperdoll(this)
+//    private val paperdoll: Paperdoll = Paperdoll(this)
 
     /**
      * контекстное меню активное в данный момент
@@ -64,6 +65,11 @@ class Player(
      * внешний вид персонажа (имя, пол, волосы и тд)
      */
     val appearance: PcAppearance = PcAppearance(character.name, "", 0)
+
+    /**
+     * при создании (логине) игрока запомним какой у него был онлайн
+     */
+    private val onlineBeginTime = System.currentTimeMillis()
 
     override suspend fun processMessage(msg: Any) {
         logger.debug("Player $this msg ${msg.javaClass.simpleName}")
@@ -160,6 +166,8 @@ class Player(
 
         // удалить объект из мира
         remove()
+
+        store()
     }
 
     override suspend fun loadGrids() {
@@ -172,6 +180,9 @@ class Player(
         session.send(MapGridConfirm())
     }
 
+    /**
+     * сохранение текущей позиции в бд
+     */
     override fun storePositionInDb() {
         logger.warn("storePositionInDb ${pos.x} ${pos.y}")
         WorkerScope.launch {
@@ -184,6 +195,19 @@ class Player(
 
                 character.flush()
             }
+        }
+    }
+
+    /**
+     * сохранение состояния игрока в базу
+     */
+    private fun store() {
+        var totalOnlineTime = character.onlineTime
+        if (onlineBeginTime > 0) {
+            totalOnlineTime += TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - onlineBeginTime)
+        }
+        transaction {
+            character.onlineTime = totalOnlineTime
         }
     }
 
@@ -206,6 +230,9 @@ class Player(
         }
     }
 
+    /**
+     * выполнить ранее сохраненную команду в указанных координатах
+     */
     private suspend fun executeCommand(x: Int, y: Int) {
         val params = commandToExecute!!.split(" ")
         when (params[0]) {
