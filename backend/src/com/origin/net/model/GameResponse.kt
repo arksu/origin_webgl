@@ -155,9 +155,9 @@ class CreatureSay(val id: ObjectID, text: String, channel: Int) : ServerMessage(
 }
 
 @ObsoleteCoroutinesApi
-class ContextMenu(cm: ContextMenu) : ServerMessage("cm") {
-    val id = cm.obj.id
-    val l = cm.items
+class ContextMenu(cm: ContextMenu?) : ServerMessage("cm") {
+    val id = cm?.obj?.id ?: -1
+    val l = cm?.items
 }
 
 /**

@@ -162,8 +162,7 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
         return null
     }
 
-    open fun processContextItem(item: String) {
-
+    open suspend fun processContextItem(player: Player, item: String) {
     }
 
     override fun toString(): String {

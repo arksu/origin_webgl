@@ -2,7 +2,7 @@ import _ from "lodash";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
 import MoveController from "@/game/MoveController";
-import {MapGridData, ObjectDel, ObjectMoved, ObjectStopped} from "@/net/Packets";
+import {ContextMenuData, MapGridData, ObjectDel, ObjectMoved, ObjectStopped} from "@/net/Packets";
 
 enum State {
     Disconnected,
@@ -293,9 +293,13 @@ export default class Net {
                 break;
             }
             case "cm" : { // context menu
-                let obj = Client.instance.objects[data.id];
+                let cm = <ContextMenuData>data
+                let obj = Client.instance.objects[cm.id];
                 if (obj !== undefined) {
-
+                    cm.obj = obj
+                    Game.instance?.makeContextMenu(cm)
+                } else {
+                    Game.instance?.makeContextMenu(undefined)
                 }
                 break
             }

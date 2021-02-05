@@ -8,6 +8,8 @@ import Point from '@/utils/Point';
 import {GameObject} from "@/game/GameObject";
 import ObjectView from "@/game/ObjectView";
 import {Coord} from "@/utils/Util";
+import ContextMenu from "@/game/ContextMenu";
+import {ContextMenuData} from "@/net/Packets";
 
 /**
  * основная игровая логика (графика и тд)
@@ -15,7 +17,7 @@ import {Coord} from "@/utils/Util";
 export default class Game {
 
     private static readonly canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("game");
-    private static readonly appDiv: HTMLElement = <HTMLElement>document.getElementById("app");
+    // private static readonly appDiv: HTMLElement = <HTMLElement>document.getElementById("app");
 
     public static instance?: Game = undefined;
 
@@ -80,6 +82,11 @@ export default class Game {
      * апдейтим их позицию каждый тик через move controller
      */
     public movingObjects: { [key: number]: GameObject } = {}
+
+    /**
+     * текущее открытое контекстное меню
+     */
+    private contextMenu ?: ContextMenu
 
     public static start() {
         console.warn("pixi start");
@@ -160,7 +167,7 @@ export default class Game {
         const img = PIXI.utils.TextureCache['assets/tiles.json_image'];
 
         if (img == undefined) {
-            // TODO
+            // load tiles parts
             for (let i = 0; i < Tile.sets.length; i++) {
                 if (!Tile.sets[i]) continue
                 for (let j = 0; j < Tile.sets[i].ground.tiles.length; j++) {
@@ -399,15 +406,15 @@ export default class Game {
     }
 
     public updateMapScalePos() {
-        let px = Client.instance.playerObject.x;
-        let py = Client.instance.playerObject.y;
+        const px = Client.instance.playerObject.x;
+        const py = Client.instance.playerObject.y;
 
-        let sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
-        let sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
+        const sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
+        const sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
 
         // центр экрана с учетом отступа перетаскиванием
-        let offx = this.app.renderer.width / 2 + this.offset.x;
-        let offy = this.app.renderer.height / 2 + this.offset.y;
+        const offx = this.app.renderer.width / 2 + this.offset.x;
+        const offy = this.app.renderer.height / 2 + this.offset.y;
 
         this.mapGrids.x = offx - sx * this.scale;
         this.mapGrids.y = offy - sy * this.scale;
@@ -507,6 +514,36 @@ export default class Game {
     public onFileChange(fn: string) {
         for (let gridsKey in this.grids) {
             this.grids[gridsKey].onFileChange(fn)
+        }
+    }
+
+    /**
+     * создать и отобразить контекстное меню которое прислал сервер
+     */
+    public makeContextMenu(cm?: ContextMenuData) {
+        console.log(cm)
+        if (this.contextMenu !== undefined) {
+            this.contextMenu.destroy()
+        }
+        if (cm !== undefined) {
+            this.contextMenu = new ContextMenu(cm)
+            this.app.stage.addChild(this.contextMenu.container)
+
+            const px = Client.instance.playerObject.x;
+            const py = Client.instance.playerObject.y;
+
+            const sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
+            const sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
+
+            let coord = Game.coordGame2Screen(cm.obj.x, cm.obj.y)
+            // центр экрана с учетом отступа перетаскиванием
+            let offx = this.app.renderer.width / 2 + this.offset.x;
+            let offy = this.app.renderer.height / 2 + this.offset.y;
+            console.log("coord", coord)
+            console.log("offx=" + offx + " offy=" + offy)
+            this.contextMenu.container.x = offx - (sx - coord[0]) * this.scale;
+            this.contextMenu.container.y = offy - (sy - coord[1]) * this.scale;
+            console.log(this.contextMenu.container)
         }
     }
 

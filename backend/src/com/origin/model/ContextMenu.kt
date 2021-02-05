@@ -11,9 +11,9 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 class ContextMenu(val obj: GameObject, vararg i: String) {
     val items: List<String> = i.asList()
 
-    suspend fun processItem(item: String) {
+    suspend fun processItem(player: Player, item: String) {
         if (items.contains(item)) {
-            obj.processContextItem(item)
+            obj.processContextItem(player, item)
         }
     }
 }

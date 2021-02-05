@@ -16,6 +16,7 @@ export default class ObjectView {
 
     private isTouched: boolean = false
     private touchTimer: number = -1
+    private wasRightClick: boolean = false
 
     private readonly res: Resource
     private layersOffset: Coord[] = []
@@ -70,7 +71,7 @@ export default class ObjectView {
             this.layersOffset.push([0, 0])
         }
         // создаем спрайт для каждого слоя
-        let spr = PIXI.Sprite.from(path);
+        let spr = PIXI.Sprite.from(path)
         if (l.interactive) this.setInteractive(spr)
         if (l.shadow) {
             spr.zIndex = -1
@@ -100,6 +101,7 @@ export default class ObjectView {
                 this.view[i].x -= this.res.offset[0]
                 this.view[i].y -= this.res.offset[1]
             }
+            // z = y
             let z = coord[1]
             if (this.res.layers[i].shadow) {
                 z = -1
@@ -136,13 +138,15 @@ export default class ObjectView {
             this.touchTimer = setTimeout(() => {
                 if (this.isTouched) {
                     this.isTouched = false
+                    // укажем что был правый клик (сработал)
+                    this.wasRightClick = true
                     console.log("rightclick")
                     this.onRightClick()
 
                     clearTimeout(this.touchTimer)
                     this.touchTimer = -1
                 }
-            }, 1000)
+            }, 800)
         })
         target.on("touchend", (e: PIXI.InteractionEvent) => {
             this.isTouched = false
@@ -150,7 +154,12 @@ export default class ObjectView {
                 clearTimeout(this.touchTimer)
                 this.touchTimer = -1
             }
-            this.onClick(e)
+            // только если не сработал правый клик - выполним основной клик
+            if (!this.wasRightClick) {
+                this.onClick(e)
+            }
+            // и в любом случае затрем флаг правого клика
+            this.wasRightClick = false
         })
         target.on("touchendoutside", () => {
             this.isTouched = false

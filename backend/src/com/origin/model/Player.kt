@@ -92,6 +92,10 @@ class Player(
     private suspend fun mapClick(x: Int, y: Int) {
         logger.debug("mapClick $x $y")
 
+        if (contextMenu != null) {
+            session.send(com.origin.net.model.ContextMenu(null))
+            contextMenu = null
+        }
         if (commandToExecute != null) {
             executeCommand(x, y)
             commandToExecute = null
@@ -106,11 +110,16 @@ class Player(
     @Suppress("UNUSED_PARAMETER")
     private suspend fun objectClick(id: ObjectID, x: Int, y: Int) {
         logger.debug("objectClick $id")
+        if (contextMenu != null) {
+            session.send(com.origin.net.model.ContextMenu(null))
+            contextMenu = null
+        }
         val obj = knownList.getKnownObject(id)
         if (obj != null) {
             // пока просто движемся к объекту
             startMove(Move2Object(this, obj))
         }
+
     }
 
     /**
@@ -118,9 +127,14 @@ class Player(
      */
     private suspend fun objectRightClick(id: ObjectID) {
         logger.debug("objectRightClick $id")
-        contextMenu = knownList.getKnownObject(id)?.contextMenu(this)
         if (contextMenu != null) {
-            session.send(com.origin.net.model.ContextMenu(contextMenu!!))
+            session.send(com.origin.net.model.ContextMenu(null))
+            contextMenu = null
+        } else {
+            contextMenu = knownList.getKnownObject(id)?.contextMenu(this)
+            if (contextMenu != null) {
+                session.send(com.origin.net.model.ContextMenu(contextMenu!!))
+            }
         }
     }
 
@@ -128,7 +142,8 @@ class Player(
      * вырбан пункт контекстного меню
      */
     private suspend fun contextMenuItem(item: String) {
-        contextMenu?.processItem(item)
+        contextMenu?.processItem(this,item)
+        contextMenu = null
     }
 
     private suspend fun chatMessage(msg: BroadcastEvent.ChatMessage) {

@@ -1,3 +1,5 @@
+import {GameObject} from "@/game/GameObject";
+
 export interface MapGridData {
     readonly x: number
     readonly y: number
@@ -61,4 +63,10 @@ export interface ObjectStopped {
     readonly id: number
     readonly x: number
     readonly y: number
+}
+
+export interface ContextMenuData {
+    readonly id: number
+    readonly l: string[]
+    obj: GameObject
 }
