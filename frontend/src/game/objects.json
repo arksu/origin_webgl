@@ -80,7 +80,7 @@
         "offset": [59, 124],
         "layers": [
           {
-            "interactive": 0,
+            "interactive": true,
             "img": "trees/birch/6.png",
             "offset": [7, 0],
             "z": 0
@@ -96,7 +96,6 @@
         "offset": [34, 16],
         "layers": [
           {
-            "interactive": 0,
             "img": "trees/birch/stump.png",
             "offset": [7, 6],
             "z": 0
@@ -187,7 +186,7 @@
         "offset": [45, 150],
         "layers": [
           {
-            "interactive": 0,
+            "interactive": true,
             "img": "trees/fir/6.png",
             "offset": [0, 0],
             "z": 0
@@ -203,7 +202,6 @@
         "offset": [28, 20],
         "layers": [
           {
-            "interactive": 0,
             "img": "trees/fir/stump.png",
             "offset": [0, 0],
             "z": 0
@@ -221,7 +219,7 @@
         "offset": [92, 291],
         "layers": [
           {
-            "interactive": 0,
+            "interactive": true,
             "img": "trees/pine/6.png",
             "offset": [9, 12],
             "z": 0
@@ -237,7 +235,6 @@
         "offset": [54, 34],
         "layers": [
           {
-            "interactive": 0,
             "img": "trees/pine/stump.png",
             "offset": [22, 28],
             "z": 0

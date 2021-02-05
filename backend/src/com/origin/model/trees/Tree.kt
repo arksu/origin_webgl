@@ -24,10 +24,13 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
 
     override fun processContextItem(item: String) {
         when (item) {
-            "chop" -> {
+            "Chop" -> {
 
             }
-            "takeBranch" -> {
+            "Take branch" -> {
+
+            }
+            "Take bark" -> {
 
             }
         }

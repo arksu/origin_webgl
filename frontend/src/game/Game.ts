@@ -288,7 +288,8 @@ export default class Game {
 
         this.touchLength = -1
 
-        let p = new Point(e.data.global).round();
+        // screen point coord
+        const p = new Point(e.data.global).round();
 
         console.log('onMouseUp ' + p.toString());
 
@@ -448,7 +449,7 @@ export default class Game {
     /**
      * перевести экранные координаты в игровые
      */
-    private coordScreen2Game(p: Point): Point {
+    public coordScreen2Game(p: Point): Point {
         p.dec(this.offset);
 
         let px = Client.instance.playerObject.x;

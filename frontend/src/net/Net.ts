@@ -292,6 +292,13 @@ export default class Net {
                 Game.instance?.updateMapScalePos()
                 break;
             }
+            case "cm" : { // context menu
+                let obj = Client.instance.objects[data.id];
+                if (obj !== undefined) {
+
+                }
+                break
+            }
 
             case "cs" : { // creature say
                 let obj = Client.instance.objects[data.id]

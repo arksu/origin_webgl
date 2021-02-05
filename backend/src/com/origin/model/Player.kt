@@ -24,7 +24,7 @@ class PlayerMsg {
     class Connected
     class Disconnected
     class MapClick(val x: Int, val y: Int)
-    class ObjectClick(val id: ObjectID)
+    class ObjectClick(val id: ObjectID, val x: Int, val y: Int)
     class ObjectRightClick(val id: ObjectID)
     class ContextMenuItem(val item: String)
 }
@@ -77,7 +77,7 @@ class Player(
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
             is PlayerMsg.MapClick -> mapClick(msg.x, msg.y)
-            is PlayerMsg.ObjectClick -> objectClick(msg.id)
+            is PlayerMsg.ObjectClick -> objectClick(msg.id, msg.x, msg.y)
             is PlayerMsg.ObjectRightClick -> objectRightClick(msg.id)
             is PlayerMsg.ContextMenuItem -> contextMenuItem(msg.item)
             is BroadcastEvent.ChatMessage -> chatMessage(msg)
@@ -103,7 +103,8 @@ class Player(
     /**
      * клик по объекту в мире
      */
-    private suspend fun objectClick(id: ObjectID) {
+    @Suppress("UNUSED_PARAMETER")
+    private suspend fun objectClick(id: ObjectID, x: Int, y: Int) {
         logger.debug("objectClick $id")
         val obj = knownList.getKnownObject(id)
         if (obj != null) {

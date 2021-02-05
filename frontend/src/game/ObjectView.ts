@@ -4,6 +4,7 @@ import Net from "@/net/Net";
 import objects from "./objects.json"
 import Game from "@/game/Game";
 import {Coord, Layer, Resource} from "@/utils/Util";
+import Point from "@/utils/Point";
 
 /**
  * внешнее представлениен объекта в игре
@@ -30,6 +31,9 @@ export default class ObjectView {
         this.onMoved()
     }
 
+    /**
+     * получить ресурс объекта из пути
+     */
     private getResource(r: string): Resource {
         let strings = r.split("/");
 
@@ -140,13 +144,13 @@ export default class ObjectView {
                 }
             }, 1000)
         })
-        target.on("touchend", () => {
+        target.on("touchend", (e: PIXI.InteractionEvent) => {
             this.isTouched = false
             if (this.touchTimer != -1) {
                 clearTimeout(this.touchTimer)
                 this.touchTimer = -1
             }
-            this.onClick()
+            this.onClick(e)
         })
         target.on("touchendoutside", () => {
             this.isTouched = false
@@ -155,15 +159,25 @@ export default class ObjectView {
                 this.touchTimer = -1
             }
         })
-        target.on("mouseup", () => {
-            this.onClick()
+        target.on("mouseup", (e: PIXI.InteractionEvent) => {
+            this.onClick(e)
         })
     }
 
-    private onClick() {
-        Net.remoteCall("objclick", {
-            id: this.obj.id
-        })
+    private onClick(e: PIXI.InteractionEvent) {
+        // screen point coord
+        const p = new Point(e.data.global).round();
+        if (Game.instance !== undefined) {
+            // вычислим игровые координаты куда тыкнула мышь
+            // их тоже отправим на сервер
+            let cp = Game.instance?.coordScreen2Game(p);
+
+            Net.remoteCall("objclick", {
+                id: this.obj.id,
+                x: cp.x,
+                y: cp.y
+            })
+        }
     }
 
     private onRightClick() {

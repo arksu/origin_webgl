@@ -112,27 +112,36 @@ abstract class MoveController(val me: MovingObject) {
             // сколько осталось идти до конечной точки
             val left = sqrt((toX - x).toDouble().pow(2) + (toY - y).toDouble().pow(2))
 
-            val result = if (c.result == CollisionResult.CollisionType.COLLISION_NONE) {
+            // обработаем ситуацию когда нет коллизий при движении, она общая для всех типов движения
+            val wasStopped = if (c.result == CollisionResult.CollisionType.COLLISION_NONE) {
                 // расстояние до конечной точки при котором считаем что уже дошли куда надо
                 return if (left <= 1.0) {
                     me.stopMove()
                     true
                 } else {
+                    // продолжаем движение
                     if (me is Human) {
+                        // обновляем видимые объекты при каждом передвижении
                         me.updateVisibleObjects(false)
                     }
+                    // шлем через грид эвент передвижения
                     me.pos.grid.broadcast(BroadcastEvent.Moved(
                         me, toX, toY, speed, moveType
                     ))
                     false
                 }
+                // в implementation обрабатываем ситуации с коллизиями
             } else implementation(c, left, speed, moveType)
 
             // если движение не завершено - обновляем позицию в базе
-            if (!result) {
+            if (wasStopped) {
+                // движение завершено. внутри implementation сохранили позицию в базе, запомним и тут
+                storedX = me.pos.x.toDouble()
+                storedY = me.pos.y.toDouble()
+            } else {
                 val dx: Double = me.pos.x - storedX
                 val dy: Double = me.pos.y - storedY
-//                logger.debug("move dx=$dx dy=$dy d=${sqrt(dx.pow(2) + dy.pow(2))}")
+                // logger.debug("move dx=$dx dy=$dy d=${sqrt(dx.pow(2) + dy.pow(2))}")
 
                 // если передвинулись достаточно далеко
                 if (dx.pow(2) + dy.pow(2) > ServerConfig.UPDATE_DB_DISTANCE.toDouble().pow(2)) {
@@ -140,12 +149,8 @@ abstract class MoveController(val me: MovingObject) {
                     storedX = me.pos.x.toDouble()
                     storedY = me.pos.y.toDouble()
                 }
-            } else {
-                // движение завершено. внутри implementation сохранили позицию в базе, запомним и тут
-                storedX = me.pos.x.toDouble()
-                storedY = me.pos.y.toDouble()
             }
-            return result
+            return wasStopped
         }
         return false
     }

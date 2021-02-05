@@ -26,6 +26,7 @@ class Move2Object(me: MovingObject, target: GameObject) : MoveController(me) {
                 return true
             }
             CollisionResult.CollisionType.COLLISION_OBJECT -> {
+                me.stopMove()
                 if (c.obj != null && c.obj.id == targetId) {
                     // TODO линкуемся с объектом
                 }
