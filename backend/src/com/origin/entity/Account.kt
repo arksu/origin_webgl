@@ -15,7 +15,7 @@ object Accounts : IntIdTable("accounts") {
     val password = varchar("password", 64)
     val email = varchar("email", 64).nullable().uniqueIndex()
     val ssid = char("ssid", 32).nullable()
-    val selectedCharacter = integer("selectedCharacter").nullable()
+    val selectedCharacter = long("selectedCharacter").nullable()
     val created = timestamp("createTime", true).nullable()
     val onlineTime = long("onlineTime").default(0)
     val deleted = bool("deleted").default(false)

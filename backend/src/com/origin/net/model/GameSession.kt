@@ -4,6 +4,7 @@ import com.origin.ServerConfig
 import com.origin.entity.Account
 import com.origin.entity.Character
 import com.origin.entity.Characters
+import com.origin.entity.ChatHistory
 import com.origin.model.BroadcastEvent
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
 import com.origin.model.GameObjectMsg.Spawn
@@ -18,6 +19,7 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -56,9 +58,12 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
                 // load char
                 val character = transaction {
-                    Character.find { Characters.account eq account!!.id and Characters.id.eq(selectedCharacterId) }
-                        .singleOrNull()
-                        ?: throw BadRequest("character not found")
+                    val c =
+                        Character.find { Characters.account eq account!!.id and Characters.id.eq(selectedCharacterId) }
+                            .singleOrNull()
+                            ?: throw BadRequest("character not found")
+                    account!!.selectedCharacter = selectedCharacterId
+                    c
                 }
                 // создали игрока, его позицию
                 val player = Player(character, this)
@@ -101,6 +106,13 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 "chat" -> {
                     val text = (r.data["text"] as String?) ?: throw BadRequest("no text")
                     if (text.isNotEmpty()) {
+                        transaction {
+                            ChatHistory.insert {
+                                it[owner] = player.id
+                                it[channel] = GENERAL.toByte()
+                                it[ChatHistory.text] = text
+                            }
+                        }
                         if (text.startsWith("/")) {
                             // удаляем слеш в начале строки
                             player.consoleCommand(text.substring(1))

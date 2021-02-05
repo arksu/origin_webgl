@@ -37,7 +37,8 @@ object DatabaseFactory {
                 Characters,
                 EntityObjects,
                 InventoryItems,
-                GlobalVariables
+                GlobalVariables,
+                ChatHistory
             )
         }
     }

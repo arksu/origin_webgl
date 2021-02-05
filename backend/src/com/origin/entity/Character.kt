@@ -26,6 +26,11 @@ object Characters : EntityPositions("characters") {
     val createTime = timestamp("createTime", true).nullable()
 
     /**
+     * флаг уадаления
+     */
+    val deleted = bool("deleted").default(false)
+
+    /**
      * сколько времени онлайн провел
      */
     val onlineTime = long("onlineTime").default(0)
@@ -42,6 +47,7 @@ class Character(id: EntityID<Long>) : LongEntity(id) {
 
     var account by Account referencedOn Characters.account
     var name by Characters.name
+    var deleted by Characters.deleted
 
     private var onlineTime by Characters.onlineTime
 

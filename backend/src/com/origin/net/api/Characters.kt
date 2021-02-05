@@ -14,6 +14,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.pipeline.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 
 
@@ -29,7 +30,7 @@ fun Route.getCharactersList() {
     get("/characters") {
         val account = getAccountBySsid()
         val list = transaction {
-            Character.find { Characters.account eq account.id }.limit(5).map { c ->
+            Character.find { (Characters.account eq account.id) and (Characters.deleted eq false) }.limit(5).map { c ->
                 CharacterResponse(c.id.value, c.name)
             }
         }
@@ -88,7 +89,8 @@ fun Route.deleteCharacter() {
             if (char == null || char.account.id.value != account.id.value) {
                 throw BadRequest("Wrong character")
             } else {
-                char.delete()
+                char.deleted = true
+                char.flush()
             }
         }
         call.respondText("ok")
