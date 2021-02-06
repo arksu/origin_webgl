@@ -50,6 +50,12 @@ sealed class BroadcastEvent {
     class ChatMessage(val obj: GameObject, val channel: Int, val text: String) : BroadcastEvent() {
         companion object {
             const val GENERAL = 0
+            const val PRIVATE = 1
+            const val PARTY = 2
+            const val VILLAGE = 3
+            const val SHOUT = 4
+            const val WORLD = 5
+            const val ANNOUNCEMENT = 6
             const val SYSTEM = 0xff
         }
     }

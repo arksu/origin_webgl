@@ -26,10 +26,15 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
     override suspend fun processContextItem(player: Player, item: String) {
         when (item) {
             "Chop" -> {
-                player.startMove(Move2Object(player, this))
+                player.startMove(Move2Object(player, this) {
+                    logger.debug("tree !")
+                    player.startAction(this, 20) {
+                        logger.debug("chop tree")
+                    }
+                })
             }
             "Take branch" -> {
-
+                player.action?.stop()
             }
             "Take bark" -> {
 

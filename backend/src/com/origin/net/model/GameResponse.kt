@@ -160,6 +160,9 @@ class ContextMenu(cm: ContextMenu?) : ServerMessage("cm") {
     val l = cm?.items
 }
 
+class ActionProgress() : ServerMessage("ap") {
+}
+
 /**
  * уведомления об изменениях в папке с ассетами
  */

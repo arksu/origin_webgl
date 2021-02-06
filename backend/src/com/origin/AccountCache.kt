@@ -3,6 +3,7 @@ package com.origin
 import com.origin.entity.Account
 import com.origin.net.gameSessions
 import com.origin.utils.LockByName
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ConcurrentHashMap
 
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
  * аккаунт может на другом сервере и у нас будут не актуальные данные. в этом случае надо при каждом запросе грузить
  * аккаунт из базы (сверять ssid из запроса с ssid из базы), а локально вообще ничего не хранить. смысла в кэше в этом случае нет.
  */
+@ObsoleteCoroutinesApi
 class AccountCache {
     /**
      * храним объекты юзеров в памяти

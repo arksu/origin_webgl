@@ -37,6 +37,11 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      */
     private var lastPosUpdateVisible: Vec2i? = null
 
+    /**
+     * действие которое выполняет объект в данный момент
+     */
+    var action: Action? = null
+
     override suspend fun processMessage(msg: Any) {
         when (msg) {
             is BroadcastEvent.StartMove -> {
@@ -169,5 +174,9 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
         super.onLeaveGrid(grid)
         logger.warn("Deactivate ${grid.x} ${grid.y}")
         grid.sendJob(GridMsg.Deactivate(this, Job())).join()
+    }
+
+    fun startAction(target: GameObject, ticks: Int, block: () -> Unit) {
+        action = Action(this, target, ticks, block)
     }
 }
