@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.ServerConfig
+import com.origin.model.move.MoveController
 import com.origin.net.model.ObjectMoved
 import com.origin.net.model.ObjectStartMove
 import com.origin.net.model.ObjectStopped
@@ -85,6 +86,8 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
                     }
                 }
             }
+            is PlayerMsg.StopAction -> stopAction()
+
             else -> super.processMessage(msg)
         }
     }
@@ -159,6 +162,11 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
         }
     }
 
+    override suspend fun startMove(controller: MoveController) {
+        super.startMove(controller)
+        stopAction()
+    }
+
     override suspend fun stopMove() {
         super.stopMove()
         updateVisibleObjects(false)
@@ -176,7 +184,17 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
         grid.sendJob(GridMsg.Deactivate(this, Job())).join()
     }
 
-    fun startAction(target: GameObject, ticks: Int, block: () -> Unit) {
-        action = Action(this, target, ticks, block)
+    fun startAction(
+        target: GameObject,
+        ticks: Int,
+        playerCondition: ((Player) -> Boolean)? = null,
+        block: (Action) -> Boolean,
+    ) {
+        action = Action(this, target, ticks, playerCondition, block)
+    }
+
+    suspend fun stopAction() {
+        action?.stop()
+        action = null
     }
 }

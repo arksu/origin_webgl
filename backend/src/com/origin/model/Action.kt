@@ -5,7 +5,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @ObsoleteCoroutinesApi
-class Action(val me: Human, val target: GameObject, private val ticks: Int, private val block: () -> Unit) {
+class Action(
+    private val me: Human,
+    val target: GameObject,
+    private val ticks: Int,
+    private val playerCondition: ((Player) -> Boolean)?,
+    private val block: (Action) -> Boolean,
+) {
     companion object {
         /**
          * сколько длится тик для игрового действия
@@ -16,14 +22,38 @@ class Action(val me: Human, val target: GameObject, private val ticks: Int, priv
     }
 
     private val job: Job = WorkerScope.launch {
-        repeat(ticks) { i ->
-            logger.debug("before tick $i")
-            delay(GAME_ACTION_PERIOD)
-            logger.debug("after tick $i")
+        // повтоярем циклы задержки и выполнения блока
+        while (true) {
+            if (playerCondition != null) {
+                // ДО каждого тика проверяем выполнение условий на игроке (стамина, голод и тд)
+                val playerResult = CompletableDeferred<Boolean>()
+                me.send(PlayerMsg.ExecuteActionCondition(playerResult, playerCondition))
+                // условие на игроке вернуло ложь. значит не выполнилось условие для следующего тика действия
+                if (!playerResult.await()) {
+                    break
+                }
+            }
+
+            // ждем нужное количество тиков чтобы выполнить очередное действие над объектом
+            repeat(ticks) { i ->
+                logger.debug("before tick $i")
+                delay(GAME_ACTION_PERIOD)
+                logger.debug("after tick $i")
+            }
+
+            logger.debug("run action")
+            // отправим на исполнение кусок кода который должен выполнить объект
+            val targetResult = CompletableDeferred<Boolean>()
+            target.send(GameObjectMsg.ExecuteActionTick(this@Action, targetResult, block))
+            // если объект говорит что действие завершилось
+            // заканчиваем цикл повтора действий
+            if (targetResult.await()) {
+                me.send(PlayerMsg.StopAction())
+                break
+            }
         }
-        me.action = null
-        logger.debug("run action")
-        block()
+
+        // todo stop action
     }
 
     suspend fun stop() {

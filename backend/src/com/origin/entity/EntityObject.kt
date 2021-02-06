@@ -32,7 +32,7 @@ object EntityObjects : EntityPositions("objects") {
     /**
      * здоровье (hit points) объекта
      */
-    val hp = short("hp").default(100)
+    val hp = integer("hp").default(100)
 
     /**
      * время создания, игровой тик сервера

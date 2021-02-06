@@ -313,6 +313,7 @@ export default class Game {
                 let cp = this.coordScreen2Game(p);
                 console.log("mapclick " + cp.toString());
                 Net.remoteCall("mapclick", {
+                    b: 0,
                     x: cp.x,
                     y: cp.y
                 })

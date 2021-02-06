@@ -9,6 +9,7 @@ import com.origin.model.move.Move2Object
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.model.move.Position
+import com.origin.net.model.ClientButton
 import com.origin.net.model.CreatureSay
 import com.origin.net.model.GameSession
 import com.origin.net.model.MapGridConfirm
@@ -20,13 +21,16 @@ import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.concurrent.TimeUnit
 
+@ObsoleteCoroutinesApi
 class PlayerMsg {
     class Connected
     class Disconnected
-    class MapClick(val x: Int, val y: Int)
+    class MapClick(val btn: ClientButton, val x: Int, val y: Int)
     class ObjectClick(val id: ObjectID, val x: Int, val y: Int)
     class ObjectRightClick(val id: ObjectID)
     class ContextMenuItem(val item: String)
+    class ExecuteActionCondition(val resp: CompletableDeferred<Boolean>, val block: (Player) -> Boolean)
+    class StopAction
 }
 
 private val PLAYER_RECT = Rect(3)
@@ -56,6 +60,8 @@ class Player(
      */
 //    private val paperdoll: Paperdoll = Paperdoll(this)
 
+    val stamina = Stamina(this)
+
     /**
      * контекстное меню активное в данный момент
      */
@@ -76,11 +82,16 @@ class Player(
         when (msg) {
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
-            is PlayerMsg.MapClick -> mapClick(msg.x, msg.y)
+            is PlayerMsg.MapClick -> mapClick(msg.btn, msg.x, msg.y)
             is PlayerMsg.ObjectClick -> objectClick(msg.id, msg.x, msg.y)
             is PlayerMsg.ObjectRightClick -> objectRightClick(msg.id)
             is PlayerMsg.ContextMenuItem -> contextMenuItem(msg.item)
             is BroadcastEvent.ChatMessage -> chatMessage(msg)
+            is PlayerMsg.ExecuteActionCondition -> {
+                val result = msg.block(this)
+                if (!result) stopAction()
+                msg.resp.complete(result)
+            }
 
             else -> super.processMessage(msg)
         }
@@ -89,7 +100,7 @@ class Player(
     /**
      * клиент: клик по карте
      */
-    private suspend fun mapClick(x: Int, y: Int) {
+    private suspend fun mapClick(btn: ClientButton, x: Int, y: Int) {
         logger.debug("mapClick $x $y")
 
         if (contextMenu != null) {
@@ -142,7 +153,7 @@ class Player(
      * вырбан пункт контекстного меню
      */
     private suspend fun contextMenuItem(item: String) {
-        contextMenu?.processItem(this,item)
+        contextMenu?.processItem(this, item)
         contextMenu = null
     }
 

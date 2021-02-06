@@ -94,7 +94,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     /**
      * начать движение объекта
      */
-    suspend fun startMove(controller: MoveController) {
+    open suspend fun startMove(controller: MoveController) {
         val old = moveController
         if (old != null) {
             old.updateAndResult()
@@ -225,5 +225,9 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     }
 
     protected open suspend fun onLeaveGrid(grid: Grid) {
+    }
+
+    open fun clearLinkedObject() {
+        linkedObject = null
     }
 }

@@ -28,13 +28,26 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
             "Chop" -> {
                 player.startMove(Move2Object(player, this) {
                     logger.debug("tree !")
-                    player.startAction(this, 20) {
-                        logger.debug("chop tree")
+                    player.startAction(this, 3, {
+                        // возьмем у игрока часть стамины и голода
+                        it.stamina.take(4)
+                    }) {
+                        logger.debug("action tick")
+                        var done = false
+                        if (it.target is Tree) {
+                            // не удалось снять очередные хп с дерева
+                            if (!it.target.takeHp(20)) {
+                                // значит хп кончилось. и дерево срубили
+                                logger.warn("CHOP")
+                                done = true
+                            }
+                        }
+                        done
                     }
                 })
             }
             "Take branch" -> {
-                player.action?.stop()
+
             }
             "Take bark" -> {
 

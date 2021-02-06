@@ -18,6 +18,7 @@ sealed class GameObjectMsg {
     class OnRemoved
     class OnObjectRemoved(val obj: GameObject)
     class OnObjectAdded(val obj: GameObject)
+    class ExecuteActionTick(val action: Action, val resp: CompletableDeferred<Boolean>, val block: (Action) -> Boolean)
 }
 
 /**
@@ -108,6 +109,7 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
             is GameObjectMsg.OnRemoved -> onRemoved()
             is GameObjectMsg.OnObjectRemoved -> onObjectRemoved(msg.obj)
             is GameObjectMsg.OnObjectAdded -> onObjectAdded(msg.obj)
+            is GameObjectMsg.ExecuteActionTick -> msg.resp.complete(msg.block(msg.action))
 
             else -> throw RuntimeException("unprocessed actor message ${msg.javaClass.simpleName}")
         }
