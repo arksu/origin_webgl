@@ -14,7 +14,7 @@ open class StaticObject(val entity: EntityObject) :
     /**
      * взять у объекта хп
      */
-    fun takeHp(value: Int): Boolean {
+    fun takeHP(value: Int): Boolean {
         if (value <= entity.hp) {
             val old = entity.hp
             transaction {
@@ -24,6 +24,10 @@ open class StaticObject(val entity: EntityObject) :
             return entity.hp > 0
         }
         return false
+    }
+
+    fun getMaxHP(): Int {
+        return 100
     }
 
     override fun getBoundRect(): Rect {

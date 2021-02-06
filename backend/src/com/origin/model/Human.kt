@@ -187,10 +187,12 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     fun startAction(
         target: GameObject,
         ticks: Int,
+        startProgress: Int,
+        totalProgress: Int,
         playerCondition: ((Player) -> Boolean)? = null,
-        block: (Action) -> Boolean,
+        block: suspend (Action) -> Boolean,
     ) {
-        action = Action(this, target, ticks, playerCondition, block)
+        action = Action(this, target, ticks, startProgress, totalProgress, playerCondition, block)
     }
 
     suspend fun stopAction() {

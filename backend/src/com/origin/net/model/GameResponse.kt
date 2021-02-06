@@ -160,7 +160,7 @@ class ContextMenu(cm: ContextMenu?) : ServerMessage("cm") {
     val l = cm?.items
 }
 
-class ActionProgress() : ServerMessage("ap") {
+class ActionProgress(val c: Int, val t: Int) : ServerMessage("ap") {
 }
 
 /**

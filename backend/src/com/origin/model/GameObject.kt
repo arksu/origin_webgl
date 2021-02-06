@@ -18,7 +18,11 @@ sealed class GameObjectMsg {
     class OnRemoved
     class OnObjectRemoved(val obj: GameObject)
     class OnObjectAdded(val obj: GameObject)
-    class ExecuteActionTick(val action: Action, val resp: CompletableDeferred<Boolean>, val block: (Action) -> Boolean)
+    class ExecuteActionTick(
+        val action: Action,
+        val resp: CompletableDeferred<Boolean>,
+        val block: suspend (Action) -> Boolean,
+    )
 }
 
 /**
@@ -164,6 +168,9 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
         return null
     }
 
+    /**
+     * выполняется в контексте ИГРОКА
+     */
     open suspend fun processContextItem(player: Player, item: String) {
     }
 

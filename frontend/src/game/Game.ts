@@ -9,7 +9,8 @@ import {GameObject} from "@/game/GameObject";
 import ObjectView from "@/game/ObjectView";
 import {Coord} from "@/utils/Util";
 import ContextMenu from "@/game/ContextMenu";
-import {ContextMenuData} from "@/net/Packets";
+import {ActionProgressData, ContextMenuData} from "@/net/Packets";
+import ActionProgress from "@/game/ActionProgress";
 
 /**
  * основная игровая логика (графика и тд)
@@ -87,6 +88,11 @@ export default class Game {
      * текущее открытое контекстное меню
      */
     private contextMenu ?: ContextMenu
+
+    /**
+     * прогресс текущего действия (отображаем по середине экрана)
+     */
+    private actionProgress ?: ActionProgress
 
     public static start() {
         console.warn("pixi start");
@@ -426,6 +432,11 @@ export default class Game {
         this.mapGrids.scale.y = this.scale;
         this.objectsContainer.scale.x = this.scale;
         this.objectsContainer.scale.y = this.scale;
+
+        if (this.actionProgress !== undefined) {
+            this.actionProgress.sprite.x = this.app.renderer.width / 2
+            this.actionProgress.sprite.y = this.app.renderer.height / 2
+        }
     }
 
     private update() {
@@ -483,6 +494,28 @@ export default class Game {
         return [px * Tile.TILE_WIDTH_HALF - py * Tile.TILE_WIDTH_HALF, px * Tile.TILE_HEIGHT_HALF + py * Tile.TILE_HEIGHT_HALF];
     }
 
+    public coordGame2ScreenAbs(x: number, y: number): Coord {
+        const px = Client.instance.playerObject.x;
+        const py = Client.instance.playerObject.y;
+
+        const sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
+        const sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
+
+
+        let cx = x / Tile.TILE_SIZE;
+        let cy = y / Tile.TILE_SIZE;
+        let ax = cx * Tile.TILE_WIDTH_HALF - cy * Tile.TILE_WIDTH_HALF
+        let ay = cx * Tile.TILE_HEIGHT_HALF + cy * Tile.TILE_HEIGHT_HALF
+
+
+        // центр экрана с учетом отступа перетаскиванием
+        let offx = this.app.renderer.width / 2 + this.offset.x;
+        let offy = this.app.renderer.height / 2 + this.offset.y;
+        console.log("coord", ax, ay)
+        console.log("offx=" + offx + " offy=" + offy)
+        return [offx - (sx - ax) * this.scale, offy - (sy - ay) * this.scale]
+    }
+
     private onResize() {
         this.app.renderer.resize(window.innerWidth, window.innerHeight)
 
@@ -529,22 +562,25 @@ export default class Game {
         if (cm !== undefined) {
             this.contextMenu = new ContextMenu(cm)
             this.app.stage.addChild(this.contextMenu.container)
-
-            const px = Client.instance.playerObject.x;
-            const py = Client.instance.playerObject.y;
-
-            const sx = px / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF - py / Tile.TILE_SIZE * Tile.TILE_WIDTH_HALF;
-            const sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF;
-
-            let coord = Game.coordGame2Screen(cm.obj.x, cm.obj.y)
-            // центр экрана с учетом отступа перетаскиванием
-            let offx = this.app.renderer.width / 2 + this.offset.x;
-            let offy = this.app.renderer.height / 2 + this.offset.y;
-            console.log("coord", coord)
-            console.log("offx=" + offx + " offy=" + offy)
-            this.contextMenu.container.x = offx - (sx - coord[0]) * this.scale;
-            this.contextMenu.container.y = offy - (sy - coord[1]) * this.scale;
+            let sc = this.coordGame2ScreenAbs(cm.obj.x, cm.obj.y)
+            this.contextMenu.container.x = sc[0]
+            this.contextMenu.container.y = sc[1]
             console.log(this.contextMenu.container)
+        }
+    }
+
+    public setActionProgress(ap: ActionProgressData) {
+        if (ap.t > 0) {
+            if (this.actionProgress == undefined) {
+                this.actionProgress = new ActionProgress(ap)
+                this.app.stage.addChild(this.actionProgress.sprite)
+                this.actionProgress.sprite.x = this.app.renderer.width / 2
+                this.actionProgress.sprite.y = this.app.renderer.height / 2
+            }
+            this.actionProgress.apply(ap)
+        } else {
+            this.actionProgress?.destroy()
+            this.actionProgress = undefined
         }
     }
 

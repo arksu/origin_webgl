@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.model.move.Move2Object
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
@@ -13,7 +14,11 @@ class ContextMenu(val obj: GameObject, vararg i: String) {
 
     suspend fun processItem(player: Player, item: String) {
         if (items.contains(item)) {
-            obj.processContextItem(player, item)
+            // в любом действии контекстного меню надо идти к объекту
+            player.startMove(Move2Object(player, obj) {
+                // и потом запустить само действие
+                obj.processContextItem(player, item)
+            })
         }
     }
 }

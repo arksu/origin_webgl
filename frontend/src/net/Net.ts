@@ -2,7 +2,7 @@ import _ from "lodash";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
 import MoveController from "@/game/MoveController";
-import {ContextMenuData, MapGridData, ObjectDel, ObjectMoved, ObjectStopped} from "@/net/Packets";
+import {ActionProgressData, ContextMenuData, MapGridData, ObjectDel, ObjectMoved, ObjectStopped} from "@/net/Packets";
 
 enum State {
     Disconnected,
@@ -301,6 +301,11 @@ export default class Net {
                 } else {
                     Game.instance?.makeContextMenu(undefined)
                 }
+                break
+            }
+            case "ap" : { // action progress
+                let ap = <ActionProgressData>data
+                Game.instance?.setActionProgress(ap)
                 break
             }
 

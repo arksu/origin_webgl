@@ -70,3 +70,15 @@ export interface ContextMenuData {
     readonly l: string[]
     obj: GameObject
 }
+
+export interface ActionProgressData {
+    /**
+     * current
+     */
+    readonly c: number
+
+    /**
+     * total
+     */
+    readonly t: number
+}

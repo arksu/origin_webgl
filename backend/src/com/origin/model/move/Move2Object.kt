@@ -10,7 +10,8 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
  * движение к объекту и взаимодействие с ним если дошли
  */
 @ObsoleteCoroutinesApi
-class Move2Object(me: MovingObject, target: GameObject, private val after: () -> Unit = { }) : MoveController(me) {
+class Move2Object(me: MovingObject, target: GameObject, private val after: suspend () -> Unit = { }) :
+    MoveController(me) {
 
     private val targetId: ObjectID = target.id
 

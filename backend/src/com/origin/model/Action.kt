@@ -1,16 +1,20 @@
 package com.origin.model
 
+import com.origin.net.model.ActionProgress
+import com.origin.net.model.ServerMessage
 import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @ObsoleteCoroutinesApi
 class Action(
-    private val me: Human,
+    val me: Human,
     val target: GameObject,
     private val ticks: Int,
+    private val startProgress: Int,
+    val maxProgress: Int,
     private val playerCondition: ((Player) -> Boolean)?,
-    private val block: (Action) -> Boolean,
+    private val block: suspend (Action) -> Boolean,
 ) {
     companion object {
         /**
@@ -22,6 +26,8 @@ class Action(
     }
 
     private val job: Job = WorkerScope.launch {
+        sendPkt(ActionProgress(startProgress, maxProgress))
+
         // повтоярем циклы задержки и выполнения блока
         while (true) {
             if (playerCondition != null) {
@@ -52,13 +58,17 @@ class Action(
                 break
             }
         }
-
-        // todo stop action
     }
 
     suspend fun stop() {
         logger.debug("stop action")
         job.cancelAndJoin()
         logger.debug("action was stopped")
+
+        sendPkt(ActionProgress(-1, -1))
+    }
+
+    suspend fun sendPkt(m: ServerMessage) {
+        if (me is Player) me.session.send(m)
     }
 }
