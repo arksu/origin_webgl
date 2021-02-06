@@ -79,6 +79,14 @@ class Position(
         }
     }
 
+    fun setGrid(grid: Grid) {
+        this.grid = grid
+    }
+
+    fun setGrid() {
+        this.grid = World.getGrid(this)
+    }
+
     fun dist(other: Position): Int {
         return point.dist(other.point);
     }

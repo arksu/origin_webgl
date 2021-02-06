@@ -17,7 +17,7 @@ export default class ActionProgress {
         console.log("action progres ", cn)
         let tn = "clock" + Math.round(cn)
         console.log("texture ", tn)
-        
+
         this.sprite.texture = PIXI.Texture.from(tn)
     }
 

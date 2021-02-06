@@ -1,11 +1,13 @@
 package com.origin.model.trees
 
 import com.origin.entity.EntityObject
+import com.origin.model.BroadcastEvent
 import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.StaticObject
 import com.origin.net.model.ActionProgress
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * Деревья
@@ -26,7 +28,7 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
     override suspend fun processContextItem(player: Player, item: String) {
         when (item) {
             "Chop" -> {
-                player.startAction(this, 2, getMaxHP() - this.entity.hp, getMaxHP(), {
+                player.startAction(this, 3, getMaxHP() - this.entity.hp, getMaxHP(), {
                     // возьмем у игрока часть стамины и голода
                     it.stamina.take(2)
                 }) {
@@ -37,6 +39,13 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
                             // значит хп кончилось. и дерево срубили
                             logger.warn("TREE CHOPPED!")
                             // TODO make tree -> stump
+                            transaction {
+                                it.target.entity.data = "10"
+                                it.target.entity.hp = 120
+                            }
+                            it.target.stage = 10
+                            // уведомим окружающие объекты о том что это дерево изменилось
+                            it.target.grid.broadcast(BroadcastEvent.Changed(it.target))
                             done = true
                         } else {
                             it.sendPkt(ActionProgress(it.maxProgress - it.target.entity.hp, it.maxProgress))
@@ -46,7 +55,7 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
                 }
             }
             "Take branch" -> {
-                player.startAction(this, -4, 0, 21, {
+                player.startAction(this, -2, 0, 21, {
                     // возьмем у игрока часть стамины
                     it.stamina.take(1)
                 }) {

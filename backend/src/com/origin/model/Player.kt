@@ -275,8 +275,9 @@ class Player(
                     }
                     Const.getObjectByType(e)
                 }
+                obj.pos.setGrid()
                 val resp = CompletableDeferred<CollisionResult>()
-                grid.send(GridMsg.Spawn(obj, resp))
+                obj.grid.send(GridMsg.Spawn(obj, resp))
                 resp.await()
             }
             "tile" -> {

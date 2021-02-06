@@ -253,7 +253,12 @@ export default class Net {
                 break
             }
             case "oa": { // object add
+                const old = Client.instance.objects[data.id]
                 Client.instance.objects[data.id] = data
+                if (old !== undefined) {
+                    Client.instance.objects[data.id].moveController = old.moveController
+                    Client.instance.objects[data.id].view = old.view
+                }
                 Game.instance?.onObjectAdd(Client.instance.objects[data.id])
                 Game.instance?.updateMapScalePos()
                 break;

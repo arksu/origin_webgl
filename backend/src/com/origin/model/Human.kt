@@ -2,6 +2,7 @@ package com.origin.model
 
 import com.origin.ServerConfig
 import com.origin.model.move.MoveController
+import com.origin.net.model.ObjectAdd
 import com.origin.net.model.ObjectMoved
 import com.origin.net.model.ObjectStartMove
 import com.origin.net.model.ObjectStopped
@@ -84,6 +85,11 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
                         knownList.addKnownObject(msg.obj)
                         if (this is Player) session.send(ObjectStopped(msg))
                     }
+                }
+            }
+            is BroadcastEvent.Changed -> {
+                if (knownList.isKnownObject(msg.obj)) {
+                    if (this is Player) session.send(ObjectAdd(msg.obj))
                 }
             }
             is PlayerMsg.StopAction -> stopAction()

@@ -52,11 +52,12 @@ export default class ObjectView {
         return res
     }
 
-    private makeLayers() {
+    public makeLayers() {
         // идем по слоям
         for (let i = 0; i < this.res.layers.length; i++) {
             this.addLayer(this.res.layers[i])
         }
+        this.isDestroyed = false
     }
 
     private addLayer(l: Layer) {

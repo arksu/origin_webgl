@@ -525,11 +525,14 @@ export default class Game {
     }
 
     public onObjectAdd(obj: GameObject) {
-        if (obj.view === undefined) {
-            obj.view = new ObjectView(obj)
-            for (let i = 0; i < obj.view.view.length; i++) {
-                this.objectsContainer.addChild(obj.view.view[i])
-            }
+        console.log(obj)
+        if (obj.view !== undefined) {
+            obj.view.destroy()
+        }
+
+        obj.view = new ObjectView(obj)
+        for (let i = 0; i < obj.view.view.length; i++) {
+            this.objectsContainer.addChild(obj.view.view[i])
         }
     }
 

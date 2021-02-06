@@ -47,6 +47,8 @@ sealed class BroadcastEvent {
 
     class Stopped(val obj: GameObject) : BroadcastEvent()
 
+    class Changed(val obj: GameObject) : BroadcastEvent()
+
     class ChatMessage(val obj: GameObject, val channel: Int, val text: String) : BroadcastEvent() {
         companion object {
             const val GENERAL = 0
@@ -152,7 +154,6 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     }
 
     private suspend fun processMessage(msg: Any) {
-//        logger.debug("processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
             is GridMsg.CheckCollision -> msg.resp.complete(checkCollision(
@@ -206,7 +207,9 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             val list =
                 EntityObject.find { (EntityObjects.gridx eq x) and (EntityObjects.gridy eq y) and (EntityObjects.region eq region) and (EntityObjects.level eq level) }
             list.forEach {
-                objects.add(Const.getObjectByType(it))
+                val o = Const.getObjectByType(it)
+                o.pos.setGrid(this@Grid)
+                objects.add(o)
             }
         }
     }
