@@ -26,16 +26,17 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
     override suspend fun processContextItem(player: Player, item: String) {
         when (item) {
             "Chop" -> {
-                player.startAction(this, 4, getMaxHP() - this.entity.hp, getMaxHP(), {
+                player.startAction(this, 2, getMaxHP() - this.entity.hp, getMaxHP(), {
                     // возьмем у игрока часть стамины и голода
-                    it.stamina.take(4)
+                    it.stamina.take(2)
                 }) {
                     var done = false
                     if (it.target is Tree) {
                         // не удалось снять очередные хп с дерева
-                        if (!it.target.takeHP(12)) {
+                        if (!it.target.takeHP(6)) {
                             // значит хп кончилось. и дерево срубили
                             logger.warn("TREE CHOPPED!")
+                            // TODO make tree -> stump
                             done = true
                         } else {
                             it.sendPkt(ActionProgress(it.maxProgress - it.target.entity.hp, it.maxProgress))
@@ -45,11 +46,12 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
                 }
             }
             "Take branch" -> {
-                player.startAction(this, 4, 0, 10, {
+                player.startAction(this, -4, 0, 21, {
                     // возьмем у игрока часть стамины
                     it.stamina.take(1)
                 }) {
                     // TODO generate branch to players inventory
+                    logger.warn("GEN BRANCH")
                     true
                 }
             }
