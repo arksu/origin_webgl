@@ -12,6 +12,11 @@ import com.origin.utils.Vec2i
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
+class HumanMSg {
+    class StopAction
+    class StatusRegeneration
+}
+
 /**
  * гуманоид
  * обладает зрением (видимые объекты о которых "знает")
@@ -106,7 +111,8 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
                     if (this is Player) session.send(ObjectAdd(msg.obj))
                 }
             }
-            is PlayerMsg.StopAction -> stopAction()
+            is HumanMSg.StopAction -> stopAction()
+            is HumanMSg.StatusRegeneration -> status.regeneration()
 
             else -> super.processMessage(msg)
         }
@@ -231,6 +237,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     fun doKnock() {
         isKnocked = true
         broadcastStatusUpdate()
+        status.stopRegeneration()
         // TODO timer of 1 min
     }
 
@@ -240,6 +247,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     fun doDie() {
         isDead = true
         broadcastStatusUpdate()
+        status.stopRegeneration()
         // TODO die
     }
 

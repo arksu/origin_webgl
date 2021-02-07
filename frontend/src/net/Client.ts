@@ -1,6 +1,7 @@
 import router from "@/router";
 import {GameObject} from "@/game/GameObject";
 import {MapData} from "@/game/Grid";
+import {Attr} from "@/net/Packets";
 
 
 export default class Client {
@@ -46,6 +47,11 @@ export default class Client {
      * игровые объекты полученные с сервера
      */
     public objects: { [key: number]: GameObject } = {}
+
+    /**
+     * статус моего персонажа
+     */
+    public myStatus: number[] = []
 
     public chatHistory: string[] = []
     public onChatMessage ?: Callback

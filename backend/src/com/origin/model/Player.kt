@@ -12,11 +12,8 @@ import com.origin.model.move.Position
 import com.origin.net.model.*
 import com.origin.utils.ObjectID
 import com.origin.utils.Rect
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
@@ -25,12 +22,12 @@ import kotlin.math.roundToInt
 class PlayerMsg {
     class Connected
     class Disconnected
+    class Store
     class MapClick(val btn: ClientButton, val x: Int, val y: Int)
     class ObjectClick(val id: ObjectID, val x: Int, val y: Int)
     class ObjectRightClick(val id: ObjectID)
     class ContextMenuItem(val item: String)
     class ExecuteActionCondition(val resp: CompletableDeferred<Boolean>, val block: (Player) -> Boolean)
-    class StopAction
 }
 
 private val PLAYER_RECT = Rect(3)
@@ -75,13 +72,19 @@ class Player(
     /**
      * при создании (логине) игрока запомним какой у него был онлайн
      */
-    private val onlineBeginTime = System.currentTimeMillis()
+    private var lastOnlineStore = System.currentTimeMillis()
+
+    /**
+     * корутина на периодическое сохранение состояния в базу
+     */
+    private var autoSaveJob: Job? = null
 
     override suspend fun processMessage(msg: Any) {
         logger.debug("Player $this msg ${msg.javaClass.simpleName}")
         when (msg) {
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
+            is PlayerMsg.Store -> store()
             is PlayerMsg.MapClick -> mapClick(msg.btn, msg.x, msg.y)
             is PlayerMsg.ObjectClick -> objectClick(msg.id, msg.x, msg.y)
             is PlayerMsg.ObjectRightClick -> objectRightClick(msg.id)
@@ -183,13 +186,26 @@ class Player(
      */
     private fun connected() {
         World.addPlayer(this)
+
+        // auto save task
+        autoSaveJob = WorkerScope.launch {
+            while (true) {
+                delay(10000L)
+                this@Player.send(PlayerMsg.Store())
+            }
+        }
     }
 
     /**
      * игровой клиент (аккаунт) отключился от игрока
      */
     private suspend fun disconnected() {
+        autoSaveJob?.cancel()
+        autoSaveJob = null
+
         World.removePlayer(this)
+
+        status.stopRegeneration()
 
         // удалить объект из мира
         remove()
@@ -229,13 +245,18 @@ class Player(
      * сохранение состояния игрока в базу
      */
     private fun store() {
-        var totalOnlineTime = character.onlineTime
-        if (onlineBeginTime > 0) {
-            totalOnlineTime += TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - onlineBeginTime)
-        }
+        logger.debug("store player $this")
+        val currentMillis = System.currentTimeMillis()
+
         transaction {
-            character.onlineTime = totalOnlineTime
+            character.onlineTime += TimeUnit.MILLISECONDS.toSeconds(currentMillis - lastOnlineStore)
+
+            character.SHP = status.currentSoftHp
+            character.HHP = status.currentHardHp
+            character.stamina = status.currentStamina
+            character.energy = status.currentEnergy
         }
+        lastOnlineStore = currentMillis
     }
 
     /**

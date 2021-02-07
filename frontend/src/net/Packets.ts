@@ -82,3 +82,13 @@ export interface ActionProgressData {
      */
     readonly t: number
 }
+
+export interface Attr {
+    readonly i: number
+    readonly  v: number
+}
+
+export interface StatusUpdate {
+    readonly id: number
+    readonly list: Attr[]
+}

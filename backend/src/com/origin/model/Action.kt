@@ -101,7 +101,7 @@ class Action(
         // если объект говорит что действие завершилось
         // заканчиваем цикл повтора действий
         if (targetResult.await()) {
-            me.send(PlayerMsg.StopAction())
+            me.send(HumanMSg.StopAction())
             return true
         }
         return false

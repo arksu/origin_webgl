@@ -11,6 +11,7 @@ import {Coord} from "@/utils/Util";
 import ContextMenu from "@/game/ContextMenu";
 import {ActionProgressData, ContextMenuData} from "@/net/Packets";
 import ActionProgress from "@/game/ActionProgress";
+import PlayerStatus from "@/game/PlayerStatus";
 
 /**
  * основная игровая логика (графика и тд)
@@ -25,7 +26,7 @@ export default class Game {
     /**
      * PIXI app
      */
-    private readonly app: PIXI.Application;
+    readonly app: PIXI.Application;
 
     private destroyed: boolean = false
 
@@ -93,6 +94,11 @@ export default class Game {
      * прогресс текущего действия (отображаем по середине экрана)
      */
     private actionProgress ?: ActionProgress
+
+    /**
+     * отображение хп, стамины и тд
+     */
+    private myStatus?: PlayerStatus
 
     public static start() {
         console.warn("pixi start");
@@ -230,6 +236,8 @@ export default class Game {
         for (let key in Client.instance.objects) {
             this.onObjectAdd(Client.instance.objects[key])
         }
+
+        this.myStatus = new PlayerStatus(this)
 
         // обновим положение карты
         this.updateMapScalePos();
@@ -525,7 +533,6 @@ export default class Game {
     }
 
     public onObjectAdd(obj: GameObject) {
-        console.log(obj)
         if (obj.view !== undefined) {
             obj.view.destroy()
         }
@@ -572,8 +579,12 @@ export default class Game {
         }
     }
 
+    /**
+     * установить прогресс совершаемого действия
+     * @param ap данные от сервера
+     */
     public setActionProgress(ap: ActionProgressData) {
-        if (ap.t > 0) {
+        if (ap.t > 0) { // total
             if (this.actionProgress == undefined) {
                 this.actionProgress = new ActionProgress(ap)
                 this.app.stage.addChild(this.actionProgress.sprite)
@@ -582,9 +593,14 @@ export default class Game {
             }
             this.actionProgress.apply(ap)
         } else {
+            // сервер говорит что действие закончилось и надо убрать его с экрана
             this.actionProgress?.destroy()
             this.actionProgress = undefined
         }
+    }
+
+    public onMyStatusUpdate() {
+        this.myStatus?.update()
     }
 
     /**

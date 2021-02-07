@@ -30,7 +30,7 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
             "Chop" -> {
                 player.startAction(this, 3, getMaxHP() - this.entity.hp, getMaxHP(), {
                     // возьмем у игрока часть стамины и голода
-                    it.status.checkAndReduceStamina(2.0)
+                    it.status.checkAndReduceStamina(4.0)
                 }) {
                     var done = false
                     if (it.target is Tree) {

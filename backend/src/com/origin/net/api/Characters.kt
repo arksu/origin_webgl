@@ -72,6 +72,12 @@ fun Route.createCharacter() {
                 y = 0
                 level = 0
                 heading = 0
+
+                SHP = 100.0
+                HHP = 100.0
+                stamina = 100.0
+                energy = 6000.0
+
             }
         }
 

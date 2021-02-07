@@ -2,7 +2,15 @@ import _ from "lodash";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
 import MoveController from "@/game/MoveController";
-import {ActionProgressData, ContextMenuData, MapGridData, ObjectDel, ObjectMoved, ObjectStopped} from "@/net/Packets";
+import {
+    ActionProgressData,
+    ContextMenuData,
+    MapGridData,
+    ObjectDel,
+    ObjectMoved,
+    ObjectStopped,
+    StatusUpdate
+} from "@/net/Packets";
 
 enum State {
     Disconnected,
@@ -296,6 +304,17 @@ export default class Net {
 
                 Game.instance?.updateMapScalePos()
                 break;
+            }
+            case "su" : {
+                let su = <StatusUpdate>data
+                if (su.id == Client.instance.selectedCharacterId) {
+                    for (let i = 0; i < su.list.length; i++) {
+                        Client.instance.myStatus[su.list[i].i] = su.list[i].v
+                    }
+                    console.log(Client.instance.myStatus)
+                    Game.instance?.onMyStatusUpdate()
+                }
+                break
             }
             case "cm" : { // context menu
                 let cm = <ContextMenuData>data

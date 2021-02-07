@@ -1,5 +1,6 @@
 package com.origin.model
 
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -22,6 +23,8 @@ open class Status(val me: Human) {
 
     var currentStamina: Double = 0.0
         protected set
+
+    var regeneraionJob: Job? = null
 
     /**
      * снять хп (если опуститься до нуля - умереть)
@@ -48,7 +51,6 @@ open class Status(val me: Human) {
 
         if (value > maxHp) {
             currentSoftHp = maxHp
-
         } else {
             currentSoftHp = value
         }
@@ -82,7 +84,6 @@ open class Status(val me: Human) {
 
         if (value > maxStamina) {
             currentStamina = maxStamina
-
         } else {
             currentStamina = value
         }
@@ -98,16 +99,24 @@ open class Status(val me: Human) {
      * заупстить восстановление хп, стамины, потребление энергии (голод)
      */
     fun startRegeneration() {
-        val period = 1000L
-        WorkerScope.launch {
+        if (regeneraionJob != null) return
+
+        val period = 3000L
+        regeneraionJob = WorkerScope.launch {
             while (true) {
                 delay(period)
-                regeneration()
+                me.send(HumanMSg.StatusRegeneration())
             }
         }
     }
 
-    private fun regeneration() {
+    fun stopRegeneration() {
+        regeneraionJob?.cancel()
+        regeneraionJob = null
+    }
+
+    fun regeneration() {
         // TODO
+        setCurrentStamina(currentStamina + 1.0)
     }
 }
