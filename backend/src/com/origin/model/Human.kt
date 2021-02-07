@@ -44,6 +44,20 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      */
     var action: Action? = null
 
+    abstract val status: Status
+
+    /**
+     * этот чувак мертв?
+     */
+    var isDead = false
+        private set
+
+    /**
+     * в нокауте?
+     */
+    var isKnocked = false
+        private set
+
     override suspend fun processMessage(msg: Any) {
         when (msg) {
             is BroadcastEvent.StartMove -> {
@@ -101,6 +115,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     override suspend fun afterSpawn() {
         super.afterSpawn()
         updateVisibleObjects(true)
+        broadcastStatusUpdate()
     }
 
     /**
@@ -205,4 +220,28 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
         action?.stop()
         action = null
     }
+
+    abstract fun getMaxSoftHp(): Double
+
+    abstract fun getMaxStamina(): Double
+
+    /**
+     * вырубить в нокаут на 1 минуту
+     */
+    fun doKnock() {
+        isKnocked = true
+        broadcastStatusUpdate()
+        // TODO timer of 1 min
+    }
+
+    /**
+     * совершить перманентную смерть
+     */
+    fun doDie() {
+        isDead = true
+        broadcastStatusUpdate()
+        // TODO die
+    }
+
+    abstract fun broadcastStatusUpdate()
 }

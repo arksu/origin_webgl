@@ -30,7 +30,7 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
             "Chop" -> {
                 player.startAction(this, 3, getMaxHP() - this.entity.hp, getMaxHP(), {
                     // возьмем у игрока часть стамины и голода
-                    it.stamina.take(2)
+                    it.status.checkAndReduceStamina(2.0)
                 }) {
                     var done = false
                     if (it.target is Tree) {
@@ -57,7 +57,7 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
             "Take branch" -> {
                 player.startAction(this, -2, 0, 21, {
                     // возьмем у игрока часть стамины
-                    it.stamina.take(1)
+                    it.status.checkAndReduceStamina(1.0)
                 }) {
                     // TODO generate branch to players inventory
                     logger.warn("GEN BRANCH")
@@ -67,7 +67,7 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
             "Take bark" -> {
                 player.startAction(this, 4, 0, 10, {
                     // возьмем у игрока часть стамины
-                    it.stamina.take(1)
+                    it.status.checkAndReduceStamina(1.0)
                 }) {
                     // TODO generate bark to players inventory
                     true

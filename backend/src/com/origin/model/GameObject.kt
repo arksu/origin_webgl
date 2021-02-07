@@ -175,6 +175,6 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     }
 
     override fun toString(): String {
-        return "${this::class.simpleName} $id ${pos.point}"
+        return "${this::class.simpleName} [$id] ${pos.point}"
     }
 }

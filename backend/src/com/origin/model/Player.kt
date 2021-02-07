@@ -9,17 +9,17 @@ import com.origin.model.move.Move2Object
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.model.move.Position
-import com.origin.net.model.ClientButton
-import com.origin.net.model.CreatureSay
-import com.origin.net.model.GameSession
-import com.origin.net.model.MapGridConfirm
+import com.origin.net.model.*
 import com.origin.utils.ObjectID
 import com.origin.utils.Rect
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 @ObsoleteCoroutinesApi
 class PlayerMsg {
@@ -60,7 +60,7 @@ class Player(
      */
 //    private val paperdoll: Paperdoll = Paperdoll(this)
 
-    val stamina = Stamina(this)
+    override val status = PcStatus(this, character)
 
     /**
      * контекстное меню активное в данный момент
@@ -287,5 +287,45 @@ class Player(
                 World.getGrid(p).send(GridMsg.SetTile(p, t))
             }
         }
+    }
+
+    override fun getMaxSoftHp(): Double {
+        return status.currentHardHp
+    }
+
+    override fun getMaxStamina(): Double {
+        return 100.0
+    }
+
+    private fun getMaxHp(): Double {
+        // TODO stat CON
+        return 100.0
+    }
+
+    private fun getMaxEnergy(): Double {
+        return 10000.0
+    }
+
+    override fun broadcastStatusUpdate() {
+        val su = StatusUpdate(this)
+        su.addAttribute(CUR_SHP, status.currentSoftHp.roundToInt())
+        su.addAttribute(CUR_HHP, status.currentHardHp.roundToInt())
+        su.addAttribute(MAX_HP, getMaxHp().roundToInt())
+
+        su.addAttribute(CUR_STAMINA, status.currentStamina.roundToInt())
+        su.addAttribute(MAX_STAMINA, getMaxStamina().roundToInt())
+
+        su.addAttribute(CUR_ENERGY, status.currentEnergy.roundToInt())
+        su.addAttribute(MAX_ENERGY, getMaxEnergy().roundToInt())
+
+        runBlocking(IO) {
+            session.send(su)
+        }
+
+        // broadcast my status to party members
+    }
+
+    override fun toString(): String {
+        return "${this::class.simpleName} ${appearance.visibleName} [$id] ${pos.point}"
     }
 }

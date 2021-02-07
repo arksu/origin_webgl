@@ -78,7 +78,8 @@ export default defineComponent({
                 this.errorText = "no ssid in response"
               }
             } else {
-              const error = "error " + response.status + " " + (await response.text() || response.statusText);
+              const responseText = await response.text()
+              const error = "error " + response.status + " " + (responseText.length < 64 ? responseText : response.statusText);
               this.errorText = error;
               console.warn(error)
             }

@@ -19,6 +19,12 @@ object Characters : EntityPositions("characters") {
      */
     val name = varchar("name", 16)
 
+    val SHP = double("SHP")
+    val HHP = double("HHP")
+    val stamina = double("stamina")
+    val energy = double("energy")
+    val hunger = double("hunger")
+
     /**
      * когда был создан персонаж
      */
@@ -47,6 +53,13 @@ class Character(id: EntityID<Long>) : LongEntity(id) {
 
     var account by Account referencedOn Characters.account
     var name by Characters.name
+    var SHP by Characters.SHP
+    var HHP by Characters.HHP
+    var stamina by Characters.stamina
+    var energy by Characters.energy
+    var hunger by Characters.hunger
+
+
     var deleted by Characters.deleted
 
     var onlineTime by Characters.onlineTime

@@ -59,7 +59,8 @@ export default defineComponent({
                 Client.instance.networkError("failed create character");
               }
             } else {
-              Client.instance.networkError("error " + response.status + " " + (await response.text() || response.statusText));
+              const responseText = await response.text()
+              Client.instance.networkError("error " + response.status + " " + (responseText.length < 64 ? responseText : response.statusText));
             }
           })
           .catch(error => {
