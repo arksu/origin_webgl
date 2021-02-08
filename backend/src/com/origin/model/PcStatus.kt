@@ -18,7 +18,6 @@ class PcStatus(me: Human, character: Character) : Status(me) {
     init {
         currentSoftHp = character.SHP
         currentStamina = character.stamina
-        startRegeneration()
     }
 
     override fun reduceSoftHp(value: Double, attacker: Human, isHPConsumption: Boolean): Double {

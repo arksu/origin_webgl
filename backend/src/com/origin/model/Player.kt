@@ -205,11 +205,11 @@ class Player(
 
         World.removePlayer(this)
 
-        status.stopRegeneration()
-
-        // удалить объект из мира
-        remove()
-
+        if (spawned) {
+            status.stopRegeneration()
+            // удалить объект из грида
+            remove()
+        }
         store()
     }
 

@@ -67,6 +67,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 }
                 // создали игрока, его позицию
                 val player = Player(character, this)
+                this.player = player
 
                 // спавним игрока в мир, прогружаются гриды, активируются
                 val resp = CompletableDeferred<Boolean>()
@@ -76,7 +77,6 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     throw BadRequest("failed spawn player into world")
                 }
 
-                this.player = player
                 player.send(PlayerMsg.Connected())
 
                 ack(r, "welcome to Origin ${ServerConfig.PROTO_VERSION}")
@@ -135,7 +135,10 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         if (!isDisconnected) {
             isDisconnected = true
             logger.warn("disconnected")
-            player.send(PlayerMsg.Disconnected())
+
+            if (::player.isInitialized) {
+                player.send(PlayerMsg.Disconnected())
+            }
         }
     }
 

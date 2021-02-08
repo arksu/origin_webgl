@@ -20,7 +20,7 @@ export default class PlayerStatus {
         this.iconFrame.x = 4
         this.iconFrame.y = 4
 
-        this.icon = PIXI.Sprite.from("bear")
+        this.icon = PIXI.Sprite.from("micon_bear")
         this.icon.x = this.iconFrame.x + 6
         this.icon.y = this.iconFrame.y + 6
 

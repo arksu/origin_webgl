@@ -1,9 +1,6 @@
 package com.origin.model
 
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.math.max
@@ -24,7 +21,7 @@ open class Status(val me: Human) {
     var currentStamina: Double = 0.0
         protected set
 
-    var regeneraionJob: Job? = null
+    var regenerationJob: Job? = null
 
     /**
      * снять хп (если опуститься до нуля - умереть)
@@ -99,20 +96,25 @@ open class Status(val me: Human) {
      * заупстить восстановление хп, стамины, потребление энергии (голод)
      */
     fun startRegeneration() {
-        if (regeneraionJob != null) return
+        if (regenerationJob != null) return
 
         val period = 3000L
-        regeneraionJob = WorkerScope.launch {
+        regenerationJob = WorkerScope.launch {
             while (true) {
                 delay(period)
+                logger.debug("send StatusRegeneration")
                 me.send(HumanMSg.StatusRegeneration())
             }
         }
     }
 
     fun stopRegeneration() {
-        regeneraionJob?.cancel()
-        regeneraionJob = null
+        logger.debug("stopRegeneration")
+        runBlocking {
+            regenerationJob?.cancelAndJoin()
+        }
+        logger.debug("stopRegeneration after")
+        regenerationJob = null
     }
 
     fun regeneration() {

@@ -20,7 +20,7 @@ fun StatusPages.Configuration.statusPages() {
         call.respond(HttpStatusCode.Forbidden, "User exists")
     }
     exception<BadRequest> { e ->
-        call.respond(HttpStatusCode.BadRequest, e.msg)
+        call.respond(HttpStatusCode.BadRequest, e.message!!)
     }
     exception<Throwable> { cause ->
         logger.error("error ${cause.javaClass.simpleName} - ${cause.message} ", cause)

@@ -1,4 +1,4 @@
-package com.origin.model.trees
+package com.origin.model.objects.trees
 
 import com.origin.entity.EntityObject
 import kotlinx.coroutines.ObsoleteCoroutinesApi

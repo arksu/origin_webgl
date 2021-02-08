@@ -311,7 +311,6 @@ export default class Net {
                     for (let i = 0; i < su.list.length; i++) {
                         Client.instance.myStatus[su.list[i].i] = su.list[i].v
                     }
-                    console.log(Client.instance.myStatus)
                     Game.instance?.onMyStatusUpdate()
                 }
                 break

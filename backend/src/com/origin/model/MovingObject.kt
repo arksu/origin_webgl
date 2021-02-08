@@ -51,6 +51,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * после спавна сразу загружаем список гридов вокруг
      */
     override suspend fun afterSpawn() {
+        super.afterSpawn()
         loadGrids()
     }
 
@@ -81,9 +82,9 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * выгрузить все гриды в которых находимся
      */
     private suspend fun unloadGrids() {
-        if (grids.isEmpty()) {
-            throw RuntimeException("unloadGrids - grids is empty")
-        }
+//        if (grids.isEmpty()) {
+//            throw RuntimeException("unloadGrids - grids is empty")
+//        }
 
         if (this is Human) grids.forEach {
             onLeaveGrid(it)

@@ -120,6 +120,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
 
     override suspend fun afterSpawn() {
         super.afterSpawn()
+        status.startRegeneration()
         updateVisibleObjects(true)
         broadcastStatusUpdate()
     }

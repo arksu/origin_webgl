@@ -55,6 +55,11 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     private val lift = ConcurrentHashMap<Int, GameObject>()
 
     /**
+     * заспавнен ли этот объект в мир?
+     */
+    protected var spawned = false
+
+    /**
      * актор для обработки сообщений
      */
     private val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
@@ -123,7 +128,9 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
 
     abstract fun getResourcePath(): String
 
-    protected open suspend fun afterSpawn() {}
+    protected open suspend fun afterSpawn() {
+        spawned = true
+    }
 
     /**
      * удалить объект из мира, это последнее что может сделать объект

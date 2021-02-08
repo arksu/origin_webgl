@@ -9,6 +9,10 @@ import org.jetbrains.exposed.sql.transactions.transaction
 open class StaticObject(val entity: EntityObject) :
     GameObject(entity.id.value, entity.x, entity.y, entity.level, entity.region, entity.heading) {
 
+    init {
+        spawned = true
+    }
+
     val type = entity.type
 
     /**

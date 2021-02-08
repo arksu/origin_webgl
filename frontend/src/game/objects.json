@@ -214,8 +214,8 @@
         ]
       }
     },
-    "pine" : {
-      "6" : {
+    "pine": {
+      "6": {
         "offset": [92, 291],
         "layers": [
           {
@@ -246,6 +246,18 @@
           }
         ]
       }
+    }
+  },
+  "box": {
+    "norm": {
+      "offset": [20, 33],
+      "layers": [
+        {
+          "img": "obj/box/box.png",
+          "offset": [0, 0],
+          "z": 0
+        }
+      ]
     }
   },
   "player": {

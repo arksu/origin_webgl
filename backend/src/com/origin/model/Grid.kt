@@ -344,12 +344,12 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 }
             }
 
-//            logger.warn("filtered:")
+            logger.warn("filtered:")
             filtered.forEach {
                 // ищем минимальное расстояние от движущегося до объекта который может дать коллизию
                 val r = Rect(it.getBoundRect()).add(it.pos.point)
                 val (mx, my) = or.min(r)
-//                logger.warn("$it $r min $mx $my")
+                logger.warn("$it $r min $mx $my")
                 // пересечение по обеим осям. значит пересечение объектов уже на старте
                 if (mx == -1 && my == -1) {
                     return CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, it)
@@ -363,10 +363,10 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                         val fy = if (dy < 0) -kd else kd
                         // передвинем рект игрока в позицию предполагаемого пересечения
                         val tr = Rect(or).add(fx, fy)
-//                        logger.warn("temp rect $tr k=$k kd=$kd")
+                        logger.warn("temp1 rect $tr k=$k kd=$kd")
                         // вычислим фактическое расстояние между двумя ректами еще раз
                         val (mmx, mmy) = tr.min(r)
-//                        logger.warn("min $mmx $mmy")
+                        logger.warn("min $mmx $mmy")
                         // если оно довольно мало считаем что пересечение есть. и это коллизия с объектом
                         if (mmx <= 1 && mmy <= 1) {
 //                            logger.warn("collision!")
@@ -384,9 +384,9 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                         val fx = if (dx < 0) -kd else kd
                         val fy = if (dy < 0) -my else my
                         val tr = Rect(or).add(fx, fy)
-//                        logger.warn("temp rect $tr k=$k kd=$kd")
+                        logger.warn("temp2 rect $tr k=$k kd=$kd")
                         val (mmx, mmy) = tr.min(r)
-//                        logger.warn("min $mmx $mmy")
+                        logger.warn("min $mmx $mmy")
                         if (mmx <= 1 && mmy <= 1) {
 //                            logger.warn("collision!")
                             if (isMove && (fx != 0 || fy != 0)) {
