@@ -1,7 +1,6 @@
 package com.origin.utils
 
 import kotlin.math.atan
-import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
@@ -64,14 +63,16 @@ data class Vec2i(
      * длина вектора
      */
     fun len(): Double {
-        return sqrt(x.toDouble().pow(2) + y.toDouble().pow(2))
+        return sqrt((x * x + y * y).toDouble())
     }
 
     /**
      * дистанция между этой точкой и другой
      */
     fun dist(p: Vec2i): Int {
-        return sqrt((p.x - x).toDouble().pow(2) + (p.y - y).toDouble().pow(2)).roundToInt()
+        val dx = p.x - x
+        val dy = p.y - y
+        return sqrt((dx * dx + dy * dy).toDouble()).roundToInt()
     }
 
     override fun toString(): String {

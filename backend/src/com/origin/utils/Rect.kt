@@ -48,7 +48,7 @@ class Rect {
         }
     }
 
-    fun add(b: Rect) {
+    fun move(b: Rect) {
         left += b.left
         right += b.right
         top += b.top
@@ -58,7 +58,7 @@ class Rect {
     /**
      * добавить (увеличить в размере)
      */
-    fun add(dist: Int) {
+    fun move(dist: Int) {
         left -= dist
         top -= dist
         right += dist
@@ -68,7 +68,7 @@ class Rect {
     /**
      * добавить (переместить) по координатам
      */
-    fun add(p: Vec2i): Rect {
+    fun move(p: Vec2i): Rect {
         left += p.x
         right += p.x
         top += p.y
@@ -76,7 +76,7 @@ class Rect {
         return this
     }
 
-    fun add(x: Int, y: Int): Rect {
+    fun move(x: Int, y: Int): Rect {
         left += x
         right += x
         top += y
@@ -110,13 +110,6 @@ class Rect {
         return x >= left && x < right && y >= top && y < bottom
     }
 
-    fun move(x: Int, y: Int): Rect {
-        left += x
-        right += x
-        top += y
-        bottom += y
-        return this
-    }
 
     fun clone(): Rect {
         return Rect(left, top, right, bottom)
