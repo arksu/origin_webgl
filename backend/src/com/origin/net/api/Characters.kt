@@ -77,6 +77,7 @@ fun Route.createCharacter() {
                 HHP = 100.0
                 stamina = 100.0
                 energy = 6000.0
+                hunger = 10.0
 
             }
         }

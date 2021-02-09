@@ -314,133 +314,171 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             next.send(GridMsg.CheckCollisionInternal(list, locked, obj, toX, toY, moveType, virtual, isMove, resp))
             resp.await()
         } else {
-            // таким образом на момент обработки коллизии
-            // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
+            processCollision(toX, toY, obj, list, isMove, 0)
+        }
+    }
 
-            // определяем вектор движения для отсечения объектов которые находятся за пределами вектора
-            val dx = toX - obj.pos.x
-            val dy = toY - obj.pos.y
-            // прямоугольник по границам объекта захватывающий начальную и конечную точку движения
-            val mr = Rect(obj.getBoundRect()).add(obj.pos.point).extend(dx, dy)
-            val or = Rect(obj.getBoundRect()).add(obj.pos.point)
+    private suspend fun processCollision(
+        toX: Int,
+        toY: Int,
+        obj: GameObject,
+        list: Array<Grid>,
+        isMove: Boolean,
+        tries: Int,
+    ): CollisionResult {
+        logger.debug("to $toX $toY")
+        // таким образом на момент обработки коллизии
+        // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
 
-//            logger.debug("obj $obj d $dx, $dy move rect $mr")
-//            logger.warn("obj rect $or")
-            // получаем список объектов для обсчета коллизий из списка гридов
-            val filtered = list.flatMap { it ->
-                // фильтруем список объектов. вернем только те которые ТОЧНО МОГУТ дать коллизию
-                // те которые далеко или не попадают в прямоугольник движения - отсечем их
-                it.objects.filter {
-                    // сами себе точно не даем коллизию
-                    if (obj == it) return@filter false
-                    val r = Rect(it.getBoundRect()).add(it.pos.point)
-//                    logger.debug("$it $r")
-                    // границы объекта должны быть в границах вектора движения объекта
-                    // то есть пересекаться с областью движения объекта
-                    mr.isIntersect(r)
-                }
-            }
+        // определяем вектор движения для отсечения объектов которые находятся за пределами вектора
+        val dx = toX - obj.pos.x
+        val dy = toY - obj.pos.y
+        // прямоугольник по границам объекта захватывающий начальную и конечную точку движения
+        val mr = Rect(obj.getBoundRect()).add(obj.pos.point).extend(dx, dy)
+        val or = Rect(obj.getBoundRect()).add(obj.pos.point)
 
-
-            logger.warn("filtered:")
-            filtered.forEach {
-                logger.debug("$it")
-            }
-
-            // это список коллизий которые дали объекты
-            val collisionObjects = filtered.mapNotNull {
-                // ищем минимальное расстояние от движущегося до объекта который может дать коллизию
+        //            logger.debug("obj $obj d $dx, $dy move rect $mr")
+        //            logger.warn("obj rect $or")
+        // получаем список объектов для обсчета коллизий из списка гридов
+        val filtered = list.flatMap { it ->
+            // фильтруем список объектов. вернем только те которые ТОЧНО МОГУТ дать коллизию
+            // те которые далеко или не попадают в прямоугольник движения - отсечем их
+            it.objects.filter {
+                // сами себе точно не даем коллизию
+                if (obj == it) return@filter false
                 val r = Rect(it.getBoundRect()).add(it.pos.point)
-                var (mx, my) = or.min(r)
-                logger.warn("$it $r min $mx $my")
-                // пересечение по обеим осям. значит пересечение объектов уже на старте
-                if (mx == -1 && my == -1) {
-                    logger.debug("collision on start")
-                    CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, Vec2i(0, 0), it)
+                //                    logger.debug("$it $r")
+                // границы объекта должны быть в границах вектора движения объекта
+                // то есть пересекаться с областью движения объекта
+                mr.isIntersect(r)
+            }
+        }
+
+
+        logger.warn("filtered:")
+        filtered.forEach {
+            logger.debug("$it")
+        }
+
+        // это список коллизий которые дали объекты
+        val collisionObjects = filtered.mapNotNull {
+            // ищем минимальное расстояние от движущегося до объекта который может дать коллизию
+            val r = Rect(it.getBoundRect()).add(it.pos.point)
+            var (mx, my) = or.min(r)
+            logger.warn("$it $r min $mx $my")
+            // пересечение по обеим осям. значит пересечение объектов уже на старте
+            if (mx == -1 && my == -1) {
+                logger.debug("collision on start")
+                CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, Vec2i(0, 0), it)
+            } else {
+                var fx: Int
+                var fy: Int
+                var mmx: Int
+                var mmy: Int
+                var wasCollision = false
+                // если хотябы по одной из осей нет пересечения
+                if (mx > my) {
+                    do {
+                        // вычислим расстояние до пересечения по другой оси
+                        val k: Double = dy.toDouble() / dx.toDouble()
+                        val kd = Math.abs(Math.round(k * mx).toInt())
+                        fx = if (dx < 0) -mx else mx
+                        fy = if (dy < 0) -kd else kd
+                        // передвинем рект игрока в позицию предполагаемого пересечения
+                        val tr = Rect(or).add(fx, fy)
+                        logger.warn("X temp rect $tr k=$k kd=$kd")
+                        // вычислим фактическое расстояние между двумя ректами еще раз
+                        val p = tr.min(r)
+                        mmx = p.first
+                        mmy = p.second
+                        logger.warn("X min $mmx $mmy")
+                        mx--
+                        wasCollision = if (!wasCollision) (mmx <= 0 && mmy <= 0) else true
+                    } while (mmx <= 0 && mmy <= 0)
+
+                    if (wasCollision) {
+                        logger.warn("X collision!")
+                        CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, Vec2i(fx, fy), it)
+                    } else null
                 } else {
-                    var fx: Int
-                    var fy: Int
-                    var mmx: Int
-                    var mmy: Int
-                    var wasCollision = false
-                    // если хотябы по одной из осей нет пересечения
-                    if (mx > my) {
-                        do {
-                            // вычислим расстояние до пересечения по другой оси
-                            val k: Double = dy.toDouble() / dx.toDouble()
-                            val kd = Math.abs(Math.round(k * mx).toInt())
-                            fx = if (dx < 0) -mx else mx
-                            fy = if (dy < 0) -kd else kd
-                            // передвинем рект игрока в позицию предполагаемого пересечения
-                            val tr = Rect(or).add(fx, fy)
-                            logger.warn("X temp rect $tr k=$k kd=$kd")
-                            // вычислим фактическое расстояние между двумя ректами еще раз
-                            val p = tr.min(r)
-                            mmx = p.first
-                            mmy = p.second
-                            logger.warn("X min $mmx $mmy")
-                            mx--
-                            wasCollision = if (!wasCollision) (mmx <= 0 && mmy <= 0) else true
-                        } while (mmx <= 0 && mmy <= 0)
+                    do {
+                        // вычислим расстояние до пересечения по другой оси
+                        val k: Double = dx.toDouble() / dy.toDouble()
+                        val kd = Math.abs(Math.round(k * my).toInt())
+                        fx = if (dx < 0) -kd else kd
+                        fy = if (dy < 0) -my else my
+                        // передвинем рект игрока в позицию предполагаемого пересечения
+                        val tr = Rect(or).add(fx, fy)
+                        logger.warn("Y temp rect $tr k=$k kd=$kd")
+                        // вычислим фактическое расстояние между двумя ректами еще раз
+                        val p = tr.min(r)
+                        mmx = p.first
+                        mmy = p.second
+                        logger.warn("Y min $mmx $mmy")
+                        my--
+                        wasCollision = if (!wasCollision) (mmx <= 0 && mmy <= 0) else true
+                    } while (mmx <= 0 && mmy <= 0)
 
-                        if (wasCollision) {
-                            logger.warn("X collision!")
-                            CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, Vec2i(fx, fy), it)
-                        } else null
-                    } else {
-                        do {
-                            // вычислим расстояние до пересечения по другой оси
-                            val k: Double = dx.toDouble() / dy.toDouble()
-                            val kd = Math.abs(Math.round(k * my).toInt())
-                            fx = if (dx < 0) -kd else kd
-                            fy = if (dy < 0) -my else my
-                            // передвинем рект игрока в позицию предполагаемого пересечения
-                            val tr = Rect(or).add(fx, fy)
-                            logger.warn("Y temp rect $tr k=$k kd=$kd")
-                            // вычислим фактическое расстояние между двумя ректами еще раз
-                            val p = tr.min(r)
-                            mmx = p.first
-                            mmy = p.second
-                            logger.warn("Y min $mmx $mmy")
-                            my--
-                            wasCollision = if (!wasCollision) (mmx <= 0 && mmy <= 0) else true
-                        } while (mmx <= 0 && mmy <= 0)
+                    if (wasCollision) {
+                        logger.warn("Y collision!")
+                        CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, Vec2i(fx, fy), it)
+                    } else null
+                }
+            }
+        }
 
-                        if (wasCollision) {
-                            logger.warn("Y collision!")
-                            CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, Vec2i(fx, fy), it)
-                        } else null
-                    }
+        logger.warn("collisionObjects:")
+        collisionObjects.forEach() {
+            logger.debug("$it")
+        }
+
+        return if (collisionObjects.size > 0) {
+            var mc = collisionObjects[0]
+            var min: Vec2i = collisionObjects[0].point!!
+            var minLen = min.len()
+            collisionObjects.forEach {
+                if (it.point!!.len() < minLen) {
+                    min = it.point
+                    minLen = min.len()
+                    mc = it
                 }
             }
 
-            logger.warn("collisionObjects:")
-            collisionObjects.forEach() {
-                logger.debug("$it")
-            }
-
-            if (collisionObjects.size > 0) {
-                var mc = collisionObjects[0]
-                var min: Vec2i = collisionObjects[0].point!!
-                var minLen = min.len()
-                collisionObjects.forEach {
-                    if (it.point!!.len() < minLen) {
-                        min = it.point
-                        minLen = min.len()
-                        mc = it
+            if (tries > 0) {
+                // попробуем обойти коллизию
+                val orx = Rect(or).add(min).add(Integer.signum(dx) * 4, 0)
+                val ory = Rect(or).add(min).add(0, Integer.signum(dy) * 4)
+                val cr = Rect(mc.obj!!.getBoundRect()).add(mc.obj!!.pos.point)
+                logger.debug("obj rect $or")
+                logger.debug("min $min")
+                logger.debug("orx $orx")
+                logger.debug("ory $ory")
+                logger.debug("cr $cr")
+                if (orx.isIntersect(cr)) {
+                    logger.debug("orx.isIntersect")
+                    processCollision(obj.pos.x + min.x, toY, obj, list, isMove, tries - 1)
+                } else if (ory.isIntersect(cr)) {
+                    logger.debug("ory.isIntersect")
+                    processCollision(toX, obj.pos.y + min.y, obj, list, isMove, tries - 1)
+                } else {
+                    logger.debug("no intersect")
+                    if (isMove) {
+                        obj.pos.setXY(obj.pos.x + min.x, obj.pos.y + min.y)
                     }
+                    mc
                 }
+            } else {
                 if (isMove) {
                     obj.pos.setXY(obj.pos.x + min.x, obj.pos.y + min.y)
                 }
                 logger.debug("coll $mc")
                 mc
-            } else {
-                if (isMove) {
-                    obj.pos.setXY(toX, toY)
-                }
-                CollisionResult.NONE
             }
+        } else {
+            if (isMove) {
+                obj.pos.setXY(toX, toY)
+            }
+            CollisionResult.NONE
         }
     }
 
