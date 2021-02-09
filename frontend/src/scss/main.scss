@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=BioRhyme:wght@400&display=swap');
+//@import url('https://fonts.googleapis.com/css2?family=BioRhyme:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bitter:wght@600&display=swap');
+$mainFontName : Bitter;
+$secondFont: Georgia;
 
 body {
   padding: 0;
@@ -47,7 +50,7 @@ canvas {
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 
-  font-family: 'BioRhyme', serif;
+  font-family: $mainFontName, $secondFont;
   font-size: 19px;
 }
 
@@ -71,7 +74,7 @@ canvas {
   border: 0;
   border-bottom: 1px solid #bebebe;
   border-radius: 4px;
-  font-family: 'BioRhyme', serif;
+  font-family: $mainFontName, $secondFont;
   font-size: 19px;
   letter-spacing: 1.6px;
   color: #d5eeed;
@@ -95,7 +98,7 @@ canvas {
   color: #fff;
   cursor: pointer;
   margin: 0 auto;
-  font-family: 'BioRhyme', serif;
+  font-family: $mainFontName, $secondFont;
   -webkit-transition-duration: 0.9s;
   transition-duration: 0.9s;
 }
@@ -131,7 +134,7 @@ canvas {
   font-size: 15px;
   color: #a9b5be;
   padding-top: 20px;
-  font-family: 'BioRhyme', serif;
+  font-family: $mainFontName, $secondFont;
   text-align: center;
 }
 
@@ -147,7 +150,7 @@ canvas {
 
 .error-message {
   font-size: 16px;
-  font-family: 'BioRhyme', serif;
+  font-family: $mainFontName, $secondFont;
   border-radius: 6px;
   color: #cdd2e0;
   background-color: rgba(252, 13, 13, 0.5);

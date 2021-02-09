@@ -347,7 +347,8 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 logger.debug("$it")
             }
 
-            val collisionObjects = filtered.map {
+            // это список коллизий которые дали объекты
+            val collisionObjects = filtered.mapNotNull {
                 // ищем минимальное расстояние от движущегося до объекта который может дать коллизию
                 val r = Rect(it.getBoundRect()).add(it.pos.point)
                 var (mx, my) = or.min(r)
@@ -411,18 +412,35 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                         } else null
                     }
                 }
-            }.filterNotNull()
+            }
 
             logger.warn("collisionObjects:")
             collisionObjects.forEach() {
                 logger.debug("$it")
-
             }
 
-            if (isMove) {
-                obj.pos.setXY(toX, toY)
+            if (collisionObjects.size > 0) {
+                var mc = collisionObjects[0]
+                var min: Vec2i = collisionObjects[0].point!!
+                var minLen = min.len()
+                collisionObjects.forEach {
+                    if (it.point!!.len() < minLen) {
+                        min = it.point
+                        minLen = min.len()
+                        mc = it
+                    }
+                }
+                if (isMove) {
+                    obj.pos.setXY(obj.pos.x + min.x, obj.pos.y + min.y)
+                }
+                logger.debug("coll $mc")
+                mc
+            } else {
+                if (isMove) {
+                    obj.pos.setXY(toX, toY)
+                }
+                CollisionResult.NONE
             }
-            CollisionResult.NONE
         }
     }
 
