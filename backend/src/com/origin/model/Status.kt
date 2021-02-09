@@ -102,8 +102,8 @@ open class Status(val me: Human) {
         regenerationJob = WorkerScope.launch {
             while (true) {
                 delay(period)
-                logger.debug("send StatusRegeneration")
-                me.send(HumanMSg.StatusRegeneration())
+//                logger.debug("send StatusRegeneration")
+//                me.send(HumanMSg.StatusRegeneration())
             }
         }
     }

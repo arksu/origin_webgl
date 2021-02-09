@@ -1,14 +1,15 @@
 package com.origin.collision
 
 import com.origin.model.GameObject
+import com.origin.utils.Vec2i
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 @ObsoleteCoroutinesApi
-class CollisionResult(val result: CollisionType, val obj: GameObject?) {
+class CollisionResult(val result: CollisionType, val point: Vec2i?, val obj: GameObject?) {
 
     companion object {
-        val FAIL = CollisionResult(CollisionType.COLLISION_FAIL, null)
-        val NONE = CollisionResult(CollisionType.COLLISION_NONE, null)
+        val FAIL = CollisionResult(CollisionType.COLLISION_FAIL, null, null)
+        val NONE = CollisionResult(CollisionType.COLLISION_NONE, null, null)
     }
 
 
@@ -30,5 +31,9 @@ class CollisionResult(val result: CollisionType, val obj: GameObject?) {
 
         // с концом мира
         COLLISION_WORLD
+    }
+
+    override fun toString(): String {
+        return "$result $point $obj"
     }
 }

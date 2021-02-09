@@ -323,9 +323,6 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             // прямоугольник по границам объекта захватывающий начальную и конечную точку движения
             val mr = Rect(obj.getBoundRect()).add(obj.pos.point).extend(dx, dy)
             val or = Rect(obj.getBoundRect()).add(obj.pos.point)
-//            list.forEach {
-//                logger.debug("$it")
-//            }
 
             logger.debug("obj $obj d $dx, $dy move rect $mr")
 //            logger.warn("obj rect $or")
@@ -344,59 +341,82 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 }
             }
 
+
             logger.warn("filtered:")
             filtered.forEach {
+                logger.debug("$it")
+            }
+
+            val collisionObjects = filtered.map {
                 // ищем минимальное расстояние от движущегося до объекта который может дать коллизию
                 val r = Rect(it.getBoundRect()).add(it.pos.point)
-                val (mx, my) = or.min(r)
+                var (mx, my) = or.min(r)
                 logger.warn("$it $r min $mx $my")
                 // пересечение по обеим осям. значит пересечение объектов уже на старте
                 if (mx == -1 && my == -1) {
-                    return CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, it)
+                    logger.debug("collision on start")
+                    CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, Vec2i(0, 0), it)
                 } else {
+                    var fx: Int
+                    var fy: Int
+                    var mmx: Int
+                    var mmy: Int
+                    var wasCollision = false
                     // если хотябы по одной из осей нет пересечения
-                    if (mx >= 0) {
-                        // вычислим расстояние до пересечения по другой оси
-                        val k: Double = dy.toDouble() / dx.toDouble()
-                        val kd = Math.abs(Math.round(k * mx).toInt())
-                        val fx = if (dx < 0) -mx else mx
-                        val fy = if (dy < 0) -kd else kd
-                        // передвинем рект игрока в позицию предполагаемого пересечения
-                        val tr = Rect(or).add(fx, fy)
-                        logger.warn("temp1 rect $tr k=$k kd=$kd")
-                        // вычислим фактическое расстояние между двумя ректами еще раз
-                        val (mmx, mmy) = tr.min(r)
-                        logger.warn("min $mmx $mmy")
-                        // если оно довольно мало считаем что пересечение есть. и это коллизия с объектом
-                        if (mmx <= 1 && mmy <= 1) {
-//                            logger.warn("collision!")
-                            if (isMove && (fx != 0 || fy != 0)) {
-                                // немного сдвинем назад чтобы точно был оступ от коллизии в 1 единицу
-                                val cx = Math.max(0, mx - 1)
-                                obj.pos.setXY(obj.pos.x + (if (dx < 0) -cx else cx), obj.pos.y + fy)
-                            }
-                            return CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, it)
-                        }
-                    }
-                    if (my >= 0) {
-                        val k: Double = dx.toDouble() / dy.toDouble()
-                        val kd = Math.abs(Math.round(k * my).toInt())
-                        val fx = if (dx < 0) -kd else kd
-                        val fy = if (dy < 0) -my else my
-                        val tr = Rect(or).add(fx, fy)
-                        logger.warn("temp2 rect $tr k=$k kd=$kd")
-                        val (mmx, mmy) = tr.min(r)
-                        logger.warn("min $mmx $mmy")
-                        if (mmx <= 1 && mmy <= 1) {
-//                            logger.warn("collision!")
-                            if (isMove && (fx != 0 || fy != 0)) {
-                                val cy = Math.max(0, my - 1)
-                                obj.pos.setXY(obj.pos.x + fx, obj.pos.y + (if (dy < 0) -cy else cy))
-                            }
-                            return CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, it)
-                        }
+                    if (mx > my) {
+                        do {
+                            // вычислим расстояние до пересечения по другой оси
+                            val k: Double = dy.toDouble() / dx.toDouble()
+                            val kd = Math.abs(Math.round(k * mx).toInt())
+                            fx = if (dx < 0) -mx else mx
+                            fy = if (dy < 0) -kd else kd
+                            // передвинем рект игрока в позицию предполагаемого пересечения
+                            val tr = Rect(or).add(fx, fy)
+                            logger.warn("X temp rect $tr k=$k kd=$kd")
+                            // вычислим фактическое расстояние между двумя ректами еще раз
+                            val p = tr.min(r)
+                            mmx = p.first
+                            mmy = p.second
+                            logger.warn("X min $mmx $mmy")
+                            mx--
+                            wasCollision = if (!wasCollision) (mmx <= 0 && mmy <= 0) else true
+                        } while (mmx <= 0 && mmy <= 0)
+
+                        if (wasCollision) {
+                            logger.warn("X collision!")
+                            CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, Vec2i(fx, fy), it)
+                        } else null
+                    } else {
+                        do {
+                            // вычислим расстояние до пересечения по другой оси
+                            val k: Double = dx.toDouble() / dy.toDouble()
+                            val kd = Math.abs(Math.round(k * my).toInt())
+                            fx = if (dx < 0) -kd else kd
+                            fy = if (dy < 0) -my else my
+                            // передвинем рект игрока в позицию предполагаемого пересечения
+                            val tr = Rect(or).add(fx, fy)
+                            logger.warn("Y temp rect $tr k=$k kd=$kd")
+                            // вычислим фактическое расстояние между двумя ректами еще раз
+                            val p = tr.min(r)
+                            mmx = p.first
+                            mmy = p.second
+                            logger.warn("Y min $mmx $mmy")
+                            my--
+                            wasCollision = if (!wasCollision) (mmx <= 0 && mmy <= 0) else true
+                        } while (mmx <= 0 && mmy <= 0)
+
+                        if (wasCollision) {
+                            logger.warn("Y collision!")
+                            CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, Vec2i(fx, fy), it)
+                        } else null
                     }
                 }
+            }.filterNotNull()
+
+            logger.warn("collisionObjects:")
+            collisionObjects.forEach() {
+                logger.debug("$it")
+
             }
 
             if (isMove) {
