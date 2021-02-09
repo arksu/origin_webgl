@@ -324,7 +324,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             val mr = Rect(obj.getBoundRect()).add(obj.pos.point).extend(dx, dy)
             val or = Rect(obj.getBoundRect()).add(obj.pos.point)
 
-            logger.debug("obj $obj d $dx, $dy move rect $mr")
+//            logger.debug("obj $obj d $dx, $dy move rect $mr")
 //            logger.warn("obj rect $or")
             // получаем список объектов для обсчета коллизий из списка гридов
             val filtered = list.flatMap { it ->

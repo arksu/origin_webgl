@@ -12,6 +12,8 @@ import com.origin.model.move.Position
 import com.origin.net.model.*
 import com.origin.utils.ObjectID
 import com.origin.utils.Rect
+import com.origin.utils.TILE_SIZE
+import com.origin.utils.Vec2i
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -23,8 +25,8 @@ class PlayerMsg {
     class Connected
     class Disconnected
     class Store
-    class MapClick(val btn: ClientButton, val x: Int, val y: Int)
-    class ObjectClick(val id: ObjectID, val x: Int, val y: Int)
+    class MapClick(val btn: ClientButton, val flags: Int, val x: Int, val y: Int)
+    class ObjectClick(val id: ObjectID, val flags: Int, val x: Int, val y: Int)
     class ObjectRightClick(val id: ObjectID)
     class ContextMenuItem(val item: String)
     class ExecuteActionCondition(val resp: CompletableDeferred<Boolean>, val block: (Player) -> Boolean)
@@ -85,8 +87,8 @@ class Player(
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
             is PlayerMsg.Store -> store()
-            is PlayerMsg.MapClick -> mapClick(msg.btn, msg.x, msg.y)
-            is PlayerMsg.ObjectClick -> objectClick(msg.id, msg.x, msg.y)
+            is PlayerMsg.MapClick -> mapClick(msg.btn, msg.flags, msg.x, msg.y)
+            is PlayerMsg.ObjectClick -> objectClick(msg.id, msg.flags, msg.x, msg.y)
             is PlayerMsg.ObjectRightClick -> objectRightClick(msg.id)
             is PlayerMsg.ContextMenuItem -> contextMenuItem(msg.item)
             is BroadcastEvent.ChatMessage -> chatMessage(msg)
@@ -103,37 +105,49 @@ class Player(
     /**
      * клиент: клик по карте
      */
-    private suspend fun mapClick(btn: ClientButton, x: Int, y: Int) {
-        logger.debug("mapClick $x $y")
+    private suspend fun mapClick(btn: ClientButton, flags: Int, x: Int, y: Int) {
+        logger.debug("mapClick $x $y $btn")
 
         if (contextMenu != null) {
-            session.send(com.origin.net.model.ContextMenu(null))
+            session.send(ContextMenu(null))
             contextMenu = null
         }
-        if (commandToExecute != null) {
-            executeCommand(x, y)
-            commandToExecute = null
-        } else {
-            startMove(Move2Point(this, x, y))
+
+        if (btn == ClientButton.LEFT) {
+            if (commandToExecute != null) {
+                if (flags and SHIFT_KEY > 0) {
+                    logger.warn("SHIFT")
+                    val xx = x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
+                    val yy = y / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
+                    executeCommand(xx, yy)
+                } else
+                    executeCommand(x, y)
+                commandToExecute = null
+            } else {
+                startMove(Move2Point(this, x, y))
+            }
         }
     }
 
     /**
      * клик по объекту в мире
      */
-    @Suppress("UNUSED_PARAMETER")
-    private suspend fun objectClick(id: ObjectID, x: Int, y: Int) {
+    private suspend fun objectClick(id: ObjectID, flags: Int, x: Int, y: Int) {
         logger.debug("objectClick $id")
         if (contextMenu != null) {
-            session.send(com.origin.net.model.ContextMenu(null))
+            session.send(ContextMenu(null))
             contextMenu = null
         }
         val obj = knownList.getKnownObject(id)
         if (obj != null) {
-            // пока просто движемся к объекту
-            startMove(Move2Object(this, obj))
+            // если дистанция между объектом и местом клика меньше порога - считаем что попали в объект
+            if (obj.pos.point.dist(Vec2i(x, y)) < 12) {
+                // пока просто движемся к объекту
+                startMove(Move2Object(this, obj))
+            } else {
+                startMove(Move2Point(this, x, y))
+            }
         }
-
     }
 
     /**
@@ -141,13 +155,21 @@ class Player(
      */
     private suspend fun objectRightClick(id: ObjectID) {
         logger.debug("objectRightClick $id")
+        // если уже есть активное контекстное меню на экране
         if (contextMenu != null) {
-            session.send(com.origin.net.model.ContextMenu(null))
+            // пошлем отменю КМ
+            session.send(ContextMenu(null))
             contextMenu = null
         } else {
-            contextMenu = knownList.getKnownObject(id)?.contextMenu(this)
+            // попробуем вызывать КМ у объекта
+            val obj = knownList.getKnownObject(id)
+            contextMenu = obj?.contextMenu(this)
             if (contextMenu != null) {
-                session.send(com.origin.net.model.ContextMenu(contextMenu!!))
+                session.send(ContextMenu(contextMenu!!))
+            } else {
+                if (obj != null) {
+                    startMove(Move2Object(this, obj))
+                }
             }
         }
     }

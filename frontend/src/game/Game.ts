@@ -313,6 +313,7 @@ export default class Game {
         const p = new Point(e.data.global).round();
 
         console.log('onMouseUp ' + p.toString());
+        console.log(e)
 
         if (this.dragStart !== undefined && this.dragOffset !== undefined) {
             let d = new Point(p).dec(this.dragStart);
@@ -325,9 +326,17 @@ export default class Game {
             } else {
                 // иначе это был просто клик
                 let cp = this.coordScreen2Game(p);
+                let flags = 0
+                if (e.data.originalEvent !== undefined) {
+                    if (e.data.originalEvent.shiftKey) flags += 1
+                    if (e.data.originalEvent.altKey) flags += 2
+                    if (e.data.originalEvent.ctrlKey) flags += 4
+                    if (e.data.originalEvent.metaKey) flags += 8
+                }
                 console.log("mapclick " + cp.toString());
                 Net.remoteCall("mapclick", {
                     b: 0,
+                    f: flags,
                     x: cp.x,
                     y: cp.y
                 })

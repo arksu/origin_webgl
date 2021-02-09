@@ -131,10 +131,10 @@ export default class ObjectView {
 
     private setInteractive(target: PIXI.Sprite | PIXI.Container) {
         target.interactive = true
-        target.on("rightclick", () => {
-            this.onRightClick()
+        target.on("rightclick", (e: PIXI.InteractionEvent) => {
+            this.onRightClick(e)
         })
-        target.on("touchstart", () => {
+        target.on("touchstart", (e: PIXI.InteractionEvent) => {
             this.isTouched = true
             this.touchTimer = setTimeout(() => {
                 if (this.isTouched) {
@@ -142,7 +142,7 @@ export default class ObjectView {
                     // укажем что был правый клик (сработал)
                     this.wasRightClick = true
                     console.log("rightclick")
-                    this.onRightClick()
+                    this.onRightClick(e)
 
                     clearTimeout(this.touchTimer)
                     this.touchTimer = -1
@@ -182,17 +182,33 @@ export default class ObjectView {
             // их тоже отправим на сервер
             let cp = Game.instance?.coordScreen2Game(p);
 
+            let flags = 0
+            if (e.data.originalEvent !== undefined) {
+                if (e.data.originalEvent.shiftKey) flags += 1
+                if (e.data.originalEvent.altKey) flags += 2
+                if (e.data.originalEvent.ctrlKey) flags += 4
+                if (e.data.originalEvent.metaKey) flags += 8
+            }
             Net.remoteCall("objclick", {
                 id: this.obj.id,
+                f: flags,
                 x: cp.x,
                 y: cp.y
             })
         }
     }
 
-    private onRightClick() {
-        Net.remoteCall("objrclick", {
-            id: this.obj.id
-        })
+    private onRightClick(e: PIXI.InteractionEvent) {
+        console.log(e)
+        if (Game.instance != undefined) {
+            const p = new Point(e.data.global).round();
+            let cp = Game.instance.coordScreen2Game(p);
+
+            Net.remoteCall("objrclick", {
+                id: this.obj.id,
+                x: cp.x,
+                y: cp.y
+            })
+        }
     }
 }
