@@ -1,16 +1,17 @@
 package com.origin.collision
 
 import com.origin.model.GameObject
-import com.origin.utils.Vec2i
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 @ObsoleteCoroutinesApi
-class CollisionResult(val result: CollisionType, val point: Vec2i?, val obj: GameObject?) {
+class CollisionResult(val result: CollisionType, val px: Double, val py: Double, val obj: GameObject?) {
 
     companion object {
-        val FAIL = CollisionResult(CollisionType.COLLISION_FAIL, null, null)
-        val NONE = CollisionResult(CollisionType.COLLISION_NONE, null, null)
+        val FAIL = CollisionResult(CollisionType.COLLISION_FAIL, 0.0, 0.0, null)
+        val NONE = CollisionResult(CollisionType.COLLISION_NONE, 0.0, 0.0, null)
     }
+
+    constructor(result: CollisionType, obj: GameObject?) : this(result, 0.0, 0.0, obj)
 
 
     enum class CollisionType {
@@ -33,7 +34,15 @@ class CollisionResult(val result: CollisionType, val point: Vec2i?, val obj: Gam
         COLLISION_WORLD
     }
 
+    fun isObject(): Boolean {
+        return result == CollisionType.COLLISION_OBJECT
+    }
+
+    fun isNone(): Boolean {
+        return result == CollisionType.COLLISION_NONE
+    }
+
     override fun toString(): String {
-        return "$result $point $obj"
+        return "$result $px $py $obj"
     }
 }

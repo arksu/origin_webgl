@@ -86,6 +86,14 @@ class Rect {
         return this
     }
 
+    fun extendSize(w: Int, h: Int): Rect {
+        left -= w
+        right += w
+        top -= h
+        bottom += h
+        return this
+    }
+
     /**
      * минимальное расстояние между двумя прямоугольниками
      * если прямоугольник перескается по какой то из осей - вернет -1

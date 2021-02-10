@@ -8,6 +8,7 @@ import com.origin.utils.TILE_SIZE
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlin.math.abs
 import kotlin.math.roundToInt
+import kotlin.math.sign
 import kotlin.math.sqrt
 
 @ObsoleteCoroutinesApi
@@ -36,7 +37,7 @@ object Collision {
         val dx = toX - obj.pos.x
         val dy = toY - obj.pos.y
         // прямоугольник по границам объекта захватывающий начальную и конечную точку движения
-        val movingArea = obj.getBoundRect().clone().move(obj.pos.point).extend(dx, dy)
+        val movingArea = obj.getBoundRect().clone().move(obj.pos.point).extendSize(30, 30)// .extend(dx, dy)
 
 
         // получаем список объектов для обсчета коллизий из списка гридов
@@ -72,16 +73,17 @@ object Collision {
         var dd: Double = 0.0
         var counter = 0
         while (true) {
+            logger.warn("CYCLE=============================")
             counter++
             // расстояние до конечной точки пути
             val d: Double = distance(curX, curY, toX.toDouble(), toY.toDouble())
-            dd = (abs(oldD - oldD))
+            dd = (abs(oldD - d))
             oldD = d
             logger.debug("d ${String.format("%.2f", d)}")
             // осталось слишком мало. считаем что пришли. коллизий не было раз здесь
             when {
                 d < 0.01 -> {
-                    logger.debug("counter $counter")
+                    logger.debug("d < 0.01 counter $counter")
                     if (isMove) {
                         obj.pos.setXY(toX, toY)
                     }
@@ -102,6 +104,7 @@ object Collision {
             }
             logger.warn("new ${String.format("%.1f", newX)} ${String.format("%.1f", newY)}")
 
+            var wasCollision = false
             fun testObjCollision(
                 isMove: Boolean,
             ): CollisionResult? {
@@ -113,65 +116,121 @@ object Collision {
                 logger.debug("movingRect $movingRect")
 
                 // проверяем коллизию с объектами
-                filtered.forEach {
+                val collisions = filtered.mapNotNull {
                     val ro = it.getBoundRect().clone().move(it.pos.point)
-                    Grid.logger.debug("test $ro $movingRect")
+                    if (isMove) {
+                        Grid.logger.debug("test $ro $movingRect $it")
+                    }
                     if (movingRect.isIntersect(ro)) {
-                        Grid.logger.debug("COLL!")
                         if (isMove) {
+                            Grid.logger.warn("COLLISION!")
+                            wasCollision = true
                             val oldNX = newX
                             val oldNY = newY
 
                             val ndx = newX - curX
                             val ndy = newY - curY
+                            val ndd = distance(newX, newY, curX, curY)
                             logger.warn("nd ${String.format("%.3f", ndx)} ${String.format("%.3f", ndy)}")
 
                             val threshold = 0
+                            var cr = CollisionResult(CollisionResult.CollisionType.COLLISION_NONE, newX, newY, it)
                             if (abs(ndy) > threshold) {
                                 newX = curX
+                                newY += sign(ndy) * (ndd - abs(ndy))
+                                logger.debug("try move Y")
                                 val r1 = testObjCollision(false)
                                 logger.debug("r1 $r1")
-                                if (r1 == null) {
-                                    return null
+                                if (r1 != null) {
+                                    cr = r1
+                                } else {
+                                    cr = CollisionResult(CollisionResult.CollisionType.COLLISION_NONE, newX, newY, it)
                                 }
                                 newX = oldNX
-                            }
-
-                            if (abs(ndx) > threshold) {
-                                newY = curY
-                                val r2 = testObjCollision(false)
-                                logger.debug("r2 $r2")
-                                if (r2 == null) {
-                                    return null
-                                }
                                 newY = oldNY
                             }
 
-                            return CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, null, it)
+                            if ((cr.isObject() || abs(ndy) <= threshold)
+                                && abs(ndx) > threshold
+                            ) {
+                                newY = curY
+                                newX += sign(ndx) * (ndd - abs(ndx))
+                                logger.debug("try move X")
+                                val r2 = testObjCollision(false)
+                                logger.debug("r2 $r2")
+
+                                if (r2 != null) {
+                                    cr = r2
+                                } else {
+                                    cr = CollisionResult(CollisionResult.CollisionType.COLLISION_NONE, newX, newY, it)
+                                }
+                                newX = oldNX
+                                newY = oldNY
+                            }
+                            cr
                         } else {
-                            return CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, null, it)
+                            CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, curX, curY, it)
                         }
+                    } else {
+                        null
                     }
                 }
-                return null
+                if (isMove) {
+                    logger.debug("collisions [${collisions.size}] :")
+                    var min: CollisionResult? = null
+                    var max: CollisionResult? = null
+                    var maxD = 0.0
+                    collisions.forEach {
+                        logger.debug("$it")
+                        if (it.isNone()) {
+                            val cd = distance(it.px, it.py, curX, curY)
+                            if (cd > maxD || max == null) {
+                                max = it
+                            }
+                        }
+                        if (it.isObject()) {
+                            min = it
+                        }
+                    }
+                    return if (min == null) {
+                        max
+                    } else {
+                        min
+                    }
+                } else {
+                    var co: CollisionResult? = null
+                    collisions.forEach {
+                        if (it.isObject()) {
+                            co = it
+                        }
+                    }
+                    return co
+                }
             }
 
             val result = testObjCollision(isMove)
             if (result != null) {
-                logger.debug("return by testObjCollision $result")
-                obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
-                return result
+                if (result.isNone()) {
+                    newX = result.px
+                    newY = result.py
+//                    obj.pos.setXY(result.px.roundToInt(), result.py.roundToInt())
+//                    return result
+                } else {
+                    logger.debug("return by testObjCollision $result")
+                    obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
+                    return result
+                }
             }
 
             if (needExit) {
+                logger.debug("needExit counter $counter")
                 if (isMove) {
-                    obj.pos.setXY(toX, toY)
+                    obj.pos.setXY(newX.roundToInt(), newY.roundToInt())
                 }
-                logger.debug("counter $counter")
                 return CollisionResult.NONE
             }
 
-            logger.warn("dd ${String.format("%.1f", dd)} counter=$counter")
+            logger.warn("dd ${String.format("%.2f", dd)} counter=$counter")
 
 
 
