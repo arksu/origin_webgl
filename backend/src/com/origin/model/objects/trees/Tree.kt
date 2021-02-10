@@ -6,6 +6,7 @@ import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.StaticObject
 import com.origin.net.model.ActionProgress
+import com.origin.utils.Rect
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -23,6 +24,10 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
 
     override fun contextMenu(p: Player): ContextMenu {
         return ContextMenu(this, "Chop", "Take branch", "Take bark")
+    }
+
+    override fun getBoundRect(): Rect {
+        return Rect(10)
     }
 
     override suspend fun processContextItem(player: Player, item: String) {

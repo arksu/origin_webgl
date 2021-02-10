@@ -16,6 +16,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+@ObsoleteCoroutinesApi
 val logger: Logger = LoggerFactory.getLogger(GameServer::class.java)
 
 @ObsoleteCoroutinesApi

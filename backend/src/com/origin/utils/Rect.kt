@@ -28,13 +28,6 @@ class Rect {
         bottom = size
     }
 
-    constructor(r: Rect) {
-        left = r.left
-        right = r.right
-        top = r.top
-        bottom = r.bottom
-    }
-
     private fun normalize() {
         if (right < left) {
             val t = left
@@ -127,7 +120,7 @@ class Rect {
      * используется в детекте коллизий
      */
     fun isIntersect(r2: Rect): Boolean {
-        return left <= r2.right && right >= r2.left && top <= r2.bottom && bottom >= r2.top
+        return left < r2.right && right > r2.left && top < r2.bottom && bottom > r2.top
     }
 
     override fun toString(): String {

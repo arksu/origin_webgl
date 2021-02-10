@@ -1,10 +1,12 @@
 package com.origin.model
 
 import com.origin.entity.InventoryItem
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
  * кукла персонажа, что одето на персе
  */
+@ObsoleteCoroutinesApi
 class Paperdoll(val player: Player) {
 
     // TODO загрузка из базы

@@ -20,6 +20,7 @@ fun WebSockets.WebSocketOptions.websockets() {
 /**
  * список игровых коннектов к серверу
  */
+@ObsoleteCoroutinesApi
 val gameSessions: MutableSet<GameSession> = Collections.synchronizedSet(LinkedHashSet<GameSession>())
 
 /**

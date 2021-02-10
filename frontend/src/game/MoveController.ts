@@ -50,6 +50,9 @@ export default class MoveController {
         this.speed = data.s
         this.moveType = data.mt
 
+        this.me.x = data.x
+        this.me.y = data.y
+
         // server distance
         let sd = Math.sqrt(Math.pow(this.toX - this.serverX, 2) + Math.pow(this.toY - this.serverY, 2))
         // local distance

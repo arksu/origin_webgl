@@ -5,7 +5,9 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.response.*
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
+@ObsoleteCoroutinesApi
 fun StatusPages.Configuration.statusPages() {
     exception<UserNotFound> {
         call.respond(HttpStatusCode.Forbidden, "User not found")
