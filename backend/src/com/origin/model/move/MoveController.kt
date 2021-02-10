@@ -9,7 +9,6 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
-import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 /**
@@ -74,18 +73,19 @@ abstract class MoveController(val me: MovingObject) {
     suspend fun canStartMoving(): Boolean {
         // берем новую точку через 1 тик
         // чтобы убедиться что мы можем туда передвигаться
-        val (nx, ny) = calcNewPoint(0.2 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
+        val dist = calcDistance(0.2 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
 
-        logger.debug("nx=$nx ny=$ny")
+//        logger.debug("nx=$nx ny=$ny")
 //        if (nx == x && ny == y) {
 //            return false
 //        }
 
         // проверим коллизию с этой новой точкой
-        val c = checkCollision(nx, ny, null, false)
+//        val c = checkCollision(toX, toY, dist, null, false)
 
         // можем двигаться только если коллизии нет
-        return c.result == CollisionResult.CollisionType.COLLISION_NONE
+//        return c.result == CollisionResult.CollisionType.COLLISION_NONE
+        return true
     }
 
     /**
@@ -104,11 +104,11 @@ abstract class MoveController(val me: MovingObject) {
             // также запомним скорость с которой шли
             val speed = me.getMovementSpeed()
             // очередная точка на пути
-            val (nx, ny) = calcNewPoint(deltaTime, speed)
+            val dist = calcDistance(deltaTime, speed)
 
-            logger.warn("MOVE ($toX $toY) -> ($nx $ny) me ${me.pos}")
+//            logger.warn("MOVE ($toX $toY) -> ($nx $ny) me ${me.pos}")
             // проверим коллизию при движении в новую точку
-            val c = checkCollision(nx, ny, null, true)
+            val c = checkCollision(toX, toY, dist, null, true)
 
             // сколько осталось идти до конечной точки
             val left = sqrt((toX - x).toDouble().pow(2) + (toY - y).toDouble().pow(2))
@@ -161,17 +161,23 @@ abstract class MoveController(val me: MovingObject) {
      * всю работу выполняет грид, т.к. объекты для коллизий хранятся только там
      * позицию изменит тоже он если isMove=true
      */
-    private suspend fun checkCollision(toX: Int, toY: Int, virtual: GameObject?, isMove: Boolean): CollisionResult {
+    private suspend fun checkCollision(
+        toX: Int,
+        toY: Int,
+        dist: Double,
+        virtual: GameObject?,
+        isMove: Boolean,
+    ): CollisionResult {
         // шлем сообщение гриду о необходимости проверить коллизию
         val resp = CompletableDeferred<CollisionResult>()
-        me.pos.grid.send(GridMsg.CheckCollision(me, toX, toY, me.getMovementType(), virtual, isMove, resp))
+        me.pos.grid.send(GridMsg.CheckCollision(me, toX, toY, dist, me.getMovementType(), virtual, isMove, resp))
         return resp.await()
     }
 
     /**
      * расчитать новую точку движения на основе изменения времени
      */
-    private fun calcNewPoint(deltaTime: Double, speed: Double): Pair<Int, Int> {
+    private fun calcDistance(deltaTime: Double, speed: Double): Double {
         val tdx = (toX - x).toDouble()
         val tdy = (toY - y).toDouble()
 
@@ -182,10 +188,6 @@ abstract class MoveController(val me: MovingObject) {
         val distance = (deltaTime * speed).coerceAtMost(td)
         logger.warn("calcNewPoint $deltaTime $distance")
 
-        // помножим расстояние которое должны пройти на единичный вектор
-        return if (td == 0.0) {
-            Pair(x, y)
-        } else
-            Pair((x + (tdx / td) * distance).roundToInt(), (y + (tdy / td) * distance).roundToInt())
+        return distance
     }
 }

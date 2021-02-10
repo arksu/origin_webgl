@@ -88,7 +88,7 @@ open class Status(val me: Human) {
         if (wasChanged) {
             me.broadcastStatusUpdate()
         }
-        logger.debug("stamina $me $old -> $currentStamina")
+//        logger.debug("stamina $me $old -> $currentStamina")
         return wasChanged
     }
 
@@ -102,7 +102,7 @@ open class Status(val me: Human) {
         regenerationJob = WorkerScope.launch {
             while (true) {
                 delay(period)
-                logger.debug("send StatusRegeneration")
+//                logger.debug("send StatusRegeneration")
                 me.send(HumanMSg.StatusRegeneration())
             }
         }

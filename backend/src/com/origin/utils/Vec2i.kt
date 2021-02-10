@@ -28,8 +28,8 @@ data class Vec2i(
         return sub(p.x, p.y)
     }
 
-    fun mul(v: Int): Vec2i {
-        return Vec2i(x * v, y * v)
+    fun mul(v: Double): Vec2i {
+        return Vec2i((x * v).roundToInt(), (y * v).roundToInt())
     }
 
     fun mul(ax: Int, ay: Int): Vec2i {
@@ -73,6 +73,17 @@ data class Vec2i(
         val dx = p.x - x
         val dy = p.y - y
         return sqrt((dx * dx + dy * dy).toDouble()).roundToInt()
+    }
+
+    fun dist(px: Int, py: Int): Double {
+        val dx = px - x
+        val dy = py - y
+        return sqrt((dx * dx + dy * dy).toDouble())
+    }
+
+
+    fun clone(): Vec2i {
+        return Vec2i(x, y)
     }
 
     override fun toString(): String {

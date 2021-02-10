@@ -5,6 +5,7 @@ import com.origin.model.GameObject
 import com.origin.model.Grid
 import com.origin.net.logger
 import com.origin.utils.TILE_SIZE
+import com.origin.utils.Vec2i
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -21,24 +22,29 @@ object Collision {
     /**
      * расстояние в единицах игровых координат между итерациями
      */
-    val COLLISION_ITERATION_LENGTH = 3.0
+    val COLLISION_ITERATION_LENGTH = 2.0
 
     suspend fun process(
         toX: Int,
         toY: Int,
+        dist: Double,
         obj: GameObject,
         list: Array<Grid>,
         isMove: Boolean,
         tries: Int,
     ): CollisionResult {
-        Grid.logger.debug("to $toX $toY")
+        Grid.logger.debug("process to $toX $toY dist=$dist")
 
         // определяем вектор движения для отсечения объектов которые находятся за пределами вектора
+        val totalDist = obj.pos.point.dist(toX, toY)
+        val kd = if (totalDist == 0.0) 0.0 else dist / totalDist
+        val dp = Vec2i(toX, toY).sub(obj.pos.point).mul(kd).add(obj.pos.point) // TODO
+
+
         val dx = toX - obj.pos.x
         val dy = toY - obj.pos.y
         // прямоугольник по границам объекта захватывающий начальную и конечную точку движения
         val movingArea = obj.getBoundRect().clone().move(obj.pos.point).extendSize(30, 30)// .extend(dx, dy)
-
 
         // получаем список объектов для обсчета коллизий из списка гридов
         val filtered = list.flatMap { it ->
@@ -69,6 +75,7 @@ object Collision {
         logger.debug("obj $obj d $dx, $dy movingArea $movingArea")
 
 
+        var distRemained = dist
         var oldD = 0.0
         var dd: Double = 0.0
         var counter = 0
@@ -76,33 +83,38 @@ object Collision {
             logger.warn("CYCLE=============================")
             counter++
             // расстояние до конечной точки пути
-            val d: Double = distance(curX, curY, toX.toDouble(), toY.toDouble())
-            dd = (abs(oldD - d))
-            oldD = d
-            logger.debug("d ${String.format("%.2f", d)}")
+            val actualDist: Double = distance(curX, curY, toX.toDouble(), toY.toDouble())
+            dd = (abs(oldD - distRemained))
+            oldD = distRemained
+            logger.debug("d=${String.format("%.2f", distRemained)} dd=${String.format("%.2f", dd)}")
             // осталось слишком мало. считаем что пришли. коллизий не было раз здесь
             when {
-                d < 0.01 -> {
+                distRemained < 0.01 -> {
                     logger.debug("d < 0.01 counter $counter")
                     if (isMove) {
-                        obj.pos.setXY(toX, toY)
+                        obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
                     }
                     return CollisionResult.NONE
                 }
-                d < COLLISION_ITERATION_LENGTH -> {
+                (distRemained < COLLISION_ITERATION_LENGTH) -> {
+                    val remained = distRemained
                     // осталось идти меньше одной итерации. очередная точка это конечная
-                    newX = toX.toDouble()
-                    newY = toY.toDouble()
+                    val k: Double = remained / actualDist
+                    distRemained -= remained
+                    newX = curX + (toX - curX) * k
+                    newY = curY + (toY - curY) * k
+
                     // после обсчета этой коллизии надо завершить цикл
                     needExit = true
                 }
                 else -> {
-                    val k: Double = COLLISION_ITERATION_LENGTH / d
+                    val k: Double = COLLISION_ITERATION_LENGTH / actualDist
+                    distRemained -= COLLISION_ITERATION_LENGTH
                     newX = curX + (toX - curX) * k
                     newY = curY + (toY - curY) * k
                 }
             }
-            logger.warn("new ${String.format("%.1f", newX)} ${String.format("%.1f", newY)}")
+            logger.warn("new ${String.format("%.1f", newX)} ${String.format("%.1f", newY)} distRemained=$distRemained")
 
             var wasCollision = false
             fun testObjCollision(
@@ -113,6 +125,7 @@ object Collision {
 
                 // хитбокс объекта который движется
                 val movingRect = obj.getBoundRect().clone().move(newXInt, newYInt)
+                logger.warn("testObjCollision ${String.format("%.1f", newX)} ${String.format("%.1f", newY)}")
                 logger.debug("movingRect $movingRect")
 
                 // проверяем коллизию с объектами
@@ -131,14 +144,18 @@ object Collision {
                             val ndx = newX - curX
                             val ndy = newY - curY
                             val ndd = distance(newX, newY, curX, curY)
-                            logger.warn("nd ${String.format("%.3f", ndx)} ${String.format("%.3f", ndy)}")
+                            logger.warn("nd ${String.format("%.3f", ndx)} ${
+                                String.format("%.3f",
+                                    ndy)
+                            } ndd=${String.format("%.2f", ndd)}")
 
                             val threshold = 0
                             var cr = CollisionResult(CollisionResult.CollisionType.COLLISION_NONE, newX, newY, it)
                             if (abs(ndy) > threshold) {
                                 newX = curX
-                                newY += sign(ndy) * (ndd - abs(ndy))
-                                logger.debug("try move Y")
+                                val m = sign(ndy) * (ndd - abs(ndy))
+                                newY += m
+                                logger.debug("try move Y $m")
                                 val r1 = testObjCollision(false)
                                 logger.debug("r1 $r1")
                                 if (r1 != null) {
@@ -154,8 +171,9 @@ object Collision {
                                 && abs(ndx) > threshold
                             ) {
                                 newY = curY
-                                newX += sign(ndx) * (ndd - abs(ndx))
-                                logger.debug("try move X")
+                                val m = sign(ndx) * (ndd - abs(ndx))
+                                newX += m
+                                logger.debug("try move X $m")
                                 val r2 = testObjCollision(false)
                                 logger.debug("r2 $r2")
 
@@ -192,10 +210,10 @@ object Collision {
                             min = it
                         }
                     }
-                    return if (min == null) {
-                        max
+                    if (min == null) {
+                        return max
                     } else {
-                        min
+                        return min
                     }
                 } else {
                     var co: CollisionResult? = null
@@ -213,8 +231,6 @@ object Collision {
                 if (result.isNone()) {
                     newX = result.px
                     newY = result.py
-//                    obj.pos.setXY(result.px.roundToInt(), result.py.roundToInt())
-//                    return result
                 } else {
                     logger.debug("return by testObjCollision $result")
                     obj.pos.setXY(curX.roundToInt(), curY.roundToInt())

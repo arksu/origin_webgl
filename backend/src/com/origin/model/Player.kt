@@ -82,7 +82,7 @@ class Player(
     private var autoSaveJob: Job? = null
 
     override suspend fun processMessage(msg: Any) {
-        logger.debug("Player $this msg ${msg.javaClass.simpleName}")
+//        logger.debug("Player $this msg ${msg.javaClass.simpleName}")
         when (msg) {
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
