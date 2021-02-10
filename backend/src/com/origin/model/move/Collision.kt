@@ -3,9 +3,11 @@ package com.origin.model.move
 import com.origin.collision.CollisionResult
 import com.origin.model.GameObject
 import com.origin.model.Grid
+import com.origin.net.logger
 import com.origin.utils.Rect
 import com.origin.utils.TILE_SIZE
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
@@ -21,7 +23,7 @@ object Collision {
      */
     val COLLISION_ITERATION_LENGTH = 3.0
 
-    suspend fun process(
+    fun process(
         toX: Int,
         toY: Int,
         obj: GameObject,
@@ -38,9 +40,6 @@ object Collision {
         val movingArea = Rect(obj.getBoundRect()).move(obj.pos.point).extend(dx, dy)
 
 
-        //            logger.debug("obj $obj d $dx, $dy move rect $mr")
-        //            logger.warn("obj rect $or")
-
         // получаем список объектов для обсчета коллизий из списка гридов
         val filtered = list.flatMap { it ->
             // фильтруем список объектов. вернем только те которые ТОЧНО МОГУТ дать коллизию
@@ -56,7 +55,7 @@ object Collision {
             }
         }
 
-        Grid.logger.warn("filtered:")
+        Grid.logger.warn("filtered [${filtered.size}]:")
         filtered.forEach {
             Grid.logger.debug("$it")
         }
@@ -67,49 +66,68 @@ object Collision {
         var newY: Double
         var needExit = false
 
+        logger.debug("obj $obj d $dx, $dy movingArea $movingArea")
+
+        var counter = 0
         while (true) {
+            counter++
             // расстояние до конечной точки пути
             val d: Double = distance(curX, curY, toX.toDouble(), toY.toDouble())
+            logger.debug("d $d")
             // осталось слишком мало. считаем что пришли. коллизий не было раз здесь
-            if (d < 0.01) {
-                return CollisionResult.NONE
-            } else if (d < COLLISION_ITERATION_LENGTH) {
-                // осталось идти меньше одной итерации. очередная точка это конечная
-                newX = toX.toDouble()
-                newY = toY.toDouble()
-                needExit = true
-            } else {
-                val k: Double = COLLISION_ITERATION_LENGTH / d
-                newX = curX + (toX - curX) * k
-                newY = curY + (toX - curY) * k
+            when {
+                d < 0.01 -> {
+                    logger.debug("counter $counter")
+                    return CollisionResult.NONE
+                }
+                d < COLLISION_ITERATION_LENGTH -> {
+                    // осталось идти меньше одной итерации. очередная точка это конечная
+                    newX = toX.toDouble()
+                    newY = toY.toDouble()
+                    needExit = true
+                }
+                else -> {
+                    val k: Double = COLLISION_ITERATION_LENGTH / d
+                    newX = curX + (toX - curX) * k
+                    newY = curY + (toY - curY) * k
+                }
             }
             val curXint: Int = newX.roundToInt()
             val curYint: Int = newY.roundToInt()
 
             // хитбокс объекта который движется
             val movingRect = Rect(obj.getBoundRect()).move(curXint, curYint)
+            logger.debug("movingRect $movingRect")
+
+            // проверяем коллизию с объектами
             filtered.forEach {
                 val ro = it.getBoundRect().clone().move(it.pos.point)
+                Grid.logger.debug("test $ro $movingRect")
                 if (movingRect.isIntersect(ro)) {
+                    Grid.logger.debug("COLL!")
                     if (isMove) {
-                        obj.pos.setXY(curXint, curYint)
+                        runBlocking {
+                            obj.pos.setXY(curXint, curYint)
+                        }
                     }
+                    logger.debug("counter $counter")
                     return CollisionResult(CollisionResult.CollisionType.COLLISION_OBJECT, null, it)
                 }
             }
 
             if (needExit) {
+                if (isMove) {
+                    runBlocking {
+                        obj.pos.setXY(toX, toY)
+                    }
+                }
+                logger.debug("counter $counter")
                 return CollisionResult.NONE
             }
 
             curX = newX
             curY = newY
         }
-
-//        if (isMove) {
-//            obj.pos.setXY(toX, toY)
-//        }
-//        return CollisionResult.NONE
     }
 
     private fun distance(x1: Double, y1: Double, x2: Double, y2: Double): Double {

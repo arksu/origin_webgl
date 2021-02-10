@@ -106,7 +106,7 @@ abstract class MoveController(val me: MovingObject) {
             // очередная точка на пути
             val (nx, ny) = calcNewPoint(deltaTime, speed)
 
-            logger.warn("MOVE $toX $toY $nx $ny me ${me.pos}")
+            logger.warn("MOVE ($toX $toY) -> ($nx $ny) me ${me.pos}")
             // проверим коллизию при движении в новую точку
             val c = checkCollision(nx, ny, null, true)
 

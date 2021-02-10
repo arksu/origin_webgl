@@ -8,6 +8,7 @@ import com.origin.entity.EntityObjects
 import com.origin.entity.GridEntity
 import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
+import com.origin.model.move.Collision
 import com.origin.model.move.MoveType
 import com.origin.model.move.Position
 import com.origin.net.model.MapGridData
@@ -314,13 +315,9 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             next.send(GridMsg.CheckCollisionInternal(list, locked, obj, toX, toY, moveType, virtual, isMove, resp))
             resp.await()
         } else {
-            if (isMove) {
-                obj.pos.setXY(toX, toY)
-            }
-            CollisionResult.NONE
             // таким образом на момент обработки коллизии
             // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
-//            Collision.process(toX, toY, obj, list, isMove, 0)
+            Collision.process(toX, toY, obj, list, isMove, 0)
         }
     }
 
