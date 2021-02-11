@@ -31,7 +31,6 @@ object Collision {
         obj: GameObject,
         list: Array<Grid>,
         isMove: Boolean,
-        tries: Int,
     ): CollisionResult {
         Grid.logger.debug("process to $toX $toY dist=$dist")
 
@@ -44,7 +43,8 @@ object Collision {
         val dx = toX - obj.pos.x
         val dy = toY - obj.pos.y
         // прямоугольник по границам объекта захватывающий начальную и конечную точку движения
-        val movingArea = obj.getBoundRect().clone().move(obj.pos.point).extendSize(30, 30)// .extend(dx, dy)
+        val movingArea = obj.getBoundRect().clone().move(obj.pos.point)
+            .extendSize(dist.roundToInt() + 5, dist.roundToInt() + 5)// extend(dp.x, dp.y) //
 
         // получаем список объектов для обсчета коллизий из списка гридов
         val filtered = list.flatMap { it ->
@@ -116,7 +116,6 @@ object Collision {
             }
             logger.warn("new ${String.format("%.1f", newX)} ${String.format("%.1f", newY)} distRemained=$distRemained")
 
-            var wasCollision = false
             fun testObjCollision(
                 isMove: Boolean,
             ): CollisionResult? {
@@ -137,7 +136,6 @@ object Collision {
                     if (movingRect.isIntersect(ro)) {
                         if (isMove) {
                             Grid.logger.warn("COLLISION!")
-                            wasCollision = true
                             val oldNX = newX
                             val oldNY = newY
 
@@ -197,12 +195,11 @@ object Collision {
                     logger.debug("collisions [${collisions.size}] :")
                     var min: CollisionResult? = null
                     var max: CollisionResult? = null
-                    var maxD = 0.0
                     collisions.forEach {
                         logger.debug("$it")
                         if (it.isNone()) {
                             val cd = distance(it.px, it.py, curX, curY)
-                            if (cd > maxD || max == null) {
+                            if (max == null) {
                                 max = it
                             }
                         }
@@ -248,13 +245,7 @@ object Collision {
 
             logger.warn("dd ${String.format("%.2f", dd)} counter=$counter")
 
-
-
             if (isMove) {
-//                if (dd < 0.001 && counter > 3) {
-//                    obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
-//                    return CollisionResult.NONE
-//                }
                 if (counter > 25) {
                     if (isMove) {
                         obj.pos.setXY(curX.roundToInt(), curY.roundToInt())

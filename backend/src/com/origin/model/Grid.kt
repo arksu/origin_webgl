@@ -336,7 +336,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         } else {
             // таким образом на момент обработки коллизии
             // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
-            Collision.process(toX, toY, dist, obj, list, isMove, 0)
+            Collision.process(toX, toY, dist, obj, list, isMove)
         }
     }
 
