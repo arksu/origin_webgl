@@ -7,7 +7,7 @@ import Net from "@/net/Net";
 import Point from '@/utils/Point';
 import {GameObject} from "@/game/GameObject";
 import ObjectView from "@/game/ObjectView";
-import {Coord} from "@/utils/Util";
+import {Coord, getKeyFlags, mobileAndTabletCheck} from "@/utils/Util";
 import ContextMenu from "@/game/ContextMenu";
 import {ActionProgressData, ContextMenuData} from "@/net/Packets";
 import ActionProgress from "@/game/ActionProgress";
@@ -22,6 +22,11 @@ export default class Game {
     // private static readonly appDiv: HTMLElement = <HTMLElement>document.getElementById("app");
 
     public static instance?: Game = undefined;
+
+    /**
+     * игра запущена на мобилке?
+     */
+    public static isMobile: boolean = mobileAndTabletCheck()
 
     /**
      * PIXI app
@@ -78,6 +83,16 @@ export default class Game {
      * текущее расстояние между пальцами при скейле на мобилках
      */
     private touchLength: number = -1
+
+    /**
+     * таймер для непрерывного движения пока нажата ЛКМ
+     */
+    private continousMovingTimer: number = -1
+
+    /**
+     * последние экранные координаты при нажатой ЛКМ
+     */
+    private lastMoveCoord ?: Point
 
     /**
      * список объектов которые в данный момент движутся
@@ -298,10 +313,43 @@ export default class Game {
     private onMouseDown(e: PIXI.InteractionEvent) {
         this.touchCurrent[e.data.identifier] = new Point(e.data.global)
 
-        this.dragStart = new Point(e.data.global).round();
-        this.dragOffset = new Point(this.offset);
+        // двигаем карту если средняя кнопка мыши или мобильное устройство
+        if (e.data.button == 1 || Game.isMobile) {
+            this.dragStart = new Point(e.data.global).round();
+            this.dragOffset = new Point(this.offset);
+            console.log('onMouseDown ' + this.dragStart.toString());
+        } else if (e.data.button == 0 && !Game.isMobile) {
+            const p = new Point(e.data.global).round();
+            this.lastMoveCoord = new Point(e.data.global).round();
+            console.log("lastMoveCoord!!!!!!!", this.lastMoveCoord)
+            // это просто клик. без сдвига карты
+            const cp = this.coordScreen2Game(p);
+
+            console.log("mapclick " + cp.toString());
+            Net.remoteCall("mapclick", {
+                b: e.data.button,
+                f: getKeyFlags(e),
+                x: cp.x,
+                y: cp.y
+            })
+
+            // запускаем таймер который периодически шлет клики по карте на сервер в текущие экранные координаты
+            this.continousMovingTimer = setInterval(() => {
+                if (this.lastMoveCoord !== undefined) {
+                    console.log("lastMoveCoord", this.lastMoveCoord)
+                    const cp = this.coordScreen2Game(this.lastMoveCoord.clone());
+
+                    console.log("mapclick " + cp.toString());
+                    Net.remoteCall("mapclick", {
+                        b: e.data.button,
+                        f: getKeyFlags(e),
+                        x: cp.x,
+                        y: cp.y
+                    })
+                }
+            }, 333)
+        }
         this.dragMoved = false;
-        console.log('onMouseDown ' + this.dragStart.toString());
     }
 
     private onMouseUp(e: PIXI.InteractionEvent) {
@@ -315,6 +363,7 @@ export default class Game {
         console.log('onMouseUp ' + p.toString());
         console.log(e)
 
+        // если сдвинули карту при нажатии мыши
         if (this.dragStart !== undefined && this.dragOffset !== undefined) {
             let d = new Point(p).dec(this.dragStart);
 
@@ -326,17 +375,10 @@ export default class Game {
             } else {
                 // иначе это был просто клик
                 let cp = this.coordScreen2Game(p);
-                let flags = 0
-                if (e.data.originalEvent !== undefined) {
-                    if (e.data.originalEvent.shiftKey) flags += 1
-                    if (e.data.originalEvent.altKey) flags += 2
-                    if (e.data.originalEvent.ctrlKey) flags += 4
-                    if (e.data.originalEvent.metaKey) flags += 8
-                }
                 console.log("mapclick " + cp.toString());
                 Net.remoteCall("mapclick", {
-                    b: 0,
-                    f: flags,
+                    b: e.data.button,
+                    f: getKeyFlags(e),
                     x: cp.x,
                     y: cp.y
                 })
@@ -344,6 +386,13 @@ export default class Game {
             this.dragStart = undefined;
             this.dragOffset = undefined;
             this.touchCurrent = {}
+        } else {
+            // выключим таймер непрерывного движения
+            if (this.continousMovingTimer !== -1) {
+                clearInterval(this.continousMovingTimer)
+            }
+            this.lastMoveCoord = undefined
+            this.continousMovingTimer = -1
         }
     }
 
@@ -394,6 +443,9 @@ export default class Game {
 
                     this.updateMapScalePos();
                 }
+            } else {
+                // обновляем текущие экранные координаты
+                this.lastMoveCoord = new Point(e.data.global).round();
             }
         }
     }

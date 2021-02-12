@@ -160,7 +160,7 @@ export default class MoveController {
             // добавим к координатам объекта дельту
             //  this.me.x += dx;
             //  this.me.y += dy;
-            console.log(this.speed)
+
             // let k = this.speed / 1000
             let k = 0.08
             this.me.x += (this.serverX - this.me.x) * k;

@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=BioRhyme:wght@400&display=swap');
-//@import url('https://fonts.googleapis.com/css2?family=Bitter:wght@600&display=swap');
-$mainFontName : BioRhyme;
+@import url('https://fonts.googleapis.com/css2?family=Bitter:wght@600&display=swap');
+
+$mainFontName: BioRhyme;
 $secondFont: Georgia;
 
 body {
@@ -280,15 +281,14 @@ canvas {
 
 .chat-line {
   pointer-events: none;
+  font-family: Bitter, $secondFont, serif;
   font-size: 25px;
-  -webkit-text-stroke: 1px black;
-  color: white;
-  text-shadow:
-          2px 2px 0 #000,
-          -1px -1px 0 #000,
-          1px -1px 0 #000,
-          -1px 1px 0 #000,
-          1px 1px 0 #000;
+  color: #d1deea;
+  text-shadow: 2px 2px 0 #000,
+  -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
 }
 
 @import "characters";

@@ -12,8 +12,8 @@ const val META_KEY = 8
 fun getClientButton(b: Long): ClientButton {
     return when (b) {
         0L -> ClientButton.LEFT
-        1L -> ClientButton.RIGHT
-        2L -> ClientButton.MIDDLE
+        2L -> ClientButton.RIGHT
+        1L -> ClientButton.MIDDLE
         else -> ClientButton.LEFT
     }
 }

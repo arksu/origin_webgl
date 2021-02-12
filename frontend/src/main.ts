@@ -25,6 +25,7 @@ Client.instance = new Client();
 // навешиваем на канвас обработчики
 Game.initCanvasHandlers();
 
+// создаем vue приложение
 const app = createApp(App);
 app.use(router)
 app.mount("#app");

@@ -3,7 +3,7 @@ import {GameObject} from "@/game/GameObject";
 import Net from "@/net/Net";
 import objects from "./objects.json"
 import Game from "@/game/Game";
-import {Coord, Layer, Resource} from "@/utils/Util";
+import {Coord, getKeyFlags, Layer, Resource} from "@/utils/Util";
 import Point from "@/utils/Point";
 
 /**
@@ -182,16 +182,9 @@ export default class ObjectView {
             // их тоже отправим на сервер
             let cp = Game.instance?.coordScreen2Game(p);
 
-            let flags = 0
-            if (e.data.originalEvent !== undefined) {
-                if (e.data.originalEvent.shiftKey) flags += 1
-                if (e.data.originalEvent.altKey) flags += 2
-                if (e.data.originalEvent.ctrlKey) flags += 4
-                if (e.data.originalEvent.metaKey) flags += 8
-            }
             Net.remoteCall("objclick", {
                 id: this.obj.id,
-                f: flags,
+                f: getKeyFlags(e),
                 x: cp.x,
                 y: cp.y
             })
