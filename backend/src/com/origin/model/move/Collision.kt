@@ -5,7 +5,6 @@ import com.origin.model.GameObject
 import com.origin.model.Grid
 import com.origin.net.logger
 import com.origin.utils.TILE_SIZE
-import com.origin.utils.Vec2i
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -17,12 +16,12 @@ object Collision {
     /**
      * сколько тайлов до конца мира будут давать коллизию
      */
-    val WORLD_BUFFER_SIZE = TILE_SIZE * 5
+    private const val WORLD_BUFFER_SIZE = TILE_SIZE * 5
 
     /**
      * расстояние в единицах игровых координат между итерациями
      */
-    val COLLISION_ITERATION_LENGTH = 2.0
+    private const val COLLISION_ITERATION_LENGTH = 2.0
 
     suspend fun process(
         toX: Int,
@@ -35,10 +34,9 @@ object Collision {
         Grid.logger.debug("process to $toX $toY dist=$dist")
 
         // определяем вектор движения для отсечения объектов которые находятся за пределами вектора
-        val totalDist = obj.pos.point.dist(toX, toY)
-        val kd = if (totalDist == 0.0) 0.0 else dist / totalDist
-        val dp = Vec2i(toX, toY).sub(obj.pos.point).mul(kd).add(obj.pos.point) // TODO
-
+//        val totalDist = obj.pos.point.dist(toX, toY)
+//        val kd = if (totalDist == 0.0) 0.0 else dist / totalDist
+//        val dp = Vec2i(toX, toY).sub(obj.pos.point).mul(kd).add(obj.pos.point) // TODO
 
         val dx = toX - obj.pos.x
         val dy = toY - obj.pos.y
@@ -77,18 +75,35 @@ object Collision {
 
         var distRemained = dist
         var oldD = 0.0
-        var dd: Double = 0.0
+        var dd: Double
+        var oldAd: Double = -1.0
         var counter = 0
         while (true) {
-            logger.warn("CYCLE=============================")
             counter++
+            logger.warn("CYCLE [$counter] =============================")
+
+
             // расстояние до конечной точки пути
             val actualDist: Double = distance(curX, curY, toX.toDouble(), toY.toDouble())
+
+            val diffAd = if (oldAd < 0) actualDist else abs(actualDist - oldAd)
+
+
+
             dd = (abs(oldD - distRemained))
             oldD = distRemained
-            logger.debug("d=${String.format("%.2f", distRemained)} dd=${String.format("%.2f", dd)}")
-            // осталось слишком мало. считаем что пришли. коллизий не было раз здесь
+            logger.debug("d remained=${String.format("%.2f", distRemained)} dd=${String.format("%.2f", dd)} " +
+                    "ad=${String.format("%.2f", actualDist)} diffAd=${String.format("%.2f", diffAd)}")
+
+            if (diffAd < 0.35) {
+                if (isMove) {
+                    obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
+                }
+                return CollisionResult.NONE
+            }
+
             when {
+                // осталось слишком мало. считаем что пришли. коллизий не было раз здесь
                 distRemained < 0.01 -> {
                     logger.debug("d < 0.01 counter $counter")
                     if (isMove) {
@@ -114,7 +129,8 @@ object Collision {
                     newY = curY + (toY - curY) * k
                 }
             }
-            logger.warn("new ${String.format("%.1f", newX)} ${String.format("%.1f", newY)} distRemained=$distRemained")
+            logger.warn("cur ${String.format("%.2f", curX)}, ${String.format("%.2f", curY)} " +
+                    "-> new ${String.format("%.2f", newX)}, ${String.format("%.2f", newY)} distRemained=$distRemained")
 
             fun testObjCollision(
                 isMove: Boolean,
@@ -147,7 +163,7 @@ object Collision {
                                     ndy)
                             } ndd=${String.format("%.2f", ndd)}")
 
-                            val threshold = 0
+                            val threshold = 0.08
                             var cr = CollisionResult(CollisionResult.CollisionType.COLLISION_NONE, newX, newY, it)
                             if (abs(ndy) > threshold) {
                                 newX = curX
@@ -156,11 +172,7 @@ object Collision {
                                 logger.debug("try move Y $m")
                                 val r1 = testObjCollision(false)
                                 logger.debug("r1 $r1")
-                                if (r1 != null) {
-                                    cr = r1
-                                } else {
-                                    cr = CollisionResult(CollisionResult.CollisionType.COLLISION_NONE, newX, newY, it)
-                                }
+                                cr = r1 ?: CollisionResult(CollisionResult.CollisionType.COLLISION_NONE, newX, newY, it)
                                 newX = oldNX
                                 newY = oldNY
                             }
@@ -175,11 +187,7 @@ object Collision {
                                 val r2 = testObjCollision(false)
                                 logger.debug("r2 $r2")
 
-                                if (r2 != null) {
-                                    cr = r2
-                                } else {
-                                    cr = CollisionResult(CollisionResult.CollisionType.COLLISION_NONE, newX, newY, it)
-                                }
+                                cr = r2 ?: CollisionResult(CollisionResult.CollisionType.COLLISION_NONE, newX, newY, it)
                                 newX = oldNX
                                 newY = oldNY
                             }
@@ -198,7 +206,6 @@ object Collision {
                     collisions.forEach {
                         logger.debug("$it")
                         if (it.isNone()) {
-                            val cd = distance(it.px, it.py, curX, curY)
                             if (max == null) {
                                 max = it
                             }
@@ -207,10 +214,10 @@ object Collision {
                             min = it
                         }
                     }
-                    if (min == null) {
-                        return max
+                    return if (min == null) {
+                        max
                     } else {
-                        return min
+                        min
                     }
                 } else {
                     var co: CollisionResult? = null
@@ -236,14 +243,12 @@ object Collision {
             }
 
             if (needExit) {
-                logger.debug("needExit counter $counter")
+                logger.warn("needExit")
                 if (isMove) {
                     obj.pos.setXY(newX.roundToInt(), newY.roundToInt())
                 }
                 return CollisionResult.NONE
             }
-
-            logger.warn("dd ${String.format("%.2f", dd)} counter=$counter")
 
             if (isMove) {
                 if (counter > 25) {
@@ -254,13 +259,14 @@ object Collision {
                 }
             }
 
+            oldAd = actualDist
+
             curX = newX
             curY = newY
         }
     }
 
-
-    private fun distance(x1: Double, y1: Double, x2: Double, y2: Double): Double {
+    private inline fun distance(x1: Double, y1: Double, x2: Double, y2: Double): Double {
         val dx = x2 - x1
         val dy = y2 - y1
         return sqrt(dx * dx + dy * dy)

@@ -54,10 +54,10 @@ export default class MoveController {
         let ldy = this.me.y - this.serverY
         let lds = Math.sqrt(ldx * ldx + ldy * ldy)
 
-        if (lds > 2) {
+        // if (lds > 2) {
             this.me.x = this.serverX
             this.me.y = this.serverY
-        }
+        // }
 
         // server distance
         let sd = Math.sqrt(Math.pow(this.toX - this.serverX, 2) + Math.pow(this.toY - this.serverY, 2))
@@ -152,8 +152,8 @@ export default class MoveController {
             let dy = nd * ((this.toY - this.me.y) / ld);
 
             // добавим к координатам объекта дельту
-            this.me.x += dx;
-            this.me.y += dy;
+            // this.me.x += dx;
+            // this.me.y += dy;
         }
         Game.instance?.onObjectMoved(this.me)
         if (Client.instance.selectedCharacterId == this.me.id) Game.instance?.updateMapScalePos()

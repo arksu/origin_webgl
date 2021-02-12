@@ -8,8 +8,8 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import kotlin.math.abs
 import kotlin.math.pow
-import kotlin.math.sqrt
 
 /**
  * реализует передвижения объектов
@@ -20,12 +20,6 @@ abstract class MoveController(val me: MovingObject) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(MoveController::class.java)
     }
-
-    val x
-        get() = me.pos.x
-
-    val y
-        get() = me.pos.y
 
     abstract val toX: Int
     abstract val toY: Int
@@ -70,10 +64,10 @@ abstract class MoveController(val me: MovingObject) {
     /**
      * возможно ли начать движение
      */
-    suspend fun canStartMoving(): Boolean {
+    fun canStartMoving(): Boolean {
         // берем новую точку через 1 тик
         // чтобы убедиться что мы можем туда передвигаться
-        val dist = calcDistance(0.2 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
+//        val dist = calcDistance(0.2 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
 
 //        logger.debug("nx=$nx ny=$ny")
 //        if (nx == x && ny == y) {
@@ -106,30 +100,42 @@ abstract class MoveController(val me: MovingObject) {
             // очередная точка на пути
             val dist = calcDistance(deltaTime, speed)
 
+            // сколько осталось идти до конечной точки
+            val left = me.pos.dist(toX, toY)
+
 //            logger.warn("MOVE ($toX $toY) -> ($nx $ny) me ${me.pos}")
             // проверим коллизию при движении в новую точку
             val c = checkCollision(toX, toY, dist, null, true)
 
-            // сколько осталось идти до конечной точки
-            val left = sqrt((toX - x).toDouble().pow(2) + (toY - y).toDouble().pow(2))
-
             // обработаем ситуацию когда нет коллизий при движении, она общая для всех типов движения
             val wasStopped = if (c.result == CollisionResult.CollisionType.COLLISION_NONE) {
-                // расстояние до конечной точки при котором считаем что уже дошли куда надо
-                return if (left <= 1.0) {
-                    me.stopMove()
-                    true
-                } else {
-                    // продолжаем движение
-                    if (me is Human) {
-                        // обновляем видимые объекты при каждом передвижении
-                        me.updateVisibleObjects(false)
+                // сколько осталось до конечной точки после обсчета коллизии
+                val actualLeft = me.pos.dist(toX, toY)
+                val ad = abs(actualLeft - left)
+                logger.debug("ad =$ad left=$left actualDist=$actualLeft")
+                return when {
+                    // расстояние до конечной точки при котором считаем что уже дошли куда надо
+                    actualLeft <= 1.0 -> {
+                        me.stopMove()
+                        true
                     }
-                    // шлем через грид эвент передвижения
-                    me.pos.grid.broadcast(BroadcastEvent.Moved(
-                        me, toX, toY, speed, moveType
-                    ))
-                    false
+                    // в ходе обсчета коллизии мы сдвинулись. но сдвинулись на малое расстояние
+                    abs(actualLeft - left) < 0.35 -> {
+                        me.stopMove()
+                        true
+                    }
+                    else -> {
+                        // продолжаем движение
+                        if (me is Human) {
+                            // обновляем видимые объекты при каждом передвижении
+                            me.updateVisibleObjects(false)
+                        }
+                        // шлем через грид эвент передвижения
+                        me.pos.grid.broadcast(BroadcastEvent.Moved(
+                            me, toX, toY, speed, moveType
+                        ))
+                        false
+                    }
                 }
                 // в implementation обрабатываем ситуации с коллизиями
             } else implementation(c, left, speed, moveType)
@@ -178,11 +184,8 @@ abstract class MoveController(val me: MovingObject) {
      * расчитать новую точку движения на основе изменения времени
      */
     private fun calcDistance(deltaTime: Double, speed: Double): Double {
-        val tdx = (toX - x).toDouble()
-        val tdy = (toY - y).toDouble()
-
         // расстояние оставшееся до конечной точки
-        val td = sqrt(tdx.pow(2) + tdy.pow(2))
+        val td = me.pos.dist(toX, toY)
 
         // сколько прошли: либо расстояние пройденное за тик, либо оставшееся до конечной точки. что меньше
         val distance = (deltaTime * speed).coerceAtMost(td)
