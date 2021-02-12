@@ -30,6 +30,8 @@ export default class MoveController {
 
         this.startX = obj.x
         this.startY = obj.y
+        this.serverX = data.x
+        this.serverY = data.y
 
         this.lineView = new PIXI.Graphics()
         Game.instance?.objectsContainer.addChild(this.lineView)
@@ -54,31 +56,32 @@ export default class MoveController {
         let ldy = this.me.y - this.serverY
         let lds = Math.sqrt(ldx * ldx + ldy * ldy)
 
-        // if (lds > 2) {
-            this.me.x = this.serverX
-            this.me.y = this.serverY
-        // }
+        if (lds > 2) {
+            // this.me.x = this.serverX
+            // this.me.y = this.serverY
+        }
 
         // server distance
         let sd = Math.sqrt(Math.pow(this.toX - this.serverX, 2) + Math.pow(this.toY - this.serverY, 2))
         // local distance
         let ld = Math.sqrt(Math.pow(this.toX - this.me.x, 2) + Math.pow(this.toY - this.me.y, 2))
 
-        let c1 = Game.coordGame2Screen(this.me.x, this.me.y)
+        // let c1 = Game.coordGame2Screen(this.me.x, this.me.y)
+        let c1 = Game.coordGame2Screen(this.serverX, this.serverY)
         let c2 = Game.coordGame2Screen(this.toX, this.toY)
         this.lineView.clear().lineStyle(2, 0x00ff00).moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1])
 
         // корректировка скорости
-        let diff = Math.abs(sd - ld)
-        if (sd > 2 && (diff > 1)) {
-            let k = ld / sd
-            // ограничиваем максимальную и минимальную корректировку, чтобы сильно не дергалось
-            k = Math.max(0.4, k)
-            k = Math.min(1.4, k)
-            console.warn("speed correct k=" + k.toFixed(2))
-            this.speed = this.speed * k
-        }
-        console.log("diff=" + diff.toFixed(2) + " ld=" + ld.toFixed(2) + " sd=" + sd.toFixed(2) + " speed=" + this.speed.toFixed(2))
+        // let diff = Math.abs(sd - ld)
+        // if (sd > 2 && (diff > 1)) {
+        //     let k = ld / sd
+        //     // ограничиваем максимальную и минимальную корректировку, чтобы сильно не дергалось
+        //     k = Math.max(0.4, k)
+        //     k = Math.min(1.4, k)
+        //     console.warn("speed correct k=" + k.toFixed(2))
+        //     this.speed = this.speed * k
+        // }
+        // console.log("diff=" + diff.toFixed(2) + " ld=" + ld.toFixed(2) + " sd=" + sd.toFixed(2) + " speed=" + this.speed.toFixed(2))
     }
 
     /**
@@ -94,13 +97,16 @@ export default class MoveController {
         // local distance
         let ld = Math.sqrt(Math.pow(this.toX - this.me.x, 2) + Math.pow(this.toY - this.me.y, 2))
         console.warn("serverStop ld=" + ld.toFixed(2))
-        if (ld > 5 || ld < 1) {
+        // if (ld > 5 || ld < 1) {
+        if (ld < 1) {
             this.me.x = data.x
             this.me.y = data.y
             console.warn("hard stop ld=" + ld.toFixed(2))
             this.stop()
             Game.instance?.onObjectMoved(this.me)
         }
+
+        // this.lineView.destroy({children: true, texture: true})
     }
 
     public stop() {
@@ -152,9 +158,16 @@ export default class MoveController {
             let dy = nd * ((this.toY - this.me.y) / ld);
 
             // добавим к координатам объекта дельту
-            // this.me.x += dx;
-            // this.me.y += dy;
+            //  this.me.x += dx;
+            //  this.me.y += dy;
+            console.log(this.speed)
+            // let k = this.speed / 1000
+            let k = 0.08
+            this.me.x += (this.serverX - this.me.x) * k;
+            this.me.y += (this.serverY - this.me.y) * k;
+            // console.log(this.me.x, this.me.y)
         }
+
         Game.instance?.onObjectMoved(this.me)
         if (Client.instance.selectedCharacterId == this.me.id) Game.instance?.updateMapScalePos()
     }
