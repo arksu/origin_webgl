@@ -36,7 +36,7 @@ object ServerConfig {
     /**
      * дистанция которую нужно пройти чтобы произошел апдейт видимых объектов
      */
-    var VISIBLE_UPDATE_DISTANCE = TILE_SIZE * 1
+    var VISIBLE_UPDATE_DISTANCE = TILE_SIZE * 2
 
     /**
      * сервер запущен в дев режиме (слежение за каталогами с графикой и др фичи)

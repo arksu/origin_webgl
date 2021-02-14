@@ -7,6 +7,8 @@ import com.origin.model.move.MoveType
 import com.origin.utils.ObjectID
 import com.origin.utils.Vec2i
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -21,6 +23,10 @@ sealed class MovingObjectMsg {
 abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) :
     GameObject(id, x, y, level, region, heading) {
 
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(MovingObject::class.java)
+    }
+
     /**
      * список гридов в которых находится объект. max 9 штук.
      */
@@ -30,13 +36,6 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * контроллер который управляет передвижением объекта
      */
     private var moveController: MoveController? = null
-
-    /**
-     * объект с которым "столкнулись" (прилинковались), может быть виртуальный или реальный
-     * если реальный, то при удалении его из known списка должны занулить и здесь.
-     * то есть это реальный объект с которым мы взаимодействуем
-     */
-    private var linkedObject: GameObject? = null
 
     override suspend fun processMessage(msg: Any) {
 //        logger.debug("MovingObject processMessage ${msg.javaClass.simpleName}")
@@ -82,10 +81,6 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * выгрузить все гриды в которых находимся
      */
     private suspend fun unloadGrids() {
-//        if (grids.isEmpty()) {
-//            throw RuntimeException("unloadGrids - grids is empty")
-//        }
-
         if (this is Human) grids.forEach {
             onLeaveGrid(it)
         }
@@ -96,6 +91,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * начать движение объекта
      */
     open suspend fun startMove(controller: MoveController) {
+        logger.debug("startMove")
         val old = moveController
         if (old != null) {
             old.updateAndResult()
@@ -122,6 +118,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
      * обработка движения от TimeController
      */
     private suspend fun updateMove() {
+        if (moveController != null) logger.debug("updateMove")
         val result = moveController?.updateAndResult()
         // если контроллера нет. либо он завершил работу
         if (result == null || result) {
@@ -226,9 +223,5 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
     }
 
     protected open suspend fun onLeaveGrid(grid: Grid) {
-    }
-
-    open fun clearLinkedObject() {
-        linkedObject = null
     }
 }

@@ -11,6 +11,8 @@ import com.origin.utils.TILE_SIZE
 import com.origin.utils.Vec2i
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class HumanMSg {
     class StopAction
@@ -24,12 +26,15 @@ class HumanMSg {
 @ObsoleteCoroutinesApi
 abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) :
     MovingObject(id, x, y, level, region, heading) {
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(Human::class.java)
+    }
 
     /**
      * дистанция на которой мы видим объекты
      * может изменяться динамически (ночью видим хуже)
      */
-    private var visibleDistance = 25 * TILE_SIZE
+    private var visibleDistance = 35 * TILE_SIZE
 
     /**
      * объекты которые известны мне, инфа о которых отправляется и синхронизирована с клиентом
@@ -37,6 +42,11 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * синхронизировано с клиентом
      */
     protected val knownList by lazy { KnownList(this) }
+
+    /**
+     * список объектов которые "открыли" (есть инвентарь и надо его отобразить на клиенте)
+     */
+    protected val openObjectsList by lazy { OpenObjectsList(this) }
 
     /**
      * последняя позиция в которой было обновление видимых объектов
@@ -191,6 +201,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     }
 
     override suspend fun startMove(controller: MoveController) {
+        openObjectsList.closeAll()
         super.startMove(controller)
         stopAction()
     }

@@ -32,7 +32,7 @@ sealed class GameObjectMsg {
 @ObsoleteCoroutinesApi
 abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) {
     companion object {
-        val logger: Logger = LoggerFactory.getLogger(GameObject::class.java)
+        private val logger: Logger = LoggerFactory.getLogger(GameObject::class.java)
     }
 
     /**
@@ -179,6 +179,12 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
      * выполняется в контексте ИГРОКА
      */
     open suspend fun processContextItem(player: Player, item: String) {
+    }
+
+    /**
+     * открыть инвентарь объекта
+     */
+    open fun openBy(who: Player) {
     }
 
     /**

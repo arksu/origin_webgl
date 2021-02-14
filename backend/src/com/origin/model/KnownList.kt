@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory
  * то есть эти объекты проецируются на клиент, список всех видимых объектов с точки зрения клиента
  */
 @ObsoleteCoroutinesApi
-class KnownList(private val activeObject: GameObject) {
+class KnownList(private val me: GameObject) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(KnownList::class.java)
     }
@@ -48,9 +48,9 @@ class KnownList(private val activeObject: GameObject) {
         if (obj is Player) {
             knownPlayers[obj.id] = obj
         }
-        if (activeObject is Player) {
+        if (me is Player) {
             logger.debug("object add ${obj.pos}")
-            activeObject.session.send(ObjectAdd(obj))
+            me.session.send(ObjectAdd(obj))
         }
 
         return true
@@ -66,8 +66,8 @@ class KnownList(private val activeObject: GameObject) {
             if (obj is Player) {
                 knownPlayers.remove(obj.id)
             }
-            if (activeObject is Player) {
-                activeObject.session.send(ObjectDel(obj))
+            if (me is Player) {
+                me.session.send(ObjectDel(obj))
             }
         }
         return result
@@ -82,9 +82,9 @@ class KnownList(private val activeObject: GameObject) {
      * послать пакеты удаления объектов на клиент
      */
     suspend fun clear() {
-        if (activeObject is Player) {
+        if (me is Player) {
             for (o in knownObjects.values) {
-                activeObject.session.send(ObjectDel(o))
+                me.session.send(ObjectDel(o))
             }
         }
         knownObjects.clear()

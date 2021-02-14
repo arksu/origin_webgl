@@ -69,10 +69,10 @@ data class Vec2i(
     /**
      * дистанция между этой точкой и другой
      */
-    fun dist(p: Vec2i): Int {
+    fun dist(p: Vec2i): Double {
         val dx = p.x - x
         val dy = p.y - y
-        return sqrt((dx * dx + dy * dy).toDouble()).roundToInt()
+        return sqrt((dx * dx + dy * dy).toDouble())
     }
 
     fun dist(px: Int, py: Int): Double {

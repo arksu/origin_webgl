@@ -87,6 +87,7 @@ abstract class MoveController(val me: MovingObject) {
      * @return движение завершено? (истина ежели уперлись во чтото или прибыли в пункт назначения)
      */
     suspend fun updateAndResult(): Boolean {
+        logger.debug("updateAndResult")
         val currentTime = System.currentTimeMillis()
         if (currentTime > lastMoveTime) {
             // узнаем сколько времени прошло между апдейтами
@@ -121,8 +122,7 @@ abstract class MoveController(val me: MovingObject) {
                     }
                     // в ходе обсчета коллизии мы сдвинулись. но сдвинулись на малое расстояние
                     abs(actualLeft - left) < 0.35 -> {
-                        me.stopMove()
-                        true
+                        implementation(c, left, speed, moveType)
                     }
                     else -> {
                         // продолжаем движение

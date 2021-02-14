@@ -17,6 +17,8 @@ import com.origin.utils.Vec2i
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -46,6 +48,9 @@ class Player(
 
     val session: GameSession,
 ) : Human(character.id.value, character.x, character.y, character.level, character.region, character.heading) {
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(Player::class.java)
+    }
 
     private var moveMode = MoveMode.WALK
 
@@ -82,7 +87,7 @@ class Player(
     private var autoSaveJob: Job? = null
 
     override suspend fun processMessage(msg: Any) {
-//        logger.debug("Player $this msg ${msg.javaClass.simpleName}")
+        logger.debug("Player $this msg ${msg.javaClass.simpleName}")
         when (msg) {
             is PlayerMsg.Connected -> connected()
             is PlayerMsg.Disconnected -> disconnected()
@@ -143,10 +148,25 @@ class Player(
             // если дистанция между объектом и местом клика меньше порога - считаем что попали в объект
             if (obj.pos.point.dist(Vec2i(x, y)) < 12) {
                 // пока просто движемся к объекту
-                startMove(Move2Object(this, obj))
+                goAndOpenObject(obj)
             } else {
                 startMove(Move2Point(this, x, y))
             }
+        }
+    }
+
+    private suspend fun goAndOpenObject(obj: GameObject) {
+        // проверим расстояние от меня до объекта
+        val myRect = getBoundRect().clone().move(pos.point)
+        val objRect = obj.getBoundRect().clone().move(obj.pos.point)
+        val (mx, my) = myRect.min(objRect)
+        logger.debug("goAndOpenObject min $mx $my")
+        if (mx <= OPEN_DISTANCE && my <= OPEN_DISTANCE) {
+            openObjectsList.open(obj)
+        } else {
+            startMove(Move2Object(this, obj) {
+                openObjectsList.open(obj)
+            })
         }
     }
 
@@ -168,7 +188,7 @@ class Player(
                 session.send(ContextMenu(contextMenu!!))
             } else {
                 if (obj != null) {
-                    startMove(Move2Object(this, obj))
+                    goAndOpenObject(obj)
                 }
             }
         }
@@ -328,6 +348,14 @@ class Player(
                 val t = params[1].toByte()
                 val p = Position(x, y, pos)
                 World.getGrid(p).send(GridMsg.SetTile(p, t))
+            }
+            "tp" -> {
+                // Teleport to
+//                if (params.size == 3) {
+//                    val x: Int = params[1].toInt()
+//                    val y: Int = params[2].toInt()
+                // TODO teleport cmd
+//                }
             }
         }
     }

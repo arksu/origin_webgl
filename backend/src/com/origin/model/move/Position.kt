@@ -87,7 +87,7 @@ class Position(
         this.grid = World.getGrid(this)
     }
 
-    fun dist(other: Position): Int = point.dist(other.point)
+    fun dist(other: Position): Double = point.dist(other.point)
 
     fun dist(px: Int, py: Int): Double = point.dist(px, py)
 

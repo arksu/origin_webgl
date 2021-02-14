@@ -9,12 +9,18 @@ import com.origin.net.model.ActionProgress
 import com.origin.utils.Rect
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Деревья
  */
 @ObsoleteCoroutinesApi
 open class Tree(entity: EntityObject) : StaticObject(entity) {
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(Tree::class.java)
+    }
+
     /**
      * стадия роста
      * если есть данные объекта то это и есть номер стадии.
@@ -31,6 +37,7 @@ open class Tree(entity: EntityObject) : StaticObject(entity) {
     }
 
     override suspend fun processContextItem(player: Player, item: String) {
+        logger.debug("processContextItem $player $item")
         when (item) {
             "Chop" -> {
                 player.startAction(this, 3, getMaxHP() - this.entity.hp, getMaxHP(), {

@@ -4,10 +4,15 @@ import com.origin.entity.EntityObject
 import com.origin.utils.Rect
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 @ObsoleteCoroutinesApi
 open class StaticObject(val entity: EntityObject) :
     GameObject(entity.id.value, entity.x, entity.y, entity.level, entity.region, entity.heading) {
+    companion object {
+        private val logger: Logger = LoggerFactory.getLogger(StaticObject::class.java)
+    }
 
     init {
         spawned = true

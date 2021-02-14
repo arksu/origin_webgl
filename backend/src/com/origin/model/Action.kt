@@ -52,6 +52,7 @@ class Action(
 
     private val job: Job = WorkerScope.launch {
         sendPkt(ActionProgress(startProgress, maxProgress))
+        logger.warn("start new action")
 
         if (ticks < 0) {
             if (playerCondition != null) {
