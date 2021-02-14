@@ -51,6 +51,8 @@ object Collision {
             it.objects.filter {
                 // сами себе никогда не даем коллизию
                 if (obj == it) return@filter false
+                // дает ли объект коллизию?
+                if (!it.isCollideWith(obj)) return@filter false
                 // рект объекта
                 val r = it.getBoundRect().clone().move(it.pos.point)
                 // границы объекта должны быть в границах вектора движения объекта

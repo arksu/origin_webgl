@@ -181,6 +181,14 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     open suspend fun processContextItem(player: Player, item: String) {
     }
 
+    /**
+     * дает ли коллизию этот объект с другим (в качестве парметра передаем объект который движется)
+     * упрется ли движущийся объект в этот (в меня)
+     */
+    open fun isCollideWith(moving: GameObject): Boolean {
+        return true
+    }
+
     override fun toString(): String {
         return "${this::class.simpleName} [$id] ${pos.point}"
     }
