@@ -33,10 +33,12 @@ class OpenObjectsList(private val me: Human) {
     }
 
     fun closeAll() {
-        logger.warn("closeAll")
-        list.values.forEach {
+        if (list.size > 0) {
+            logger.warn("closeAll")
+            list.values.forEach {
 
+            }
+            list.clear()
         }
-        list.clear()
     }
 }

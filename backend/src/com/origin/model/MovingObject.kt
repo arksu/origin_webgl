@@ -123,6 +123,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         // если контроллера нет. либо он завершил работу
         if (result == null || result) {
             TimeController.deleteMovingObject(this)
+            moveController = null
         }
     }
 

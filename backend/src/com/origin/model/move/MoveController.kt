@@ -113,11 +113,10 @@ abstract class MoveController(val me: MovingObject) {
                 // сколько осталось до конечной точки после обсчета коллизии
                 val actualLeft = me.pos.dist(toX, toY)
                 val ad = abs(actualLeft - left)
-                logger.debug("ad =$ad left=$left actualDist=$actualLeft")
-                return when {
+                logger.debug("ad =$ad left=$left actualLeft=$actualLeft")
+                when {
                     // расстояние до конечной точки при котором считаем что уже дошли куда надо
                     actualLeft <= 1.0 -> {
-                        me.stopMove()
                         true
                     }
                     // в ходе обсчета коллизии мы сдвинулись. но сдвинулись на малое расстояние
@@ -140,11 +139,10 @@ abstract class MoveController(val me: MovingObject) {
                 // в implementation обрабатываем ситуации с коллизиями
             } else implementation(c, left, speed, moveType)
 
+            logger.debug("wasStopped $wasStopped")
             // если движение не завершено - обновляем позицию в базе
             if (wasStopped) {
-                // движение завершено. внутри implementation сохранили позицию в базе, запомним и тут
-                storedX = me.pos.x.toDouble()
-                storedY = me.pos.y.toDouble()
+                me.stopMove()
             } else {
                 val dx: Double = me.pos.x - storedX
                 val dy: Double = me.pos.y - storedY

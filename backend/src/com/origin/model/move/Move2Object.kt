@@ -23,7 +23,6 @@ class Move2Object(me: MovingObject, private val target: GameObject, private val 
     override suspend fun implementation(c: CollisionResult, left: Double, speed: Double, moveType: MoveType): Boolean {
         when (c.result) {
             CollisionResult.CollisionType.COLLISION_NONE -> {
-                me.stopMove()
                 val myRect = me.getBoundRect().clone().move(me.pos.point)
                 val objRect = target.getBoundRect().clone().move(target.pos.point)
                 val (mx, my) = myRect.min(objRect)
@@ -34,11 +33,9 @@ class Move2Object(me: MovingObject, private val target: GameObject, private val 
             }
             CollisionResult.CollisionType.COLLISION_FAIL -> {
                 // ошибка при обработке коллизии. надо остановить объект и удалить контроллер
-                me.stopMove()
                 return true
             }
             CollisionResult.CollisionType.COLLISION_OBJECT -> {
-                me.stopMove()
                 if (c.obj != null && c.obj.id == targetId) {
                     after()
                 }
@@ -46,7 +43,6 @@ class Move2Object(me: MovingObject, private val target: GameObject, private val 
             }
             else -> {
                 // коллизия с чем то. надо остановить работу и обработать результат
-                me.stopMove()
                 return true
             }
         }
