@@ -18,6 +18,8 @@
            v-on:keyup.prevent="keyup">
     <input style="pointer-events: auto;" type="submit" value=">">
   </form>
+
+<!--  <Inventory></Inventory>-->
 </template>
 
 <script lang="ts">
@@ -26,9 +28,11 @@ import Net from "@/net/Net";
 import router from "@/router";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
+import Inventory from "@/views/Inventory.vue";
 
 export default defineComponent({
   name: "Game",
+  components: {Inventory},
   data() {
     return {
       active: false as boolean,

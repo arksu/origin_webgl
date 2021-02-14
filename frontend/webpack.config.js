@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const {ProvidePlugin, HotModuleReplacementPlugin} = require("webpack");
@@ -24,7 +24,7 @@ module.exports = {
                 loader: 'vue-loader'
             },
             {
-                test: /\.s[ac]ss$/,
+                test: /\.s[ac]ss|css$/,
                 // test: /\.scss$/,
                 use: [
                     {
@@ -40,7 +40,7 @@ module.exports = {
                         loader: "sass-loader" // compiles Sass to CSS
                     }
                 ]
-            },
+            }
         ],
     },
     plugins: [
@@ -86,9 +86,9 @@ module.exports = {
         progress: true,
         host: '0.0.0.0',
         port: 3070,
-        proxy : {
-            '/api' : 'http://0.0.0.0:8020',
-            '/api/game' : {
+        proxy: {
+            '/api': 'http://0.0.0.0:8020',
+            '/api/game': {
                 target: 'ws://0.0.0.0:8020',
                 ws: true
             }
