@@ -19,7 +19,7 @@
     <input style="pointer-events: auto;" type="submit" value=">">
   </form>
 
-<!--  <Inventory></Inventory>-->
+  <Inventory></Inventory>
 </template>
 
 <script lang="ts">
