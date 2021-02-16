@@ -279,16 +279,4 @@ canvas {
 
 }
 
-.chat-line {
-  pointer-events: none;
-  font-family: Bitter, $secondFont, serif;
-  font-size: 25px;
-  color: #d1deea;
-  text-shadow: 2px 2px 0 #000,
-  -1px -1px 0 #000,
-  1px -1px 0 #000,
-  -1px 1px 0 #000,
-  1px 1px 0 #000;
-}
-
 @import "characters";

@@ -5,7 +5,8 @@
     </div>
   </div>
 
-  <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px; pointer-events: none;" @submit.prevent="chatSubmit"
+  <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px; pointer-events: none;"
+        @submit.prevent="chatSubmit"
         action="#">
     <div>
       <li v-for="r in chatRows">
@@ -14,7 +15,7 @@
       <!-- hack for refresh chatRows value -->
       <span style="display: none">{{ cnt }}</span>
     </div>
-    <input style="width: 300px; font-size: 20px; pointer-events: auto;" type="text" v-model="chatText" id="inputChat"
+    <input class="chat-input" type="text" v-model="chatText" id="inputChat"
            v-on:keyup.prevent="keyup">
     <input style="pointer-events: auto;" type="submit" value=">">
   </form>
@@ -124,6 +125,23 @@ export default defineComponent({
 </script>
 
 
-<style scoped>
+<style lang="scss">
 
+.chat-line {
+  pointer-events: none;
+  font-family: Bitter, Georgia, serif;
+  font-size: 25px;
+  color: #daedfa;
+  text-shadow: 2px 2px 0 #000,
+  -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
+}
+
+.chat-input {
+  width: 300px;
+  font-size: 20px;
+  pointer-events: auto;
+}
 </style>
