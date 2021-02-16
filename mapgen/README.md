@@ -3,9 +3,9 @@ requires python3.9, pip
 
 # prepare
 
-pip install numpy
-pip install matplotlib
-pip instal opencv-python
+- pip install numpy
+- pip install matplotlib
+- pip instal opencv-python
 
 # generate map
 `python3 map_gen.py`
