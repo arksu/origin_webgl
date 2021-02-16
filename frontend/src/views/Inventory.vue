@@ -1,8 +1,14 @@
 <template>
-  <div ref="draggableHeader" class="draggable" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
-    <span>
-      Title
-    </span>
+  <div ref="draggableTarget" class="container">
+    <div class="frame" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
+    </div>
+    <div class="header">
+      <div class="title">
+        <span class="title-text">
+          Inventory
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -39,7 +45,7 @@ export default defineComponent({
         this.clientX = event.touches[0].clientX
         this.clientY = event.touches[0].clientY
 
-        const el = <HTMLDivElement>this.$refs.draggableHeader
+        const el = <HTMLDivElement>this.$refs.draggableTarget
         el.style.left = (el.offsetLeft - this.movementX) + 'px'
         el.style.top = (el.offsetTop - this.movementY) + 'px'
       }
@@ -63,7 +69,7 @@ export default defineComponent({
       this.clientX = event.clientX
       this.clientY = event.clientY
 
-      const el = <HTMLDivElement>this.$refs.draggableHeader
+      const el = <HTMLDivElement>this.$refs.draggableTarget
       el.style.left = (el.offsetLeft - this.movementX) + 'px'
       el.style.top = (el.offsetTop - this.movementY) + 'px'
     },
@@ -77,17 +83,44 @@ export default defineComponent({
 
 <style>
 
-.draggable {
+.container {
   position: absolute;
   left: 100px;
   top: 200px;
-  width: 100px;
-  height: 100px;
+  width: 300px;
+  height: 500px;
   z-index: 100;
-  background-color: white;
-  border: 1px solid #232323;
-  border-radius: 5px;
-  padding: 10px;
 }
+
+.header {
+  position: absolute;
+  width: 100%;
+}
+
+.title {
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-top: 0px solid transparent;
+  border-bottom: 0px solid transparent;
+  border-image: url('/assets/window_title.png') 0 30% 0 30% fill / 0 18px 0 18px;
+  position: relative;
+  height: 22px;
+  display: inline-block;
+}
+
+.title-text {
+  color: #eeee59;
+  font-size: 14px;
+  font-family: Georgia, serif;
+}
+
+.frame {
+  position: absolute;
+  top: 7px;
+  width: 100%;
+  height: 100%;
+  border-image: url('/assets/window_frame.png') 34% fill / 8px repeat repeat;
+}
+
 
 </style>
