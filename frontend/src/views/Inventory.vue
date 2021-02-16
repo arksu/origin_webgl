@@ -1,6 +1,11 @@
 <template>
   <div ref="draggableTarget" class="container">
     <div class="frame" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
+      <div v-for="(line, rows) in items">
+        <div class="item-back" v-for="(item, cols) in line">
+          <Item :title="item" :x="16 + cols * 35" :y="22 + rows * 35"></Item>
+        </div>
+      </div>
     </div>
     <div class="header">
       <div class="title">
@@ -14,16 +19,19 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
+import Item from "@/views/Item.vue";
 
 export default defineComponent({
   name: "Inventory",
+  components: {Item},
   data() {
     return {
       clientX: 0 as number,
       clientY: 0 as number,
       movementX: 0 as number,
       movementY: 0 as number,
-      touchId: -1 as number
+      touchId: -1 as number,
+      items: [['s', 'd', 'e', 'w'], ['f', 'g', 't', '4'], ['s', 'd', 'e', 'w'], ['f', 'g', 't', '4']]
     }
   },
   methods: {
@@ -56,11 +64,12 @@ export default defineComponent({
       document.ontouchend = null
     },
     onMouseDown: function (event: MouseEvent) {
-
-      this.clientX = event.clientX
-      this.clientY = event.clientY
-      document.onmousemove = this.onDrag
-      document.onmouseup = this.onDragEnd
+      if (event.button == 0) {
+        this.clientX = event.clientX
+        this.clientY = event.clientY
+        document.onmousemove = this.onDrag
+        document.onmouseup = this.onDragEnd
+      }
     },
     onDrag: function (event: MouseEvent) {
       event.preventDefault()
@@ -81,14 +90,14 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 
 .container {
   position: absolute;
   left: 100px;
   top: 200px;
-  width: 300px;
-  height: 500px;
+  width: 173px;
+  height: 178px;
   z-index: 100;
 }
 
@@ -121,6 +130,4 @@ export default defineComponent({
   height: 100%;
   border-image: url('/assets/window_frame.png') 34% fill / 8px repeat repeat;
 }
-
-
 </style>
