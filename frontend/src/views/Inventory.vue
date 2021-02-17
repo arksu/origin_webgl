@@ -1,5 +1,5 @@
 <template>
-  <Window v-if="isVisible" title="Inventory" @close="isVisible = !isVisible">
+  <Window v-if="isVisible" title="Inventory" @close="isVisible = !isVisible" :width="32 + 4 * 35" :height="38 + 4 * 35">
     <div v-for="(line, rows) in items">
       <div class="item-back" v-for="(item, cols) in line">
         <Item :title="item" :x="16 + cols * 35" :y="22 + rows * 35"></Item>

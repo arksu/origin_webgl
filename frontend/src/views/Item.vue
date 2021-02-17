@@ -31,5 +31,6 @@ export default defineComponent({
   background-image: url('/assets/inventory_slot.png');
   background-repeat: no-repeat;
   padding-top: 10px;
+  cursor: pointer;
 }
 </style>

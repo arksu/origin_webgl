@@ -1,19 +1,20 @@
 <template>
-  <div ref="draggableTarget" class="container">
-    <div class="frame" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
+  <div ref="draggableTarget" class="container" :style="windowStyle">
+    <div class="frame">
       <slot></slot>
     </div>
-    <div class="header">
+
+    <div class="close-btn-back">
+      <img style="float: right; margin-right: 3px" src="assets/window_close.png">
+    </div>
+    <div class="header" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
       <div class="title">
         <span class="title-text">
           {{ title }}
         </span>
       </div>
     </div>
-    <div class="close-btn-back">
-      <img style="float: right; margin-right: 3px" src="assets/window_close.png">
-    </div>
-    <div class="close-btn-back">
+    <div class="close-btn-back2">
       <div class="close-btn" @click="$emit('close')"></div>
     </div>
   </div>
@@ -25,7 +26,9 @@ import {defineComponent} from "vue";
 export default defineComponent({
   name: "Window",
   props: {
-    title: String
+    title: String,
+    width: Number,
+    height: Number
   },
   emits: {
     close: null
@@ -37,6 +40,11 @@ export default defineComponent({
       movementX: 0 as number,
       movementY: 0 as number,
       touchId: -1 as number,
+    }
+  },
+  computed: {
+    windowStyle(): string {
+      return "width: " + this.width + "px; height: " + this.height + "px;"
     }
   },
   methods: {
@@ -69,6 +77,7 @@ export default defineComponent({
       document.ontouchend = null
     },
     onMouseDown: function (event: MouseEvent) {
+      console.log(event)
       if (event.button == 0) {
         this.clientX = event.clientX
         this.clientY = event.clientY
@@ -95,20 +104,26 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .container {
+  display: flex;
+  justify-content: right;
   position: absolute;
   left: 100px;
   top: 200px;
-  width: 173px;
-  height: 178px;
   z-index: 100;
   text-align: center;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .header {
   position: absolute;
   width: 100%;
+  height: 25px;
+  cursor: move;
 }
 
 .title {
@@ -142,13 +157,24 @@ export default defineComponent({
   width: 100%;
 }
 
+.close-btn-back2 {
+  text-align: right;
+  position: relative;
+  width: 20%;
+  height: 15px;
+  margin-left: auto;
+  top: 10px;
+}
+
 .close-btn {
+  margin-left: auto;
   float: right;
   margin-right: 3px;
   width: 13px;
   height: 13px;
   background: transparent no-repeat;
   cursor: pointer;
+  background-image: url('/assets/btn_close_hover.png');
 }
 
 .close-btn:hover {
