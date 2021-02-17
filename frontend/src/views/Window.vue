@@ -174,7 +174,6 @@ export default defineComponent({
   height: 13px;
   background: transparent no-repeat;
   cursor: pointer;
-  background-image: url('/assets/btn_close_hover.png');
 }
 
 .close-btn:hover {

@@ -1,14 +1,15 @@
 package com.origin.model
 
-import com.origin.Const
 import com.origin.collision.CollisionResult
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
+import com.origin.model.items.Inventory
 import com.origin.model.move.Move2Object
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
 import com.origin.model.move.Position
+import com.origin.model.objects.ObjectsFactory
 import com.origin.net.model.*
 import com.origin.utils.ObjectID
 import com.origin.utils.Rect
@@ -63,6 +64,11 @@ class Player(
      * одежда (во что одет игрок)
      */
 //    private val paperdoll: Paperdoll = Paperdoll(this)
+
+    /**
+     * инвентарь игрока
+     */
+    private val inventory = Inventory(this)
 
     override val status = PcStatus(this, character)
 
@@ -336,7 +342,7 @@ class Player(
                     if (d != null) {
                         e.data = d
                     }
-                    Const.getObjectByType(e)
+                    ObjectsFactory.byEntity(e)
                 }
                 obj.pos.setGrid()
                 val resp = CompletableDeferred<CollisionResult>()

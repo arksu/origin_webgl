@@ -1,6 +1,5 @@
 package com.origin.model
 
-import com.origin.Const
 import com.origin.TimeController
 import com.origin.collision.CollisionResult
 import com.origin.entity.EntityObject
@@ -11,6 +10,7 @@ import com.origin.model.GameObjectMsg.OnObjectRemoved
 import com.origin.model.move.Collision
 import com.origin.model.move.MoveType
 import com.origin.model.move.Position
+import com.origin.model.objects.ObjectsFactory
 import com.origin.net.model.MapGridData
 import com.origin.utils.GRID_FULL_SIZE
 import com.origin.utils.Rect
@@ -212,7 +212,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             val list =
                 EntityObject.find { (EntityObjects.gridx eq x) and (EntityObjects.gridy eq y) and (EntityObjects.region eq region) and (EntityObjects.level eq level) }
             list.forEach {
-                val o = Const.getObjectByType(it)
+                val o = ObjectsFactory.byEntity(it)
                 o.pos.setGrid(this@Grid)
                 objects.add(o)
             }

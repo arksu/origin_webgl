@@ -12,7 +12,7 @@ object InventoryItems : LongIdTable("inventory") {
     /**
      * ид инвентаря (родителя, вещи в которой находится этот предмет
      */
-    val inventoryId = integer("inventoryId")
+    val inventoryId = long("inventoryId")
 
     /**
      * тип предмета
@@ -39,10 +39,12 @@ object InventoryItems : LongIdTable("inventory") {
      * тик (если вещь может имзенятся с течением времени
      */
     val tick = integer("tick").default(0)
+
+    val deleted = bool("deleted").default(false)
 }
 
-class InventoryItem(id: EntityID<Long>) : LongEntity(id) {
-    companion object : LongEntityClass<InventoryItem>(InventoryItems)
+class InventoryItemEntity(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<InventoryItemEntity>(InventoryItems)
 
     var inventoryId by InventoryItems.inventoryId
     var type by InventoryItems.type
@@ -51,4 +53,5 @@ class InventoryItem(id: EntityID<Long>) : LongEntity(id) {
     var quality by InventoryItems.quality
     var count by InventoryItems.count
     var tick by InventoryItems.tick
+    var deleted by InventoryItems.deleted
 }

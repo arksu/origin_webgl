@@ -85,10 +85,26 @@ export interface ActionProgressData {
 
 export interface Attr {
     readonly i: number
-    readonly  v: number
+    readonly v: number
 }
 
 export interface StatusUpdate {
     readonly id: number
     readonly list: Attr[]
+}
+
+export interface InvItem {
+    readonly id: number
+    readonly x: number
+    readonly y: number
+    readonly w: number
+    readonly h: number
+    readonly q: number
+    readonly icon: string
+    readonly tt: string
+}
+
+export interface InventoryUpdate {
+    readonly title: string
+    readonly list: InvItem[]
 }
