@@ -16,7 +16,7 @@ export default defineComponent({
     q: Number
   },
   computed: {
-    style() {
+    style(): string {
       return "left: " + this.x + "px; top: " + this.y + "px;"
     }
   }
