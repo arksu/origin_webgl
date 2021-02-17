@@ -7,8 +7,8 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 object ItemsFactory {
     fun byEntity(inventory: Inventory, entity: InventoryItemEntity): InventoryItem {
         return when (entity.type) {
-            1 -> InventoryItem(inventory, entity)
-            else -> InventoryItem(inventory, entity)
+            1 -> InventoryItem(inventory, entity, "/items/apple")
+            else -> InventoryItem(inventory, entity, "/items/ash")
         }
     }
 }

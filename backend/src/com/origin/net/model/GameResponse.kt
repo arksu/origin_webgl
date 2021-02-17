@@ -7,6 +7,8 @@ import com.google.gson.annotations.SerializedName
 import com.origin.model.*
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
 import com.origin.model.ContextMenu
+import com.origin.model.items.Inventory
+import com.origin.model.items.InventoryItem
 import com.origin.utils.ObjectID
 import com.origin.utils.StringTypeAdapter
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -161,6 +163,31 @@ class ContextMenu(cm: ContextMenu?) : ServerMessage("cm") {
 }
 
 class ActionProgress(val c: Int, val t: Int) : ServerMessage("ap") {
+}
+
+@ObsoleteCoroutinesApi
+class InventoryItemData(item: InventoryItem) {
+    val id = item.id
+    val x = item.x
+    val y = item.y
+    val w = item.width
+    val h = item.height
+    val q = item.q
+    val c = "Test"
+    val icon = item.icon
+}
+
+@ObsoleteCoroutinesApi
+class InventoryData(inventory: Inventory) : ServerMessage("iv") {
+    val id = inventory.inventoryId
+    val t = inventory.title
+    val l = ArrayList<InventoryItemData>()
+
+    init {
+        inventory.items.values.forEach {
+            l.add(InventoryItemData(it))
+        }
+    }
 }
 
 /**

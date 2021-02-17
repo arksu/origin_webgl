@@ -1,11 +1,19 @@
 package com.origin.model.items
 
 import com.origin.entity.InventoryItemEntity
+import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
 
 @ObsoleteCoroutinesApi
-class InventoryItem(val inventory: Inventory, private val entity: InventoryItemEntity) {
+class InventoryItem(
+    val inventory: Inventory, private val entity: InventoryItemEntity, val icon: String,
+) {
+
+    val id: ObjectID
+        get() {
+            return entity.id.value
+        }
 
     val x: Int
         get() {
@@ -15,6 +23,11 @@ class InventoryItem(val inventory: Inventory, private val entity: InventoryItemE
     val y: Int
         get() {
             return entity.y
+        }
+
+    val q: Int
+        get() {
+            return entity.quality
         }
 
     val width = 1

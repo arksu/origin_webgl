@@ -113,6 +113,11 @@ class Player(
         }
     }
 
+    override suspend fun afterSpawn() {
+        super.afterSpawn()
+        inventory.send(this)
+    }
+
     /**
      * клиент: клик по карте
      */
@@ -255,6 +260,7 @@ class Player(
 
         if (spawned) {
             status.stopRegeneration()
+            openObjectsList.closeAll()
             // удалить объект из грида
             remove()
         }

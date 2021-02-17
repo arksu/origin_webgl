@@ -5,6 +5,7 @@ import MoveController from "@/game/MoveController";
 import {
     ActionProgressData,
     ContextMenuData,
+    InventoryUpdate,
     MapGridData,
     ObjectDel,
     ObjectMoved,
@@ -331,7 +332,13 @@ export default class Net {
                 Game.instance?.setActionProgress(ap)
                 break
             }
+            case "iv" : { // inventory update
+                let inv = <InventoryUpdate>data
+                if (inv.id == Client.instance.selectedCharacterId) {
 
+                }
+                break
+            }
             case "cs" : { // creature say
                 let obj = Client.instance.objects[data.id]
                 // канал в который пришло сообщение

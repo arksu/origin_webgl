@@ -101,10 +101,11 @@ export interface InvItem {
     readonly h: number
     readonly q: number
     readonly icon: string
-    readonly tt: string
+    readonly c: string
 }
 
 export interface InventoryUpdate {
-    readonly title: string
-    readonly list: InvItem[]
+    readonly id: number
+    readonly t: string
+    readonly l: InvItem[]
 }
