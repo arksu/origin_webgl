@@ -334,9 +334,13 @@ export default class Net {
             }
             case "iv" : { // inventory update
                 let inv = <InventoryUpdate>data
-                if (inv.id == Client.instance.selectedCharacterId) {
-
-                }
+                Client.instance.inventories[inv.id] = inv
+                Client.instance.onInventoryUpdate?.()
+                break
+            }
+            case "ic" : { // inventory close
+                delete Client.instance.inventories[data.id]
+                Client.instance.onInventoryUpdate?.()
                 break
             }
             case "cs" : { // creature say

@@ -4,7 +4,7 @@ import com.origin.entity.InventoryItemEntity
 import com.origin.entity.InventoryItems
 import com.origin.model.GameObject
 import com.origin.model.Player
-import com.origin.net.model.InventoryData
+import com.origin.net.model.InventoryUpdate
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -40,6 +40,6 @@ class Inventory(private val parent: GameObject) {
     }
 
     suspend fun send(player: Player) {
-        player.session.send(InventoryData(this))
+        player.session.send(InventoryUpdate(this))
     }
 }

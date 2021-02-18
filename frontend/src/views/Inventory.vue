@@ -1,5 +1,5 @@
 <template>
-  <Window v-if="isVisible" :title="title" @close="isVisible = !isVisible" :width="32 + 4 * 35" :height="38 + 4 * 35">
+  <Window v-if="isVisible" :title="inv.t" @close="isVisible = !isVisible" :width="32 + 4 * 35" :height="38 + 4 * 35">
     <div v-for="(line, rows) in items">
       <div class="item-back" v-for="(item, cols) in line">
         <Item :title="item" :x="16 + cols * 35" :y="22 + rows * 35"></Item>
@@ -18,7 +18,7 @@ export default defineComponent({
   name: "Inventory",
   components: {Window, Item},
   props: {
-    title: String
+    inv: Object
   },
   data() {
     return {

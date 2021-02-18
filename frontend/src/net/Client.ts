@@ -48,7 +48,11 @@ export default class Client {
      */
     public objects: { [key: number]: GameObject } = {}
 
-    public playerInventory ?: InventoryUpdate
+    /**
+     * инвентари которые прислал сервер
+     */
+    public inventories: InventoryUpdate[] = []
+    public onInventoryUpdate ?: Callback
 
     /**
      * статус моего персонажа

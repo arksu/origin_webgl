@@ -178,16 +178,19 @@ class InventoryItemData(item: InventoryItem) {
 }
 
 @ObsoleteCoroutinesApi
-class InventoryData(inventory: Inventory) : ServerMessage("iv") {
+class InventoryUpdate(inventory: Inventory) : ServerMessage("iv") {
     val id = inventory.inventoryId
     val t = inventory.title
-    val l = ArrayList<InventoryItemData>()
+    private val l = ArrayList<InventoryItemData>()
 
     init {
         inventory.items.values.forEach {
             l.add(InventoryItemData(it))
         }
     }
+}
+
+class InventoryClose(val id: ObjectID) : ServerMessage("ic") {
 }
 
 /**
