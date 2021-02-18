@@ -1,4 +1,5 @@
 import _ from "lodash";
+import store from "@/store/store"
 import Client from "@/net/Client";
 import Game from "@/game/Game";
 import MoveController from "@/game/MoveController";
@@ -12,6 +13,7 @@ import {
     ObjectStopped,
     StatusUpdate
 } from "@/net/Packets";
+import {MutationTypes} from "@/store/mutation-types";
 
 enum State {
     Disconnected,
@@ -334,8 +336,9 @@ export default class Net {
             }
             case "iv" : { // inventory update
                 let inv = <InventoryUpdate>data
-                Client.instance.inventories[inv.id] = inv
-                Client.instance.onInventoryUpdate?.()
+                // Client.instance.inventories[inv.id] = inv
+                // Client.instance.onInventoryUpdate?.()
+                store.commit(MutationTypes.INVENTORY_UPDATE, inv)
                 break
             }
             case "ic" : { // inventory close

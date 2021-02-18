@@ -28,6 +28,8 @@ export default defineComponent({
   },
   methods: {},
   mounted() {
+    let ll = this.inv?.l
+    console.log("inv mounted", ll)
     // if (Client.instance.playerInventory !== undefined) {
     //   let d = Client.instance.playerInventory
     //   this.t

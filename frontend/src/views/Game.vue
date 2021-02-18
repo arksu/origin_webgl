@@ -20,7 +20,7 @@
     <input style="pointer-events: auto;" type="submit" value=">">
   </form>
 
-  <Inventory :title="inv.t" :inv="inv" v-for="inv in inventories"></Inventory>
+  <Inventory :inv="i" v-for="i in $store.state.inventories"></Inventory>
 
 </template>
 
@@ -43,7 +43,6 @@ export default defineComponent({
       cnt: 0 as number,
       chatHistory: [] as string[],
       chatHistoryIndex: 0 as number,
-      inventories: [] as any[]
     }
   },
   mounted() {
@@ -84,27 +83,9 @@ export default defineComponent({
       console.log("chat:")
       console.log(this.chatRows)
     }
-
-    Client.instance.onInventoryUpdate = () => {
-
-      this.inventories = []
-      Client.instance.inventories.forEach((inv) => {
-        console.warn("55555")
-        this.inventories.push(inv)
-      })
-
-      console.warn("inv222")
-      console.log(Client.instance.inventories)
-    }
-    Client.instance.onInventoryUpdate();
   },
   unmounted() {
     if (Net.instance) Net.instance.disconnect();
-  },
-  computed: {
-    // chatRows: function () {
-    //   return Client.instance.chatHistory
-    // }
   },
   methods: {
     chatSubmit() {

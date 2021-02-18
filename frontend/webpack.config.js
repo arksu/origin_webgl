@@ -25,7 +25,6 @@ module.exports = {
             },
             {
                 test: /\.s[ac]ss|css$/,
-                // test: /\.scss$/,
                 use: [
                     {
                         loader: "vue-style-loader"
@@ -40,6 +39,10 @@ module.exports = {
                         loader: "sass-loader" // compiles Sass to CSS
                     }
                 ]
+            },
+            {
+                test: /\.(jpe?g|gif|png)$/,
+                loader: 'file-loader'
             }
         ],
     },

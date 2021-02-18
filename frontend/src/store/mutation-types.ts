@@ -1,0 +1,4 @@
+export enum MutationTypes {
+    INVENTORY_UPDATE = 'INVENTORY_UPDATE',
+    INVENTORIES_CLEAR = 'INVENTORIES_CLEAR',
+}
