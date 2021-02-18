@@ -16,6 +16,8 @@
 import {defineComponent} from "vue";
 import Client from "@/net/Client";
 import CharacterRow from "@/views/characters/CharacterRow.vue";
+import {ActionTypes} from "@/store/action-types";
+import store from "@/store/store";
 
 type CharacterResponse = {
   id: number
@@ -38,14 +40,14 @@ export default defineComponent({
   },
   methods: {
     getList: function () {
-      if (!Client.instance.ssid) {
+      if (!this.$store.getters.isLogged) {
         Client.instance.networkError("Auth required")
         return;
       }
 
       const requestOptions = {
         method: 'GET',
-        headers: {'Content-Type': 'application/json', 'Authorization': Client.instance.ssid}
+        headers: {'Content-Type': 'application/json', 'Authorization': this.$store.getters.ssid!!}
       };
 
       fetch(Client.apiUrl + "/api/characters", requestOptions)
@@ -74,7 +76,7 @@ export default defineComponent({
           });
     },
     exit: function () {
-      Client.instance.logout();
+      this.$store.dispatch(ActionTypes.LOGOUT)
     }
   },
   mounted() {

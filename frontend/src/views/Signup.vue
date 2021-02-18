@@ -28,6 +28,7 @@
 <script lang="ts">
 import {defineComponent} from "vue";
 import Client from "@/net/Client";
+import {ActionTypes} from "@/store/action-types";
 
 export default defineComponent({
   name: "Signup",
@@ -73,7 +74,7 @@ export default defineComponent({
             if (response.ok) {
               const data = await response.json()
               if (data.ssid !== undefined) {
-                Client.instance.sucessLogin(data.ssid)
+                this.$store.dispatch(ActionTypes.SUCCESS_LOGIN, data.ssid)
               } else {
                 this.errorText = "no ssid in response"
               }

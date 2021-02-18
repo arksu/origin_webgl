@@ -1,4 +1,6 @@
 import {createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw} from "vue-router";
+import store from "@/store/store"
+
 import Login from "@/views/Login.vue";
 import Signup from "@/views/Signup.vue";
 import Game from "@/views/Game.vue";
@@ -66,7 +68,7 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
     } else if (to.name == 'Login') {
         next();
     } else if (to.name == 'Game') {
-        if (!Client.instance.isLogged()) {
+        if (!store.getters.isLogged) {
             console.log("not logged")
             next({name: "Login"})
         } else if (Client.instance.selectedCharacterId == undefined) {
@@ -76,7 +78,7 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
         }
     }
     // если не авторизованы надо перейти на логин форму
-    else if (to.name !== 'Login' && !Client.instance.isLogged()) {
+    else if (to.name !== 'Login' && !store.getters.isLogged) {
         // это первый запуск?
         if (from.name == undefined) {
             // Client.instance.needAutologin = true;

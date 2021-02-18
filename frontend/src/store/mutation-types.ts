@@ -1,4 +1,5 @@
 export enum MutationTypes {
+    SET_SSID = 'SET_SSID',
     INVENTORY_UPDATE = 'INVENTORY_UPDATE',
     INVENTORIES_CLEAR = 'INVENTORIES_CLEAR',
 }

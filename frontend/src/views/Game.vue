@@ -66,7 +66,7 @@ export default defineComponent({
       // авторизуемся на игровом сервере, создаем игровую сессию
       // входим в мир выбранным персонажем
       Net.remoteCall("ssid", {
-        ssid: Client.instance.ssid,
+        ssid: this.$store.getters.ssid!!,
         selectedCharacterId: Client.instance.selectedCharacterId
       })
           .then(r => {

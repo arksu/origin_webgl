@@ -47,14 +47,14 @@ export default defineComponent({
 
       if (!confirm("Are you sure to delete this character: " + this.name)) return;
 
-      if (!Client.instance.ssid) {
+      if (!this.$store.getters.isLogged) {
         Client.instance.networkError("Auth required")
         return;
       }
 
       const requestOptions = {
         method: 'DELETE',
-        headers: {'Authorization': Client.instance.ssid}
+        headers: {'Authorization': this.$store.getters.ssid!!}
       };
 
       fetch(Client.apiUrl + "/api/characters/" + this.id, requestOptions)

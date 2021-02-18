@@ -29,6 +29,7 @@ import {defineComponent} from "vue";
 import Client from "@/net/Client";
 import {hexToBase64, log2} from "@/utils/Util";
 import {syncScrypt} from "scrypt-js"
+import {ActionTypes} from "@/store/action-types";
 
 export default defineComponent({
   name: "Login",
@@ -117,7 +118,7 @@ export default defineComponent({
             if (response.ok) {
               const data = await response.json()
               if (data.ssid !== undefined) {
-                Client.instance.sucessLogin(data.ssid)
+                this.$store.dispatch(ActionTypes.SUCCESS_LOGIN, data.ssid)
               } else {
                 this.errorText = "no ssid in response"
               }

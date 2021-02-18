@@ -123,7 +123,6 @@ class Player(
      */
     private suspend fun mapClick(btn: ClientButton, flags: Int, x: Int, y: Int) {
         logger.debug("mapClick $x $y $btn")
-        inventory.send(this)
 
         if (contextMenu != null) {
             session.send(ContextMenu(null))

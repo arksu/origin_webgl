@@ -34,7 +34,7 @@ export default defineComponent({
       // не дадим отработать стандартному обработчику
       e.preventDefault();
 
-      if (!Client.instance.ssid) {
+      if (!this.$store.getters.isLogged) {
         Client.instance.networkError("Auth required")
         return;
       }
@@ -43,7 +43,7 @@ export default defineComponent({
 
       const requestOptions = {
         method: 'PUT',
-        headers: {'Content-Type': 'application/json', 'Authorization': Client.instance.ssid},
+        headers: {'Content-Type': 'application/json', 'Authorization': this.$store.getters.ssid!!},
         body: JSON.stringify({
           name: this.name,
         })

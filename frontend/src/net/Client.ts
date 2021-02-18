@@ -21,7 +21,7 @@ export default class Client {
     /**
      * ид текущей сессии используемый для запросов серверу
      */
-    public ssid?: string;
+    private ssid?: string;
 
     /**
      * была ли хоть одна попытка входа?
@@ -81,10 +81,6 @@ export default class Client {
         this.ssid = localStorage.getItem("ssid") || undefined;
     }
 
-    public isLogged(): boolean {
-        return this.ssid !== undefined;
-    }
-
     /**
      * сетевая ошибка
      * @param e сообщение об ошибке
@@ -94,25 +90,6 @@ export default class Client {
         this.lastError = e;
         this.ssid = undefined
         router.push({name: 'Login'});
-    }
-
-    /**
-     * произошел успешный вход через API
-     * @param ssid
-     */
-    public sucessLogin(ssid: string) {
-        Client.instance.ssid = ssid;
-        localStorage.setItem("ssid", ssid);
-        router.push({name: "Characters"});
-    }
-
-    /**
-     * разлогинится и вернуться на экран входа
-     */
-    public logout() {
-        Client.instance.ssid = undefined;
-        localStorage.removeItem("ssid");
-        router.push({name: "Login"})
     }
 
     /**
