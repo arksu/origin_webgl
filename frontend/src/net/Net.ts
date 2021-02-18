@@ -336,14 +336,11 @@ export default class Net {
             }
             case "iv" : { // inventory update
                 let inv = <InventoryUpdate>data
-                // Client.instance.inventories[inv.id] = inv
-                // Client.instance.onInventoryUpdate?.()
                 store.commit(MutationTypes.INVENTORY_UPDATE, inv)
                 break
             }
             case "ic" : { // inventory close
-                delete Client.instance.inventories[data.id]
-                Client.instance.onInventoryUpdate?.()
+                store.commit(MutationTypes.INVENTORIES_CLEAR)
                 break
             }
             case "cs" : { // creature say

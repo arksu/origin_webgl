@@ -4,9 +4,10 @@ import {InventoryUpdate} from "@/net/Packets";
 import {MutationTree} from "vuex";
 
 export type Mutations<S = State> = {
+    [MutationTypes.SET_SSID](state: S, payload: undefined | string): void
+    [MutationTypes.SET_LAST_ERROR](state: S, payload: undefined | string): void
     [MutationTypes.INVENTORY_UPDATE](state: S, payload: InventoryUpdate): void
     [MutationTypes.INVENTORIES_CLEAR](state: S): void
-    [MutationTypes.SET_SSID](state: S, payload: undefined | string): void
 }
 
 export const mutations: MutationTree<State> & Mutations = {
@@ -23,5 +24,8 @@ export const mutations: MutationTree<State> & Mutations = {
         } else {
             localStorage.removeItem("ssid");
         }
+    },
+    [MutationTypes.SET_LAST_ERROR](state, payload: undefined | string) {
+        state.lastError = payload
     }
 }

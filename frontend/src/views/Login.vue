@@ -7,8 +7,8 @@
       </div>
       <div class="login-panel">
         <form @submit.prevent="submit" action="#">
-          <div class="error-message" v-if="errorText !== undefined">
-            {{ errorText }}
+          <div class="error-message" v-if="$store.state.lastError !== undefined">
+            {{ $store.state.lastError }}
           </div>
           <input v-focus type="text" placeholder="Login" required v-model="login">
           <input type="password" placeholder="Password" required v-model="password">
@@ -30,6 +30,7 @@ import Client from "@/net/Client";
 import {hexToBase64, log2} from "@/utils/Util";
 import {syncScrypt} from "scrypt-js"
 import {ActionTypes} from "@/store/action-types";
+import {MutationTypes} from "@/store/mutation-types";
 
 export default defineComponent({
   name: "Login",
@@ -37,7 +38,6 @@ export default defineComponent({
     return {
       login: null as string | null,
       password: null as string | null,
-      errorText: undefined as string | undefined,
       isProcessing: false as boolean,
       submitPressed: false as boolean
     }
@@ -99,7 +99,7 @@ export default defineComponent({
       this.submitPressed = true;
 
       this.isProcessing = true;
-      this.errorText = undefined;
+      this.$store.commit(MutationTypes.SET_LAST_ERROR, undefined)
 
       let hash = this.makeHash();
 
@@ -120,17 +120,17 @@ export default defineComponent({
               if (data.ssid !== undefined) {
                 this.$store.dispatch(ActionTypes.SUCCESS_LOGIN, data.ssid)
               } else {
-                this.errorText = "no ssid in response"
+                this.$store.commit(MutationTypes.SET_LAST_ERROR, "no ssid in response")
               }
             } else {
               const responseText = await response.text()
               const error = "error " + response.status + " " + (responseText.length < 64 ? responseText : response.statusText);
-              this.errorText = error;
+              this.$store.commit(MutationTypes.SET_LAST_ERROR, error)
               console.warn(error)
             }
           })
           .catch(error => {
-            this.errorText = error.message || error;
+            this.$store.commit(MutationTypes.SET_LAST_ERROR, error.message || error)
             console.error('error', error);
             console.log(error.message)
           })
@@ -141,10 +141,10 @@ export default defineComponent({
   },
   watch: {
     login: function () {
-      if (this.submitPressed) this.errorText = undefined;
+      if (this.submitPressed) this.$store.commit(MutationTypes.SET_LAST_ERROR, undefined)
     },
     password: function () {
-      if (this.submitPressed) this.errorText = undefined;
+      if (this.submitPressed) this.$store.commit(MutationTypes.SET_LAST_ERROR, undefined)
     }
   },
   mounted() {
@@ -160,10 +160,6 @@ export default defineComponent({
         this.loginImpl();
         return;
       }
-    }
-    if (Client.instance.lastError !== undefined) {
-      this.errorText = Client.instance.lastError;
-      Client.instance.lastError = undefined;
     }
   }
 });

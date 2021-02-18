@@ -13,6 +13,7 @@
 import {defineComponent} from "vue";
 import router from "@/router";
 import Client from "@/net/Client";
+import {ActionTypes} from "@/store/action-types";
 
 export default defineComponent({
   name: "CharacterRow",
@@ -48,7 +49,7 @@ export default defineComponent({
       if (!confirm("Are you sure to delete this character: " + this.name)) return;
 
       if (!this.$store.getters.isLogged) {
-        Client.instance.networkError("Auth required")
+        this.$store.dispatch(ActionTypes.NETWORK_ERROR, "Auth required")
         return;
       }
 
@@ -66,15 +67,15 @@ export default defineComponent({
                 console.log("emit")
                 this.$emit('deleted')
               } else {
-                Client.instance.networkError("failed delete character");
+                this.$store.dispatch(ActionTypes.NETWORK_ERROR, "failed delete character");
               }
             } else {
               const responseText = await response.text()
-              Client.instance.networkError("error " + response.status + " " + (responseText.length < 64 ? responseText : response.statusText));
+              this.$store.dispatch(ActionTypes.NETWORK_ERROR, "error " + response.status + " " + (responseText.length < 64 ? responseText : response.statusText));
             }
           })
           .catch(error => {
-            Client.instance.networkError(error.message || error);
+            this.$store.dispatch(ActionTypes.NETWORK_ERROR, error.message || error);
           })
           .finally(() => {
             this.isProcessing = false;

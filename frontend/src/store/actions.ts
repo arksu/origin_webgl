@@ -20,6 +20,11 @@ export interface Actions {
 
     [ActionTypes.LOGOUT](
         {commit}: AugmentedActionContext
+    ): void,
+
+    [ActionTypes.NETWORK_ERROR](
+        {commit}: AugmentedActionContext,
+        payload: string
     ): void
 }
 
@@ -31,5 +36,10 @@ export const actions: ActionTree<State, State> & Actions = {
     [ActionTypes.LOGOUT]({commit}) {
         commit(MutationTypes.SET_SSID, undefined)
         router.push({name: "Login"})
+    },
+    [ActionTypes.NETWORK_ERROR]({commit}, payload: string) {
+        commit(MutationTypes.SET_LAST_ERROR, payload)
+        commit(MutationTypes.SET_SSID, undefined)
+        router.push({name: 'Login'});
     },
 }

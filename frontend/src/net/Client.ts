@@ -1,7 +1,7 @@
-import router from "@/router";
 import {GameObject} from "@/game/GameObject";
 import {MapData} from "@/game/Grid";
-import {InventoryUpdate} from "@/net/Packets";
+import store from "@/store/store";
+import {MutationTypes} from "@/store/mutation-types";
 
 
 export default class Client {
@@ -18,10 +18,6 @@ export default class Client {
      */
     public static apiUrl: string;
 
-    /**
-     * ид текущей сессии используемый для запросов серверу
-     */
-    private ssid?: string;
 
     /**
      * была ли хоть одна попытка входа?
@@ -34,11 +30,6 @@ export default class Client {
     public needAutologin: boolean = false;
 
     /**
-     * последняя ошибка зарегистрированная
-     */
-    public lastError?: string = undefined
-
-    /**
      * данные карты (тайлы)
      */
     public map: { [key: string]: MapData } = {};
@@ -47,12 +38,6 @@ export default class Client {
      * игровые объекты полученные с сервера
      */
     public objects: { [key: number]: GameObject } = {}
-
-    /**
-     * инвентари которые прислал сервер
-     */
-    public inventories: InventoryUpdate[] = []
-    public onInventoryUpdate ?: Callback
 
     /**
      * статус моего персонажа
@@ -77,20 +62,6 @@ export default class Client {
         localStorage.setItem("selectedCharacterId", v.toString())
     }
 
-    constructor() {
-        this.ssid = localStorage.getItem("ssid") || undefined;
-    }
-
-    /**
-     * сетевая ошибка
-     * @param e сообщение об ошибке
-     */
-    public networkError(e: string) {
-        console.warn("networkError " + e)
-        this.lastError = e;
-        this.ssid = undefined
-        router.push({name: 'Login'});
-    }
 
     /**
      * очистить игровые данные
@@ -99,5 +70,6 @@ export default class Client {
         this.map = {};
         this.objects = {}
         this.chatHistory = []
+        store.commit(MutationTypes.INVENTORIES_CLEAR)
     }
 }

@@ -17,7 +17,6 @@ import {defineComponent} from "vue";
 import Client from "@/net/Client";
 import CharacterRow from "@/views/characters/CharacterRow.vue";
 import {ActionTypes} from "@/store/action-types";
-import store from "@/store/store";
 
 type CharacterResponse = {
   id: number
@@ -41,7 +40,7 @@ export default defineComponent({
   methods: {
     getList: function () {
       if (!this.$store.getters.isLogged) {
-        Client.instance.networkError("Auth required")
+        this.$store.dispatch(ActionTypes.NETWORK_ERROR, "Auth required")
         return;
       }
 
@@ -61,15 +60,15 @@ export default defineComponent({
                   this.list!!.push({id: 0, name: 'Create New'})
                 }
               } else {
-                Client.instance.networkError("no characters list");
+                this.$store.dispatch(ActionTypes.NETWORK_ERROR, "no characters list");
               }
             } else {
               const responseText = await response.text()
-              Client.instance.networkError("error " + response.status + " " + (responseText.length < 64 ? responseText : response.statusText));
+              this.$store.dispatch(ActionTypes.NETWORK_ERROR, "error " + response.status + " " + (responseText.length < 64 ? responseText : response.statusText));
             }
           })
           .catch(error => {
-            Client.instance.networkError(error.message || error);
+            this.$store.dispatch(ActionTypes.NETWORK_ERROR, error.message || error);
           })
           .finally(() => {
             this.isProcessing = false;
