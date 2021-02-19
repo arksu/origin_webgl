@@ -10,6 +10,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 @ObsoleteCoroutinesApi
 abstract class Container(entity: EntityObject) : StaticObject(entity) {
+
     override val inventory by lazy { Inventory(this) }
 
     private val discoverers = HashMap<ObjectID, Human>()
@@ -27,7 +28,6 @@ abstract class Container(entity: EntityObject) : StaticObject(entity) {
         val oldSize = discoverers.size
         discoverers[who.id] = who
         if (oldSize == 0) {
-            println("OPEN")
             grid.broadcast(BroadcastEvent.Changed(this))
         }
     }
@@ -36,7 +36,6 @@ abstract class Container(entity: EntityObject) : StaticObject(entity) {
         super.closeBy(who)
         discoverers.remove(who.id)
         if (discoverers.size == 0) {
-            println("CLOSE")
             grid.broadcast(BroadcastEvent.Changed(this))
         }
     }

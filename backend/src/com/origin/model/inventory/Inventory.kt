@@ -22,14 +22,6 @@ class Inventory(private val parent: GameObject) {
             return parent::class.java.simpleName
         }
 
-    fun getWidth(): Int {
-        return 6
-    }
-
-    fun getHeight(): Int {
-        return 4
-    }
-
     init {
         transaction {
             val list = InventoryItemEntity.find { InventoryItems.inventoryId eq inventoryId }
@@ -39,11 +31,19 @@ class Inventory(private val parent: GameObject) {
         }
     }
 
+    fun getWidth(): Int {
+        return 6
+    }
+
+    fun getHeight(): Int {
+        return 4
+    }
+
     suspend fun send(player: Player) {
         player.session.send(InventoryUpdate(this))
     }
 
-    fun itemClick(id : ObjectID) {
+    fun itemClick(id: ObjectID) {
 
     }
 }

@@ -64,9 +64,12 @@ object MapImporter {
                             TileColors.FOREST_PINE -> Tile.FOREST_PINE
                             TileColors.FOREST_LEAF -> Tile.FOREST_LEAF
                             TileColors.CLAY -> Tile.CLAY
+                            TileColors.SAND -> Tile.SAND
+                            TileColors.SWAMP -> Tile.WATER
                             TileColors.WATER -> Tile.WATER
+                            TileColors.WATER_DEEP -> Tile.WATER_DEEP
                             else ->
-                                throw RuntimeException("unknown tile $c")
+                                throw RuntimeException("unknown tile 0x${c.toString(16)} at grid $gx $gy pixel $tx $ty")
                         }
                         ba[idx] = tileType
                     }

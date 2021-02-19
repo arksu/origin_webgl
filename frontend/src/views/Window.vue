@@ -1,7 +1,7 @@
 <template>
   <div ref="draggableTarget" class="container"
        :style="'width: ' + width + 'px; height: ' + height + 'px; left: '+left +'px; top: '+top+'px;'">
-    <div class="frame">
+    <div class="frame" :style="'width: ' + width + 'px; height: ' + height + 'px;'">
       <slot></slot>
     </div>
 
@@ -74,6 +74,8 @@ export default defineComponent({
       console.log(event)
       document.ontouchmove = null
       document.ontouchend = null
+      localStorage.setItem("wnd_" + this.id + "_left", "" + this.left)
+      localStorage.setItem("wnd_" + this.id + "_top", "" + this.top)
     },
     onMouseDown: function (event: MouseEvent) {
       console.log(event)
@@ -153,8 +155,7 @@ export default defineComponent({
 .frame {
   position: absolute;
   top: 7px;
-  width: 100%;
-  height: 100%;
+  border-width: 0;
   border-image: url('/assets/window_frame.png') 34% fill / 8px repeat repeat;
 }
 
