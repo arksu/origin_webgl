@@ -1,4 +1,4 @@
-package com.origin.model.items
+package com.origin.model.inventory
 
 import com.origin.entity.InventoryItemEntity
 import com.origin.entity.InventoryItems
@@ -41,5 +41,9 @@ class Inventory(private val parent: GameObject) {
 
     suspend fun send(player: Player) {
         player.session.send(InventoryUpdate(this))
+    }
+
+    fun itemClick(id : ObjectID) {
+
     }
 }

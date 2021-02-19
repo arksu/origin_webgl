@@ -1,4 +1,4 @@
-package com.origin
+package com.origin.database
 
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database

@@ -1,4 +1,4 @@
-package com.origin.model.items
+package com.origin.model.inventory
 
 import com.origin.entity.InventoryItemEntity
 import kotlinx.coroutines.ObsoleteCoroutinesApi

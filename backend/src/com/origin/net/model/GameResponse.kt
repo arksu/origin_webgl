@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName
 import com.origin.model.*
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
 import com.origin.model.ContextMenu
-import com.origin.model.items.Inventory
-import com.origin.model.items.InventoryItem
+import com.origin.model.inventory.Inventory
+import com.origin.model.inventory.InventoryItem
 import com.origin.utils.ObjectID
 import com.origin.utils.StringTypeAdapter
 import kotlinx.coroutines.ObsoleteCoroutinesApi

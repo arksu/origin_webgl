@@ -108,6 +108,17 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     val item = (r.data["item"] as String?) ?: throw BadRequest("no item")
                     player.send(PlayerMsg.ContextMenuItem(item))
                 }
+                // клик по вещи в открытом инвентаре
+                "itemclick" -> {
+                    val id = (r.data["id"] as Long?) ?: throw BadRequest("wrong obj id")
+                    val inventoryId = (r.data["iid"] as Long?) ?: throw BadRequest("wrong obj id")
+                    player.send(PlayerMsg.ItemClick(id, inventoryId))
+                }
+                // закрыть инвентарь
+                "invclose" -> {
+                    val inventoryId = (r.data["iid"] as Long?) ?: throw BadRequest("wrong obj id")
+                    player.send(PlayerMsg.InventoryClose(inventoryId))
+                }
                 "chat" -> {
                     val text = (r.data["text"] as String?) ?: throw BadRequest("no text")
                     if (text.isNotEmpty()) {

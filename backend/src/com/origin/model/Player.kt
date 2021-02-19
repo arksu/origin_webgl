@@ -4,7 +4,7 @@ import com.origin.collision.CollisionResult
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
-import com.origin.model.items.Inventory
+import com.origin.model.inventory.Inventory
 import com.origin.model.move.Move2Object
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
@@ -33,6 +33,8 @@ class PlayerMsg {
     class ObjectRightClick(val id: ObjectID)
     class ContextMenuItem(val item: String)
     class ExecuteActionCondition(val resp: CompletableDeferred<Boolean>, val block: (Player) -> Boolean)
+    class ItemClick(val id: ObjectID, val inventoryId: ObjectID)
+    class InventoryClose(val inventoryId: ObjectID)
 }
 
 private val PLAYER_RECT = Rect(3)
@@ -68,7 +70,7 @@ class Player(
     /**
      * инвентарь игрока
      */
-    private val inventory = Inventory(this)
+    private val inventoryInternal = Inventory(this)
 
     override val status = PcStatus(this, character)
 
@@ -108,6 +110,21 @@ class Player(
                 if (!result) stopAction()
                 msg.resp.complete(result)
             }
+            is PlayerMsg.ItemClick -> {
+                if (msg.inventoryId == id) {
+                    inventoryInternal.itemClick(msg.id)
+                } else {
+                    val obj = openObjectsList.get(msg.inventoryId)
+                    obj?.send(msg)
+                }
+            }
+            is PlayerMsg.InventoryClose -> {
+                if (msg.inventoryId == id) {
+                    session.send(InventoryClose(id))
+                } else {
+                    openObjectsList.close(msg.inventoryId)
+                }
+            }
 
             else -> super.processMessage(msg)
         }
@@ -115,7 +132,7 @@ class Player(
 
     override suspend fun afterSpawn() {
         super.afterSpawn()
-        inventory.send(this)
+        inventoryInternal.send(this)
     }
 
     /**

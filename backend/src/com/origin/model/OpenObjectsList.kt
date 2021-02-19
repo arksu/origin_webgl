@@ -1,5 +1,7 @@
 package com.origin.model
 
+import com.origin.net.model.InventoryClose
+import com.origin.net.model.InventoryUpdate
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
@@ -18,17 +20,30 @@ class OpenObjectsList(private val me: Human) {
 
     private val list = HashMap<ObjectID, GameObject>()
 
-    fun open(obj: GameObject) {
-        if (!list.containsKey(obj.id)) {
-            logger.warn("open $obj")
-            list.put(obj.id, obj)
-        }
+    suspend fun open(obj: GameObject): Boolean {
+        val inv = obj.getInventory()
+        if (inv != null)
+            if (!list.containsKey(obj.id)) {
+                logger.warn("open $obj")
+                list[obj.id] = obj
+                if (me is Player) {
+                    me.send(InventoryUpdate(inv))
+                }
+                return true
+            }
+        return false
     }
 
-    fun close(obj: GameObject) {
-        if (list.containsKey(obj.id)) {
-            logger.warn("close $obj")
-            list.remove(obj.id)
+    fun get(id: ObjectID): GameObject? {
+        return list[id]
+    }
+
+    suspend fun close(id: ObjectID) {
+        if (list.containsKey(id)) {
+            logger.warn("close $id")
+            list.remove(id)
+            if (me is Player)
+                me.send(InventoryClose(id))
         }
     }
 

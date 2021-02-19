@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.model.inventory.Inventory
 import com.origin.model.move.Position
 import com.origin.utils.ObjectID
 import com.origin.utils.Rect
@@ -184,7 +185,11 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     /**
      * открыть инвентарь объекта
      */
-    open fun openBy(who: Player) {
+    open fun openBy(who: Human) {
+    }
+
+    open fun getInventory(): Inventory? {
+        return null
     }
 
     /**

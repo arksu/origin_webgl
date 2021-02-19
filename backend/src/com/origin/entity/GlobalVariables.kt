@@ -1,6 +1,6 @@
 package com.origin.entity
 
-import com.origin.upsert
+import com.origin.database.upsert
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
