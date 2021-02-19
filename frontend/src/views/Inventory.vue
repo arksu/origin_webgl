@@ -1,5 +1,6 @@
 <template>
   <Window v-if="isVisible"
+          :id="inv.id"
           :title="inv.t"
           @close="close"
           :width="32 + inv.w * 31"
@@ -22,7 +23,7 @@
 import {defineComponent} from "vue";
 import Item from "@/views/Item.vue";
 import Window from "@/views/Window.vue";
-import {InvItem} from "@/net/Packets";
+import {InventoryUpdate, InvItem} from "@/net/Packets";
 import ItemSlot from "@/views/ItemSlot.vue";
 import Net from "@/net/Net";
 
@@ -30,7 +31,7 @@ export default defineComponent({
   name: "Inventory",
   components: {ItemSlot, Window, Item},
   props: {
-    inv: Object
+    inv: Object as () => InventoryUpdate
   },
   data() {
     return {

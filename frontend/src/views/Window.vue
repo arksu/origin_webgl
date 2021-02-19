@@ -1,11 +1,12 @@
 <template>
-  <div ref="draggableTarget" class="container" :style="windowStyle">
+  <div ref="draggableTarget" class="container"
+       :style="'width: ' + width + 'px; height: ' + height + 'px; left: '+left +'px; top: '+top+'px;'">
     <div class="frame">
       <slot></slot>
     </div>
 
     <div class="close-btn-back">
-      <img style="float: right; margin-right: 3px" src="assets/window_close.png">
+      <img alt="" style="float: right; margin-right: 3px" src="assets/window_close.png">
     </div>
     <div class="header" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
       <div class="title">
@@ -27,6 +28,7 @@ export default defineComponent({
   name: "Window",
   props: {
     title: String,
+    id: Number, // id окна по которому восстанавливаем/сохраняем размеры
     width: Number,
     height: Number
   },
@@ -40,11 +42,8 @@ export default defineComponent({
       movementX: 0 as number,
       movementY: 0 as number,
       touchId: -1 as number,
-    }
-  },
-  computed: {
-    windowStyle(): string {
-      return "width: " + this.width + "px; height: " + this.height + "px;"
+      left: 0 as number,
+      top: 0 as number
     }
   },
   methods: {
@@ -67,8 +66,8 @@ export default defineComponent({
         this.clientY = event.touches[0].clientY
 
         const el = <HTMLDivElement>this.$refs.draggableTarget
-        el.style.left = (el.offsetLeft - this.movementX) + 'px'
-        el.style.top = (el.offsetTop - this.movementY) + 'px'
+        this.left = (el.offsetLeft - this.movementX)
+        this.top = (el.offsetTop - this.movementY)
       }
     },
     onTouchDragEnd: function (event: TouchEvent) {
@@ -93,12 +92,22 @@ export default defineComponent({
       this.clientY = event.clientY
 
       const el = <HTMLDivElement>this.$refs.draggableTarget
-      el.style.left = (el.offsetLeft - this.movementX) + 'px'
-      el.style.top = (el.offsetTop - this.movementY) + 'px'
+      this.left = (el.offsetLeft - this.movementX)
+      this.top = (el.offsetTop - this.movementY)
     },
     onDragEnd: function () {
       document.onmousemove = null
       document.onmouseup = null
+      localStorage.setItem("wnd_" + this.id + "_left", "" + this.left)
+      localStorage.setItem("wnd_" + this.id + "_top", "" + this.top)
+    }
+  },
+  mounted() {
+    this.left = parseInt(localStorage.getItem("wnd_" + this.id + "_left") ?? "100")
+    this.top = parseInt(localStorage.getItem("wnd_" + this.id + "_top") ?? "150")
+    if (this.left + this.width! > window.innerWidth || this.top + this.height! > window.innerHeight) {
+      this.left = 100
+      this.top = 150
     }
   }
 })
@@ -109,8 +118,6 @@ export default defineComponent({
   display: flex;
   justify-content: right;
   position: absolute;
-  left: 100px;
-  top: 200px;
   z-index: 100;
   text-align: center;
   -moz-user-select: none;
@@ -129,8 +136,8 @@ export default defineComponent({
 .title {
   border-left: 18px solid transparent;
   border-right: 18px solid transparent;
-  border-top: 0px solid transparent;
-  border-bottom: 0px solid transparent;
+  border-top: 0 solid transparent;
+  border-bottom: 0 solid transparent;
   border-image: url('/assets/window_title.png') 0 30% 0 30% fill / 0 18px 0 18px;
   position: relative;
   height: 22px;

@@ -19,11 +19,19 @@ sealed class GameObjectMsg {
     class OnRemoved
     class OnObjectRemoved(val obj: GameObject)
     class OnObjectAdded(val obj: GameObject)
+
+    // выполнить часть длительного действия над объектом
     class ExecuteActionTick(
         val action: Action,
         val resp: CompletableDeferred<Boolean>,
         val block: suspend (Action) -> Boolean,
     )
+
+    // кто-то "открыл" объект
+    class OpenBy(val who: Human)
+
+    // кто-то "закрыл" объект
+    class CloseBy(val who: Human)
 }
 
 /**
@@ -125,6 +133,8 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
             is GameObjectMsg.OnObjectRemoved -> onObjectRemoved(msg.obj)
             is GameObjectMsg.OnObjectAdded -> onObjectAdded(msg.obj)
             is GameObjectMsg.ExecuteActionTick -> msg.resp.complete(msg.block(msg.action))
+            is GameObjectMsg.OpenBy -> openBy(msg.who)
+            is GameObjectMsg.CloseBy -> closeBy(msg.who)
 
             else -> throw RuntimeException("unprocessed actor message ${msg.javaClass.simpleName}")
         }
@@ -190,7 +200,13 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     /**
      * открыть инвентарь объекта
      */
-    open fun openBy(who: Human) {
+    protected open suspend fun openBy(who: Human) {
+    }
+
+    /**
+     * закрыть инвентарь
+     */
+    protected open suspend fun closeBy(who: Human) {
     }
 
     /**

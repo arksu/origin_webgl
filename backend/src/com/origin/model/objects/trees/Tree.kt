@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory
  * Деревья
  */
 @ObsoleteCoroutinesApi
-open class Tree(entity: EntityObject) : StaticObject(entity) {
+abstract class Tree(entity: EntityObject) : StaticObject(entity) {
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(Tree::class.java)
     }

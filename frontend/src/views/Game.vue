@@ -20,8 +20,7 @@
     <input style="pointer-events: auto;" type="submit" value=">">
   </form>
 
-  <Inventory :inv="i" v-for="i in $store.state.inventories"></Inventory>
-
+  <Inventory :inv="i" v-for="i in $store.state.inventories" :key="i.id"></Inventory>
 </template>
 
 <script lang="ts">

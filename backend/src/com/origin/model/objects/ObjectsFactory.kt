@@ -2,6 +2,7 @@ package com.origin.model.objects
 
 import com.origin.entity.EntityObject
 import com.origin.model.GameObject
+import com.origin.model.objects.containers.Box
 import com.origin.model.objects.trees.Birch
 import com.origin.model.objects.trees.Fir
 import com.origin.model.objects.trees.Pine

@@ -29,6 +29,7 @@ class OpenObjectsList(private val me: Human) {
                 if (me is Player) {
                     me.session.send(InventoryUpdate(inv))
                 }
+                obj.send(GameObjectMsg.OpenBy(me))
                 return true
             }
         return false
@@ -39,22 +40,22 @@ class OpenObjectsList(private val me: Human) {
     }
 
     suspend fun close(id: ObjectID) {
-        if (list.containsKey(id)) {
-            logger.warn("close $id")
-            list.remove(id)
+        val obj = list.remove(id)
+        if (obj != null) {
             if (me is Player) {
                 me.session.send(InventoryClose(id))
             }
+            obj.send(GameObjectMsg.CloseBy(me))
         }
     }
 
     suspend fun closeAll() {
         if (list.size > 0) {
-            logger.warn("closeAll")
             list.values.forEach {
                 if (me is Player) {
                     me.session.send(InventoryClose(it.id))
                 }
+                it.send(GameObjectMsg.CloseBy(me))
             }
             list.clear()
         }

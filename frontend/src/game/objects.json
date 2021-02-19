@@ -249,12 +249,23 @@
     }
   },
   "box": {
-    "norm": {
+    "normal": {
       "offset": [20, 33],
       "layers": [
         {
           "interactive": true,
           "img": "obj/box/box.png",
+          "offset": [0, 0],
+          "z": 0
+        }
+      ]
+    },
+    "open" : {
+      "offset": [26, 47],
+      "layers": [
+        {
+          "interactive": true,
+          "img": "obj/box/box_open.png",
           "offset": [0, 0],
           "z": 0
         }
