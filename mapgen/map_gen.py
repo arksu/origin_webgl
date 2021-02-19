@@ -2,6 +2,7 @@ from scipy.spatial import Voronoi, voronoi_plot_2d
 import matplotlib.pyplot as plt
 from random import randrange
 import numpy as np
+import threading
 import datetime
 import noise
 import math
@@ -10,7 +11,7 @@ import cv2
 
 
 map_size = {"width":5000, "height":5000}
-riv_params = {"num_pair_points": 2 ,"max_riv_width": 60, "min_riv_width": 50, "min_sand_width":-50, "max_sand_width":5}
+riv_params = {"num_pair_points": 2 ,"max_riv_width": 35, "min_riv_width": 15, "min_sand_width":-40, "max_sand_width":5}
 
 start_time = time.time()
 
@@ -24,6 +25,22 @@ points = np.array(points)
 vor = Voronoi(points)
 # fig = voronoi_plot_2d(vor)
 # plt.show()
+
+def hexColToArr(c):
+    return np.array([ int(c[2]),  int(c[1]), int(c[0])])
+
+HEATH =       hexColToArr(b'\x00\x00\x00')
+MEADOW_LOW =  hexColToArr(b'\xd9\x7c\xc0')# луг (низкие травы)
+MEADOW_HIGH = hexColToArr(b'\x8e\xbf\x8e')# луг (высокие травы)
+FOREST_LEAF = hexColToArr(b'\x17\xd4\x21')# лес лиственный
+FOREST_PINE = hexColToArr(b'\x31\x61\x17')# лес хвойный
+CLAY =        hexColToArr(b'\x70\x39\x0f')# глина
+SAND =        hexColToArr(b'\xe0\xe0\x34')# песок
+PRAIRIE =     hexColToArr(b'\xf0\xa0\x1f')# степь
+SWAMP =       hexColToArr(b'\x1c\x38\x19')# болото
+TUNDRA =      hexColToArr(b'\x3c\x7a\x6f')# тундра
+WATER =       hexColToArr(b'\x00\x55\xff')# мелководье
+WATER_DEEP =  hexColToArr(b'\x00\x00\xff')# глубокая вода
 
 def vecs_len(v1, v2):
     return math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2)
@@ -58,10 +75,14 @@ def getSandRange(riv_params):
     return randrange(riv_params["min_sand_width"], riv_params["max_sand_width"])
 
 def drawPointToMap(nmap, point, c):
-    nmap[int(point[0])][int(point[1])] = [c[0], c[1], c[2], 255]
-
-def hexColToArr(c):
-    return np.array([ int(c[2]),  int(c[1]), int(c[0]), 255])[0:3]
+    nmap[int(point[0])][int(point[1])] = [c[0], c[1], c[2]]
+    
+def colorCheck(c, eq):
+    for t in eq:
+        equal = np.array_equal(np.array(c), t)
+        if equal:
+            return True
+    return False
     
 def drawWater(nmap, point, w, map_size, sand_w):
     
@@ -81,27 +102,15 @@ def drawWater(nmap, point, w, map_size, sand_w):
                     nmap[int(lrvec[0])][int(lrvec[1])] = WATER_DEEP
                     continue
                      
-                if l >= range_ and l < range_ * 2:
-                    if not np.array_equal(curr_color, WATER_DEEP):
+                if l >= range_ and l < range_ * 1.5:
+                    if not colorCheck(curr_color, [WATER_DEEP]):
                         nmap[int(lrvec[0])][int(lrvec[1])] = WATER
                         continue
                        
-                if l < (2 + sand_w) * range_:
-                    if (not np.array_equal(curr_color, WATER_DEEP) ) and ( not np.array_equal(curr_color,  WATER)):
+                if l < (1.5 + sand_w) * range_:
+                    if not colorCheck(curr_color, [WATER_DEEP, WATER]):
                         nmap[int(lrvec[0])][int(lrvec[1])] = SAND
 
-HEATH =       hexColToArr(b'\x00\x00\x00')
-MEADOW_LOW =  hexColToArr(b'\xd9\x7c\xc0')# луг (низкие травы)
-MEADOW_HIGH = hexColToArr(b'\x8e\xbf\x8e')# луг (высокие травы)
-FOREST_LEAF = hexColToArr(b'\x17\xd4\x21')# лес лиственный
-FOREST_PINE = hexColToArr(b'\x31\x61\x17')# лес хвойный
-CLAY =        hexColToArr(b'\x70\x39\x0f')# глина
-SAND =        hexColToArr(b'\xe0\xe0\x34')# песок
-PRAIRIE =     hexColToArr(b'\xf0\xa0\x1f')# степь
-SWAMP =       hexColToArr(b'\x1c\x38\x19')# болото
-TUNDRA =      hexColToArr(b'\x3c\x7a\x6f')# тундра
-WATER =       hexColToArr(b'\x00\x55\xff')# мелководье
-WATER_DEEP =  hexColToArr(b'\x00\x00\xff')# глубокая вода
 
 nmap = np.zeros(shape=(map_size["width"],map_size["height"], 3))
 
@@ -186,6 +195,44 @@ octaves = randrange(10, 30)
 persistence = randrange(15, 25) / 100.0
 lacunarity = randrange(15, 20) / 10.0
 
+
+
+                
+scale = randrange(700, 1450)
+octaves = randrange(10, 30)
+persistence = randrange(15, 25) / 100.0
+lacunarity = randrange(15, 20) / 10.0               
+
+world = np.zeros((map_size["width"], map_size["height"]))
+for i in range(map_size["width"]):
+    for j in range(map_size["height"]):
+        world[i][j] = noise.pnoise2(i/scale, 
+                                    j/scale, 
+                                    octaves=octaves, 
+                                    persistence=persistence, 
+                                    lacunarity=lacunarity, 
+                                    repeatx=1000, 
+                                    repeaty=1000, 
+                                    base=0)
+        
+        
+for i in range(map_size["width"]):
+    for j in range(map_size["height"]):
+        if world[i][j] > 0.170:
+            pic_color = np.array(nmap[i][j])
+            
+            if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND]):
+                nmap[i][j] = PRAIRIE
+                
+for i in range(map_size["width"]):
+    for j in range(map_size["height"]):
+        if world[i][j] < -0.150:
+            pic_color = np.array(nmap[i][j])
+
+            if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND]):
+                nmap[i][j] = MEADOW_HIGH
+
+                
 world = np.zeros((map_size["width"], map_size["height"]))
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
@@ -200,18 +247,21 @@ for i in range(map_size["width"]):
         
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        if world[i][j] > 0.380:
-            pic_color = nmap[i][j]
-            if (not np.array_equal(np.array(pic_color), WATER_DEEP)) and (not np.array_equal(np.array(pic_color), WATER)):
+        if world[i][j] > 0.370:
+            pic_color = np.array(nmap[i][j])
+            
+            if not colorCheck(pic_color, [WATER_DEEP, WATER]):
                 nmap[i][j] = CLAY
                 
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        if world[i][j] < -0.380:
-            pic_color = nmap[i][j]
-            if (not np.array_equal(np.array(pic_color), WATER_DEEP)) and (not np.array_equal(np.array(pic_color), WATER)):
-                nmap[i][j] = SWAMP
+        if world[i][j] < -0.310:
+            pic_color = np.array(nmap[i][j])
 
+            if not colorCheck(pic_color, [WATER_DEEP, WATER]):
+                nmap[i][j] = SWAMP
+                
+                
 scale = randrange(650, 1450)                
 
 world = np.zeros((map_size["width"], map_size["height"]))
@@ -228,15 +278,16 @@ for i in range(map_size["width"]):
                 
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        if world[i][j] < -0.275:
+        if world[i][j] < -0.175:
             nmap[i][j] = WATER_DEEP
-        elif world[i][j] < -0.271:
+        elif world[i][j] < -0.171:
             pic_color = nmap[i][j]
-            if not np.array_equal(np.array(pic_color), WATER_DEEP):
+            if not colorCheck(pic_color, [WATER_DEEP]):
                 nmap[i][j] = WATER
                 
 now = datetime.datetime.now()
 now_dat = str(now.strftime("%Y-%m-%d_%H-%M-%S"))
-cv2.imwrite(f"map_{now_dat}.png", nmap)
-
-print("--- %s seconds left ---" % (time.time() - start_time))
+filename = f"map_{now_dat}.png"
+cv2.imwrite(filename, nmap)
+print (filename)
+print ("--- %s seconds left ---" % (time.time() - start_time))
