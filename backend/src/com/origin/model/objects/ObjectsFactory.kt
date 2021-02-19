@@ -2,7 +2,6 @@ package com.origin.model.objects
 
 import com.origin.entity.EntityObject
 import com.origin.model.GameObject
-import com.origin.model.StaticObject
 import com.origin.model.objects.trees.Birch
 import com.origin.model.objects.trees.Fir
 import com.origin.model.objects.trees.Pine
@@ -17,7 +16,7 @@ object ObjectsFactory {
             2 -> Fir(entity)
             3 -> Pine(entity)
             4 -> Box(entity)
-            else -> StaticObject(entity)
+            else -> UnknownObject(entity)
         }
     }
 }

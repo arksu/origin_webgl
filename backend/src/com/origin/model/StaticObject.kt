@@ -8,7 +8,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @ObsoleteCoroutinesApi
-open class StaticObject(val entity: EntityObject) :
+abstract class StaticObject(val entity: EntityObject) :
     GameObject(entity.id.value, entity.x, entity.y, entity.level, entity.region, entity.heading) {
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(StaticObject::class.java)

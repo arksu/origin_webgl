@@ -70,7 +70,7 @@ class Player(
     /**
      * инвентарь игрока
      */
-    private val inventoryInternal = Inventory(this)
+    override val inventory = Inventory(this)
 
     override val status = PcStatus(this, character)
 
@@ -112,7 +112,7 @@ class Player(
             }
             is PlayerMsg.ItemClick -> {
                 if (msg.inventoryId == id) {
-                    inventoryInternal.itemClick(msg.id)
+                    inventory.itemClick(msg.id)
                 } else {
                     val obj = openObjectsList.get(msg.inventoryId)
                     obj?.send(msg)
@@ -132,7 +132,7 @@ class Player(
 
     override suspend fun afterSpawn() {
         super.afterSpawn()
-        inventoryInternal.send(this)
+        inventory.send(this)
     }
 
     /**

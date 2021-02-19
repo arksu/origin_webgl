@@ -340,7 +340,7 @@ export default class Net {
                 break
             }
             case "ic" : { // inventory close
-                store.commit(MutationTypes.INVENTORIES_CLEAR)
+                store.commit(MutationTypes.INVENTORY_CLOSE, data.id)
                 break
             }
             case "cs" : { // creature say

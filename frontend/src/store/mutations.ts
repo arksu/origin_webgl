@@ -7,12 +7,17 @@ export type Mutations<S = State> = {
     [MutationTypes.SET_SSID](state: S, payload: undefined | string): void
     [MutationTypes.SET_LAST_ERROR](state: S, payload: undefined | string): void
     [MutationTypes.INVENTORY_UPDATE](state: S, payload: InventoryUpdate): void
+    [MutationTypes.INVENTORY_CLOSE](state: S, payload: number): void
     [MutationTypes.INVENTORIES_CLEAR](state: S): void
 }
 
 export const mutations: MutationTree<State> & Mutations = {
     [MutationTypes.INVENTORY_UPDATE](state, payload: InventoryUpdate) {
         state.inventories.push(payload)
+    },
+    [MutationTypes.INVENTORY_CLOSE](state, payload: number) {
+        const idx = state.inventories.findIndex(i => i.id == payload)
+        state.inventories.splice(idx, 1)
     },
     [MutationTypes.INVENTORIES_CLEAR](state) {
         state.inventories = []

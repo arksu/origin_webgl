@@ -61,6 +61,11 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     protected var spawned = false
 
     /**
+     * инвентарь игрока
+     */
+    abstract val inventory: Inventory?
+
+    /**
      * актор для обработки сообщений
      */
     private val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
@@ -186,10 +191,6 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
      * открыть инвентарь объекта
      */
     open fun openBy(who: Human) {
-    }
-
-    open fun getInventory(): Inventory? {
-        return null
     }
 
     /**

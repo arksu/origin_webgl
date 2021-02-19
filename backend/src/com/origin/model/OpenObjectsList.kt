@@ -21,13 +21,13 @@ class OpenObjectsList(private val me: Human) {
     private val list = HashMap<ObjectID, GameObject>()
 
     suspend fun open(obj: GameObject): Boolean {
-        val inv = obj.getInventory()
+        val inv = obj.inventory
         if (inv != null)
             if (!list.containsKey(obj.id)) {
                 logger.warn("open $obj")
                 list[obj.id] = obj
                 if (me is Player) {
-                    me.send(InventoryUpdate(inv))
+                    me.session.send(InventoryUpdate(inv))
                 }
                 return true
             }
@@ -42,16 +42,19 @@ class OpenObjectsList(private val me: Human) {
         if (list.containsKey(id)) {
             logger.warn("close $id")
             list.remove(id)
-            if (me is Player)
-                me.send(InventoryClose(id))
+            if (me is Player) {
+                me.session.send(InventoryClose(id))
+            }
         }
     }
 
-    fun closeAll() {
+    suspend fun closeAll() {
         if (list.size > 0) {
             logger.warn("closeAll")
             list.values.forEach {
-
+                if (me is Player) {
+                    me.session.send(InventoryClose(it.id))
+                }
             }
             list.clear()
         }
