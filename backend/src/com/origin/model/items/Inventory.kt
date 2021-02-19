@@ -23,7 +23,7 @@ class Inventory(private val parent: GameObject) {
         }
 
     fun getWidth(): Int {
-        return 4
+        return 6
     }
 
     fun getHeight(): Int {

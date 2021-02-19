@@ -1,7 +1,10 @@
 <template>
-  <div class="item-back" :style="style">
-    <span>{{ title }}</span>
-  </div>
+  <img class="item-image"
+       alt="item"
+       :style="'left: ' + (17 + item.x * 31) + 'px; top: ' + (22 + item.y * 31) + 'px;'"
+       v-if="item !== undefined"
+       :src="'/assets/' + item.icon"
+       @click="$emit('itemClick', item)">
 </template>
 
 <script lang="ts">
@@ -10,27 +13,24 @@ import {defineComponent} from "vue";
 export default defineComponent({
   name: "Item",
   props: {
-    x: Number,
-    y: Number,
-    title: String,
-    q: Number
+    item: Object,
+  },
+  emits: {
+    itemClick: null
   },
   computed: {
-    style(): string {
-      return "left: " + this.x + "px; top: " + this.y + "px;"
-    }
+    caption(): string {
+      return this.item !== undefined ? this.item.c : "A"
+    },
   }
 })
 </script>
 
 <style scoped>
-.item-back {
+
+
+.item-image {
   position: absolute;
-  width: 36px;
-  height: 36px;
-  background-image: url('/assets/inventory_slot.png');
-  background-repeat: no-repeat;
-  padding-top: 10px;
   cursor: pointer;
 }
 </style>

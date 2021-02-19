@@ -62,7 +62,6 @@ export default class Client {
         localStorage.setItem("selectedCharacterId", v.toString())
     }
 
-
     /**
      * очистить игровые данные
      */

@@ -181,6 +181,8 @@ class InventoryItemData(item: InventoryItem) {
 class InventoryUpdate(inventory: Inventory) : ServerMessage("iv") {
     val id = inventory.inventoryId
     val t = inventory.title
+    val w = inventory.getWidth()
+    val h = inventory.getHeight()
     private val l = ArrayList<InventoryItemData>()
 
     init {
