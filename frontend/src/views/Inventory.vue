@@ -39,11 +39,15 @@ export default defineComponent({
     }
   },
   methods: {
-    itemClick(item: InvItem) {
+    itemClick(item: InvItem, ox: number, oy: number) {
       console.log("itemClick", item.c)
       Net.remoteCall("itemclick", {
         id: item.id,
-        iid: this.inv!!.id
+        iid: this.inv!!.id,
+        x: Math.floor(ox / 31),
+        y: Math.floor(oy / 31),
+        ox,
+        oy
       })
     },
     close() {

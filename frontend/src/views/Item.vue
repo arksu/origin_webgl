@@ -4,7 +4,7 @@
        :style="'left: ' + (17 + item.x * 31) + 'px; top: ' + (22 + item.y * 31) + 'px;'"
        v-if="item !== undefined"
        :src="'/assets/' + item.icon"
-       @click="$emit('itemClick', item)">
+       @click="click">
 </template>
 
 <script lang="ts">
@@ -22,6 +22,12 @@ export default defineComponent({
     caption(): string {
       return this.item !== undefined ? this.item.c : "A"
     },
+  },
+  methods: {
+    click(e: MouseEvent) {
+      console.log(e)
+      this.$emit('itemClick', this.item, e.offsetX, e.offsetY)
+    }
   }
 })
 </script>

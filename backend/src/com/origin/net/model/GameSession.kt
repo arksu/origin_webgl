@@ -115,7 +115,11 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 "itemclick" -> {
                     val id = (r.data["id"] as Long?) ?: throw BadRequest("wrong obj id")
                     val inventoryId = (r.data["iid"] as Long?) ?: throw BadRequest("wrong obj id")
-                    player.send(PlayerMsg.ItemClick(id, inventoryId))
+                    val x = (r.data["x"] as Long?) ?: throw BadRequest("wrong coord x")
+                    val y = (r.data["y"] as Long?) ?: throw BadRequest("wrong coord y")
+                    val ox = (r.data["ox"] as Long?) ?: throw BadRequest("wrong coord ox")
+                    val oy = (r.data["oy"] as Long?) ?: throw BadRequest("wrong coord oy")
+                    player.send(PlayerMsg.ItemClick(id, inventoryId, x.toInt(), y.toInt(), ox.toInt(), oy.toInt()))
                 }
                 // закрыть инвентарь
                 "invclose" -> {

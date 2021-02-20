@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.model.inventory.Inventory
+import com.origin.model.inventory.InventoryItem
 import com.origin.model.move.Position
 import com.origin.utils.ObjectID
 import com.origin.utils.Rect
@@ -26,6 +27,9 @@ sealed class GameObjectMsg {
         val resp: CompletableDeferred<Boolean>,
         val block: suspend (Action) -> Boolean,
     )
+
+    class TakeItem(val who: Human, val id: ObjectID, val resp: CompletableDeferred<InventoryItem?>)
+    class PutItem(val who: Human, val item: InventoryItem, val resp: CompletableDeferred<Boolean>)
 
     // кто-то "открыл" объект
     class OpenBy(val who: Human)

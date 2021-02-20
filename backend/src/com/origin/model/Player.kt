@@ -4,7 +4,9 @@ import com.origin.collision.CollisionResult
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
+import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
+import com.origin.model.inventory.InventoryItem
 import com.origin.model.move.Move2Object
 import com.origin.model.move.Move2Point
 import com.origin.model.move.MoveMode
@@ -33,7 +35,7 @@ class PlayerMsg {
     class ObjectRightClick(val id: ObjectID)
     class ContextMenuItem(val item: String)
     class ExecuteActionCondition(val resp: CompletableDeferred<Boolean>, val block: (Player) -> Boolean)
-    class ItemClick(val id: ObjectID, val inventoryId: ObjectID)
+    class ItemClick(val id: ObjectID, val inventoryId: ObjectID, val x: Int, val y: Int, val ox: Int, val oy: Int)
     class InventoryClose(val inventoryId: ObjectID)
 }
 
@@ -71,6 +73,11 @@ class Player(
      * инвентарь игрока
      */
     override val inventory = Inventory(this)
+
+    /**
+     * вещь которую держим в данный момент в руке
+     */
+    var hand: Hand? = null
 
     override val status = PcStatus(this, character)
 
@@ -110,14 +117,7 @@ class Player(
                 if (!result) stopAction()
                 msg.resp.complete(result)
             }
-            is PlayerMsg.ItemClick -> {
-                if (msg.inventoryId == id) {
-                    inventory.itemClick(msg.id)
-                } else {
-                    val obj = openObjectsList.get(msg.inventoryId)
-                    obj?.send(msg)
-                }
-            }
+            is PlayerMsg.ItemClick -> itemClick(msg)
             is PlayerMsg.InventoryClose -> {
                 if (msg.inventoryId == id) {
                     session.send(InventoryClose(id))
@@ -130,8 +130,58 @@ class Player(
         }
     }
 
+    private suspend fun itemClick(msg: PlayerMsg.ItemClick) {
+        // держим в руке что-то?
+        val h = hand
+        if (h == null) {
+            // в руке ничего нет. возьмем из инвентаря
+            val taken = if (msg.inventoryId == id) {
+                inventory.takeItem(msg.id)
+            } else {
+                val obj = openObjectsList.get(msg.inventoryId)
+                if (obj != null) {
+                    // возьмем из объекта вещь
+                    val result = CompletableDeferred<InventoryItem?>()
+                    obj.send(GameObjectMsg.TakeItem(this, msg.id, result))
+                    result.await()
+                } else null
+            }
+            // взяли вещь из инвентаря
+            if (taken != null) {
+                setHand(taken, msg)
+            }
+        } else {
+            val success = if (msg.inventoryId == id) {
+                inventory.putItem(h.item, msg.x, msg.y)
+            } else {
+                val obj = openObjectsList.get(msg.inventoryId)
+                if (obj != null) {
+                    val result = CompletableDeferred<Boolean>()
+                    obj.send(GameObjectMsg.PutItem(this, h.item, result))
+                    result.await()
+                } else false
+            }
+            if (success) {
+                setHand(null, msg)
+            }
+        }
+    }
+
+    private suspend fun setHand(item: InventoryItem?, msg: PlayerMsg.ItemClick) {
+        hand = if (item != null) {
+            val h = Hand(this, item, msg.x, msg.y, msg.ox, msg.oy)
+            session.send(HandUpdate(h))
+            h
+        } else {
+            session.send(HandUpdate())
+            null
+        }
+    }
+
     override suspend fun afterSpawn() {
         super.afterSpawn()
+
+        // TODO открывать инвентарь игрока по запросу клиента
         inventory.send(this)
     }
 

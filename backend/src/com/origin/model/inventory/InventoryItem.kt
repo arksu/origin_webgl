@@ -5,9 +5,14 @@ import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
 
+/**
+ * вещь в инвентаре / эквипе / руке и тд
+ */
 @ObsoleteCoroutinesApi
 class InventoryItem(
-    val inventory: Inventory, private val entity: InventoryItemEntity, val icon: String,
+    private val entity: InventoryItemEntity,
+    private var inventory: Inventory,
+    val icon: String,
 ) {
 
     val id: ObjectID
@@ -15,24 +20,36 @@ class InventoryItem(
             return entity.id.value
         }
 
-    val x: Int
-        get() {
-            return entity.x
-        }
+    var x: Int = entity.x
 
-    val y: Int
-        get() {
-            return entity.y
-        }
+    var y: Int = entity.y
 
-    val q: Int
-        get() {
-            return entity.quality
-        }
+    var q: Int = entity.quality
 
+    // TODO
     val width = 1
 
     val height = 1
+
+    fun putTo(inv: Inventory, x: Int, y: Int) {
+        this.inventory = inv
+        this.x = x
+        this.y = y
+        transaction {
+            entity.inventoryId = inventory.inventoryId
+            entity.x = x
+            entity.y = y
+        }
+    }
+
+    fun setXY(x: Int, y: Int) {
+        this.x = x
+        this.y = y
+        transaction {
+            entity.x = x
+            entity.y = y
+        }
+    }
 
     fun delete() {
         transaction {
@@ -40,6 +57,10 @@ class InventoryItem(
         }
     }
 
+    /**
+     * попадает ли вещь с указанной позицией и размерами в эту вещь? (есть пересечение?)
+     * находится ли внутри этой вещи
+     */
     fun collide(x: Int, y: Int, w: Int, h: Int): Boolean {
         val tr = this.x + width - 1
         val tb = this.y + height - 1

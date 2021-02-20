@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 import com.origin.model.*
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
 import com.origin.model.ContextMenu
+import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
 import com.origin.utils.ObjectID
@@ -192,7 +193,25 @@ class InventoryUpdate(inventory: Inventory) : ServerMessage("iv") {
     }
 }
 
-class InventoryClose(val id: ObjectID) : ServerMessage("ic") {
+class InventoryClose(val id: ObjectID) : ServerMessage("ic")
+
+@ObsoleteCoroutinesApi
+class HandUpdate : ServerMessage {
+    private val icon: String
+    private val mx: Int
+    private val my: Int
+
+    constructor(hand: Hand) : super("ph") {
+        icon = hand.item.icon
+        mx = hand.mouseX
+        my = hand.mouseY
+    }
+
+    constructor() : super("ph") {
+        icon = ""
+        mx = 0
+        my = 0
+    }
 }
 
 /**

@@ -7,9 +7,9 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 object ItemsFactory {
     fun byEntity(inventory: Inventory, entity: InventoryItemEntity): InventoryItem {
         return when (entity.type) {
-            1 -> InventoryItem(inventory, entity, "/items/rabbit.png")
-            2 -> InventoryItem(inventory, entity, "/items/apple.png")
-            else -> InventoryItem(inventory, entity, "/items/board.png")
+            1 -> InventoryItem(entity, inventory, "/items/rabbit.png")
+            2 -> InventoryItem(entity, inventory, "/items/apple.png")
+            else -> InventoryItem(entity, inventory, "/items/board.png")
         }
     }
 }
