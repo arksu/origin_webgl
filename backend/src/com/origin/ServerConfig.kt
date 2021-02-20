@@ -28,6 +28,9 @@ object ServerConfig {
     @JvmField
     var DB_NAME: String? = null
 
+    @JvmField
+    var DB_PORT: String? = null
+
     /**
      * расстояние через которое будет обновлятся позиция в базе данных при передвижении
      */
@@ -63,6 +66,7 @@ object ServerConfig {
         DB_USER = conf.getString("origin.db.user")
         DB_PASSWORD = conf.getString("origin.db.password")
         DB_NAME = conf.getString("origin.db.name")
+        DB_PORT = conf.getString("origin.db.port")
         PORT = conf.getInt("origin.net.port")
         IS_DEV = conf.getBoolean("origin.dev.mode")
         ASSETS_DIR = conf.getString("origin.dev.assets_dir")

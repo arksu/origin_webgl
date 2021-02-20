@@ -60,7 +60,7 @@ object DatabaseFactory {
 
     private fun hikari(): HikariDataSource {
         val config = HikariConfig().apply {
-            jdbcUrl = "jdbc:mariadb://${ServerConfig.DB_HOST}/${ServerConfig.DB_NAME}"
+            jdbcUrl = "jdbc:mariadb://${ServerConfig.DB_HOST}:${ServerConfig.DB_PORT}/${ServerConfig.DB_NAME}"
 
             addDataSourceProperty("user", ServerConfig.DB_USER)
             addDataSourceProperty("password", ServerConfig.DB_PASSWORD);
