@@ -23,6 +23,8 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.sql.Timestamp
+import java.util.*
 
 /**
  * игровая сессия (коннект)
@@ -63,6 +65,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                             .singleOrNull()
                             ?: throw BadRequest("character not found")
                     account!!.selectedCharacter = selectedCharacterId
+                    c.lastLogged = Timestamp(Date().time)
                     c
                 }
                 // создали игрока, его позицию

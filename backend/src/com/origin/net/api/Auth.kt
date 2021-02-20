@@ -14,6 +14,8 @@ import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.sql.Timestamp
+import java.util.*
 
 val logger: Logger = LoggerFactory.getLogger("Auth")
 
@@ -31,6 +33,7 @@ fun Route.login() {
                 Account.find { Accounts.login eq userLogin.login }.forUpdate().firstOrNull() ?: throw UserNotFound()
 
             if (SCryptUtil.check(acc.password, userLogin.hash)) {
+                acc.lastLogged = Timestamp(Date().time)
                 GameServer.accountCache.addWithAuth(acc)
                 acc
             } else {

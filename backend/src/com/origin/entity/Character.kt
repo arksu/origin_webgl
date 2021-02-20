@@ -4,6 +4,7 @@ import com.origin.database.timestamp
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
+import java.sql.Timestamp
 
 /**
  * игровой персонаж игрока
@@ -30,6 +31,11 @@ object Characters : EntityPositions("characters") {
      */
     @Suppress("unused")
     val createTime = timestamp("createTime", true).nullable()
+
+    /**
+     * время последнего логина
+     */
+    val lastLogged = timestamp("lastLogged").default(Timestamp(1000))
 
     /**
      * флаг уадаления
@@ -63,4 +69,5 @@ class Character(id: EntityID<Long>) : LongEntity(id) {
     var deleted by Characters.deleted
 
     var onlineTime by Characters.onlineTime
+    var lastLogged by Characters.lastLogged
 }

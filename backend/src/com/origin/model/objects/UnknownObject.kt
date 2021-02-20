@@ -8,4 +8,8 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 @ObsoleteCoroutinesApi
 class UnknownObject(entity: EntityObject) : StaticObject(entity) {
     override val inventory: Inventory? = null
+
+    override fun getResourcePath(): String {
+        return "unknown"
+    }
 }

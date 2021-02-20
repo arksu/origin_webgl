@@ -32,10 +32,12 @@ class Inventory(private val parent: GameObject) {
     }
 
     fun getWidth(): Int {
+        // TODO
         return 6
     }
 
     fun getHeight(): Int {
+        // TODO
         return 4
     }
 

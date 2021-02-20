@@ -43,8 +43,4 @@ abstract class StaticObject(val entity: EntityObject) :
         // TODO getBoundRect
         return Rect(4)
     }
-
-    override fun getResourcePath(): String {
-        return "unknown"
-    }
 }

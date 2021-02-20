@@ -6,6 +6,7 @@ import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import java.sql.Timestamp
 
 /**
  * аккаунт пользователя к которому может прикрепляться несколько персонажей
@@ -18,6 +19,11 @@ object Accounts : IntIdTable("accounts") {
     val selectedCharacter = long("selectedCharacter").nullable()
     val created = timestamp("createTime", true).nullable()
     val onlineTime = long("onlineTime").default(0)
+
+    /**
+     * время последнего логина
+     */
+    val lastLogged = timestamp("lastLogged").default(Timestamp(1000))
     val deleted = bool("deleted").default(false)
 }
 
@@ -28,6 +34,7 @@ class Account(id: EntityID<Int>) : IntEntity(id) {
     var password by Accounts.password
     var email by Accounts.email
     var onlineTime by Accounts.onlineTime
+    var lastLogged by Accounts.lastLogged
     var ssid by Accounts.ssid
     var selectedCharacter by Accounts.selectedCharacter
 

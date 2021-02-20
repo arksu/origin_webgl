@@ -57,7 +57,7 @@ fun Route.createCharacter() {
         }
 
         val newChar = transaction {
-            val c = Character.find { Characters.account eq acc.id }.count()
+            val c = Character.find { (Characters.account eq acc.id) and (Characters.deleted eq false)  }.count()
             if (c >= 5) {
                 throw BadRequest("Characters limit exceed")
             }
