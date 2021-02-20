@@ -30,18 +30,18 @@ def hexColToArr(c):
     return np.array([ int(c[2]),  int(c[1]), int(c[0])])
 
 HEATH =       hexColToArr(b'\x00\x00\x00')
-MEADOW_LOW =  hexColToArr(b'\xd9\x7c\xc0')# луг (низкие травы)
-MEADOW_HIGH = hexColToArr(b'\x8e\xbf\x8e')# луг (высокие травы)
-FOREST_LEAF = hexColToArr(b'\x17\xd4\x21')# лес лиственный
-FOREST_PINE = hexColToArr(b'\x31\x61\x17')# лес хвойный
-CLAY =        hexColToArr(b'\x70\x39\x0f')# глина
-SAND =        hexColToArr(b'\xe0\xe0\x34')# песок
-PRAIRIE =     hexColToArr(b'\xf0\xa0\x1f')# степь
-SWAMP =       hexColToArr(b'\x1c\x38\x19')# болото
+MEADOW_LOW =  hexColToArr(b'\xd9\x7c\xc0')# луг (низкие травы) ok
+MEADOW_HIGH = hexColToArr(b'\x8e\xbf\x8e')# луг (высокие травы) ok
+FOREST_LEAF = hexColToArr(b'\x17\xd4\x21')# лес лиственный ok
+FOREST_PINE = hexColToArr(b'\x31\x61\x17')# лес хвойный ok
+CLAY =        hexColToArr(b'\x70\x39\x0f')# глина ok
+SAND =        hexColToArr(b'\xe0\xe0\x34')# песок ok
+PRAIRIE =     hexColToArr(b'\xf0\xa0\x1f')# степь ok 
+SWAMP =       hexColToArr(b'\x1c\x38\x19')# болото ok
 TUNDRA =      hexColToArr(b'\x3c\x7a\x6f')# тундра
-WATER =       hexColToArr(b'\x00\x55\xff')# мелководье
-WATER_DEEP =  hexColToArr(b'\x00\x00\xff')# глубокая вода
-
+WATER =       hexColToArr(b'\x00\x55\xff')# мелководье ok 
+WATER_DEEP =  hexColToArr(b'\x00\x00\xff')# глубокая вода ok
+ 
 def vecs_len(v1, v2):
     return math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2)
 
@@ -190,12 +190,10 @@ for point in local_points:
         if vecs_len(old_point, p2) <= 1:
             break
 
-scale = randrange(200, 450)
-octaves = randrange(10, 30)
-persistence = randrange(15, 25) / 100.0
-lacunarity = randrange(15, 20) / 10.0
-
-
+# scale = randrange(200, 450)
+# octaves = randrange(10, 30)
+# persistence = randrange(15, 25) / 100.0
+# lacunarity = randrange(15, 20) / 10.0
 
                 
 scale = randrange(700, 1450)
@@ -223,15 +221,18 @@ for i in range(map_size["width"]):
             
             if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND]):
                 nmap[i][j] = PRAIRIE
-                
-for i in range(map_size["width"]):
-    for j in range(map_size["height"]):
+
         if world[i][j] < -0.150:
             pic_color = np.array(nmap[i][j])
 
             if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND]):
                 nmap[i][j] = MEADOW_HIGH
 
+scale = randrange(190, 350)
+octaves = randrange(10, 30)
+persistence = randrange(15, 25) / 100.0
+lacunarity = randrange(25, 40) / 10.0 
+                
                 
 world = np.zeros((map_size["width"], map_size["height"]))
 for i in range(map_size["width"]):
@@ -252,17 +253,51 @@ for i in range(map_size["width"]):
             
             if not colorCheck(pic_color, [WATER_DEEP, WATER]):
                 nmap[i][j] = CLAY
-                
-for i in range(map_size["width"]):
-    for j in range(map_size["height"]):
+
         if world[i][j] < -0.310:
             pic_color = np.array(nmap[i][j])
 
             if not colorCheck(pic_color, [WATER_DEEP, WATER]):
                 nmap[i][j] = SWAMP
                 
+scale = randrange(390, 550)
+octaves = randrange(10, 30)
+persistence = randrange(15, 25) / 100.0
+lacunarity = randrange(25, 40) / 10.0 
                 
-scale = randrange(650, 1450)                
+                
+world = np.zeros((map_size["width"], map_size["height"]))
+for i in range(map_size["width"]):
+    for j in range(map_size["height"]):
+        world[i][j] = noise.pnoise2(i/scale, 
+                                    j/scale, 
+                                    octaves=octaves, 
+                                    persistence=persistence, 
+                                    lacunarity=lacunarity, 
+                                    repeatx=1000, 
+                                    repeaty=1000, 
+                                    base=0)
+        
+for i in range(map_size["width"]):
+    for j in range(map_size["height"]):
+        if world[i][j] > 0.270:
+            pic_color = np.array(nmap[i][j])
+            
+            if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND, PRAIRIE]):
+                nmap[i][j] = MEADOW_LOW
+
+        if world[i][j] < -0.270:
+            pic_color = np.array(nmap[i][j])
+
+            if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND, MEADOW_HIGH]):
+                nmap[i][j] = FOREST_LEAF
+                                
+
+                
+scale = randrange(650, 1450)   
+octaves = randrange(10, 30)
+persistence = randrange(15, 25) / 100.0
+lacunarity = randrange(15, 20) / 10.0 
 
 world = np.zeros((map_size["width"], map_size["height"]))
 for i in range(map_size["width"]):
