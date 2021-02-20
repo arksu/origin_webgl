@@ -33,7 +33,7 @@ fun Route.login() {
                 Account.find { Accounts.login eq userLogin.login }.forUpdate().firstOrNull() ?: throw UserNotFound()
 
             if (SCryptUtil.check(acc.password, userLogin.hash)) {
-                acc.lastLogged = Timestamp(Date().time)
+//                acc.lastLogged = Timestamp(Date().time)
                 GameServer.accountCache.addWithAuth(acc)
                 acc
             } else {

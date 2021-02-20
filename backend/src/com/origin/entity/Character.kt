@@ -35,7 +35,7 @@ object Characters : EntityPositions("characters") {
     /**
      * время последнего логина
      */
-    val lastLogged = timestamp("lastLogged").default(Timestamp(1000))
+//    val lastLogged = timestamp("lastLogged").default(Timestamp(1000))
 
     /**
      * флаг уадаления
@@ -69,5 +69,5 @@ class Character(id: EntityID<Long>) : LongEntity(id) {
     var deleted by Characters.deleted
 
     var onlineTime by Characters.onlineTime
-    var lastLogged by Characters.lastLogged
+//    var lastLogged by Characters.lastLogged
 }

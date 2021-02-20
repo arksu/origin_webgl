@@ -23,7 +23,7 @@ object Accounts : IntIdTable("accounts") {
     /**
      * время последнего логина
      */
-    val lastLogged = timestamp("lastLogged").default(Timestamp(1000))
+//    val lastLogged = timestamp("lastLogged").default(Timestamp(1000))
     val deleted = bool("deleted").default(false)
 }
 
@@ -34,7 +34,7 @@ class Account(id: EntityID<Int>) : IntEntity(id) {
     var password by Accounts.password
     var email by Accounts.email
     var onlineTime by Accounts.onlineTime
-    var lastLogged by Accounts.lastLogged
+//    var lastLogged by Accounts.lastLogged
     var ssid by Accounts.ssid
     var selectedCharacter by Accounts.selectedCharacter
 

@@ -65,7 +65,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                             .singleOrNull()
                             ?: throw BadRequest("character not found")
                     account!!.selectedCharacter = selectedCharacterId
-                    c.lastLogged = Timestamp(Date().time)
+//                    c.lastLogged = Timestamp(Date().time)
                     c
                 }
                 // создали игрока, его позицию
