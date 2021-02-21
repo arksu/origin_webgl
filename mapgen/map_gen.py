@@ -1,3 +1,4 @@
+from skimage.draw import line, polygon, circle, ellipse
 from scipy.spatial import Voronoi, voronoi_plot_2d
 import matplotlib.pyplot as plt
 from random import randrange
@@ -9,9 +10,8 @@ import math
 import time
 import cv2
 
-
 map_size = {"width":5000, "height":5000}
-riv_params = {"num_pair_points": 2 ,"max_riv_width": 35, "min_riv_width": 15, "min_sand_width":-40, "max_sand_width":5}
+riv_params = {"num_pair_points": 2 ,"max_riv_width": 35, "min_riv_width": 15, "min_sand_width":-30, "max_sand_width":3}
 
 start_time = time.time()
 
@@ -84,35 +84,15 @@ def colorCheck(c, eq):
             return True
     return False
     
-def drawWater(nmap, point, w, map_size, sand_w):
-    
-    nvec = [0.0, 1.0]
-    
-    for a in range(180):
-        avec = norm(rotate(nvec, a*2))
-        for l in range(int(w)):
-            lrvec = [point[0] + avec[0]*l, point[1] + avec[1]*l]
-            
-            if ifInRect(lrvec, map_size):
-                curr_color = nmap[int(lrvec[0])][int(lrvec[1])]
+def draw(nmap, point, w, map_size, col):
 
-                range_ = w / 4
-
-                if l >= 0 and l < range_:
-                    nmap[int(lrvec[0])][int(lrvec[1])] = WATER_DEEP
-                    continue
-                     
-                if l >= range_ and l < range_ * 1.5:
-                    if not colorCheck(curr_color, [WATER_DEEP]):
-                        nmap[int(lrvec[0])][int(lrvec[1])] = WATER
-                        continue
-                       
-                if l < (1.5 + sand_w) * range_:
-                    if not colorCheck(curr_color, [WATER_DEEP, WATER]):
-                        nmap[int(lrvec[0])][int(lrvec[1])] = SAND
-
-
+    rr, cc = circle(point[0], point[1], int(w), nmap.shape)
+    nmap[rr,cc,:] = col
+                        
+                        
 nmap = np.zeros(shape=(map_size["width"],map_size["height"], 3))
+
+draw_base = []
 
 for x in range(map_size["width"]):
     for y in range(map_size["height"]):
@@ -185,17 +165,21 @@ for point in local_points:
 
         old_point = [old_point[0] + rvec[0], old_point[1] + rvec[1]]
         
-        drawWater(nmap, old_point, lerp(widthFrom, widthTo, itr / float(lerpInt) ), map_size, lerp(sandFrom, sandTo, itr / float(lerpInt) ))
+        draw_base.append((old_point, lerp(widthFrom, widthTo, itr / float(lerpInt) ), map_size, lerp(sandFrom, sandTo, itr / float(lerpInt) )))
         
         if vecs_len(old_point, p2) <= 1:
             break
 
-# scale = randrange(200, 450)
-# octaves = randrange(10, 30)
-# persistence = randrange(15, 25) / 100.0
-# lacunarity = randrange(15, 20) / 10.0
-
-                
+            
+for db in draw_base:
+    draw(nmap, db[0], db[3], db[2], SAND)
+    
+for db in draw_base:
+    draw(nmap, db[0], db[1]/2, db[2], WATER)
+    
+for db in draw_base:
+    draw(nmap, db[0], db[1]/3, db[2], WATER_DEEP)
+    
 scale = randrange(700, 1450)
 octaves = randrange(10, 30)
 persistence = randrange(15, 25) / 100.0
@@ -297,7 +281,7 @@ for i in range(map_size["width"]):
 scale = randrange(650, 1450)   
 octaves = randrange(10, 30)
 persistence = randrange(15, 25) / 100.0
-lacunarity = randrange(15, 20) / 10.0 
+lacunarity = randrange(20, 25) / 10.0 
 
 world = np.zeros((map_size["width"], map_size["height"]))
 for i in range(map_size["width"]):

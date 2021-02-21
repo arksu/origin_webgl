@@ -7,6 +7,7 @@ requires python3.9, pip3
 - pip3 install noise
 - pip3 install scipy
 - pip3 install matplotlib
+- pip3 install scikit-image
 - pip3 install opencv-python
 
 # generate map
