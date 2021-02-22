@@ -169,7 +169,7 @@ export default class ObjectView {
                 this.touchTimer = -1
             }
         })
-        target.on("mouseup", (e: PIXI.InteractionEvent) => {
+        target.on("mousedown", (e: PIXI.InteractionEvent) => {
             this.onClick(e)
         })
     }
