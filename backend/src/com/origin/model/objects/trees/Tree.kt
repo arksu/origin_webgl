@@ -1,11 +1,13 @@
 package com.origin.model.objects.trees
 
 import com.origin.entity.EntityObject
+import com.origin.entity.InventoryItemEntity
 import com.origin.model.BroadcastEvent
 import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.StaticObject
 import com.origin.model.inventory.Inventory
+import com.origin.model.inventory.InventoryItem
 import com.origin.net.model.ActionProgress
 import com.origin.utils.Rect
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -76,6 +78,14 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                 }) {
                     // TODO generate branch to players inventory
                     logger.warn("GEN BRANCH")
+
+                    val newItem = transaction {
+                        val e = InventoryItemEntity.makeNew(3, 0, 0)
+                        InventoryItem(e, null)
+                    }
+                    if (!player.inventory.putItem(newItem)) {
+                        // TODO new item drop to ground
+                    }
                     true
                 }
             }

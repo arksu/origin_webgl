@@ -1,5 +1,7 @@
 package com.origin.entity
 
+import com.origin.idfactory.IdFactory
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -28,7 +30,7 @@ object InventoryItems : LongIdTable("inventory") {
     /**
      * качество вещи
      */
-    val quality = integer("quality")
+    val quality = short("quality").default(10)
 
     /**
      * количество в стаке
@@ -43,8 +45,23 @@ object InventoryItems : LongIdTable("inventory") {
     val deleted = bool("deleted").default(false)
 }
 
+@ObsoleteCoroutinesApi
 class InventoryItemEntity(id: EntityID<Long>) : LongEntity(id) {
-    companion object : LongEntityClass<InventoryItemEntity>(InventoryItems)
+    companion object : LongEntityClass<InventoryItemEntity>(InventoryItems) {
+        fun makeNew(t: Int, x: Int, y: Int, q: Short = 10): InventoryItemEntity {
+            return InventoryItemEntity.new(IdFactory.getNext()) {
+                type = t
+                inventoryId = 0
+                this.x = x
+                this.y = y
+                quality = q
+
+                count = 1
+                tick = 0
+                deleted = false
+            }
+        }
+    }
 
     var inventoryId by InventoryItems.inventoryId
     var type by InventoryItems.type

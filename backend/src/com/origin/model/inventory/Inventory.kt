@@ -65,16 +65,16 @@ class Inventory(private val parent: GameObject) {
      */
     fun putItem(item: InventoryItem, x: Int, y: Int): Boolean {
         // TODO проверка можно ли положить вещь в этот инвентарь
-        if (x >= 0 && y >= 0) {
-            // TODO broadcast
-            return tryPut(item, x, y)
-        } else {
-            for (iy in 0 until getHeight()) for (ix in 0 until getWidth())
-                if (tryPut(item, ix, iy)) {
-                    // TODO broadcast
-                    return true
-                }
-        }
+        // TODO broadcast
+        return tryPut(item, x, y)
+    }
+
+    fun putItem(item: InventoryItem): Boolean {
+        for (iy in 0 until getHeight()) for (ix in 0 until getWidth())
+            if (tryPut(item, ix, iy)) {
+                // TODO broadcast
+                return true
+            }
         return false
     }
 

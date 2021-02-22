@@ -6,10 +6,15 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 @ObsoleteCoroutinesApi
 object ItemsFactory {
     fun byEntity(inventory: Inventory, entity: InventoryItemEntity): InventoryItem {
+        return InventoryItem(entity, inventory)
+    }
+
+    fun getIcon(entity: InventoryItemEntity): String {
         return when (entity.type) {
-            1 -> InventoryItem(entity, inventory, "/items/rabbit.png")
-            2 -> InventoryItem(entity, inventory, "/items/apple.png")
-            else -> InventoryItem(entity, inventory, "/items/board.png")
+            1 -> "/items/stone.png"
+            2 -> "/items/apple.png"
+            3 -> "/items/bone.png"
+            else -> "/items/board.png"
         }
     }
 }

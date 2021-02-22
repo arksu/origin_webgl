@@ -50,6 +50,9 @@ class Action(
     var currentProgress = startProgress
         private set
 
+    /**
+     * при создании действия запускается корутина
+     */
     private val job: Job = WorkerScope.launch {
         sendPkt(ActionProgress(startProgress, maxProgress))
         logger.warn("start new action")

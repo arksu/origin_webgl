@@ -11,8 +11,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 @ObsoleteCoroutinesApi
 class InventoryItem(
     private val entity: InventoryItemEntity,
-    private var inventory: Inventory,
-    val icon: String,
+    private var inventory: Inventory?,
 ) {
 
     val id: ObjectID
@@ -20,11 +19,13 @@ class InventoryItem(
             return entity.id.value
         }
 
+    val icon: String = ItemsFactory.getIcon(entity)
+
     var x: Int = entity.x
 
     var y: Int = entity.y
 
-    var q: Int = entity.quality
+    var q: Short = entity.quality
 
     // TODO
     val width = 1
@@ -36,7 +37,7 @@ class InventoryItem(
         this.x = x
         this.y = y
         transaction {
-            entity.inventoryId = inventory.inventoryId
+            entity.inventoryId = inv.inventoryId
             entity.x = x
             entity.y = y
         }
