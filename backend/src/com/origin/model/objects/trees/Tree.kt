@@ -6,7 +6,9 @@ import com.origin.model.BroadcastEvent
 import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.StaticObject
-import com.origin.model.inventory.*
+import com.origin.model.inventory.Inventory
+import com.origin.model.inventory.InventoryItem
+import com.origin.model.inventory.ItemType
 import com.origin.net.model.ActionProgress
 import com.origin.utils.Rect
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -96,7 +98,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                     // TODO generate bark to players inventory
 
                     val newItem = transaction {
-                        val e = InventoryItemEntity.makeNew(ItemType.RABBIT)
+                        val e = InventoryItemEntity.makeNew(ItemType.BARK)
                         InventoryItem(e, null)
                     }
                     if (!player.inventory.putItem(newItem)) {

@@ -8,7 +8,8 @@ enum class ItemType(val id: Int) {
     APPLE(2),
     BRANCH(3),
     RABBIT(4),
-    BOARD(4)
+    BOARD(5),
+    BARK(6),
 }
 
 @ObsoleteCoroutinesApi
@@ -22,6 +23,7 @@ object ItemsFactory {
         types[ItemType.BRANCH.id] = ItemTemplate("/items/bone.png")
         types[ItemType.RABBIT.id] = ItemTemplate("/items/rabbit.png", 2, 2)
         types[ItemType.BOARD.id] = ItemTemplate("/items/board.png", 1, 4)
+        types[ItemType.BARK.id] = ItemTemplate("/items/bark.png")
     }
 
     fun getTemplate(entity: InventoryItemEntity): ItemTemplate {
