@@ -130,7 +130,16 @@ class Player(
         }
     }
 
+    override suspend fun afterSpawn() {
+        super.afterSpawn()
+
+        // TODO открывать инвентарь игрока по запросу клиента
+        inventory.send(this)
+    }
+
     private suspend fun itemClick(msg: PlayerMsg.ItemClick) {
+        if (contextMenu != null) clearContextMenu()
+
         // держим в руке что-то?
         val h = hand
         if (h == null) {
@@ -169,24 +178,6 @@ class Player(
         }
     }
 
-    private suspend fun setHand(item: InventoryItem?, msg: PlayerMsg.ItemClick) {
-        hand = if (item != null) {
-            val h = Hand(this, item, msg.x, msg.y, msg.ox, msg.oy)
-            session.send(HandUpdate(h))
-            h
-        } else {
-            session.send(HandUpdate())
-            null
-        }
-    }
-
-    override suspend fun afterSpawn() {
-        super.afterSpawn()
-
-        // TODO открывать инвентарь игрока по запросу клиента
-        inventory.send(this)
-    }
-
     /**
      * клиент: клик по карте
      */
@@ -194,22 +185,26 @@ class Player(
         logger.debug("mapClick $x $y $btn")
 
         if (contextMenu != null) {
-            session.send(ContextMenuData(null))
-            contextMenu = null
+            clearContextMenu()
         }
 
         if (btn == ClientButton.LEFT) {
-            if (commandToExecute != null) {
-                if (flags and SHIFT_KEY > 0) {
-                    logger.warn("SHIFT")
-                    val xx = x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
-                    val yy = y / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
-                    executeCommand(xx, yy)
-                } else
-                    executeCommand(x, y)
-                commandToExecute = null
+            // если что-то держим в руке надо дропнуть это
+            if (hand != null) {
+                dropHandItem()
             } else {
-                startMove(Move2Point(this, x, y))
+                if (commandToExecute != null) {
+                    if (flags and SHIFT_KEY > 0) {
+                        logger.warn("SHIFT")
+                        val xx = x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
+                        val yy = y / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
+                        executeCommand(xx, yy)
+                    } else
+                        executeCommand(x, y)
+                    commandToExecute = null
+                } else {
+                    startMove(Move2Point(this, x, y))
+                }
             }
         }
     }
@@ -219,9 +214,9 @@ class Player(
      */
     private suspend fun objectClick(id: ObjectID, flags: Int, x: Int, y: Int) {
         logger.debug("objectClick $id")
+
         if (contextMenu != null) {
-            session.send(ContextMenuData(null))
-            contextMenu = null
+            clearContextMenu()
         }
         val obj = knownList.getKnownObject(id)
         if (obj != null) {
@@ -229,7 +224,7 @@ class Player(
             if (obj.pos.point.dist(Vec2i(x, y)) < 12) {
                 // пока просто движемся к объекту
                 goAndOpenObject(obj)
-            } else {
+            } else if (hand == null) {
                 startMove(Move2Point(this, x, y))
             }
         }
@@ -255,11 +250,12 @@ class Player(
      */
     private suspend fun objectRightClick(id: ObjectID) {
         logger.debug("objectRightClick $id")
+        if (hand != null) return
+
         // если уже есть активное контекстное меню на экране
         if (contextMenu != null) {
-            // пошлем отменю КМ
-            session.send(ContextMenuData(null))
-            contextMenu = null
+            // пошлем отмену КМ
+            clearContextMenu()
         } else {
             // попробуем вызывать КМ у объекта
             val obj = knownList.getKnownObject(id)
@@ -272,6 +268,26 @@ class Player(
                 }
             }
         }
+    }
+
+    private suspend fun setHand(item: InventoryItem?, msg: PlayerMsg.ItemClick) {
+        hand = if (item != null) {
+            val h = Hand(this, item, msg.x, msg.y, msg.ox, msg.oy)
+            session.send(HandUpdate(h))
+            h
+        } else {
+            session.send(HandUpdate())
+            null
+        }
+    }
+
+    private suspend fun clearContextMenu() {
+        session.send(ContextMenuData(null))
+        contextMenu = null
+    }
+
+    private suspend fun dropHandItem() {
+        // TODO dropHandItem
     }
 
     /**

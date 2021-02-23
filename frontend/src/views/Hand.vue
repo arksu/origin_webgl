@@ -35,8 +35,8 @@ export default defineComponent({
     console.warn("hand mount")
     console.log(window.onmousemove)
     window.onmousemove = this.onMove
-    this.left = Client.instance.mouseX - 1
-    this.top = Client.instance.mouseY - 1
+    this.left = Client.instance.mouseX
+    this.top = Client.instance.mouseY
   },
   unmounted() {
     console.warn("hand unmount")
