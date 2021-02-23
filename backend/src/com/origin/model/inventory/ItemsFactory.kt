@@ -14,6 +14,8 @@ object ItemsFactory {
             1 -> "/items/stone.png"
             2 -> "/items/apple.png"
             3 -> "/items/bone.png"
+            4 -> "/items/rabbit.png"
+            5 -> "/items/board.png"
             else -> "/items/board.png"
         }
     }

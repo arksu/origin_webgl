@@ -1,6 +1,6 @@
 import {MutationTypes} from './mutation-types'
 import {State} from './state'
-import {InventoryUpdate} from "@/net/Packets";
+import {HandData, InventoryUpdate} from "@/net/Packets";
 import {MutationTree} from "vuex";
 
 export type Mutations<S = State> = {
@@ -9,11 +9,19 @@ export type Mutations<S = State> = {
     [MutationTypes.INVENTORY_UPDATE](state: S, payload: InventoryUpdate): void
     [MutationTypes.INVENTORY_CLOSE](state: S, payload: number): void
     [MutationTypes.INVENTORIES_CLEAR](state: S): void
+    [MutationTypes.SET_HAND](state: S, payload: HandData): void
 }
 
 export const mutations: MutationTree<State> & Mutations = {
     [MutationTypes.INVENTORY_UPDATE](state, payload: InventoryUpdate) {
-        state.inventories.push(payload)
+        const idx = state.inventories.findIndex((e: InventoryUpdate) => {
+            return (e.id == payload.id)
+        })
+        if (idx < 0) {
+            state.inventories.push(payload)
+        } else {
+            state.inventories.splice(idx, 1, payload)
+        }
     },
     [MutationTypes.INVENTORY_CLOSE](state, payload: number) {
         const idx = state.inventories.findIndex(i => i.id == payload)
@@ -32,5 +40,8 @@ export const mutations: MutationTree<State> & Mutations = {
     },
     [MutationTypes.SET_LAST_ERROR](state, payload: undefined | string) {
         state.lastError = payload
+    },
+    [MutationTypes.SET_HAND](state, payload: HandData | undefined) {
+        state.hand = payload
     }
 }

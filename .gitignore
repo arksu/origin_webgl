@@ -9,4 +9,7 @@
 
 backend/out
 backend/build
-backend/map.png
+backend/logs
+backend/map*.png
+
+mapgen/map*.png

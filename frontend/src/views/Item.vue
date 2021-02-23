@@ -1,7 +1,7 @@
 <template>
   <img class="item-image"
        alt="item"
-       :style="'left: ' + (17 + item.x * 31) + 'px; top: ' + (22 + item.y * 31) + 'px;'"
+       :style="'left: ' + (17 + item.x * 31) + 'px; top: ' + (23 + item.y * 31) + 'px;'"
        v-if="item !== undefined"
        :src="'/assets/' + item.icon"
        @click="click">
@@ -18,14 +18,11 @@ export default defineComponent({
   emits: {
     itemClick: null
   },
-  computed: {
-    caption(): string {
-      return this.item !== undefined ? this.item.c : "A"
-    },
-  },
+  computed: {},
   methods: {
     click(e: MouseEvent) {
       console.log(e)
+      e.preventDefault()
       this.$emit('itemClick', this.item, e.offsetX, e.offsetY)
     }
   }

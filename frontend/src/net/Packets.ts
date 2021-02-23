@@ -111,3 +111,9 @@ export interface InventoryUpdate {
     readonly h: number
     readonly l: InvItem[]
 }
+
+export interface HandData {
+    readonly icon ?: string
+    readonly mx : number
+    readonly my : number
+}

@@ -47,6 +47,12 @@ export default class Client {
     public chatHistory: string[] = []
     public onChatMessage ?: Callback
 
+    /**
+     * текущие координаты мыши (нужно для позиционирования "руки" при ее создании)
+     */
+    public mouseX: number = 0
+    public mouseY: number = 0
+
     public get playerObject(): GameObject {
         return this.objects[this.selectedCharacterId]
     }

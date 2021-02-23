@@ -158,7 +158,7 @@ class CreatureSay(val id: ObjectID, text: String, channel: Int) : ServerMessage(
 }
 
 @ObsoleteCoroutinesApi
-class ContextMenu(cm: ContextMenu?) : ServerMessage("cm") {
+class ContextMenuData(cm: ContextMenu?) : ServerMessage("cm") {
     val id = cm?.obj?.id ?: -1
     val l = cm?.items
 }
@@ -197,7 +197,7 @@ class InventoryClose(val id: ObjectID) : ServerMessage("ic")
 
 @ObsoleteCoroutinesApi
 class HandUpdate : ServerMessage {
-    private val icon: String
+    private val icon: String?
     private val mx: Int
     private val my: Int
 
@@ -208,7 +208,7 @@ class HandUpdate : ServerMessage {
     }
 
     constructor() : super("ph") {
-        icon = ""
+        icon = null
         mx = 0
         my = 0
     }

@@ -39,3 +39,9 @@ app.directive('focus', {
         el.focus();
     }
 })
+
+
+window.addEventListener('mousemove', (e: MouseEvent) => {
+    Client.instance.mouseX = e.clientX
+    Client.instance.mouseY = e.clientY
+})

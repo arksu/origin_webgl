@@ -21,6 +21,7 @@
   </form>
 
   <Inventory :inv="i" v-for="i in $store.state.inventories" :key="i.id"></Inventory>
+  <Hand v-if="$store.state.hand !== undefined" :ox="$store.state.hand.mx" :oy="$store.state.hand.my"></Hand>
 </template>
 
 <script lang="ts">
@@ -30,10 +31,11 @@ import router from "@/router";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
 import Inventory from "@/views/Inventory.vue";
+import Hand from "@/views/Hand.vue";
 
 export default defineComponent({
   name: "Game",
-  components: {Inventory},
+  components: {Hand, Inventory},
   data() {
     return {
       active: false as boolean,

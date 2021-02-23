@@ -8,7 +8,7 @@
 
     <div v-for="y in inv.h">
       <div v-for="x in inv.w">
-        <ItemSlot :x="16 + (x-1) * 31" :y="22 + (y-1) * 31"></ItemSlot>
+        <ItemSlot :x="x-1" :y="y-1" :left="16 + (x-1) * 31" :top="22 + (y-1) * 31" @slotClick="slotClick"></ItemSlot>
       </div>
     </div>
 
@@ -46,6 +46,17 @@ export default defineComponent({
         iid: this.inv!!.id,
         x: Math.floor(ox / 31),
         y: Math.floor(oy / 31),
+        ox,
+        oy
+      })
+    },
+    slotClick(x: number, y: number, ox: number, oy: number) {
+      console.log("slotClick", x, y, ox, oy)
+      Net.remoteCall("itemclick", {
+        id: 0,
+        iid: this.inv!!.id,
+        x: x,
+        y: y,
         ox,
         oy
       })

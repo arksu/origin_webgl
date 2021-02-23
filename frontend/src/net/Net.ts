@@ -6,6 +6,7 @@ import MoveController from "@/game/MoveController";
 import {
     ActionProgressData,
     ContextMenuData,
+    HandData,
     InventoryUpdate,
     MapGridData,
     ObjectDel,
@@ -341,6 +342,15 @@ export default class Net {
             }
             case "ic" : { // inventory close
                 store.commit(MutationTypes.INVENTORY_CLOSE, data.id)
+                break
+            }
+            case "ph" : { // player hand
+                let hd = <HandData>data
+                if (hd.icon !== undefined) {
+                    store.commit(MutationTypes.SET_HAND, hd)
+                } else {
+                    store.commit(MutationTypes.SET_HAND, undefined)
+                }
                 break
             }
             case "cs" : { // creature say

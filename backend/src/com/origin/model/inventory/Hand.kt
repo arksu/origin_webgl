@@ -14,8 +14,8 @@ class Hand(
     /**
      * отступ в координатах инвентаря (чтобы положить обратно корректно)
      */
-    private val offsetX: Int,
-    private val offsetY: Int,
+    val offsetX: Int,
+    val offsetY: Int,
 
     val mouseX: Int,
     val mouseY: Int,

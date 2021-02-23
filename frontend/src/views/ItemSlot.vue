@@ -1,16 +1,28 @@
 <template>
-  <div class="item-back" :style="'left: ' + x + 'px; top: ' + y + 'px;'"></div>
+  <div class="item-back" :style="'left: ' + left + 'px; top: ' + top + 'px;'" @click="click"></div>
 </template>
 
-<script>
+<script lang="ts">
 import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "ItemSlot",
   props: {
+    left: Number,
+    top: Number,
     x: Number,
     y: Number,
   },
+  emits: {
+    slotClick: null
+  },
+  methods: {
+    click(e: MouseEvent) {
+      console.log(e)
+      e.preventDefault()
+      this.$emit('slotClick', this.x, this.y, e.offsetX, e.offsetY)
+    }
+  }
 })
 </script>
 

@@ -152,12 +152,12 @@ class Player(
             }
         } else {
             val success = if (msg.inventoryId == id) {
-                inventory.putItem(h.item, msg.x, msg.y)
+                inventory.putItem(h.item, msg.x - h.offsetX, msg.y - h.offsetY)
             } else {
                 val obj = openObjectsList.get(msg.inventoryId)
                 if (obj != null) {
                     val result = CompletableDeferred<Boolean>()
-                    obj.send(GameObjectMsg.PutItem(this, h.item, result))
+                    obj.send(GameObjectMsg.PutItem(this, h.item, msg.x - h.offsetX, msg.y - h.offsetY, result))
                     result.await()
                 } else false
             }
@@ -192,7 +192,7 @@ class Player(
         logger.debug("mapClick $x $y $btn")
 
         if (contextMenu != null) {
-            session.send(ContextMenu(null))
+            session.send(ContextMenuData(null))
             contextMenu = null
         }
 
@@ -218,7 +218,7 @@ class Player(
     private suspend fun objectClick(id: ObjectID, flags: Int, x: Int, y: Int) {
         logger.debug("objectClick $id")
         if (contextMenu != null) {
-            session.send(ContextMenu(null))
+            session.send(ContextMenuData(null))
             contextMenu = null
         }
         val obj = knownList.getKnownObject(id)
@@ -256,14 +256,14 @@ class Player(
         // если уже есть активное контекстное меню на экране
         if (contextMenu != null) {
             // пошлем отменю КМ
-            session.send(ContextMenu(null))
+            session.send(ContextMenuData(null))
             contextMenu = null
         } else {
             // попробуем вызывать КМ у объекта
             val obj = knownList.getKnownObject(id)
             contextMenu = obj?.contextMenu(this)
             if (contextMenu != null) {
-                session.send(ContextMenu(contextMenu!!))
+                session.send(ContextMenuData(contextMenu!!))
             } else {
                 if (obj != null) {
                     goAndOpenObject(obj)

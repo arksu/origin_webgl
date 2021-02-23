@@ -80,7 +80,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                     logger.warn("GEN BRANCH")
 
                     val newItem = transaction {
-                        val e = InventoryItemEntity.makeNew(3, 0, 0)
+                        val e = InventoryItemEntity.makeNew(3)
                         InventoryItem(e, null)
                     }
                     if (!player.inventory.putItem(newItem)) {
@@ -95,6 +95,15 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                     it.status.checkAndReduceStamina(1.0)
                 }) {
                     // TODO generate bark to players inventory
+
+                    val newItem = transaction {
+                        val e = InventoryItemEntity.makeNew(4)
+                        InventoryItem(e, null)
+                    }
+                    if (!player.inventory.putItem(newItem)) {
+                        // TODO new item drop to ground
+                    }
+
                     true
                 }
             }

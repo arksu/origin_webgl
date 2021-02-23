@@ -4,6 +4,7 @@ import com.origin.entity.InventoryItemEntity
 import com.origin.entity.InventoryItems
 import com.origin.model.GameObject
 import com.origin.model.Player
+import com.origin.model.objects.containers.Container
 import com.origin.net.model.InventoryUpdate
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -52,9 +53,30 @@ class Inventory(private val parent: GameObject) {
         player.session.send(InventoryUpdate(this))
     }
 
-    fun takeItem(id: ObjectID): InventoryItem? {
-        // TODO broadcast
-        return items.remove(id)
+    /**
+     * уведомить родителя об изменениях в инвентаре
+     */
+    private suspend fun notify() {
+        when (parent) {
+            is Player -> {
+                send(parent)
+            }
+            is Container -> {
+                parent.inventoryChanged()
+            }
+            else -> {
+                // TODO broadcast
+            }
+        }
+    }
+
+    suspend fun takeItem(id: ObjectID): InventoryItem? {
+        val removed = items.remove(id)
+        if (removed != null) {
+            notify()
+        }
+
+        return removed
     }
 
     /**
@@ -63,16 +85,20 @@ class Inventory(private val parent: GameObject) {
      * @param y координаты куда положить вещь в инвентаре
      * @return удалось ли положить
      */
-    fun putItem(item: InventoryItem, x: Int, y: Int): Boolean {
+    suspend fun putItem(item: InventoryItem, x: Int, y: Int): Boolean {
         // TODO проверка можно ли положить вещь в этот инвентарь
-        // TODO broadcast
-        return tryPut(item, x, y)
+        val result = tryPut(item, x, y)
+        if (result) {
+            notify()
+        }
+        return result
     }
 
-    fun putItem(item: InventoryItem): Boolean {
+    suspend fun putItem(item: InventoryItem): Boolean {
         for (iy in 0 until getHeight()) for (ix in 0 until getWidth())
             if (tryPut(item, ix, iy)) {
-                // TODO broadcast
+                notify()
+
                 return true
             }
         return false

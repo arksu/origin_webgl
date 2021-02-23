@@ -48,12 +48,12 @@ object InventoryItems : LongIdTable("inventory") {
 @ObsoleteCoroutinesApi
 class InventoryItemEntity(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<InventoryItemEntity>(InventoryItems) {
-        fun makeNew(t: Int, x: Int, y: Int, q: Short = 10): InventoryItemEntity {
+        fun makeNew(t: Int, q: Short = 10): InventoryItemEntity {
             return InventoryItemEntity.new(IdFactory.getNext()) {
                 type = t
                 inventoryId = 0
-                this.x = x
-                this.y = y
+                this.x = 0
+                this.y = 0
                 quality = q
 
                 count = 1

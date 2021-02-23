@@ -1,9 +1,7 @@
 package com.origin.model.objects.containers
 
 import com.origin.entity.EntityObject
-import com.origin.model.BroadcastEvent
-import com.origin.model.Human
-import com.origin.model.StaticObject
+import com.origin.model.*
 import com.origin.model.inventory.Inventory
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -23,6 +21,18 @@ abstract class Container(entity: EntityObject) : StaticObject(entity) {
         return if (discoverers.size > 0) getOpenResource() else getNormalResource()
     }
 
+    override suspend fun processMessage(msg: Any) {
+        when (msg) {
+            is GameObjectMsg.PutItem -> {
+                msg.resp.complete(inventory.putItem(msg.item, msg.x, msg.y))
+            }
+            is GameObjectMsg.TakeItem -> {
+                msg.resp.complete(inventory.takeItem(msg.id))
+            }
+            else -> super.processMessage(msg)
+        }
+    }
+
     override suspend fun openBy(who: Human) {
         super.openBy(who)
         val oldSize = discoverers.size
@@ -37,6 +47,15 @@ abstract class Container(entity: EntityObject) : StaticObject(entity) {
         discoverers.remove(who.id)
         if (discoverers.size == 0) {
             grid.broadcast(BroadcastEvent.Changed(this))
+        }
+    }
+
+    suspend fun inventoryChanged() {
+        discoverers.forEach {
+            val p = it.value
+            if (p is Player) {
+                inventory.send(p)
+            }
         }
     }
 }
