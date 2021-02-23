@@ -7,13 +7,9 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 @ObsoleteCoroutinesApi
 class Box(entity: EntityObject) : Container(entity) {
 
-    override fun getNormalResource(): String {
-        return "box/normal"
-    }
+    override val normalResource = "box/normal"
 
-    override fun getOpenResource(): String {
-        return "box/open"
-    }
+    override val openResource = "box/open"
 
     override fun getBoundRect(): Rect {
         return Rect(6)

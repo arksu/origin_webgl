@@ -151,18 +151,20 @@ class Player(
                 setHand(taken, msg)
             }
         } else {
-            val success = if (msg.inventoryId == id) {
-                inventory.putItem(h.item, msg.x - h.offsetX, msg.y - h.offsetY)
-            } else {
-                val obj = openObjectsList.get(msg.inventoryId)
-                if (obj != null) {
-                    val result = CompletableDeferred<Boolean>()
-                    obj.send(GameObjectMsg.PutItem(this, h.item, msg.x - h.offsetX, msg.y - h.offsetY, result))
-                    result.await()
-                } else false
-            }
-            if (success) {
-                setHand(null, msg)
+            if (msg.id == 0L) {
+                val success = if (msg.inventoryId == id) {
+                    inventory.putItem(h.item, msg.x - h.offsetX, msg.y - h.offsetY)
+                } else {
+                    val obj = openObjectsList.get(msg.inventoryId)
+                    if (obj != null) {
+                        val result = CompletableDeferred<Boolean>()
+                        obj.send(GameObjectMsg.PutItem(this, h.item, msg.x - h.offsetX, msg.y - h.offsetY, result))
+                        result.await()
+                    } else false
+                }
+                if (success) {
+                    setHand(null, msg)
+                }
             }
         }
     }

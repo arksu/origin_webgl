@@ -1,6 +1,7 @@
 package com.origin.entity
 
 import com.origin.idfactory.IdFactory
+import com.origin.model.inventory.ItemType
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -48,9 +49,9 @@ object InventoryItems : LongIdTable("inventory") {
 @ObsoleteCoroutinesApi
 class InventoryItemEntity(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<InventoryItemEntity>(InventoryItems) {
-        fun makeNew(t: Int, q: Short = 10): InventoryItemEntity {
+        fun makeNew(t: ItemType, q: Short = 10): InventoryItemEntity {
             return InventoryItemEntity.new(IdFactory.getNext()) {
-                type = t
+                type = t.id
                 inventoryId = 0
                 this.x = 0
                 this.y = 0

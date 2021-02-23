@@ -34,21 +34,30 @@ class Inventory(private val parent: GameObject) {
         transaction {
             val list = InventoryItemEntity.find { InventoryItems.inventoryId eq inventoryId }
             list.forEach {
-                items[it.id.value] = ItemsFactory.byEntity(this@Inventory, it)
+                items[it.id.value] = InventoryItem(it, this@Inventory)
             }
         }
     }
 
     fun getWidth(): Int {
         // TODO
+        if (parent is Player) {
+            return 4
+        }
         return 6
     }
 
     fun getHeight(): Int {
         // TODO
-        return 4
+        if (parent is Player) {
+            return 4
+        }
+        return 5
     }
 
+    /**
+     * отправить игроку содержимое данного инвентаря
+     */
     suspend fun send(player: Player) {
         player.session.send(InventoryUpdate(this))
     }
@@ -63,9 +72,6 @@ class Inventory(private val parent: GameObject) {
             }
             is Container -> {
                 parent.inventoryChanged()
-            }
-            else -> {
-                // TODO broadcast
             }
         }
     }
@@ -105,11 +111,11 @@ class Inventory(private val parent: GameObject) {
     }
 
     private fun tryPut(item: InventoryItem, x: Int, y: Int): Boolean {
-        if (x + item.width <= getWidth() && y + item.height <= getHeight()) {
+        if (x >= 0 && y >= 0 && x + item.width <= getWidth() && y + item.height <= getHeight()) {
             var conflict = false
 
             for (i in items.values) {
-                if (i.collide(x, y, i.width, i.height)) {
+                if (i.collide(x, y, item.width, item.height)) {
                     conflict = true
                     break
                 }

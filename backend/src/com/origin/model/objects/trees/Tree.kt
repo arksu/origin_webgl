@@ -6,8 +6,7 @@ import com.origin.model.BroadcastEvent
 import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.StaticObject
-import com.origin.model.inventory.Inventory
-import com.origin.model.inventory.InventoryItem
+import com.origin.model.inventory.*
 import com.origin.net.model.ActionProgress
 import com.origin.utils.Rect
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -80,7 +79,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                     logger.warn("GEN BRANCH")
 
                     val newItem = transaction {
-                        val e = InventoryItemEntity.makeNew(3)
+                        val e = InventoryItemEntity.makeNew(ItemType.BRANCH)
                         InventoryItem(e, null)
                     }
                     if (!player.inventory.putItem(newItem)) {
@@ -97,7 +96,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                     // TODO generate bark to players inventory
 
                     val newItem = transaction {
-                        val e = InventoryItemEntity.makeNew(4)
+                        val e = InventoryItemEntity.makeNew(ItemType.RABBIT)
                         InventoryItem(e, null)
                     }
                     if (!player.inventory.putItem(newItem)) {

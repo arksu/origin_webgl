@@ -19,18 +19,19 @@ class InventoryItem(
             return entity.id.value
         }
 
-    val icon: String = ItemsFactory.getIcon(entity)
+    private val template: ItemTemplate = ItemsFactory.getTemplate(entity)
+
+    val width: Int = template.width
+
+    val height: Int = template.height
+
+    val icon: String = template.icon
 
     var x: Int = entity.x
 
     var y: Int = entity.y
 
     var q: Short = entity.quality
-
-    // TODO
-    val width = 1
-
-    val height = 1
 
     fun putTo(inv: Inventory, x: Int, y: Int) {
         this.inventory = inv

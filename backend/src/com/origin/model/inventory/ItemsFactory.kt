@@ -3,20 +3,28 @@ package com.origin.model.inventory
 import com.origin.entity.InventoryItemEntity
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
+enum class ItemType(val id: Int) {
+    STONE(1),
+    APPLE(2),
+    BRANCH(3),
+    RABBIT(4),
+    BOARD(4)
+}
+
 @ObsoleteCoroutinesApi
 object ItemsFactory {
-    fun byEntity(inventory: Inventory, entity: InventoryItemEntity): InventoryItem {
-        return InventoryItem(entity, inventory)
+
+    private val types = HashMap<Int, ItemTemplate>()
+
+    init {
+        types[ItemType.STONE.id] = ItemTemplate("/items/stone.png")
+        types[ItemType.APPLE.id] = ItemTemplate("/items/apple.png")
+        types[ItemType.BRANCH.id] = ItemTemplate("/items/bone.png")
+        types[ItemType.RABBIT.id] = ItemTemplate("/items/rabbit.png", 2, 2)
+        types[ItemType.BOARD.id] = ItemTemplate("/items/board.png", 1, 4)
     }
 
-    fun getIcon(entity: InventoryItemEntity): String {
-        return when (entity.type) {
-            1 -> "/items/stone.png"
-            2 -> "/items/apple.png"
-            3 -> "/items/bone.png"
-            4 -> "/items/rabbit.png"
-            5 -> "/items/board.png"
-            else -> "/items/board.png"
-        }
+    fun getTemplate(entity: InventoryItemEntity): ItemTemplate {
+        return types[entity.type] ?: return ItemTemplate("/items/unknown.png")
     }
 }

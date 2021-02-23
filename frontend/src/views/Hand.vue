@@ -48,15 +48,11 @@ export default defineComponent({
 <style scoped>
 
 .tooltip {
-  overflow: auto;
   display: inline-block;
   pointer-events: none;
   position: absolute;
   z-index: 9999;
   padding: 0;
-  //background: #343c2499;
-  //border: 1px #797e79 solid;
-//border-radius: 5px;
 }
 
 </style>

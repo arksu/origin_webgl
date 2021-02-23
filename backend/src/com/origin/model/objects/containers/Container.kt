@@ -11,15 +11,20 @@ abstract class Container(entity: EntityObject) : StaticObject(entity) {
 
     override val inventory by lazy { Inventory(this) }
 
+    /**
+     * список тех кто открыл данный контейнер
+     */
     private val discoverers = HashMap<ObjectID, Human>()
 
-    abstract fun getNormalResource(): String
+    /**
+     * имя ресурса объекта в нормальном состоянии
+     */
+    abstract val normalResource: String
 
-    abstract fun getOpenResource(): String
-
-    override fun getResourcePath(): String {
-        return if (discoverers.size > 0) getOpenResource() else getNormalResource()
-    }
+    /**
+     * как показываем "открытое" состояние
+     */
+    abstract val openResource: String
 
     override suspend fun processMessage(msg: Any) {
         when (msg) {
@@ -31,6 +36,10 @@ abstract class Container(entity: EntityObject) : StaticObject(entity) {
             }
             else -> super.processMessage(msg)
         }
+    }
+
+    override fun getResourcePath(): String {
+        return if (discoverers.size > 0) openResource else normalResource
     }
 
     override suspend fun openBy(who: Human) {
