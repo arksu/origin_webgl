@@ -159,24 +159,30 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     private suspend fun processMessage(msg: Any) {
         when (msg) {
             is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
-            is GridMsg.CheckCollision -> msg.resp.complete(checkCollision(
-                msg.obj,
-                msg.toX,
-                msg.toY,
-                msg.dist,
-                msg.type,
-                msg.virtual,
-                msg.isMove))
-            is GridMsg.CheckCollisionInternal -> msg.resp.complete(checkCollisionInternal(
-                msg.list,
-                msg.locked,
-                msg.obj,
-                msg.toX,
-                msg.toY,
-                msg.dist,
-                msg.type,
-                msg.virtual,
-                msg.isMove))
+            is GridMsg.CheckCollision -> msg.resp.complete(
+                checkCollision(
+                    msg.obj,
+                    msg.toX,
+                    msg.toY,
+                    msg.dist,
+                    msg.type,
+                    msg.virtual,
+                    msg.isMove
+                )
+            )
+            is GridMsg.CheckCollisionInternal -> msg.resp.complete(
+                checkCollisionInternal(
+                    msg.list,
+                    msg.locked,
+                    msg.obj,
+                    msg.toX,
+                    msg.toY,
+                    msg.dist,
+                    msg.type,
+                    msg.virtual,
+                    msg.isMove
+                )
+            )
             is GridMsg.Activate -> {
                 this.activate(msg.human)
                 msg.job?.complete()
@@ -264,9 +270,11 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     ): CollisionResult {
         // посмотрим сколько нам нужно гридов для проверки коллизий
         val totalDist = obj.pos.point.dist(toX, toY)
-        val k = if (totalDist == 0.0) 0.0 else dist / totalDist
+        val k = if (totalDist == 0.0) 0.0 else (dist * 1.2) / totalDist
+        // точка куда должны передвинутся с учетом вектора движения
         val dp = Vec2i(toX, toY).sub(obj.pos.point).mul(k).add(obj.pos.point)
 
+        // область движения (от начальной до конечной точки)
         val rect = Rect(obj.pos.x, obj.pos.y, dp.x, dp.y)
         rect.move(obj.getBoundRect())
         val grids = LinkedHashSet<Grid>(4)
@@ -275,6 +283,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             if (layer.validateCoord(gx, gy)) grids.add(World.getGrid(region, level, gx, gy))
         }
 
+        // добавляем гриды которые захватываются движением
         addGrid(rect.left / GRID_FULL_SIZE, rect.top / GRID_FULL_SIZE)
         addGrid(rect.right / GRID_FULL_SIZE, rect.top / GRID_FULL_SIZE)
         addGrid(rect.right / GRID_FULL_SIZE, rect.bottom / GRID_FULL_SIZE)
@@ -322,16 +331,20 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             val next = list[locked.size]
             logger.warn("delegate collision to next $next")
             val resp = CompletableDeferred<CollisionResult>()
-            next.send(GridMsg.CheckCollisionInternal(list,
-                locked,
-                obj,
-                toX,
-                toY,
-                dist,
-                moveType,
-                virtual,
-                isMove,
-                resp))
+            next.send(
+                GridMsg.CheckCollisionInternal(
+                    list,
+                    locked,
+                    obj,
+                    toX,
+                    toY,
+                    dist,
+                    moveType,
+                    virtual,
+                    isMove,
+                    resp
+                )
+            )
             resp.await()
         } else {
             // таким образом на момент обработки коллизии

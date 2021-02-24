@@ -27,11 +27,16 @@ object Collision {
     private val logger: Logger = LoggerFactory.getLogger(Collision::class.java)
 
     suspend fun process(
+        // куда движется объект (конечная точка)
         toX: Int,
         toY: Int,
+        // на какое расстояние должны передвинуть при обсчете коллизии
         dist: Double,
+        // объект который двигаем
         obj: GameObject,
+        // список гридов участвующих в коллизии (начали движение на границе грида и движемся в другой)
         list: Array<Grid>,
+        // это реальное движение? если коллизии нет - изменим позицию объекта
         isMove: Boolean,
     ): CollisionResult {
         //logger.debug("process to $toX $toY dist=$dist")
@@ -41,8 +46,8 @@ object Collision {
 //        val kd = if (totalDist == 0.0) 0.0 else dist / totalDist
 //        val dp = Vec2i(toX, toY).sub(obj.pos.point).mul(kd).add(obj.pos.point) // TODO
 
-        val dx = toX - obj.pos.x
-        val dy = toY - obj.pos.y
+//        val dx = toX - obj.pos.x
+//        val dy = toY - obj.pos.y
         // прямоугольник по границам объекта захватывающий начальную и конечную точку движения
         val movingArea = obj.getBoundRect().clone().move(obj.pos.point)
             .extendSize(dist.roundToInt() + 5, dist.roundToInt() + 5)// extend(dp.x, dp.y) //
@@ -91,38 +96,39 @@ object Collision {
             // расстояние до конечной точки пути
             val actualDist: Double = distance(curX, curY, toX.toDouble(), toY.toDouble())
 
+            // на сколько изменилась актуальная дистанция до конечной точки
             val diffAd = if (oldAd < 0) actualDist else abs(actualDist - oldAd)
 
-
-
-            dd = (abs(oldD - distRemained))
-            oldD = distRemained
+//            dd = (abs(oldD - distRemained))
+//            oldD = distRemained
             //logger.debug("d remained=${String.format("%.2f", distRemained)} dd=${String.format("%.2f", dd)} " +
 //            "ad=${String.format("%.2f", actualDist)} diffAd=${String.format("%.2f", diffAd)}")
 
-            if (diffAd < 0.35) {
-                if (isMove) {
-                    obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
-                }
+            // если реально передвинулись слишком мало. И надо двигаться
+            if (diffAd < 0.35 && isMove) {
+                obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
                 return CollisionResult.NONE
             }
 
             when {
                 // осталось слишком мало. считаем что пришли. коллизий не было раз здесь
-                distRemained < 0.01 -> {
+                distRemained < 0.01 && isMove -> {
                     //logger.debug("d < 0.01 counter $counter")
-                    if (isMove) {
-                        obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
-                    }
+                    obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
                     return CollisionResult.NONE
                 }
                 (distRemained < COLLISION_ITERATION_LENGTH) -> {
                     val remained = distRemained
                     // осталось идти меньше одной итерации. очередная точка это конечная
-                    val k: Double = remained / actualDist
+                    if (actualDist > 0) {
+                        val k: Double = remained / actualDist
+                        newX = curX + (toX - curX) * k
+                        newY = curY + (toY - curY) * k
+                    } else {
+                        newX = curX
+                        newY = curY
+                    }
                     distRemained -= remained
-                    newX = curX + (toX - curX) * k
-                    newY = curY + (toY - curY) * k
 
                     // после обсчета этой коллизии надо завершить цикл
                     needExit = true
@@ -242,7 +248,9 @@ object Collision {
                     newY = result.py
                 } else {
                     //logger.debug("return by testObjCollision $result")
-                    obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
+                    if (isMove) {
+                        obj.pos.setXY(curX.roundToInt(), curY.roundToInt())
+                    }
                     return result
                 }
             }

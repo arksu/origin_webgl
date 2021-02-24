@@ -3,6 +3,8 @@ package com.origin.model
 import com.origin.collision.CollisionResult
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
+import com.origin.entity.InventoryItemEntity
+import com.origin.idfactory.IdFactory
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
@@ -407,6 +409,28 @@ class Player(
         when (params[0]) {
             "online" -> {
                 session.send(CreatureSay(0, "online: ${World.getPlayersCount()}", SYSTEM))
+            }
+            "give" -> {
+                // param 1 - type id
+                val t: Int = params[1].toInt()
+
+                val newItem = transaction {
+                    val e = InventoryItemEntity.new(IdFactory.getNext()) {
+                        type = t
+                        inventoryId = 0
+                        this.x = 0
+                        this.y = 0
+                        quality = 10
+
+                        count = 1
+                        tick = 0
+                        deleted = false
+                    }
+                    InventoryItem(e, null)
+                }
+                if (!inventory.putItem(newItem)) {
+                    // TODO new item drop to ground
+                }
             }
             "spawn" -> {
                 commandToExecute = cmd
