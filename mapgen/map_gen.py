@@ -17,14 +17,8 @@ params = {"max_riv_width": 20,
                 "min_riv_width": 12, 
                 "min_sand_width":-60, 
                 "max_sand_width":60,
-                "lake_deep_width":0.08,
-                "lake_width":0.085,
-                "forest_leaf": 0.45,
-                "meadow_low": 0.44,
-                "meadow_high": 0.41,
-                "prairie": 0.56,
-                "clay": 0.12,
-                "swamp": 0.38,
+                "lake_deep_width": 0.018,
+                "lake_width": 0.029,
                 "max_quality": 100,
                 "min_quality": 10,
                 "min_spot_range": 20,
@@ -32,30 +26,6 @@ params = {"max_riv_width": 20,
                 "spots_count": 100
              }
 
-spots_list = [
-    "clay_spot",
-    "iron_ore_spot",
-    "copper_ore_spot",
-    "gold_spot",
-    "copper_ore_spot",
-    "rock_spot",
-    "tree_spot",
-    "water_well_spot"
-]
-
-start_time = time.time()
-
-spots = defaultdict(list)
-points = []
-
-for x in range(-1, 7):
-    for y in range(-1, 7):
-        points.append([x*500 + randrange(0, 10)/0.005, y*500 + randrange(0, 10)/0.005])
-
-points = np.array(points)
-vor = Voronoi(points)
-# fig = voronoi_plot_2d(vor)
-# plt.show()
 
 def hexColToArr(c):
     return np.array([ int(c[2]),  int(c[1]), int(c[0])])
@@ -73,6 +43,40 @@ TUNDRA =      hexColToArr(b'\x3c\x7a\x6f')# тундра
 WATER =       hexColToArr(b'\x00\x55\xff')# мелководье ok 
 WATER_DEEP =  hexColToArr(b'\x00\x00\xff')# глубокая вода ok
  
+tiles_list=[
+    (HEATH, {"max_r":100, "min_r":20, "count": 500, "aglom":5}),
+    (MEADOW_LOW, {"max_r":100, "min_r":20, "count": 500, "aglom":25}),
+    (MEADOW_HIGH, {"max_r":100, "min_r":20, "count": 500, "aglom":25}),
+    (FOREST_LEAF, {"max_r":100, "min_r":20, "count": 500, "aglom":25}),
+    (FOREST_PINE, {"max_r":100, "min_r":20, "count": 500, "aglom":25}),
+    (CLAY, {"max_r":30, "min_r":2, "count": 300, "aglom":15}),
+    (PRAIRIE, {"max_r":100, "min_r":20, "count": 100, "aglom":25}),
+    (SWAMP, {"max_r":100, "min_r":20, "count": 100, "aglom":25}),
+]
+
+spots_list = [
+    "clay_spot",
+    "iron_ore_spot",
+    "copper_ore_spot",
+    "gold_spot",
+    "copper_ore_spot",
+    "rock_spot",
+    "tree_spot",
+    "water_well_spot"
+]
+
+start_time = time.time()
+
+spots = defaultdict(list)
+points = []
+
+for x in range(-1, 25):
+    for y in range(-1, 25):
+        points.append([x*200 + randrange(0, 10)/0.005, y*200 + randrange(0, 10)/0.005])
+
+points = np.array(points)
+vor = Voronoi(points)
+
 def vecs_len(v1, v2):
     return math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2)
 
@@ -120,15 +124,27 @@ def draw(nmap, point, w, map_size, col):
     rr, cc = circle(point[0], point[1], int(w), nmap.shape)
     nmap[rr,cc,:] = col
                         
-                        
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    if iteration == total: 
+        print()
+        
+printProgressBar(0, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
+        
 nmap = np.zeros(shape=(map_size["width"],map_size["height"], 3))
+
+printProgressBar(1, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
 
 draw_base = []
 
 for x in range(map_size["width"]):
     for y in range(map_size["height"]):
-        nmap[x][y] = FOREST_PINE
+        nmap[x][y] = HEATH
         
+printProgressBar(2, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
 
 local_points = []
 isRandDrop = True
@@ -146,9 +162,7 @@ for vpair in vor.ridge_vertices:
             local_points.append((v0, v1))
         elif randrange(0,10) > 2:
             local_points.append((v0, v1))
-            
-# print(len(local_points))
-            
+                        
 for point in local_points:
     
     p1 = point[0]
@@ -201,6 +215,16 @@ for point in local_points:
         if vecs_len(old_point, p2) <= 1:
             break
 
+printProgressBar(3, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
+            
+for i in tiles_list:
+    for j in range(i[1]["count"]):
+        rpoint = ( randrange(0, map_size["width"]), randrange(0, map_size["height"]) )
+        for k in range(i[1]["aglom"]):
+            draw(nmap, rpoint, randrange(i[1]["min_r"], i[1]["max_r"]), None, i[0])
+            rpoint = (rpoint[0] + randrange(-i[1]["min_r"], i[1]["min_r"]), rpoint[1] + randrange(-i[1]["min_r"], i[1]["min_r"]))
+
+printProgressBar(4, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
             
 for db in draw_base:
     draw(nmap, db[0], db[3], db[2], SAND)
@@ -211,10 +235,11 @@ for db in draw_base:
 for db in draw_base:
     draw(nmap, db[0], db[1]/3, db[2], WATER_DEEP)
     
-scale = randrange(700, 1450)
+
+scale = randrange(200, 450)
 octaves = randrange(10, 30)
-persistence = randrange(15, 25) / 100.0
-lacunarity = randrange(15, 20) / 10.0               
+persistence = randrange(15, 35) / 100.0
+lacunarity = randrange(15, 25) / 10.0               
 
 world = np.zeros((map_size["width"], map_size["height"]))
 for i in range(map_size["width"]):
@@ -228,106 +253,6 @@ for i in range(map_size["width"]):
                                     repeaty=1000, 
                                     base=0)
         
-        
-for i in range(map_size["width"]):
-    for j in range(map_size["height"]):
-        if world[i][j] > (0.390 - 0.390 * params["prairie"]):
-            pic_color = np.array(nmap[i][j])
-            
-            if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND]):
-                nmap[i][j] = PRAIRIE
-
-        if world[i][j] < -(0.390 - 0.390 * params["meadow_high"]):
-            pic_color = np.array(nmap[i][j])
-
-            if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND]):
-                nmap[i][j] = MEADOW_HIGH
-
-scale = randrange(190, 350)
-octaves = randrange(10, 30)
-persistence = randrange(15, 25) / 100.0
-lacunarity = randrange(20, 32) / 10.0 
-                
-                
-world = np.zeros((map_size["width"], map_size["height"]))
-for i in range(map_size["width"]):
-    for j in range(map_size["height"]):
-        world[i][j] = noise.pnoise2(i/scale, 
-                                    j/scale, 
-                                    octaves=octaves, 
-                                    persistence=persistence, 
-                                    lacunarity=lacunarity, 
-                                    repeatx=1000, 
-                                    repeaty=1000, 
-                                    base=0)
-        
-for i in range(map_size["width"]):
-    for j in range(map_size["height"]):
-        if world[i][j] > (0.390 - 0.390 * params["clay"]):
-            pic_color = np.array(nmap[i][j])
-            
-            if not colorCheck(pic_color, [WATER_DEEP, WATER]):
-                nmap[i][j] = CLAY
-
-        if world[i][j] < -(0.390 - 0.390 * params["swamp"]):
-            pic_color = np.array(nmap[i][j])
-
-            if not colorCheck(pic_color, [WATER_DEEP, WATER]):
-                nmap[i][j] = SWAMP
-                
-
-                
-scale = randrange(390, 550)
-octaves = randrange(10, 30)
-persistence = randrange(15, 25) / 100.0
-lacunarity = randrange(20, 32) / 10.0 
-                
-                
-world = np.zeros((map_size["width"], map_size["height"]))
-for i in range(map_size["width"]):
-    for j in range(map_size["height"]):
-        world[i][j] = noise.pnoise2(i/scale, 
-                                    j/scale, 
-                                    octaves=octaves, 
-                                    persistence=persistence, 
-                                    lacunarity=lacunarity, 
-                                    repeatx=1000, 
-                                    repeaty=1000, 
-                                    base=0)
-        
-for i in range(map_size["width"]):
-    for j in range(map_size["height"]):
-        if world[i][j] > (0.390 - 0.390 * params["meadow_low"]):
-            pic_color = np.array(nmap[i][j])
-            
-            if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND, PRAIRIE]):
-                nmap[i][j] = MEADOW_LOW
-
-        if world[i][j] < -(0.390 - 0.390 * params["forest_leaf"]):
-            pic_color = np.array(nmap[i][j])
-
-            if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND, MEADOW_HIGH]):
-                nmap[i][j] = FOREST_LEAF
-                                
-
-                
-scale = randrange(650, 1450)   
-octaves = randrange(10, 30)
-persistence = randrange(15, 25) / 100.0
-lacunarity = randrange(20, 25) / 10.0 
-
-world = np.zeros((map_size["width"], map_size["height"]))
-for i in range(map_size["width"]):
-    for j in range(map_size["height"]):
-        world[i][j] = noise.pnoise2(i/scale, 
-                                    j/scale, 
-                                    octaves=octaves, 
-                                    persistence=persistence, 
-                                    lacunarity=lacunarity, 
-                                    repeatx=1000, 
-                                    repeaty=1000, 
-                                    base=0)
-                
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
         if world[i][j] < -(0.39 - 0.39 * params["lake_deep_width"]):
@@ -336,8 +261,15 @@ for i in range(map_size["width"]):
             pic_color = nmap[i][j]
             if not colorCheck(pic_color, [WATER_DEEP]):
                 nmap[i][j] = WATER
-                
-                
+        if world[i][j] > (0.39 - 0.39 * params["lake_deep_width"]):
+            nmap[i][j] = WATER_DEEP
+        elif world[i][j] > (0.39 - 0.39 * params["lake_width"]):
+            pic_color = nmap[i][j]
+            if not colorCheck(pic_color, [WATER_DEEP]):
+                nmap[i][j] = WATER
+    
+printProgressBar(5, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
+
 for i in range(int(params["spots_count"]/len(spots_list))):
     for j in spots_list:
         
@@ -356,7 +288,7 @@ for i in range(int(params["spots_count"]/len(spots_list))):
                 if try_count == 0:
                     break
         
-        r = randrange(params["min_spot_range"], params["max_spot_range"]) if j == "water_well_spot" else 1
+        r = randrange(params["min_spot_range"], params["max_spot_range"])
         max_q = randrange(params["min_quality"], params["max_quality"])
         
         spots[j].append({"x":x, "y":y, "r":r, "max_quality":max_q})
@@ -364,8 +296,12 @@ for i in range(int(params["spots_count"]/len(spots_list))):
 now = datetime.datetime.now()
 now_dat = str(now.strftime("%Y-%m-%d_%H-%M-%S"))
 
+printProgressBar(6, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
+
 with open(f"spots_{now_dat}.json", 'w') as outfile:
     json.dump(spots, outfile)
+
+printProgressBar(7, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
 
 filename = f"map_{now_dat}.png"
 cv2.imwrite(filename, nmap)
