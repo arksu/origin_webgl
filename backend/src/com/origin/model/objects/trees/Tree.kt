@@ -2,15 +2,13 @@ package com.origin.model.objects.trees
 
 import com.origin.entity.EntityObject
 import com.origin.entity.InventoryItemEntity
-import com.origin.model.BroadcastEvent
-import com.origin.model.ContextMenu
-import com.origin.model.Player
-import com.origin.model.StaticObject
+import com.origin.model.*
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
 import com.origin.model.inventory.ItemType
 import com.origin.net.model.ActionProgress
 import com.origin.utils.Rect
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
@@ -84,14 +82,14 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                         val e = InventoryItemEntity.makeNew(ItemType.BRANCH)
                         InventoryItem(e, null)
                     }
-                    if (!player.inventory.putItem(newItem)) {
-                        // TODO new item drop to ground
-                    }
+                    val result = CompletableDeferred<Boolean>()
+                    player.send(GameObjectMsg.PutItem(newItem, -1, -1, result))
+                    result.await()
                     true
                 }
             }
             "Take bark" -> {
-                player.startAction(this, 4, 0, 10, {
+                player.startAction(this, -2, 0, 3, {
                     // возьмем у игрока часть стамины
                     it.status.checkAndReduceStamina(1.0)
                 }) {
@@ -101,10 +99,10 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                         val e = InventoryItemEntity.makeNew(ItemType.BARK)
                         InventoryItem(e, null)
                     }
-                    if (!player.inventory.putItem(newItem)) {
-                        // TODO new item drop to ground
-                    }
 
+                    val result = CompletableDeferred<Boolean>()
+                    player.send(GameObjectMsg.PutItem(newItem, -1, -1, result))
+                    result.await()
                     true
                 }
             }

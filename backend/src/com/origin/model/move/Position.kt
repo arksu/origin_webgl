@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory
  */
 @ObsoleteCoroutinesApi
 class Position(
-    initx: Int,
-    inity: Int,
+    initX: Int,
+    initY: Int,
     var level: Int,
     var region: Int,
     var heading: Short,
@@ -29,7 +29,7 @@ class Position(
 
     constructor(ix: Int, iy: Int, pos: Position) : this(ix, iy, pos.level, pos.region, pos.heading, pos.parent)
 
-    val point = Vec2i(initx, inity)
+    val point = Vec2i(initX, initY)
 
     val x get() = point.x
     val y get() = point.y
@@ -83,7 +83,7 @@ class Position(
         this.grid = grid
     }
 
-    fun setGrid() {
+    fun initGrid() {
         this.grid = World.getGrid(this)
     }
 
@@ -97,25 +97,27 @@ class Position(
     suspend fun setXY(x: Int, y: Int) {
         logger.debug("setXY $x $y")
 
-        // запомним координаты старого грида
-        val oldgx = gridX
-        val oldgy = gridY
-
         // поставим новые координаты
         this.point.x = x
         this.point.y = y
 
-        // если координаты грида изменились
-        if (oldgx != gridX || oldgy != gridY) {
-            val old = grid
-            // получим новый грид из мира
-            grid = World.getGrid(this)
-            if (parent is MovingObject) {
-                // уведомим объект о смене грида
-                parent.onGridChanged()
+        if (::grid.isInitialized) {
+            // запомним координаты старого грида
+            val oldGx = gridX
+            val oldGy = gridY
+
+            // если координаты грида изменились
+            if (oldGx != gridX || oldGy != gridY) {
+                val old = grid
+                // получим новый грид из мира
+                grid = World.getGrid(this)
+                if (parent is MovingObject) {
+                    // уведомим объект о смене грида
+                    parent.onGridChanged()
+                }
+                old.objects.remove(parent)
+                grid.objects.add(parent)
             }
-            old.objects.remove(parent)
-            grid.objects.add(parent)
         }
     }
 

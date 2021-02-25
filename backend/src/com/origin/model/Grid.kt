@@ -226,7 +226,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     }
 
     /**
-     * спавн объекта в грид
+     * спавн объекта в грид в указанную позицию объекта
      */
     private suspend fun spawn(obj: GameObject): CollisionResult {
         if (obj.pos.region != region || obj.pos.level != level ||

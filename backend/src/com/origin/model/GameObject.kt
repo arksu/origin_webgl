@@ -30,7 +30,6 @@ sealed class GameObjectMsg {
 
     class TakeItem(val who: Human, val id: ObjectID, val resp: CompletableDeferred<InventoryItem?>)
     class PutItem(
-        val who: Human,
         val item: InventoryItem,
         val x: Int,
         val y: Int,

@@ -127,6 +127,14 @@ class Player(
                     openObjectsList.close(msg.inventoryId)
                 }
             }
+            is GameObjectMsg.PutItem -> {
+                // кто-то извне мне кладет вещь в инвентарь (генерация объектов)
+                val success = inventory.putItem(msg.item)
+                if (!success) {
+                    // TODO new item drop to ground
+                }
+                msg.resp.complete(success)
+            }
 
             else -> super.processMessage(msg)
         }
@@ -162,14 +170,17 @@ class Player(
                 setHand(taken, msg)
             }
         } else {
+            // в руке ЕСТЬ вещь
+            // если попали в пустой слот
             if (msg.id == 0L) {
+                // кликнули в мой инвентарь?
                 val success = if (msg.inventoryId == id) {
                     inventory.putItem(h.item, msg.x - h.offsetX, msg.y - h.offsetY)
                 } else {
                     val obj = openObjectsList.get(msg.inventoryId)
                     if (obj != null) {
                         val result = CompletableDeferred<Boolean>()
-                        obj.send(GameObjectMsg.PutItem(this, h.item, msg.x - h.offsetX, msg.y - h.offsetY, result))
+                        obj.send(GameObjectMsg.PutItem(h.item, msg.x - h.offsetX, msg.y - h.offsetY, result))
                         result.await()
                     } else false
                 }
@@ -459,7 +470,7 @@ class Player(
                     }
                     ObjectsFactory.byEntity(e)
                 }
-                obj.pos.setGrid()
+                obj.pos.initGrid()
                 val resp = CompletableDeferred<CollisionResult>()
                 obj.grid.send(GridMsg.Spawn(obj, resp))
                 resp.await()
