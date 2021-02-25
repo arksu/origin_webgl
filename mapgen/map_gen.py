@@ -1,25 +1,56 @@
 from skimage.draw import line, polygon, circle, ellipse
 from scipy.spatial import Voronoi, voronoi_plot_2d
+from collections import defaultdict
 import matplotlib.pyplot as plt
 from random import randrange
 import numpy as np
 import threading
 import datetime
 import noise
+import json
 import math
 import time
 import cv2
 
 map_size = {"width":5000, "height":5000}
-riv_params = {"num_pair_points": 2 ,"max_riv_width": 35, "min_riv_width": 15, "min_sand_width":-30, "max_sand_width":3}
+params = {"max_riv_width": 20, 
+                "min_riv_width": 12, 
+                "min_sand_width":-60, 
+                "max_sand_width":60,
+                "lake_deep_width":0.08,
+                "lake_width":0.085,
+                "forest_leaf": 0.45,
+                "meadow_low": 0.44,
+                "meadow_high": 0.41,
+                "prairie": 0.56,
+                "clay": 0.12,
+                "swamp": 0.38,
+                "max_quality": 100,
+                "min_quality": 10,
+                "min_spot_range": 20,
+                "max_spot_range": 80,
+                "spots_count": 100
+             }
+
+spots_list = [
+    "clay_spot",
+    "iron_ore_spot",
+    "copper_ore_spot",
+    "gold_spot",
+    "copper_ore_spot",
+    "rock_spot",
+    "tree_spot",
+    "water_well_spot"
+]
 
 start_time = time.time()
 
+spots = defaultdict(list)
 points = []
 
-for x in range(-1, 5):
-    for y in range(-1, 5):
-        points.append([x*700 + randrange(0, 10)/0.005, y*700 + randrange(0, 10)/0.005])
+for x in range(-1, 7):
+    for y in range(-1, 7):
+        points.append([x*500 + randrange(0, 10)/0.005, y*500 + randrange(0, 10)/0.005])
 
 points = np.array(points)
 vor = Voronoi(points)
@@ -63,16 +94,16 @@ def rotate(vec, ang):
     return [ vec[0] * math.cos(ang_rad) - vec[1] * math.sin(ang_rad), vec[0] * math.sin(ang_rad) + vec[1] * math.cos(ang_rad)]
 
 def lerp(valFrom, valTo, f):
-    return (valFrom * (1.0 - f)) + (valTo * f);
+    return (valFrom * (1.0 - f)) + (valTo * f)
 
 def getAngRange():
     return randrange(-38, 38)
 
-def getWidthRange(riv_params):
-    return randrange(riv_params["min_riv_width"], riv_params["max_riv_width"])
+def getWidthRange(params):
+    return randrange(params["min_riv_width"], params["max_riv_width"])
 
-def getSandRange(riv_params):
-    return randrange(riv_params["min_sand_width"], riv_params["max_sand_width"])
+def getSandRange(params):
+    return randrange(params["min_sand_width"], params["max_sand_width"])/4.0
 
 def drawPointToMap(nmap, point, c):
     nmap[int(point[0])][int(point[1])] = [c[0], c[1], c[2]]
@@ -127,14 +158,14 @@ for point in local_points:
     
     old_point = p1 
     
-    widthFrom = getWidthRange(riv_params)
-    widthTo = getWidthRange(riv_params)
+    widthFrom = getWidthRange(params)
+    widthTo = getWidthRange(params)
 
     angFrom = getAngRange()
     angTo = getAngRange()
     
-    sandFrom = getSandRange(riv_params)
-    sandTo = getSandRange(riv_params)
+    sandFrom = getSandRange(params)
+    sandTo = getSandRange(params)
     
     lerpInt = 70
     itr = 0.0
@@ -145,13 +176,13 @@ for point in local_points:
         if l % lerpInt == 0 and l != 0:
             
             widthFrom = widthTo
-            widthTo = getWidthRange(riv_params)
+            widthTo = getWidthRange(params)
             
             angFrom = angTo
             angTo = getAngRange()
             
             sandFrom = sandTo
-            sandTo = getSandRange(riv_params)
+            sandTo = getSandRange(params)
 
             itr = 0.0
 
@@ -200,13 +231,13 @@ for i in range(map_size["width"]):
         
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        if world[i][j] > 0.170:
+        if world[i][j] > (0.390 - 0.390 * params["prairie"]):
             pic_color = np.array(nmap[i][j])
             
             if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND]):
                 nmap[i][j] = PRAIRIE
 
-        if world[i][j] < -0.150:
+        if world[i][j] < -(0.390 - 0.390 * params["meadow_high"]):
             pic_color = np.array(nmap[i][j])
 
             if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND]):
@@ -215,7 +246,7 @@ for i in range(map_size["width"]):
 scale = randrange(190, 350)
 octaves = randrange(10, 30)
 persistence = randrange(15, 25) / 100.0
-lacunarity = randrange(25, 40) / 10.0 
+lacunarity = randrange(20, 32) / 10.0 
                 
                 
 world = np.zeros((map_size["width"], map_size["height"]))
@@ -232,22 +263,24 @@ for i in range(map_size["width"]):
         
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        if world[i][j] > 0.370:
+        if world[i][j] > (0.390 - 0.390 * params["clay"]):
             pic_color = np.array(nmap[i][j])
             
             if not colorCheck(pic_color, [WATER_DEEP, WATER]):
                 nmap[i][j] = CLAY
 
-        if world[i][j] < -0.310:
+        if world[i][j] < -(0.390 - 0.390 * params["swamp"]):
             pic_color = np.array(nmap[i][j])
 
             if not colorCheck(pic_color, [WATER_DEEP, WATER]):
                 nmap[i][j] = SWAMP
                 
+
+                
 scale = randrange(390, 550)
 octaves = randrange(10, 30)
 persistence = randrange(15, 25) / 100.0
-lacunarity = randrange(25, 40) / 10.0 
+lacunarity = randrange(20, 32) / 10.0 
                 
                 
 world = np.zeros((map_size["width"], map_size["height"]))
@@ -264,13 +297,13 @@ for i in range(map_size["width"]):
         
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        if world[i][j] > 0.270:
+        if world[i][j] > (0.390 - 0.390 * params["meadow_low"]):
             pic_color = np.array(nmap[i][j])
             
             if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND, PRAIRIE]):
                 nmap[i][j] = MEADOW_LOW
 
-        if world[i][j] < -0.270:
+        if world[i][j] < -(0.390 - 0.390 * params["forest_leaf"]):
             pic_color = np.array(nmap[i][j])
 
             if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND, MEADOW_HIGH]):
@@ -297,15 +330,43 @@ for i in range(map_size["width"]):
                 
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        if world[i][j] < -0.175:
+        if world[i][j] < -(0.39 - 0.39 * params["lake_deep_width"]):
             nmap[i][j] = WATER_DEEP
-        elif world[i][j] < -0.171:
+        elif world[i][j] < -(0.39 - 0.39 * params["lake_width"]):
             pic_color = nmap[i][j]
             if not colorCheck(pic_color, [WATER_DEEP]):
                 nmap[i][j] = WATER
                 
+                
+for i in range(int(params["spots_count"]/len(spots_list))):
+    for j in spots_list:
+        
+        try_count = 1000
+        
+        while True:
+            x = randrange(0, map_size["width"])
+            y = randrange(0, map_size["height"])
+            pic_color = nmap[x][y]
+            if not colorCheck(pic_color, [WATER_DEEP, WATER, SAND]):
+                if j == "clay_spot" and colorCheck(pic_color, [CLAY]):
+                    break
+                if j == "tree_spot" and colorCheck(pic_color, [FOREST_PINE, FOREST_LEAF]):
+                    break
+                try_count -= 1
+                if try_count == 0:
+                    break
+        
+        r = randrange(params["min_spot_range"], params["max_spot_range"]) if j == "water_well_spot" else 1
+        max_q = randrange(params["min_quality"], params["max_quality"])
+        
+        spots[j].append({"x":x, "y":y, "r":r, "max_quality":max_q})
+        
 now = datetime.datetime.now()
 now_dat = str(now.strftime("%Y-%m-%d_%H-%M-%S"))
+
+with open(f"spots_{now_dat}.json", 'w') as outfile:
+    json.dump(spots, outfile)
+
 filename = f"map_{now_dat}.png"
 cv2.imwrite(filename, nmap)
 print (filename)
