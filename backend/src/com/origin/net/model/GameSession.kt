@@ -7,7 +7,7 @@ import com.origin.entity.Characters
 import com.origin.entity.ChatHistory
 import com.origin.model.BroadcastEvent
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
-import com.origin.model.GameObjectMsg.Spawn
+import com.origin.model.GameObjectMsg
 import com.origin.model.Player
 import com.origin.model.PlayerMsg
 import com.origin.net.GameServer
@@ -72,11 +72,14 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
                 // спавним игрока в мир, прогружаются гриды, активируются
                 val resp = CompletableDeferred<Boolean>()
-                player.send(Spawn(resp))
+                player.send(GameObjectMsg.Spawn(resp))
 
                 if (!resp.await()) {
-                    player.pos.setXY()
-                    throw BadRequest("failed spawn player into world")
+                    val resp2 = CompletableDeferred<Boolean>()
+                    player.send(GameObjectMsg.SpawnNear(resp2))
+                    if (!resp2.await()) {
+                        throw BadRequest("failed spawn player into world")
+                    }
                 }
 
                 player.send(PlayerMsg.Connected())

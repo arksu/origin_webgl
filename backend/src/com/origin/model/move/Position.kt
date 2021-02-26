@@ -2,10 +2,7 @@ package com.origin.model.move
 
 import com.origin.collision.CollisionResult
 import com.origin.model.*
-import com.origin.utils.GRID_FULL_SIZE
-import com.origin.utils.GRID_SIZE
-import com.origin.utils.TILE_SIZE
-import com.origin.utils.Vec2i
+import com.origin.utils.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
@@ -89,7 +86,25 @@ class Position(
         val origX = point.x
         val origY = point.y
 
-        val success = spawn()
+        val len = 2 * TILE_SIZE
+        var success = false
+        for (t in 0 until 10) {
+            var dx = Rnd.next(len * 2) - len
+            var dy = Rnd.next(len * 2) - len
+
+            if (dx < 0 && dx > -TILE_SIZE) dx -= TILE_SIZE
+            if (dx > 0 && dx < TILE_SIZE) dx += TILE_SIZE
+            if (dy < 0 && dy > -TILE_SIZE) dy -= TILE_SIZE
+            if (dy > 0 && dy < TILE_SIZE) dy += TILE_SIZE
+
+            point.x += dx
+            point.y += dy
+            if (spawn()) {
+                success = true
+                break
+            }
+        }
+
         if (!success) {
             point.x = origX
             point.y = origY
