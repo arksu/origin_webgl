@@ -23,8 +23,6 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.sql.Timestamp
-import java.util.*
 
 /**
  * игровая сессия (коннект)
@@ -42,7 +40,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
     private lateinit var player: Player
 
-    var isDisconnected = false
+    private var isDisconnected = false
 
     suspend fun received(r: GameRequest) {
         // инициализация сессии
@@ -77,6 +75,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 player.send(Spawn(resp))
 
                 if (!resp.await()) {
+                    player.pos.setXY()
                     throw BadRequest("failed spawn player into world")
                 }
 

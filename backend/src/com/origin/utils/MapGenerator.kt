@@ -14,7 +14,7 @@ import java.io.File
 import java.security.SecureRandom
 import javax.imageio.ImageIO
 
-val IMG_SIZE = SUPERGRID_SIZE * GRID_SIZE
+const val IMG_SIZE = SUPERGRID_SIZE * GRID_SIZE
 
 @Suppress("UsePropertyAccessSyntax")
 val BLACK_COLOR: Int = Color.black.getRGB()
@@ -58,8 +58,7 @@ object MapGenerator {
                 val oc = img.getRGB(x, y)
                 if (oc == BLACK_COLOR) {
                     val v = noise.eval(x.toDouble() / div, y.toDouble() / div)
-                    val c: Int = if (v > threshold) color else 0
-                    img.setRGB(x, y, c)
+                    img.setRGB(x, y, if (v > threshold) color else 0)
                 }
             }
         }

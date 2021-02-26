@@ -37,6 +37,7 @@ class Position(
     /**
      * грид в котором находится объект
      * либо null если еще не привязан к гриду (не заспавнен)
+     * по этому полю детектим заспавнен ли объект в мир
      */
     lateinit var grid: Grid
         private set
@@ -60,7 +61,7 @@ class Position(
      * заспавнить объект в мир
      */
     suspend fun spawn(): Boolean {
-        if (::grid.isInitialized) {
+        if (isSpawned()) {
             throw RuntimeException("pos.grid is already set, on spawn")
         }
         // берем грид и спавнимся через него
@@ -77,6 +78,23 @@ class Position(
         } else {
             false
         }
+    }
+
+    /**
+     * заспавниться рядом.
+     * если удалось - координаты изменятся
+     * если не удалось координаты останутся оригинальные.
+     */
+    suspend fun spawnNear(): Boolean {
+        val origX = point.x
+        val origY = point.y
+
+        val success = spawn()
+        if (!success) {
+            point.x = origX
+            point.y = origY
+        }
+        return success
     }
 
     fun setGrid(grid: Grid) {
@@ -101,7 +119,7 @@ class Position(
         this.point.x = x
         this.point.y = y
 
-        if (::grid.isInitialized) {
+        if (isSpawned()) {
             // запомним координаты старого грида
             val oldGx = gridX
             val oldGy = gridY
@@ -119,6 +137,13 @@ class Position(
                 grid.objects.add(parent)
             }
         }
+    }
+
+    /**
+     * заспавнен ли объект в мир?
+     */
+    private fun isSpawned(): Boolean {
+        return ::grid.isInitialized
     }
 
     override fun toString(): String {
