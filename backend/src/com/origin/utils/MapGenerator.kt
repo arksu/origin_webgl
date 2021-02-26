@@ -4,6 +4,9 @@ import com.origin.utils.TileColors.CLAY
 import com.origin.utils.TileColors.FOREST_LEAF
 import com.origin.utils.TileColors.FOREST_PINE
 import com.origin.utils.TileColors.MEADOW_LOW
+import com.origin.utils.TileColors.PRAIRIE
+import com.origin.utils.TileColors.SWAMP
+import com.origin.utils.TileColors.TUNDRA
 import com.origin.utils.TileColors.WATER
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -25,10 +28,17 @@ object MapGenerator {
 
         val image = BufferedImage(IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_INT_RGB)
 
-        layer(image, 300.0, 0.6, WATER)
+        layer(image, 300.0, 0.64, WATER)
+        layer(image, 330.0, 0.7, WATER)
+        layer(image, 250.0, 0.74, SWAMP)
+        layer(image, 300.0, 0.8, SWAMP)
+        layer(image, 300.0, 0.76, CLAY)
         layer(image, 400.0, 0.8, CLAY)
         layer(image, 170.0, 0.6, MEADOW_LOW)
+        layer(image, 220.0, 0.72, PRAIRIE)
+        layer(image, 170.0, 0.8, TUNDRA)
         layer(image, 200.0, 0.1, FOREST_PINE)
+        layer(image, 260.0, 0.2, FOREST_PINE)
 
         fill(image, FOREST_LEAF)
 
