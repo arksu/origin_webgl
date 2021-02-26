@@ -1,7 +1,6 @@
 from skimage.draw import line, polygon, circle, ellipse
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from collections import defaultdict
-import matplotlib.pyplot as plt
 from random import randrange
 import numpy as np
 import threading
@@ -43,15 +42,16 @@ TUNDRA =      hexColToArr(b'\x3c\x7a\x6f')# тундра
 WATER =       hexColToArr(b'\x00\x55\xff')# мелководье ok 
 WATER_DEEP =  hexColToArr(b'\x00\x00\xff')# глубокая вода ok
  
+    
 tiles_list=[
-    (HEATH, {"max_r":100, "min_r":20, "count": 500, "aglom":5}),
-    (MEADOW_LOW, {"max_r":100, "min_r":20, "count": 500, "aglom":25}),
-    (MEADOW_HIGH, {"max_r":100, "min_r":20, "count": 500, "aglom":25}),
-    (FOREST_LEAF, {"max_r":100, "min_r":20, "count": 500, "aglom":25}),
-    (FOREST_PINE, {"max_r":100, "min_r":20, "count": 500, "aglom":25}),
-    (CLAY, {"max_r":30, "min_r":2, "count": 300, "aglom":15}),
-    (PRAIRIE, {"max_r":100, "min_r":20, "count": 100, "aglom":25}),
-    (SWAMP, {"max_r":100, "min_r":20, "count": 100, "aglom":25}),
+#     (HEATH,       {"noise_x":25, "noise_y":25, "seed":123, "slice": 0.01}),
+    (MEADOW_LOW,  {"noise_x":0, "noise_y":40, "seed":1240, "slice": 0.21}),
+    (MEADOW_HIGH, {"noise_x":0, "noise_y":20, "seed":1252, "slice": 0.20}),
+    (FOREST_LEAF, {"noise_x":0, "noise_y":30, "seed":1263, "slice": 0.18}),
+    (FOREST_PINE, {"noise_x":0, "noise_y":20, "seed":1274, "slice": 0.15}),
+    (PRAIRIE,     {"noise_x":0, "noise_y":20, "seed":1292, "slice": 0.13}),
+    (CLAY,        {"noise_x":0, "noise_y":75, "seed":1285, "slice": 0.24}),
+    (SWAMP,       {"noise_x":0, "noise_y":20, "seed":1301, "slice": 0.08}),
 ]
 
 spots_list = [
@@ -131,20 +131,61 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
     print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
     if iteration == total: 
         print()
+
+def perlin(x,y,seed=0):
+    # permutation table
+    np.random.seed(seed)
+    p = np.arange(256,dtype=int)
+    np.random.shuffle(p)
+    p = np.stack([p,p]).flatten()
+    # coordinates of the top-left
+    xi = x.astype(int)
+    yi = y.astype(int)
+    # internal coordinates
+    xf = x - xi
+    yf = y - yi
+    # fade factors
+    u = fade(xf)
+    v = fade(yf)
+    # noise components
+    n00 = gradient(p[p[xi]+yi],xf,yf)
+    n01 = gradient(p[p[xi]+yi+1],xf,yf-1)
+    n11 = gradient(p[p[xi+1]+yi+1],xf-1,yf-1)
+    n10 = gradient(p[p[xi+1]+yi],xf-1,yf)
+    # combine noises
+    x1 = lerp(n00,n10,u)
+    x2 = lerp(n01,n11,u) # FIX1: I was using n10 instead of n01
+    return lerp(x1,x2,v) # FIX2: I also had to reverse x1 and x2 here
+
+def lerp(a,b,x):
+    "linear interpolation"
+    return a + x * (b-a)
+
+def fade(t):
+    "6t^5 - 15t^4 + 10t^3"
+    return 6 * t**5 - 15 * t**4 + 10 * t**3
+
+def gradient(h,x,y):
+    "grad converts h to the right gradient vector and return the dot product with (x,y)"
+    vectors = np.array([[0,1],[0,-1],[1,0],[-1,0]])
+    g = vectors[h%4]
+    return g[:,:,0] * x + g[:,:,1] * y
         
-printProgressBar(0, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
         
+pb_idx = 0
+        
+printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+pb_idx+=1
+
 nmap = np.zeros(shape=(map_size["width"],map_size["height"], 3))
 
-printProgressBar(1, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
+printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+pb_idx+=1
 
 draw_base = []
 
-for x in range(map_size["width"]):
-    for y in range(map_size["height"]):
-        nmap[x][y] = HEATH
-        
-printProgressBar(2, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
+printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+pb_idx+=1
 
 local_points = []
 isRandDrop = True
@@ -215,17 +256,36 @@ for point in local_points:
         if vecs_len(old_point, p2) <= 1:
             break
 
-printProgressBar(3, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
-            
-for i in tiles_list:
-    for j in range(i[1]["count"]):
-        rpoint = ( randrange(0, map_size["width"]), randrange(0, map_size["height"]) )
-        for k in range(i[1]["aglom"]):
-            draw(nmap, rpoint, randrange(i[1]["min_r"], i[1]["max_r"]), None, i[0])
-            rpoint = (rpoint[0] + randrange(-i[1]["min_r"], i[1]["min_r"]), rpoint[1] + randrange(-i[1]["min_r"], i[1]["min_r"]))
+printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+pb_idx+=1
 
-printProgressBar(4, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
-            
+noises = []
+
+for i in tiles_list:
+
+    lin = np.linspace(i[1]["noise_x"],i[1]["noise_y"],5000,endpoint=True)
+    x,y = np.meshgrid(lin,lin)
+
+    noise = perlin(x,y,seed=i[1]["seed"])
+    noises.append(noise)
+    
+    printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+    pb_idx+=1
+    
+printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+pb_idx+=1
+
+idx=0
+for k in tiles_list:
+    for i in range(map_size["width"]):
+        for j in range(map_size["height"]):
+            if noises[idx][i][j] > k[1]["slice"]:
+                nmap[i][j] = k[0]  
+    idx+=1
+          
+printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+pb_idx+=1
+
 for db in draw_base:
     draw(nmap, db[0], db[3], db[2], SAND)
     
@@ -233,42 +293,23 @@ for db in draw_base:
     draw(nmap, db[0], db[1]/2, db[2], WATER)
     
 for db in draw_base:
-    draw(nmap, db[0], db[1]/3, db[2], WATER_DEEP)
-    
+    draw(nmap, db[0], db[1]/3, db[2], WATER_DEEP)             
 
-scale = randrange(200, 450)
-octaves = randrange(10, 30)
-persistence = randrange(15, 35) / 100.0
-lacunarity = randrange(15, 25) / 10.0               
+lin = np.linspace(0,25,5000,endpoint=True)
+x,y = np.meshgrid(lin,lin)
+world = perlin(x,y,seed=42)
 
-world = np.zeros((map_size["width"], map_size["height"]))
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        world[i][j] = noise.pnoise2(i/scale, 
-                                    j/scale, 
-                                    octaves=octaves, 
-                                    persistence=persistence, 
-                                    lacunarity=lacunarity, 
-                                    repeatx=1000, 
-                                    repeaty=1000, 
-                                    base=0)
-        
-for i in range(map_size["width"]):
-    for j in range(map_size["height"]):
-        if world[i][j] < -(0.39 - 0.39 * params["lake_deep_width"]):
+        if world[i][j] > 0.267:
             nmap[i][j] = WATER_DEEP
-        elif world[i][j] < -(0.39 - 0.39 * params["lake_width"]):
+        elif world[i][j] > 0.258:
             pic_color = nmap[i][j]
             if not colorCheck(pic_color, [WATER_DEEP]):
                 nmap[i][j] = WATER
-        if world[i][j] > (0.39 - 0.39 * params["lake_deep_width"]):
-            nmap[i][j] = WATER_DEEP
-        elif world[i][j] > (0.39 - 0.39 * params["lake_width"]):
-            pic_color = nmap[i][j]
-            if not colorCheck(pic_color, [WATER_DEEP]):
-                nmap[i][j] = WATER
-    
-printProgressBar(5, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
+
+printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+pb_idx+=1
 
 for i in range(int(params["spots_count"]/len(spots_list))):
     for j in spots_list:
@@ -296,14 +337,20 @@ for i in range(int(params["spots_count"]/len(spots_list))):
 now = datetime.datetime.now()
 now_dat = str(now.strftime("%Y-%m-%d_%H-%M-%S"))
 
-printProgressBar(6, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
+
 
 with open(f"spots_{now_dat}.json", 'w') as outfile:
     json.dump(spots, outfile)
 
-printProgressBar(7, 7, prefix = 'Progress:', suffix = 'Complete', length = 50)
+printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+pb_idx+=1
+
+print(8 + len(tiles_list), pb_idx)
 
 filename = f"map_{now_dat}.png"
 cv2.imwrite(filename, nmap)
+
+printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
+
 print (filename)
 print ("--- %s seconds left ---" % (time.time() - start_time))
