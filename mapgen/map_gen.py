@@ -45,14 +45,17 @@ WATER_DEEP =  hexColToArr(b'\x00\x00\xff')# глубокая вода ok
  
     
 tiles_list=[
-#     (HEATH,       {"scale_x":0.05, "scale_y":0.05, "seed":123, "threshold": 0.01}),
-    (MEADOW_LOW,  {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
-    (MEADOW_HIGH, {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
-    (FOREST_LEAF, {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
-    (FOREST_PINE, {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
-    (PRAIRIE,     {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
-    (CLAY,        {"scale_x":0.09, "scale_y":0.09, "seed": randrange(0, 9999), "threshold": 0.4}),
-    (SWAMP,       {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
+    (SWAMP,       {"scale":250.0, "threshold": 0.74}),
+    (SWAMP,       {"scale":300.0, "threshold": 0.8}),
+    (CLAY,        {"scale":300.0, "threshold": 0.55}),
+    (CLAY,        {"scale":400.0, "threshold": 0.55}),
+    (MEADOW_LOW,  {"scale":170.0, "threshold": 0.6}),
+    (MEADOW_HIGH, {"scale":170.0, "threshold": 0.6}),
+    (FOREST_LEAF, {"scale":170.0, "threshold": 0.6}),
+    (PRAIRIE,     {"scale":220.0, "threshold": 0.72}),
+    (TUNDRA,      {"scale":170.0, "threshold": 0.8}),
+    (FOREST_PINE, {"scale":200.0, "threshold": 0.8}),
+    (FOREST_PINE, {"scale":260.0, "threshold": 0.8}),
 ]
 
 spots_list = [
@@ -141,6 +144,10 @@ pb_idx+=1
 
 nmap = np.zeros(shape=(map_size["width"],map_size["height"], 3))
 
+for i in range(map_size["width"]):
+    for j in range(map_size["height"]):
+        nmap[i][j] = FOREST_PINE
+        
 printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
 pb_idx+=1
 
@@ -225,7 +232,7 @@ noises = []
 
 for i in tiles_list:
 
-    tmp = OpenSimplex(seed=i[1]["seed"])
+    tmp = OpenSimplex(seed=randrange(0, 9999))
     noises.append(tmp)
     
     printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
@@ -238,7 +245,7 @@ idx=0
 for k in tiles_list:
     for i in range(map_size["width"]):
         for j in range(map_size["height"]):
-            if noises[idx].noise2d(x=i*k[1]["scale_x"], y=j*k[1]["scale_y"]) > k[1]["threshold"]:
+            if noises[idx].noise2d(x=float(i)/k[1]["scale"], y=float(j)/k[1]["scale"]) > k[1]["threshold"]:
                 nmap[i][j] = k[0]
     idx+=1
           
@@ -258,9 +265,9 @@ world = OpenSimplex(seed=42)
     
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        if world.noise2d(x=i*0.045, y=j*0.045) > 0.75:
+        if world.noise2d(x=i*0.005, y=j*0.005) > 0.35:
             nmap[i][j] = WATER_DEEP
-        elif world.noise2d(x=i*0.045, y=j*0.045) > 0.7:
+        elif world.noise2d(x=i*0.005, y=j*0.005) > 0.3:
             pic_color = nmap[i][j]
             if not colorCheck(pic_color, [WATER_DEEP]):
                 nmap[i][j] = WATER
