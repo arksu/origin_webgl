@@ -1,14 +1,15 @@
 # Map generator
-requires python3.9, pip3
+requires python3.8, pip3
 
 # prepare
 
-- pip3 install numpy
-- pip3 install noise
-- pip3 install scipy
-- pip3 install matplotlib
-- pip3 install scikit-image
-- pip3 install opencv-python
+/usr/local/opt/python@3.8/bin/python3 -m pip install numpy
+/usr/local/opt/python@3.8/bin/python3 -m pip install opencv-python
+/usr/local/opt/python@3.8/bin/python3 -m pip install scipy
+/usr/local/opt/python@3.8/bin/python3 -m pip install opensimplex
+/usr/local/opt/python@3.8/bin/python3 -m pip install noise
+/usr/local/opt/python@3.8/bin/python3 -m pip install scikit-image==0.17.2
+
 
 # generate map
-`python3 map_gen.py`
+`/usr/local/opt/python@3.8/bin/python3 map_gen.py`
