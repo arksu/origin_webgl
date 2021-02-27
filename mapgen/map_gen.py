@@ -1,6 +1,7 @@
 from skimage.draw import line, polygon, circle, ellipse
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from collections import defaultdict
+from opensimplex import OpenSimplex
 from random import randrange
 import numpy as np
 import threading
@@ -44,14 +45,14 @@ WATER_DEEP =  hexColToArr(b'\x00\x00\xff')# глубокая вода ok
  
     
 tiles_list=[
-#     (HEATH,       {"noise_x":25, "noise_y":25, "seed":123, "slice": 0.01}),
-    (MEADOW_LOW,  {"noise_x":0, "noise_y":40, "seed":1240, "slice": 0.21}),
-    (MEADOW_HIGH, {"noise_x":0, "noise_y":20, "seed":1252, "slice": 0.20}),
-    (FOREST_LEAF, {"noise_x":0, "noise_y":30, "seed":1263, "slice": 0.18}),
-    (FOREST_PINE, {"noise_x":0, "noise_y":20, "seed":1274, "slice": 0.15}),
-    (PRAIRIE,     {"noise_x":0, "noise_y":20, "seed":1292, "slice": 0.13}),
-    (CLAY,        {"noise_x":0, "noise_y":75, "seed":1285, "slice": 0.24}),
-    (SWAMP,       {"noise_x":0, "noise_y":20, "seed":1301, "slice": 0.08}),
+#     (HEATH,       {"scale_x":0.05, "scale_y":0.05, "seed":123, "threshold": 0.01}),
+    (MEADOW_LOW,  {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
+    (MEADOW_HIGH, {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
+    (FOREST_LEAF, {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
+    (FOREST_PINE, {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
+    (PRAIRIE,     {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
+    (CLAY,        {"scale_x":0.09, "scale_y":0.09, "seed": randrange(0, 9999), "threshold": 0.4}),
+    (SWAMP,       {"scale_x":0.07, "scale_y":0.07, "seed": randrange(0, 9999), "threshold": 0.1}),
 ]
 
 spots_list = [
@@ -132,45 +133,6 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
     if iteration == total: 
         print()
 
-def perlin(x,y,seed=0):
-    # permutation table
-    np.random.seed(seed)
-    p = np.arange(256,dtype=int)
-    np.random.shuffle(p)
-    p = np.stack([p,p]).flatten()
-    # coordinates of the top-left
-    xi = x.astype(int)
-    yi = y.astype(int)
-    # internal coordinates
-    xf = x - xi
-    yf = y - yi
-    # fade factors
-    u = fade(xf)
-    v = fade(yf)
-    # noise components
-    n00 = gradient(p[p[xi]+yi],xf,yf)
-    n01 = gradient(p[p[xi]+yi+1],xf,yf-1)
-    n11 = gradient(p[p[xi+1]+yi+1],xf-1,yf-1)
-    n10 = gradient(p[p[xi+1]+yi],xf-1,yf)
-    # combine noises
-    x1 = lerp(n00,n10,u)
-    x2 = lerp(n01,n11,u) # FIX1: I was using n10 instead of n01
-    return lerp(x1,x2,v) # FIX2: I also had to reverse x1 and x2 here
-
-def lerp(a,b,x):
-    "linear interpolation"
-    return a + x * (b-a)
-
-def fade(t):
-    "6t^5 - 15t^4 + 10t^3"
-    return 6 * t**5 - 15 * t**4 + 10 * t**3
-
-def gradient(h,x,y):
-    "grad converts h to the right gradient vector and return the dot product with (x,y)"
-    vectors = np.array([[0,1],[0,-1],[1,0],[-1,0]])
-    g = vectors[h%4]
-    return g[:,:,0] * x + g[:,:,1] * y
-        
         
 pb_idx = 0
         
@@ -263,11 +225,8 @@ noises = []
 
 for i in tiles_list:
 
-    lin = np.linspace(i[1]["noise_x"],i[1]["noise_y"],5000,endpoint=True)
-    x,y = np.meshgrid(lin,lin)
-
-    noise = perlin(x,y,seed=i[1]["seed"])
-    noises.append(noise)
+    tmp = OpenSimplex(seed=i[1]["seed"])
+    noises.append(tmp)
     
     printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
     pb_idx+=1
@@ -279,8 +238,8 @@ idx=0
 for k in tiles_list:
     for i in range(map_size["width"]):
         for j in range(map_size["height"]):
-            if noises[idx][i][j] > k[1]["slice"]:
-                nmap[i][j] = k[0]  
+            if noises[idx].noise2d(x=i*k[1]["scale_x"], y=j*k[1]["scale_y"]) > k[1]["threshold"]:
+                nmap[i][j] = k[0]
     idx+=1
           
 printProgressBar(pb_idx, 8 + len(tiles_list), prefix = 'Progress:', suffix = 'Complete', length = 50)
@@ -295,15 +254,13 @@ for db in draw_base:
 for db in draw_base:
     draw(nmap, db[0], db[1]/3, db[2], WATER_DEEP)             
 
-lin = np.linspace(0,25,5000,endpoint=True)
-x,y = np.meshgrid(lin,lin)
-world = perlin(x,y,seed=42)
-
+world = OpenSimplex(seed=42)
+    
 for i in range(map_size["width"]):
     for j in range(map_size["height"]):
-        if world[i][j] > 0.267:
+        if world.noise2d(x=i*0.045, y=j*0.045) > 0.75:
             nmap[i][j] = WATER_DEEP
-        elif world[i][j] > 0.258:
+        elif world.noise2d(x=i*0.045, y=j*0.045) > 0.7:
             pic_color = nmap[i][j]
             if not colorCheck(pic_color, [WATER_DEEP]):
                 nmap[i][j] = WATER
