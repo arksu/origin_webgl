@@ -6,6 +6,9 @@ import com.origin.model.inventory.Inventory
 import com.origin.utils.ObjectID
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
+/**
+ * контейнеры которые могут хранить вещи (ящики, шкафы и тд)
+ */
 @ObsoleteCoroutinesApi
 abstract class Container(entity: EntityObject) : StaticObject(entity) {
 
