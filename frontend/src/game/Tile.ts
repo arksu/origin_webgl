@@ -1,5 +1,6 @@
 import {getRandomInt} from "@/utils/Util";
 import water from "./tiles/water.json"
+import water_deep from "./tiles/water_deep.json"
 import stone from "./tiles/stone.json"
 import clay from "./tiles/clay.json"
 import forest_leaf from "./tiles/forest_leaf.json"
@@ -82,6 +83,7 @@ export default class Tile {
     public static readonly FULL_GRID_SIZE = Tile.GRID_SIZE * Tile.TILE_SIZE
 
     public static init() {
+        Tile.sets[1] = new TileSet(water_deep)
         Tile.sets[3] = new TileSet(water)
         Tile.sets[10] = new TileSet(forest_leaf)
         Tile.sets[15] = new TileSet(forest_pine)

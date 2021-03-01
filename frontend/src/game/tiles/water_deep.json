@@ -1,0 +1,190 @@
+{
+  "ground": [
+    {
+      "img": "tiles/water_deep/water_deep1.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/water_deep/water_deep2.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/water_deep/water_deep3.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/water_deep/water_deep4.png",
+      "w": 1
+    }
+  ],
+  "borders": [
+    [
+      {
+        "img": "tiles/water_deep/b1.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b2.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b4.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b5.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b6.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b7.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b8.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b9.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b10.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b11.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b12.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b13.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b14.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/water_deep/b15.png",
+        "w": 1
+      }
+    ]
+  ],
+  "corners": [
+    [
+      {
+        "img": "tiles/water_deep/c1.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c2.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c4.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c5.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c6.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c7.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c8.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c9.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c10.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c11.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c12.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c13.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c14.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/water_deep/c15.png",
+        "w": 1
+      }
+    ]
+  ]
+}
