@@ -61,11 +61,14 @@ object MapImporter {
                         // берем тип тайла из цвета
                         val tileType: Byte = when (c) {
                             TileColors.MEADOW_LOW -> Tile.MEADOW_LOW
+                            TileColors.MEADOW_HIGH -> Tile.MEADOW_LOW // TODO
                             TileColors.FOREST_PINE -> Tile.FOREST_PINE
                             TileColors.FOREST_LEAF -> Tile.FOREST_LEAF
+                            TileColors.TUNDRA -> Tile.CLAY // TODO
+                            TileColors.PRAIRIE -> Tile.CLAY // TODO
                             TileColors.CLAY -> Tile.CLAY
                             TileColors.SAND -> Tile.SAND
-                            TileColors.SWAMP -> Tile.WATER
+                            TileColors.SWAMP -> Tile.WATER // TODO
                             TileColors.WATER -> Tile.WATER
                             TileColors.WATER_DEEP -> Tile.WATER_DEEP
                             else ->
