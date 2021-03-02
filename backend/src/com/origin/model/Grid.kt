@@ -272,10 +272,11 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         val totalDist = obj.pos.point.dist(toX, toY)
         val k = if (totalDist == 0.0) 0.0 else (dist * 1.2) / totalDist
         // точка куда должны передвинутся с учетом вектора движения
-        val dp = Vec2i(toX, toY).sub(obj.pos.point).mul(k).add(obj.pos.point)
+        val dp = Vec2i(toX, toY).sub(obj.pos.point).mul(k)
 
         // область движения (от начальной до конечной точки)
-        val rect = Rect(obj.pos.x, obj.pos.y, dp.x, dp.y)
+        val rect = obj.getBoundRect().clone().move(obj.pos.x, obj.pos.y).extend(dp.x, dp.y)
+
         rect.move(obj.getBoundRect())
         val grids = LinkedHashSet<Grid>(4)
 

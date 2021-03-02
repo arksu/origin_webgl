@@ -130,15 +130,15 @@ class Position(
     suspend fun setXY(x: Int, y: Int) {
         logger.debug("setXY $x $y")
 
+        // запомним координаты старого грида
+        val oldGx = gridX
+        val oldGy = gridY
+
         // поставим новые координаты
         this.point.x = x
         this.point.y = y
 
         if (isSpawned()) {
-            // запомним координаты старого грида
-            val oldGx = gridX
-            val oldGy = gridY
-
             // если координаты грида изменились
             if (oldGx != gridX || oldGy != gridY) {
                 val old = grid
