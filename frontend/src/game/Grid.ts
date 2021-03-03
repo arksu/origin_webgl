@@ -244,24 +244,31 @@ export default class Grid {
                 if (arr !== undefined) {
                     let path = arr.get(getRandomByCoord(x, y))
                     if (path !== undefined) {
+                        let tn = path
                         if (path.includes(".")) path = "assets/" + path
                         let spr = PIXI.Sprite.from(path)
                         spr.x = sx
                         spr.y = sy
+                        let idx = this.spriteTextureNames.length
+                        this.spriteTextureNames[idx] = tn
+                        this.sprites[idx] = spr
                         container.addChild(spr)
                     }
                 }
             }
             if (cm !== 0) {
                 const arr = ts.corners[cm - 1];
-                // if (cm > 1) console.log("cm ", cm, ts.corners)
                 if (arr !== undefined) {
                     let path = arr.get(getRandomByCoord(x, y))
                     if (path !== undefined) {
+                        let tn = path
                         if (path.includes(".")) path = "assets/" + path
                         let spr = PIXI.Sprite.from(path)
                         spr.x = sx
                         spr.y = sy
+                        let idx = this.spriteTextureNames.length
+                        this.spriteTextureNames[idx] = tn
+                        this.sprites[idx] = spr
                         container.addChild(spr)
                     }
                 }
