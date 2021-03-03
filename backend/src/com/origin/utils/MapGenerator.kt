@@ -7,7 +7,7 @@ import com.origin.utils.TileColors.MEADOW_LOW
 import com.origin.utils.TileColors.PRAIRIE
 import com.origin.utils.TileColors.SWAMP
 import com.origin.utils.TileColors.TUNDRA
-import com.origin.utils.TileColors.WATER
+import com.origin.utils.TileColors.WATER_DEEP
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.File
@@ -22,29 +22,55 @@ val BLACK_COLOR: Int = Color.black.getRGB()
 val rnd = SecureRandom()
 
 object MapGenerator {
+    var isMakeLakes = false
+    var isMakeTiles = false
+    var isNewImage = false
+
     @JvmStatic
     fun main(args: Array<String>) {
         println("map generator start...")
+        args.forEach {
+            if (it == "lakes") isMakeLakes = true
+            if (it == "tiles") isMakeTiles = true
+            if (it == "new") isNewImage = true
+        }
 
-        val image = BufferedImage(IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_INT_RGB)
+        val image: BufferedImage =
+            if (isNewImage) {
+                println("create new map.png")
+                BufferedImage(IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_INT_RGB)
+            } else {
+                println("load from map.png")
+                val f = File("map.png")
+                ImageIO.read(f)
+            }
 
-        layer(image, 300.0, 0.64, WATER)
-        layer(image, 330.0, 0.7, WATER)
-        layer(image, 250.0, 0.74, SWAMP)
-        layer(image, 300.0, 0.8, SWAMP)
-        layer(image, 300.0, 0.76, CLAY)
-        layer(image, 400.0, 0.8, CLAY)
-        layer(image, 170.0, 0.6, MEADOW_LOW)
-        layer(image, 220.0, 0.72, PRAIRIE)
-        layer(image, 170.0, 0.8, TUNDRA)
-        layer(image, 200.0, 0.1, FOREST_PINE)
-        layer(image, 260.0, 0.2, FOREST_PINE)
-
-        fill(image, FOREST_LEAF)
+        if (isMakeLakes) {
+            println("make lakes...")
+            layer(image, 300.0, 0.64, WATER_DEEP)
+            layer(image, 330.0, 0.7, WATER_DEEP)
+        }
+        if (isMakeTiles) {
+            println("make tiles...")
+            layer(image, 250.0, 0.74, SWAMP)
+            layer(image, 300.0, 0.8, SWAMP)
+            layer(image, 300.0, 0.76, CLAY)
+            layer(image, 400.0, 0.8, CLAY)
+            layer(image, 170.0, 0.6, MEADOW_LOW)
+            layer(image, 220.0, 0.72, PRAIRIE)
+            layer(image, 170.0, 0.8, TUNDRA)
+            layer(image, 200.0, 0.1, FOREST_PINE)
+            layer(image, 260.0, 0.2, FOREST_PINE)
+            fill(image, FOREST_LEAF)
+        }
 
         val f = File("map.png")
         println("save to file")
-        ImageIO.write(image, "png", f)
+        try {
+            ImageIO.write(image, "png", f)
+        } catch (e: Exception) {
+            println("error ${e.message}")
+        }
         println("done")
     }
 
@@ -56,9 +82,9 @@ object MapGenerator {
         for (x in 0 until IMG_SIZE) {
             for (y in 0 until IMG_SIZE) {
                 val oc = img.getRGB(x, y)
-                if (oc == BLACK_COLOR) {
+                if (oc == BLACK_COLOR || !isNewImage) {
                     val v = noise.eval(x.toDouble() / div, y.toDouble() / div)
-                    img.setRGB(x, y, if (v > threshold) color else 0)
+                    img.setRGB(x, y, if (v > threshold) color else (if (isNewImage) 0 else oc))
                 }
             }
         }
