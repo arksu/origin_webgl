@@ -3,6 +3,7 @@ package com.origin.model.move
 import com.origin.collision.CollisionResult
 import com.origin.model.GameObject
 import com.origin.model.Grid
+import com.origin.model.LandLayer
 import com.origin.utils.TILE_SIZE
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
@@ -70,9 +71,9 @@ object Collision {
         }
 
         //logger.warn("filtered [${filtered.size}]:")
-        filtered.forEach {
-            //logger.debug("$it")
-        }
+//        filtered.forEach {
+        //logger.debug("$it")
+//        }
 
         var curX: Double = obj.pos.x.toDouble()
         var curY: Double = obj.pos.y.toDouble()
@@ -84,8 +85,8 @@ object Collision {
 
 
         var distRemained = dist
-        var oldD = 0.0
-        var dd: Double
+//        var oldD = 0.0
+//        var dd: Double
         var oldAd: Double = -1.0
         var counter = 0
         while (true) {
@@ -157,9 +158,9 @@ object Collision {
                 // проверяем коллизию с объектами
                 val collisions = filtered.mapNotNull {
                     val ro = it.getBoundRect().clone().move(it.pos.point)
-                    if (isMove) {
-                        //logger.debug("test $ro $movingRect $it")
-                    }
+//                    if (isMove) {
+                    //logger.debug("test $ro $movingRect $it")
+//                    }
                     if (movingRect.isIntersect(ro)) {
                         if (isMove) {
                             //logger.warn("COLLISION!")
@@ -255,6 +256,11 @@ object Collision {
                 }
             }
 
+            // проверим выход за границы мира
+            if (!checkWorldLimit(newX, newY, list[0].layer)) {
+                return CollisionResult(CollisionResult.CollisionType.COLLISION_WORLD, null)
+            }
+
             if (needExit) {
                 //logger.warn("needExit")
                 if (isMove) {
@@ -283,5 +289,18 @@ object Collision {
         val dx = x2 - x1
         val dy = y2 - y1
         return sqrt(dx * dx + dy * dy)
+    }
+
+    /**
+     * проверка выхода за границы мира
+     */
+    private fun checkWorldLimit(x: Double, y: Double, layer: LandLayer): Boolean {
+        return layer.validateAbsoluteCoord(
+            (x - WORLD_BUFFER_SIZE).toInt(),
+            (y - WORLD_BUFFER_SIZE).toInt()
+        ) && layer.validateAbsoluteCoord(
+            (x + WORLD_BUFFER_SIZE).toInt(),
+            (y + WORLD_BUFFER_SIZE).toInt()
+        )
     }
 }

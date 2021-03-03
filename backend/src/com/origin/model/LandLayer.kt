@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.entity.GridEntity
+import com.origin.utils.GRID_FULL_SIZE
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -53,7 +54,17 @@ class LandLayer(
         return grid
     }
 
+    /**
+     * валидация координат гридов (не выходит ли за пределы слоя)
+     */
     fun validateCoord(gx: Int, gy: Int): Boolean {
         return !(gx < 0 || gy < 0 || gx >= width || gy >= height)
+    }
+
+    /**
+     * валидация абсолютных мировых координат
+     */
+    fun validateAbsoluteCoord(x: Int, y: Int): Boolean {
+        return !(x < 0 || y < 0 || x >= width * GRID_FULL_SIZE || y >= height * GRID_FULL_SIZE)
     }
 }
