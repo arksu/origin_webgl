@@ -1,6 +1,5 @@
 package com.origin.model.move
 
-import com.origin.collision.CollisionResult
 import com.origin.model.*
 import com.origin.utils.*
 import kotlinx.coroutines.CompletableDeferred
@@ -99,6 +98,38 @@ class Position(
 
             point.x += dx
             point.y += dy
+            if (spawn()) {
+                success = true
+                break
+            }
+        }
+
+        if (!success) {
+            point.x = origX
+            point.y = origY
+        }
+        return success
+    }
+
+    /**
+     * заспавнится в случайной точке текущего слоя
+     * если удалось - координаты изменятся
+     * если не удалось координаты останутся оригинальные.
+     */
+    suspend fun spawnRandom(): Boolean {
+        val origX = point.x
+        val origY = point.y
+
+        val layer = World.getRegion(region).getLayer(level)
+        val border = GRID_FULL_SIZE + Collision.WORLD_BUFFER_SIZE
+        val rangeW = layer.width * GRID_FULL_SIZE - border * 2
+        val rangeH = layer.height * GRID_FULL_SIZE - border * 2
+
+        var success = false
+        for (t in 0 until 10) {
+            point.x = Rnd.next(rangeW) + border
+            point.y = Rnd.next(rangeH) + border
+
             if (spawn()) {
                 success = true
                 break

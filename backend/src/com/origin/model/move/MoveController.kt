@@ -2,7 +2,6 @@ package com.origin.model.move
 
 import com.origin.ServerConfig
 import com.origin.TimeController
-import com.origin.collision.CollisionResult
 import com.origin.model.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi

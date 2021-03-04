@@ -20,7 +20,7 @@ object World {
      */
     val players = ConcurrentHashMap<ObjectID, Player>()
 
-    private fun getRegion(region: Int): Region {
+    fun getRegion(region: Int): Region {
         if (region < 0) throw RuntimeException("wrong grid region")
         return regions.computeIfAbsent(region) {
             val (w, h) = getRegionSize(region)

@@ -1,6 +1,6 @@
 package com.origin.model
 
-import com.origin.collision.CollisionResult
+import com.origin.model.move.CollisionResult
 import com.origin.database.DatabaseFactory.dbQueryCoroutine
 import com.origin.entity.Character
 import com.origin.entity.EntityObject

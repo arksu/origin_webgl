@@ -1,6 +1,5 @@
 package com.origin.model.move
 
-import com.origin.collision.CollisionResult
 import com.origin.model.GameObject
 import com.origin.model.Grid
 import com.origin.model.LandLayer
@@ -18,7 +17,7 @@ object Collision {
     /**
      * сколько тайлов до конца мира будут давать коллизию
      */
-    private const val WORLD_BUFFER_SIZE = TILE_SIZE * 5
+    const val WORLD_BUFFER_SIZE = TILE_SIZE * 5
 
     /**
      * расстояние в единицах игровых координат между итерациями

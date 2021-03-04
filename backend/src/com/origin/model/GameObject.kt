@@ -17,6 +17,7 @@ import kotlin.reflect.KClass
 sealed class GameObjectMsg {
     class Spawn(val resp: CompletableDeferred<Boolean>)
     class SpawnNear(val resp: CompletableDeferred<Boolean>)
+    class SpawnRandom(val resp: CompletableDeferred<Boolean>)
     class Remove(job: CompletableJob? = null) : MessageWithJob(job)
     class OnRemoved
     class OnObjectRemoved(val obj: GameObject)
@@ -137,6 +138,11 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
             }
             is GameObjectMsg.SpawnNear -> {
                 val result = pos.spawnNear()
+                if (result) afterSpawn()
+                msg.resp.complete(result)
+            }
+            is GameObjectMsg.SpawnRandom -> {
+                val result = pos.spawnRandom()
                 if (result) afterSpawn()
                 msg.resp.complete(result)
             }

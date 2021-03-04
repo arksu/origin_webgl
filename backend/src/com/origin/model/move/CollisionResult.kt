@@ -1,4 +1,4 @@
-package com.origin.collision
+package com.origin.model.move
 
 import com.origin.model.GameObject
 import kotlinx.coroutines.ObsoleteCoroutinesApi

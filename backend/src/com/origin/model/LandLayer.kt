@@ -20,8 +20,8 @@ class LandLayer(
     /**
      * размеры в гридах
      */
-    private val width: Int,
-    private val height: Int,
+    val width: Int,
+    val height: Int,
 ) {
     /**
      * гриды

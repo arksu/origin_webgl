@@ -1,6 +1,5 @@
 package com.origin.model.move
 
-import com.origin.collision.CollisionResult
 import com.origin.model.GameObject
 import com.origin.model.MovingObject
 import com.origin.model.OPEN_DISTANCE
