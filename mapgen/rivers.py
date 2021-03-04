@@ -2,10 +2,7 @@ from skimage.draw import line, polygon, circle, ellipse
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from random import randrange
 import numpy as np
-import threading
 import datetime
-import noise
-import json
 import math
 import time
 import cv2
@@ -17,20 +14,18 @@ warnings.simplefilter(action='ignore', category=RuntimeWarning)
 
 print("Rivers generation...")
 
-map_size = {"width":5000, "height":5000}
-params = {"max_riv_width": 20, 
-                "min_riv_width": 12, 
-                "min_sand_width":-60, 
-                "max_sand_width":60,
-                "lake_deep_width": 0.018,
-                "lake_width": 0.029,
-                "max_quality": 100,
-                "min_quality": 10,
-                "min_spot_range": 20,
-                "max_spot_range": 80,
-                "spots_count": 100
-             }
+# размеры карты, 1 супергрид 5000 на 5000 тайлов
+map_size = {"width": 5000, "height": 5000}
 
+params = {
+    "max_riv_width": 20,
+    "min_riv_width": 12,
+    "min_sand_width": -60,
+    "max_sand_width": 60,
+    "rivers_cell_count": 10,
+    "rivers_cell_count2": 16,
+    "rivers_rand_range": 10,
+}
 
 def hexColToArr(c):
     return np.array([ int(c[2]),  int(c[1]), int(c[0])])
@@ -44,17 +39,19 @@ start_time = time.time()
 points = []
 points1 = []
 
-
-for x in range(-1, 25):
-    for y in range(-1, 25):
-        points.append([x*200 + randrange(-10, 10)/0.005, y*200 + randrange(-10, 10)/0.005])
+rlen = (map_size["width"] / params["rivers_cell_count"]) / 2
+rrange = params["rivers_rand_range"]
+for x in range(-1, params["rivers_cell_count"]):
+    for y in range(-1, params["rivers_cell_count"]):
+        points.append([x*rlen + randrange(-rrange, rrange)*rlen, y*rlen + randrange(-rrange, rrange)*rlen])
 
 points = np.array(points)
 vor = Voronoi(points)
 
-for x in range(-1, 55):
-    for y in range(-1, 55):
-        points1.append([x*100 + randrange(-10, 10)/0.005, y*100 + randrange(-10, 10)/0.005])
+rlen = map_size["width"] / params["rivers_cell_count2"]
+for x in range(-1, params["rivers_cell_count2"]):
+    for y in range(-1, params["rivers_cell_count2"]):
+        points1.append([x*rlen + randrange(-rrange, rrange)*rlen, y*rlen + randrange(-rrange, rrange)*rlen])
 
 points1 = np.array(points1)
 vor1 = Voronoi(points1)

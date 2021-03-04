@@ -168,7 +168,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
         val s = when (getMovementMode()) {
             MoveMode.STEAL -> 25.0
             MoveMode.WALK -> 62.0
-            MoveMode.RUN -> 120.0
+            MoveMode.RUN -> 800.0
         }
         // по воде движемся в 2 раза медленее
         return if (getMovementType() == MoveType.SWIMMING) s / 2 else s

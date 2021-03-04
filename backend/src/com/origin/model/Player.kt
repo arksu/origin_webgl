@@ -443,6 +443,12 @@ class Player(
                     // TODO new item drop to ground
                 }
             }
+            "run" -> {
+                moveMode = MoveMode.RUN
+            }
+            "walk" -> {
+                moveMode = MoveMode.WALK
+            }
             "spawn" -> {
                 commandToExecute = cmd
             }

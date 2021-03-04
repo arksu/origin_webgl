@@ -55,18 +55,19 @@ object FileWatcher {
                         .forEach { x: Path ->
                             run {
                                 val f = x.toString().substring(len)
-
-                                if (hash.containsKey(f)) {
-                                    val crc = getCRC(x)
-                                    if (hash[f] != crc) {
-                                        logger.warn("changed file $f")
-                                        sendChanged(f.replace("\\", "/"))
-                                        hash[f] = crc
+                                if (!f.contains(".DS_Store")) {
+                                    if (hash.containsKey(f)) {
+                                        val crc = getCRC(x)
+                                        if (hash[f] != crc) {
+                                            logger.warn("changed file $f")
+                                            sendChanged(f.replace("\\", "/"))
+                                            hash[f] = crc
+                                        }
+                                    } else {
+                                        logger.warn("new file $f")
+                                        sendAdded(f.replace("\\", "/"))
+                                        hash[f] = getCRC(x)
                                     }
-                                } else {
-                                    logger.warn("new file $f")
-                                    sendAdded(f.replace("\\", "/"))
-                                    hash[f] = getCRC(x)
                                 }
                             }
                         }

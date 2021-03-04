@@ -47,8 +47,8 @@ object MapGenerator {
 
         if (isMakeLakes) {
             println("make lakes...")
-            layer(image, 300.0, 0.64, WATER_DEEP)
-            layer(image, 330.0, 0.7, WATER_DEEP)
+            layer(image, 250.0, 0.69, WATER_DEEP)
+            layer(image, 280.0, 0.73, WATER_DEEP)
         }
         if (isMakeTiles) {
             println("make tiles...")
