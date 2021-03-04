@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.collision.CollisionResult
+import com.origin.database.DatabaseFactory.dbQueryCoroutine
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
 import com.origin.entity.InventoryItemEntity
@@ -9,10 +10,7 @@ import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
-import com.origin.model.move.Move2Object
-import com.origin.model.move.Move2Point
-import com.origin.model.move.MoveMode
-import com.origin.model.move.Position
+import com.origin.model.move.*
 import com.origin.model.objects.ObjectsFactory
 import com.origin.net.model.*
 import com.origin.utils.ObjectID
@@ -380,16 +378,14 @@ class Player(
      */
     override fun storePositionInDb() {
         logger.warn("storePositionInDb ${pos.x} ${pos.y}")
-        WorkerScope.launch {
-            transaction {
-                character.x = pos.x
-                character.y = pos.y
-                character.level = pos.level
-                character.region = pos.region
-                character.heading = pos.heading
+        dbQueryCoroutine {
+            character.x = pos.x
+            character.y = pos.y
+            character.level = pos.level
+            character.region = pos.region
+            character.heading = pos.heading
 
-                character.flush()
-            }
+            character.flush()
         }
     }
 
@@ -470,7 +466,7 @@ class Player(
                 // param 2 - data for object
                 val d = if (params.size >= 3) params[2] else null
                 val obj = transaction {
-                    val e = EntityObject.makeNew(Position(x, y, pos), t)
+                    val e = EntityObject.makeNew(PositionData(x, y, pos), t)
                     if (d != null) {
                         e.data = d
                     }

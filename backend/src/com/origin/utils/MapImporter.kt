@@ -2,6 +2,7 @@ package com.origin.utils
 
 import com.origin.ServerConfig
 import com.origin.database.DatabaseFactory
+import com.origin.entity.EntityObjects
 import com.origin.entity.Grids
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.insert
@@ -28,7 +29,12 @@ object MapImporter {
 
         // удалим из базы вообще все гриды
         transaction {
+            // очищаем таблицу гридов
             Grids.deleteAll()
+            // и объектов. т.к. объекты будут генерироваться при первичной прогрузке грида
+            // то есть практически полноценный ВАЙП сервера
+            // инвентари только останутся. что может привести к багам (типа в дереве старый инвентарь какого то ящика)
+            EntityObjects.deleteAll()
         }
 
         // отступ насколько сдвигаем импортируемую карту в базе

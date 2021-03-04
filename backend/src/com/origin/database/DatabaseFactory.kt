@@ -2,8 +2,12 @@ package com.origin.database
 
 import com.origin.ServerConfig
 import com.origin.entity.*
+import com.origin.model.WorkerScope
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
@@ -73,8 +77,17 @@ object DatabaseFactory {
             maximumPoolSize = 20
             leakDetectionThreshold = 5000
             connectionTimeout = 30000
-
         }
         return HikariDataSource(config)
+    }
+
+    suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
+        transaction { block() }
+    }
+
+    fun dbQueryCoroutine(block: () -> Unit) = WorkerScope.launch {
+        transaction {
+            block()
+        }
     }
 }

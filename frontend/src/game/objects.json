@@ -108,6 +108,114 @@
         ]
       }
     },
+    "apple": {
+      "1": {
+        "offset": [5, 14],
+        "layers": [
+          {
+            "img": "trees/apple/1.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/apple/1_.png",
+            "offset": [0, 12],
+            "shadow": true
+          }
+        ]
+      },
+      "2": {
+        "offset": [13, 38],
+        "layers": [
+          {
+            "img": "trees/apple/2.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/apple/2_.png",
+            "offset": [4, 35],
+            "shadow": true
+          }
+        ]
+      },
+      "3": {
+        "offset": [23, 63],
+        "layers": [
+          {
+            "img": "trees/apple/3.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/apple/3_.png",
+            "offset": [7, 56],
+            "shadow": true
+          }
+        ]
+      },
+      "4": {
+        "offset": [29, 80],
+        "layers": [
+          {
+            "img": "trees/apple/4.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/apple/4_.png",
+            "offset": [6, 75],
+            "shadow": true
+          }
+        ]
+      },
+      "5": {
+        "offset": [49, 103],
+        "layers": [
+          {
+            "img": "trees/apple/5.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/apple/5_.png",
+            "offset": [17, 93],
+            "shadow": true
+          }
+        ]
+      },
+      "6": {
+        "offset": [62, 127],
+        "layers": [
+          {
+            "interactive": true,
+            "img": "trees/apple/6.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/apple/6_.png",
+            "offset": [19, 110],
+            "shadow": true
+          }
+        ]
+      },
+      "stump": {
+        "offset": [26, 15],
+        "layers": [
+          {
+            "img": "trees/apple/stump.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/apple/stump_.png",
+            "offset": [1, 6],
+            "shadow": true
+          }
+        ]
+      }
+    },
     "fir": {
       "1": {
         "offset": [3, 11],

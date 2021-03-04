@@ -37,7 +37,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
     }
 
     override fun getBoundRect(): Rect {
-        return Rect(10)
+        return Rect(6)
     }
 
     override suspend fun processContextItem(player: Player, item: String) {

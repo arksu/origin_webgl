@@ -25,7 +25,7 @@ object TimeController : Thread("TimeController") {
     /**
      * игровых тиков в реальной секунде (на передвижение)
      */
-    const val TICKS_PER_SECOND = 4
+    private const val TICKS_PER_SECOND = 4
 
     /**
      * период обновления гридов и объектов в них (в тиках)
@@ -35,7 +35,7 @@ object TimeController : Thread("TimeController") {
     /**
      * сколько мсек длится минимальный игровой тик (между итерациями движения)
      */
-    const val MILLIS_IN_TICK = 1000 / TICKS_PER_SECOND
+    private const val MILLIS_IN_TICK = 1000 / TICKS_PER_SECOND
 
     /**
      * сколько реальных часов длится игровой день
@@ -55,17 +55,17 @@ object TimeController : Thread("TimeController") {
     /**
      * сколько тиков в одном игровом дне
      */
-    const val TICKS_IN_GAME_DAY = SECONDS_IN_GAME_DAY * TICKS_PER_SECOND
+    private const val TICKS_IN_GAME_DAY = SECONDS_IN_GAME_DAY * TICKS_PER_SECOND
 
     /**
      * тиков в одной игровой минуте
      */
-    const val TICKS_IN_GAME_MINUTE = TICKS_IN_GAME_DAY / 1440 // 24 * 60
+    private const val TICKS_IN_GAME_MINUTE = TICKS_IN_GAME_DAY / 1440 // 24 * 60
 
     /**
      * сколько длится тик для игрового действия
      */
-    const val GAME_ACTION_PERIOD = 500
+    const val GAME_ACTION_PERIOD = 250L
 
     /**
      * период в тиках между сохранением значения времени в базу
@@ -92,6 +92,7 @@ object TimeController : Thread("TimeController") {
      * игровое время в тиках (сколько тиков с начала мира прошло)
      * @see TICKS_PER_SECOND
      */
+    @Volatile
     var tickCount: Long = 0
         private set
 
@@ -117,7 +118,7 @@ object TimeController : Thread("TimeController") {
     /**
      * текущее игровое время суток в игровых минутах (минут от начала дня)
      */
-    fun getGameTime(): Int {
+    private fun getGameTime(): Int {
         return ((tickCount % TICKS_IN_GAME_DAY) / TICKS_IN_GAME_MINUTE).toInt()
     }
 

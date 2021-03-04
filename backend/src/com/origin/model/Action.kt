@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.TimeController.GAME_ACTION_PERIOD
 import com.origin.net.model.ActionProgress
 import com.origin.net.model.ServerMessage
 import kotlinx.coroutines.*
@@ -35,11 +36,6 @@ class Action(
     private val actionBlock: suspend (Action) -> Boolean,
 ) {
     companion object {
-        /**
-         * сколько длится тик для игрового действия
-         */
-        const val GAME_ACTION_PERIOD = 250L
-
         val logger: Logger = LoggerFactory.getLogger(Action::class.java)
     }
 

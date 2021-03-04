@@ -35,6 +35,6 @@ object IdFactory {
     private fun extend() {
         freeCount += CAPACITY
         GlobalVariables.saveLong(KEY, lastId + freeCount)
-        println("IdFactory extend freeCount=$freeCount lastId=$lastId")
+//        println("IdFactory extend freeCount=$freeCount lastId=$lastId")
     }
 }

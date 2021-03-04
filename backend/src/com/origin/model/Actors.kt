@@ -16,4 +16,4 @@ val ACTOR_DISPATCHER = Dispatchers.IO
 /**
  * размер буфера сообщений у акторов
  */
-const val ACTOR_BUFFER_CAPACITY = 32
+const val ACTOR_BUFFER_CAPACITY = 512

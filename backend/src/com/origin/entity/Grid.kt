@@ -33,7 +33,7 @@ object Grids : Table("grids") {
     /**
      * время последнего обновления (в игровых тиках)
      */
-    val lastTick = integer("lastTick")
+    val lastTick = long("lastTick")
 
     /**
      * сырые данные тайлов в виде массива байт, по 2 байта на 1 тайл
@@ -61,7 +61,11 @@ open class GridEntity(r: ResultRow, val layer: LandLayer) {
     val x = r[Grids.x]
     val y = r[Grids.y]
     val level = r[Grids.level]
+
+    @Volatile
     var lastTick = r[Grids.lastTick]
+
+    @Volatile
     var tilesBlob: ByteArray = r[Grids.tilesBlob].bytes
 
     companion object {

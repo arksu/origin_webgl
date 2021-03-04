@@ -1,29 +1,29 @@
 package com.origin.model
 
 import com.origin.TimeController
+import com.origin.TimeController.GRID_UPDATE_PERIOD
 import com.origin.collision.CollisionResult
+import com.origin.database.DatabaseFactory.dbQueryCoroutine
 import com.origin.entity.EntityObject
 import com.origin.entity.EntityObjects
 import com.origin.entity.GridEntity
+import com.origin.entity.Grids
 import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
 import com.origin.model.move.Collision
 import com.origin.model.move.MoveType
 import com.origin.model.move.Position
+import com.origin.model.move.PositionData
 import com.origin.model.objects.ObjectsFactory
 import com.origin.net.model.MapGridData
-import com.origin.utils.GRID_FULL_SIZE
-import com.origin.utils.Rect
-import com.origin.utils.Vec2i
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CompletableJob
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ObsoleteCoroutinesApi
+import com.origin.utils.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -229,9 +229,11 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      * спавн объекта в грид в указанную позицию объекта
      */
     private suspend fun spawn(obj: GameObject): CollisionResult {
-        if (obj.pos.region != region || obj.pos.level != level ||
-            obj.pos.gridX != x || obj.pos.gridY != y
-        ) {
+        if (obj.pos.region != region || obj.pos.level != level) {
+            throw RuntimeException("wrong spawn condition")
+        }
+        logger.debug("spawn obj grid=${obj.pos.gridX} ${obj.pos.gridY} pos=$x $y")
+        if (obj.pos.gridX != x || obj.pos.gridY != y) {
             throw RuntimeException("wrong spawn condition")
         }
 
@@ -253,7 +255,58 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
      * обновление состояния грида и его объектов
      */
     private fun update() {
-        // TODO grid update
+        if (TimeController.tickCount - lastTick < GRID_UPDATE_PERIOD && lastTick != 0L) return
+        val old = lastTick
+        lastTick = TimeController.tickCount
+
+        // если еще никогда не апдейтили грид - это первичная инициализация, запустим генерацию объектов в гриде
+        if (old == 0L) {
+            generateObjects()
+        } else {
+            // TODO grid update
+        }
+
+        // обновим в базе время апдейта грида
+        dbQueryCoroutine {
+            Grids.update({ (Grids.x eq x) and (Grids.y eq y) and (Grids.region eq region) and (Grids.level eq level) }) {
+                it[lastTick] = this@Grid.lastTick
+            }
+        }
+    }
+
+    /**
+     * первичная генерация объектов в гриде
+     */
+    private fun generateObjects() {
+        // идем по каждому тайлу в гриде
+        for (x in 0 until GRID_SIZE) for (y in 0 until GRID_SIZE) {
+            val ox = this.x * GRID_FULL_SIZE + (TILE_SIZE / 2)
+            val oy = this.y * GRID_FULL_SIZE + (TILE_SIZE / 2)
+            val pos = PositionData(x * TILE_SIZE + ox, y * TILE_SIZE + oy, this)
+            when (tilesBlob[x + y * GRID_SIZE]) {
+                Tile.FOREST_LEAF -> {
+                    if (Rnd.next(170) == 0) generateObject(1, pos)
+                    if (Rnd.next(320) == 0) generateObject(5, pos)
+                }
+                Tile.FOREST_PINE -> {
+                    if (Rnd.next(130) == 0) generateObject(2, pos)
+                    if (Rnd.next(270) == 0) generateObject(3, pos)
+                }
+            }
+        }
+    }
+
+    private fun generateObject(type: Int, pos: PositionData) {
+        val thisGrid = this
+        // запускаем генерацию объекта в корутине
+        WorkerScope.launch {
+            val obj = transaction {
+                val e = EntityObject.makeNew(pos, type)
+                ObjectsFactory.byEntity(e)
+            }
+            obj.pos.setGrid(thisGrid)
+            spawn(obj)
+        }
     }
 
     /**

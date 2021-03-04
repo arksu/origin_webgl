@@ -13,5 +13,6 @@ backend/out
 backend/build
 backend/logs
 backend/map*.png
+backend/spots*.json
 
 mapgen/map*.png

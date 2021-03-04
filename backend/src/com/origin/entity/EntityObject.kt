@@ -3,6 +3,7 @@ package com.origin.entity
 import com.origin.TimeController
 import com.origin.idfactory.IdFactory
 import com.origin.model.move.Position
+import com.origin.model.move.PositionData
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -59,7 +60,7 @@ object EntityObjects : EntityPositions("objects") {
 @ObsoleteCoroutinesApi
 class EntityObject(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<EntityObject>(EntityObjects) {
-        fun makeNew(pos: Position, t: Int, q: Short = 10): EntityObject {
+        fun makeNew(pos: PositionData, t: Int, q: Short = 10): EntityObject {
             return EntityObject.new(IdFactory.getNext()) {
                 x = pos.x
                 y = pos.y

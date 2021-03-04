@@ -34,7 +34,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * дистанция на которой мы видим объекты
      * может изменяться динамически (ночью видим хуже)
      */
-    private var visibleDistance = 35 * TILE_SIZE
+    private var visibleDistance = 60 * TILE_SIZE
 
     /**
      * объекты которые известны мне, инфа о которых отправляется и синхронизирована с клиентом
