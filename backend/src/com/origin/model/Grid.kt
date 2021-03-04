@@ -2,7 +2,6 @@ package com.origin.model
 
 import com.origin.TimeController
 import com.origin.TimeController.GRID_UPDATE_PERIOD
-import com.origin.model.move.CollisionResult
 import com.origin.database.DatabaseFactory.dbQueryCoroutine
 import com.origin.entity.EntityObject
 import com.origin.entity.EntityObjects
@@ -10,10 +9,7 @@ import com.origin.entity.GridEntity
 import com.origin.entity.Grids
 import com.origin.model.GameObjectMsg.OnObjectAdded
 import com.origin.model.GameObjectMsg.OnObjectRemoved
-import com.origin.model.move.Collision
-import com.origin.model.move.MoveType
-import com.origin.model.move.Position
-import com.origin.model.move.PositionData
+import com.origin.model.move.*
 import com.origin.model.objects.ObjectsFactory
 import com.origin.net.model.MapGridData
 import com.origin.utils.*
@@ -416,7 +412,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         } else {
             // таким образом на момент обработки коллизии
             // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
-            Collision.process(toX, toY, dist, obj, list, isMove)
+            Collision.process(toX, toY, dist, obj, moveType, list, isMove)
         }
     }
 

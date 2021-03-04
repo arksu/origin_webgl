@@ -3,7 +3,7 @@ package com.origin.model.move
 import com.origin.model.GameObject
 import com.origin.model.Grid
 import com.origin.model.LandLayer
-import com.origin.utils.TILE_SIZE
+import com.origin.utils.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,6 +34,8 @@ object Collision {
         dist: Double,
         // объект который двигаем
         obj: GameObject,
+        // тип движения для расчета коллизий
+        moveType: MoveType,
         // список гридов участвующих в коллизии (начали движение на границе грида и движемся в другой)
         list: Array<Grid>,
         // это реальное движение? если коллизии нет - изменим позицию объекта
@@ -255,9 +257,17 @@ object Collision {
                 }
             }
 
+            val intNewX = newX.roundToInt()
+            val intNewY = newY.roundToInt()
+
             // проверим выход за границы мира
-            if (!checkWorldLimit(newX, newY, list[0].layer)) {
+            if (!checkWorldLimit(intNewX, intNewY, list[0].layer)) {
                 return CollisionResult(CollisionResult.CollisionType.COLLISION_WORLD, null)
+            }
+
+            // проверям тайлы
+            if (isTileCollision(intNewX, intNewY, list, obj, moveType)) {
+                return CollisionResult(CollisionResult.CollisionType.COLLISION_TILE, null)
             }
 
             if (needExit) {
@@ -293,13 +303,38 @@ object Collision {
     /**
      * проверка выхода за границы мира
      */
-    private fun checkWorldLimit(x: Double, y: Double, layer: LandLayer): Boolean {
+    private fun checkWorldLimit(x: Int, y: Int, layer: LandLayer): Boolean {
         return layer.validateAbsoluteCoord(
-            (x - WORLD_BUFFER_SIZE).toInt(),
-            (y - WORLD_BUFFER_SIZE).toInt()
+            (x - WORLD_BUFFER_SIZE),
+            (y - WORLD_BUFFER_SIZE)
         ) && layer.validateAbsoluteCoord(
-            (x + WORLD_BUFFER_SIZE).toInt(),
-            (y + WORLD_BUFFER_SIZE).toInt()
+            (x + WORLD_BUFFER_SIZE),
+            (y + WORLD_BUFFER_SIZE)
         )
+    }
+
+    private fun isTileCollision(x: Int, y: Int, list: Array<Grid>, obj: GameObject, moveType: MoveType): Boolean {
+        for (grid in list) {
+            // границы грида
+            val gr = Rect(0, 0, GRID_FULL_SIZE, GRID_FULL_SIZE)
+                .move(grid.x * GRID_FULL_SIZE, grid.y * GRID_FULL_SIZE)
+            // точка внутри грида?
+            if (gr.isPointInside(x, y)) {
+                val dx = (x % GRID_FULL_SIZE) / TILE_SIZE
+                val dy = (y % GRID_FULL_SIZE) / TILE_SIZE
+                val t = grid.tilesBlob[dx + dy * GRID_SIZE]
+                return when (moveType) {
+                    MoveType.SPAWN, MoveType.WALK -> {
+                        // тайл воды дает коллизию
+                        t == Tile.WATER_DEEP
+                    }
+                    MoveType.SWIMMING -> {
+                        // когда плаваем коллизию не дают только тайлы воды. остальные дают
+                        t != Tile.WATER && t != Tile.WATER_DEEP
+                    }
+                }
+            }
+        }
+        return false
     }
 }
