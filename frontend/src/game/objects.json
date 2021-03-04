@@ -216,6 +216,114 @@
         ]
       }
     },
+    "oak": {
+      "1": {
+        "offset": [15, 26],
+        "layers": [
+          {
+            "img": "trees/oak/1.png",
+            "offset": [7, 3],
+            "z": 0
+          },
+          {
+            "img": "trees/oak/1_.png",
+            "offset": [7, 25],
+            "shadow": true
+          }
+        ]
+      },
+      "2": {
+        "offset": [29, 64],
+        "layers": [
+          {
+            "img": "trees/oak/2.png",
+            "offset": [9, 4],
+            "z": 0
+          },
+          {
+            "img": "trees/oak/2_.png",
+            "offset": [10, 61],
+            "shadow": true
+          }
+        ]
+      },
+      "3": {
+        "offset": [54, 108],
+        "layers": [
+          {
+            "img": "trees/oak/3.png",
+            "offset": [5, 8],
+            "z": 0
+          },
+          {
+            "img": "trees/oak/3_.png",
+            "offset": [20, 98],
+            "shadow": true
+          }
+        ]
+      },
+      "4": {
+        "offset": [82, 141],
+        "layers": [
+          {
+            "img": "trees/oak/4.png",
+            "offset": [8, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/oak/4_.png",
+            "offset": [34, 127],
+            "shadow": true
+          }
+        ]
+      },
+      "5": {
+        "offset": [104, 195],
+        "layers": [
+          {
+            "img": "trees/oak/5.png",
+            "offset": [0, 3],
+            "z": 0
+          },
+          {
+            "img": "trees/oak/5_.png",
+            "offset": [26, 179],
+            "shadow": true
+          }
+        ]
+      },
+      "6": {
+        "offset": [137, 200],
+        "layers": [
+          {
+            "interactive": true,
+            "img": "trees/oak/6.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/oak/6_.png",
+            "offset": [52, 188],
+            "shadow": true
+          }
+        ]
+      },
+      "stump": {
+        "offset": [45, 18],
+        "layers": [
+          {
+            "img": "trees/oak/stump.png",
+            "offset": [0, 0],
+            "z": 0
+          },
+          {
+            "img": "trees/oak/stump_.png",
+            "offset": [0, 13],
+            "shadow": true
+          }
+        ]
+      }
+    },
     "fir": {
       "1": {
         "offset": [3, 11],
