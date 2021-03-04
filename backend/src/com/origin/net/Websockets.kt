@@ -10,7 +10,6 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.time.Duration
 import java.util.*
-import kotlin.collections.LinkedHashSet
 
 fun WebSockets.WebSocketOptions.websockets() {
     // websockets config options
@@ -48,7 +47,12 @@ fun Route.websockets() {
                             session.received(req)
                         } catch (e: Exception) {
                             logger.error("session recv error ${e.message}", e)
-                            close(CloseReason(CloseReason.Codes.INTERNAL_ERROR, e.javaClass.simpleName))
+                            close(
+                                CloseReason(
+                                    CloseReason.Codes.INTERNAL_ERROR,
+                                    e.javaClass.simpleName + ": " + e.message
+                                )
+                            )
                         }
                     }
                     else -> {

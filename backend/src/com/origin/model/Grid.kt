@@ -67,6 +67,7 @@ sealed class BroadcastEvent {
 @ObsoleteCoroutinesApi
 sealed class GridMsg {
     class Spawn(val obj: GameObject, val resp: CompletableDeferred<CollisionResult>) : GridMsg()
+    class SpawnForce(val obj: GameObject) : GridMsg()
     class Activate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class Deactivate(val human: Human, job: CompletableJob? = null) : MessageWithJob(job)
     class RemoveObject(val obj: GameObject, job: CompletableJob? = null) : MessageWithJob(job)
@@ -158,7 +159,8 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
 
     private suspend fun processMessage(msg: Any) {
         when (msg) {
-            is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj))
+            is GridMsg.Spawn -> msg.resp.complete(spawn(msg.obj, false))
+            is GridMsg.SpawnForce -> spawn(msg.obj, true)
             is GridMsg.CheckCollision -> msg.resp.complete(
                 checkCollision(
                     msg.obj,
@@ -227,8 +229,9 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
 
     /**
      * спавн объекта в грид в указанную позицию объекта
+     * @param force принудительный спавн без каких либо проверок
      */
-    private suspend fun spawn(obj: GameObject): CollisionResult {
+    private suspend fun spawn(obj: GameObject, force: Boolean): CollisionResult {
         if (obj.pos.region != region || obj.pos.level != level) {
             throw RuntimeException("wrong spawn condition")
         }
@@ -237,26 +240,34 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             throw RuntimeException("wrong spawn condition")
         }
 
-        // в любом случае обновим грид до начала проверок коллизий
-        update()
-
-        logger.debug("spawn obj ${obj.pos}")
-
-        // проверим коллизию с объектами и тайлами грида
-        val collision = checkCollision(obj, obj.pos.x, obj.pos.y, 0.0, MoveType.SPAWN, null, false)
-
-        if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
+        if (force) {
             addObject(obj)
+            return CollisionResult.NONE
+        } else {
+
+            // в любом случае обновим грид до начала проверок коллизий
+            update()
+
+            logger.debug("spawn obj ${obj.pos}")
+
+            // проверим коллизию с объектами и тайлами грида
+            val collision = checkCollision(obj, obj.pos.x, obj.pos.y, 0.0, MoveType.SPAWN, null, false)
+
+            if (collision.result == CollisionResult.CollisionType.COLLISION_NONE) {
+                addObject(obj)
+            }
+            return collision
         }
-        return collision
     }
 
     /**
      * обновление состояния грида и его объектов
      */
     private fun update() {
-        if (TimeController.tickCount - lastTick < GRID_UPDATE_PERIOD && lastTick != 0L) return
+        // не даем слишком часто апдейтить грид
+        if (TimeController.tickCount - lastTick < GRID_UPDATE_PERIOD - 2 && lastTick != 0L) return
         val old = lastTick
+        // сразу меняем последний тик
         lastTick = TimeController.tickCount
 
         // если еще никогда не апдейтили грид - это первичная инициализация, запустим генерацию объектов в гриде
@@ -299,13 +310,15 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     private fun generateObject(type: Int, pos: PositionData) {
         val thisGrid = this
         // запускаем генерацию объекта в корутине
+        // вот тут просиходит ай-ай-ай мы в отдельном потоке запускаем генерацию объектов
         WorkerScope.launch {
             val obj = transaction {
                 val e = EntityObject.makeNew(pos, type)
                 ObjectsFactory.byEntity(e)
             }
             obj.pos.setGrid(thisGrid)
-            spawn(obj)
+            // шлем сообщение самому себе на спавн объекта
+            thisGrid.send(GridMsg.SpawnForce(obj))
         }
     }
 

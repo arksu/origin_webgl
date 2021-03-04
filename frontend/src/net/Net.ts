@@ -73,7 +73,7 @@ export default class Net {
      * обработчик отключения сети (вызывается только если очередь запросов была пуста, иначе там reject)
      */
     public onDisconnect?: Callback;
-
+    public onServerError?: (m: string) => void
     public onConnect?: Callback;
 
     /**
@@ -152,7 +152,9 @@ export default class Net {
         this.state = State.Disconnected;
         this.socket = undefined;
 
-        if (this.onDisconnect !== undefined) {
+        if (ev.code == 1011 && this.onServerError !== undefined) {
+            this.onServerError(ev.reason)
+        } else if (this.onDisconnect !== undefined) {
             this.onDisconnect();
         }
     }

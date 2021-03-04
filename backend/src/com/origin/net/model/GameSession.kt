@@ -78,7 +78,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     val resp2 = CompletableDeferred<Boolean>()
                     player.send(GameObjectMsg.SpawnNear(resp2))
                     if (!resp2.await()) {
-                        throw BadRequest("failed spawn player into world")
+                        throw RuntimeException("failed spawn player into world")
                     }
                 }
 

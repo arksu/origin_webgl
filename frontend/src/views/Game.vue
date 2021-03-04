@@ -32,6 +32,7 @@ import Client from "@/net/Client";
 import Game from "@/game/Game";
 import Inventory from "@/views/Inventory.vue";
 import Hand from "@/views/Hand.vue";
+import {ActionTypes} from "@/store/action-types";
 
 export default defineComponent({
   name: "Game",
@@ -57,8 +58,14 @@ export default defineComponent({
       this.chatHistoryIndex = -1
     }
 
+    Net.instance.onServerError = (m: string) => {
+      console.warn("onServerError", m)
+      this.active = false
+      Game.stop()
+      this.$store.dispatch(ActionTypes.NETWORK_ERROR, m);
+    }
     Net.instance.onDisconnect = () => {
-      console.log("onDisconnect")
+      console.warn("onDisconnect")
       this.active = false
       Game.stop()
       router.push({name: 'Characters'})
