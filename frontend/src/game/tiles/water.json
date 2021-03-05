@@ -3,18 +3,6 @@
     {
       "img": "tiles/water/water1.png",
       "w": 1
-    },
-    {
-      "img": "tiles/water/water2.png",
-      "w": 1
-    },
-    {
-      "img": "tiles/water/water3.png",
-      "w": 1
-    },
-    {
-      "img": "tiles/water/water4.png",
-      "w": 1
     }
   ],
   "borders": [
@@ -106,6 +94,14 @@
       {
         "img": "tiles/water/b15.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water/b15_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water/b15_3.png",
+        "w": 1
       }
     ]
   ],
@@ -114,10 +110,26 @@
       {
         "img": "tiles/water/c1.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water/c1_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water/c1_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water/c2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water/c2_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water/c2_3.png",
         "w": 1
       }
     ], [
@@ -128,6 +140,14 @@
     ], [
       {
         "img": "tiles/water/c4.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water/c4_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water/c4_3.png",
         "w": 1
       }
     ], [
@@ -149,10 +169,26 @@
       {
         "img": "tiles/water/c8.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water/c8_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water/c8_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water/c9.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water/c9_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water/c9_3.png",
         "w": 1
       }
     ], [
