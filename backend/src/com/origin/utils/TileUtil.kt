@@ -11,7 +11,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
-const val PATH = "../frontend/assets/tiles/sand_orig/"
+const val PATH = "../frontend/assets/tiles/clay_orig/"
 
 /**
  * ресайз и коррекция оригинальных тайлов
@@ -87,7 +87,7 @@ object TileUtil {
                 val a = (img.getRGB(vx, vy) shr 24) and 0xff
 
                 // построчно смотрим переход маски эти края обработаем по особому
-                if (oldMask != 0xff && oldMask != m && a < 10) {
+                if (oldMask != 0xff && oldMask != m && a < 1) {
                     if (m > 1) {
                         var cc = calcColor(img, vx, vy, Pair(1, 0), Pair(2, 0), Pair(3, 0))
                         if (cc != -1) r.setRGB(x, y, cc)
@@ -104,7 +104,9 @@ object TileUtil {
                         }
                     }
                 } else {
-                    if (x != correctionX && m > 0 && a > 10) {
+                    if (x != correctionX && m > 0 && a > 0) {
+                        // вносим шум в скейл
+                        // берем соседние тайлы и считаем средний цвет по разным алгоритмам
                         when (Rnd.next(10)) {
                             0, 9 -> r.setRGB(x, y, c)
                             1 -> {
@@ -159,6 +161,7 @@ object TileUtil {
         } else {
             var firstAlpha = -1
 
+            var asum = 0
             var rsum = 0
             var gsum = 0
             var bsum = 0
@@ -177,11 +180,12 @@ object TileUtil {
                 val b = (c) and 0xff
 
                 if (firstAlpha < 0) {
-                    if (a < 200) return -1
+                    if (a < 5) return -1
                     firstAlpha = a
                 }
 
-                if (a > 200) {
+                if (a > 5) {
+                    asum += a
                     rsum += r
                     gsum += g
                     bsum += b
@@ -189,7 +193,7 @@ object TileUtil {
                 }
             }
             return if (cnt > 0) {
-                (bsum / cnt) + ((gsum / cnt) shl 8) + ((rsum / cnt) shl 16) + (0xff shl 24)
+                (bsum / cnt) + ((gsum / cnt) shl 8) + ((rsum / cnt) shl 16) + ((asum / cnt) shl 24)
             } else {
                 -1
             }

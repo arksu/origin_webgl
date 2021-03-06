@@ -1,0 +1,434 @@
+{
+  "ground": [
+    {
+      "img": "tiles/swamp/base_1.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/swamp/base_2.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/swamp/base_3.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/swamp/base_4.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/swamp/base_5.png",
+      "w": 1
+    }
+  ],
+  "borders": [
+    [
+      {
+        "img": "tiles/swamp/b1.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b1_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b1_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b2_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b2_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b3.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b3_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b3_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b4.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b4_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b4_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b5.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b5_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b5_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b6.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b6_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b6_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b7.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b7_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b7_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b8.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b8_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b8_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b9.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b9_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b9_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b10.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b10_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b10_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b11.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b11_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b11_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b12.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b12_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b12_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b13.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b13_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b13_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b14.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b14_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b14_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/swamp/b15.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b15_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/b15_3.png",
+        "w": 1
+      }
+    ]
+  ],
+  "corners": [
+    [
+      {
+        "img": "tiles/swamp/c1.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c1_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c1_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c2_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c2_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c3.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c3_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c3_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c4.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c4_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c4_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c5.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c5_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c5_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c6.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c6_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c6_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c7.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c7_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c7_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c8.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c8_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c8_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c9.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c9_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c9_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c10.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c10_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c10_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c11.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c11_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c11_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c12.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c12_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c12_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c13.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c13_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c13_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c14.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c14_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c14_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/swamp/c15.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c15_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/swamp/c15_3.png",
+        "w": 1
+      }
+    ]
+  ]
+}
