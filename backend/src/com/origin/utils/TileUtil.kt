@@ -11,11 +11,17 @@ import java.nio.file.attribute.BasicFileAttributes
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
+const val PATH = "../frontend/assets/tiles/sand_orig/"
+
+/**
+ * ресайз и коррекция оригинальных тайлов
+ */
 object TileUtil {
     val logger: Logger = LoggerFactory.getLogger(TileUtil::class.java)
 
-    const val PATH = "../frontend/assets/tiles/grass_orig/"
     const val OUT_PATH = "../frontend/assets/tiles/remake/"
+
+    // красный цвет
     const val RED = ((0xff) shl 16) + (0xff shl 24)
 
     @JvmStatic
@@ -83,17 +89,17 @@ object TileUtil {
                 // построчно смотрим переход маски эти края обработаем по особому
                 if (oldMask != 0xff && oldMask != m && a < 10) {
                     if (m > 1) {
-                        var cc = calcColor(img, vx, vy, Pair(0, 0), Pair(1, 0), Pair(2, 0))
+                        var cc = calcColor(img, vx, vy, Pair(1, 0), Pair(2, 0), Pair(3, 0))
                         if (cc != -1) r.setRGB(x, y, cc)
-                        cc = calcColor(img, vx, vy, Pair(0, 0), Pair(1, 0), Pair(2, 0))
+                        cc = calcColor(img, vx + 1, vy, Pair(0, 0), Pair(1, 0), Pair(2, 0))
                         if (cc != -1) r.setRGB(x + 1, y, cc)
                         correctionX = x + 1
                     } else {
-                        var cc = calcColor(img, vx, vy, Pair(-1, 0), Pair(-2, 0), Pair(-3, 0))
+                        var cc = calcColor(img, vx, vy, Pair(-2, 0), Pair(-1, 0), Pair(-3, 0))
                         if (cc != -1) r.setRGB(x - 1, y, cc)
 
                         if (prevA == 0) {
-                            cc = calcColor(img, vx - 1, vy, Pair(-1, 0), Pair(-2, 0), Pair(-3, 0))
+                            cc = calcColor(img, vx - 1, vy, Pair(-2, 0), Pair(-1, 0), Pair(-3, 0))
                             if (cc != -1) r.setRGB(x - 2, y, cc)
                         }
                     }
@@ -151,6 +157,8 @@ object TileUtil {
         if (!flag) {
             return RED
         } else {
+            var firstAlpha = -1
+
             var rsum = 0
             var gsum = 0
             var bsum = 0
@@ -168,6 +176,11 @@ object TileUtil {
                 val g = (c shr 8) and 0xff
                 val b = (c) and 0xff
 
+                if (firstAlpha < 0) {
+                    if (a < 200) return -1
+                    firstAlpha = a
+                }
+
                 if (a > 200) {
                     rsum += r
                     gsum += g
@@ -179,6 +192,87 @@ object TileUtil {
                 (bsum / cnt) + ((gsum / cnt) shl 8) + ((rsum / cnt) shl 16) + (0xff shl 24)
             } else {
                 -1
+            }
+        }
+    }
+}
+
+/**
+ * переименование файлов в наш формат
+ */
+object TileUtilRename {
+    val logger: Logger = LoggerFactory.getLogger(TileUtilRename::class.java)
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        var baseCounters = 0
+        val cornerCounters = HashMap<Int, Int>()
+        val borderCounters = HashMap<Int, Int>()
+
+        for (n in 0 until 300) {
+            val fdata = File(PATH + "tile_${n}.data")
+            val fpng = File(PATH + "tile_${n}.png")
+
+            if (!fdata.exists()) continue
+
+            if (!fpng.exists()) continue
+
+            var tt = -1
+            val lines = Files.readAllLines(fdata.toPath())
+
+
+            for (li in 0 until lines.size) {
+                val l = lines[li]
+                if (l == "#Byte t") {
+                    tt = lines[li + 1].toInt()
+                }
+                if (l == "#Byte id") {
+                    val lid = lines[li + 1].toInt()
+                    logger.debug("$fpng -> $lid [$tt]")
+
+                    if (tt == 103) {
+                        baseCounters++
+                        val to = PATH + "base_${baseCounters}.png"
+                        logger.warn("rename $fpng -> $to")
+                        fpng.renameTo(File(to))
+                    } else if (tt == 98) {
+                        var c = borderCounters[lid]
+                        if (c == null) c = 0
+                        c++
+                        borderCounters[lid] = c
+                        val to = if (c > 1) PATH + "b${lid}_${c}.png" else PATH + "b${lid}.png"
+                        logger.warn("rename $fpng -> $to")
+                        fpng.renameTo(File(to))
+                    } else if (tt == 99) {
+                        var c = cornerCounters[lid]
+                        if (c == null) c = 0
+                        c++
+                        cornerCounters[lid] = c
+
+                        val fact = when (lid) {
+                            1 -> 1
+                            2 -> 8
+                            3 -> 9
+                            4 -> 4
+                            5 -> 5
+                            6 -> 12
+                            7 -> 13
+                            8 -> 2
+                            9 -> 3
+                            10 -> 10
+                            11 -> 11
+                            12 -> 6
+                            13 -> 7
+                            14 -> 14
+                            15 -> 15
+                            else -> -1
+                        }
+
+                        val to = if (c > 1) PATH + "c${fact}_${c}.png" else PATH + "c${fact}.png"
+                        logger.warn("rename $fpng -> $to")
+                        fpng.renameTo(File(to))
+                    }
+                }
             }
         }
     }

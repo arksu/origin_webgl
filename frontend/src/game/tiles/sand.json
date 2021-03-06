@@ -1,20 +1,438 @@
 {
   "ground": [
     {
-      "img": "tiles/sand/sand1.png",
+      "img": "tiles/sand/base_1.png",
       "w": 1
     },
     {
-      "img": "tiles/sand/sand2.png",
+      "img": "tiles/sand/base_2.png",
       "w": 1
     },
     {
-      "img": "tiles/sand/sand3.png",
+      "img": "tiles/sand/base_3.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/sand/base_4.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/sand/base_5.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/sand/base_6.png",
       "w": 1
     }
   ],
   "borders": [
+    [
+      {
+        "img": "tiles/sand/b1.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b1_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b1_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b2_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b2_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b3.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b3_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b3_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b4.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b4_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b4_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b5.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b5_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b5_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b6.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b6_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b6_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b7.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b7_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b7_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b8.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b8_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b8_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b9.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b9_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b9_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b10.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b10_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b10_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b11.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b11_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b11_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b12.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b12_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b12_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b13.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b13_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b13_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b14.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b14_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b14_3.png",
+        "w": 1
+      }
+    ],
+    [
+      {
+        "img": "tiles/sand/b15.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b15_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/b15_3.png",
+        "w": 1
+      }
+    ]
   ],
   "corners": [
+    [
+      {
+        "img": "tiles/sand/c1.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c1_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c1_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c2_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c2_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c3.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c3_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c3_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c4.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c4_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c4_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c5.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c5_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c5_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c6.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c6_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c6_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c7.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c7_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c7_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c8.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c8_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c8_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c9.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c9_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c9_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c10.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c10_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c10_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c11.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c11_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c11_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c12.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c12_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c12_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c13.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c13_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c13_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c14.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c14_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c14_3.png",
+        "w": 1
+      }
+    ], [
+      {
+        "img": "tiles/sand/c15.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c15_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/sand/c15_3.png",
+        "w": 1
+      }
+    ]
   ]
 }
