@@ -3,6 +3,14 @@
     {
       "img": "tiles/sand/sand1.png",
       "w": 1
+    },
+    {
+      "img": "tiles/sand/sand2.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/sand/sand3.png",
+      "w": 1
     }
   ],
   "borders": [
