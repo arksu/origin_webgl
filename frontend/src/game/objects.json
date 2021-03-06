@@ -1,5 +1,115 @@
 {
   "trees": {
+    "autumn_oak":{
+      "1":{
+        "offset":[15,26],
+        "layers":[
+          {
+            "img":"trees/autumn_oak/01_.png",
+            "offset":[7,25],
+            "shadow":true
+          },
+          {
+            "img":"trees/autumn_oak/01.png",
+            "offset":[7,3],
+            "z":0
+          }
+        ]
+      },
+      "2":{
+        "offset":[29,64],
+        "layers":[
+          {
+            "img":"trees/autumn_oak/02_.png",
+            "offset":[10,61],
+            "shadow":true
+          },
+          {
+            "img":"trees/autumn_oak/02.png",
+            "offset":[4,9],
+            "z":0
+          }
+        ]
+      },
+      "3":{
+        "offset":[54,108],
+        "layers":[
+          {
+            "img":"trees/autumn_oak/03_.png",
+            "offset":[20,98],
+            "shadow":true
+          },
+          {
+            "img":"trees/autumn_oak/03.png",
+            "offset":[5,8],
+            "z":0
+          }
+        ]
+      },
+      "4":{
+        "offset":[82,141],
+        "layers":[
+          {
+            "img":"trees/autumn_oak/04_.png",
+            "offset":[34,127],
+            "shadow":true
+          },
+          {
+            "img":"trees/autumn_oak/04.png",
+            "offset":[8,0],
+            "z":0
+          }
+        ]
+      },
+      "5":{
+        "offset":[104,195],
+        "layers":[
+          {
+            "img":"trees/autumn_oak/05_.png",
+            "offset":[
+              26,
+              179
+            ],
+            "shadow":true
+          },
+          {
+            "img":"trees/autumn_oak/05.png",
+            "offset":[0,3],
+            "z":0
+          }
+        ]
+      },
+      "6":{
+        "offset":[137,200],
+        "layers":[
+          {
+            "img":"trees/autumn_oak/06_.png",
+            "offset":[52,188],
+            "shadow":true
+          },
+          {
+            "img":"trees/autumn_oak/06.png",
+            "offset":[0,0],
+            "z":0
+          }
+        ]
+      },
+      "stump":{
+        "offset":[45,18],
+        "layers":[
+          {
+            "img":"trees/autumn_oak/stump_.png",
+            "offset":[0,13],
+            "shadow":true
+          },
+          {
+            "img":"trees/autumn_oak/stump.png",
+            "offset":[0,0],
+            "z":0
+          }
+        ]
+      }
+    },
     "birch": {
       "1": {
         "offset": [16, 26],
@@ -320,6 +430,308 @@
             "img": "trees/oak/stump_.png",
             "offset": [0, 13],
             "shadow": true
+          }
+        ]
+      }
+    },
+    "maple": {
+      "6": {
+        "offset": [82,160],
+        "layers": [
+          {
+            "img": "trees/maple/06_.png",
+            "offset": [20,143],
+            "shadow": true
+          },
+          {
+            "img": "trees/maple/06.png",
+            "offset": [4,0],
+            "z": 0
+          }
+        ]
+      },
+      "06A": {
+        "offset": [82,160],
+        "layers": [
+          {
+            "img": "trees/maple/06A_.png",
+            "offset": [20,143],
+            "shadow": true
+          },
+          {
+            "img": "trees/maple/06A.png",
+            "offset": [4,0],
+            "z": 0
+          }
+        ]
+      },
+      "stump": {
+        "offset": [40,20],
+        "layers": [
+          {
+            "img": "trees/maple/stump_.png",
+            "offset": [3,11],
+            "shadow": true
+          },
+          {
+            "img": "trees/maple/stump.png",
+            "offset": [0,0],
+            "z": 0
+          }
+        ]
+      }
+    },
+    "yew": {
+      "1": {
+        "offset": [19,35],
+        "layers": [
+          {
+            "img": "trees/yew/01_.png",
+            "offset": [12,33],
+            "shadow": true
+          },
+          {
+            "img": "trees/yew/01.png",
+            "offset": [12,8],
+            "z": 0
+          }
+        ]
+      },
+      "2": {
+        "offset": [
+          33,
+          75
+        ],
+        "layers": [
+          {
+            "img": "trees/yew/02_.png",
+            "offset": [17,70],
+            "shadow": true
+          },
+          {
+            "img": "trees/yew/02.png",
+            "offset": [12,7],
+            "z": 0
+          }
+        ]
+      },
+      "3": {
+        "offset": [47,105],
+        "layers": [
+          {
+            "img": "trees/yew/03_.png",
+            "offset": [16,101],
+            "shadow": true
+          },
+          {
+            "img": "trees/yew/03.png",
+            "offset": [5,5],
+            "z": 0
+          }
+        ]
+      },
+      "4": {
+        "offset": [61,139],
+        "layers": [
+          {
+            "img": "trees/yew/04_.png",
+            "offset": [22,135],
+            "shadow": true
+          },
+          {
+            "img": "trees/yew/04.png",
+            "offset": [9,5],
+            "z": 0
+          }
+        ]
+      },
+      "5": {
+        "offset": [86,183],
+        "layers": [
+          {
+            "img": "trees/yew/05_.png",
+            "offset": [31,173],
+            "shadow": true
+          },
+          {
+            "img": "trees/yew/05.png",
+            "offset": [16,9],
+            "z": 0
+          }
+        ]
+      },
+      "6": {
+        "offset": [115,214],
+        "layers": [
+          {
+            "img": "trees/yew/06_.png",
+            "offset": [46,204],
+            "shadow": true
+          },
+          {
+            "img": "trees/yew/06.png",
+            "offset": [21,6],
+            "z": 0
+          }
+        ]
+      },
+      "stump": {
+        "offset": [39,22],
+        "layers": [
+          {
+            "img": "trees/yew/stump_.png",
+            "offset": [15,20],
+            "shadow": true
+          },
+          {
+            "img": "trees/yew/stump.png",
+            "offset": [17,11],
+            "z": 0
+          }
+        ]
+      }
+    },
+    "mberry": {
+      "6": {
+        "offset": [67,114],
+        "layers": [
+          {
+            "img": "trees/mberry/06_.png",
+            "offset": [15,103],
+            "shadow": true
+          },
+          {
+            "img": "trees/mberry/06.png",
+            "offset": [0,0],
+            "z": 0
+          }
+        ]
+      }
+    },
+    "elm": {
+      "6": {
+        "offset": [84,177],
+        "layers": [
+          {
+            "img": "trees/elm/06_.png",
+            "offset": [23,165],
+            "shadow": true
+          },
+          {
+            "img": "trees/elm/06.png",
+            "offset": [16,0],
+            "z": 0
+          }
+        ]
+      },
+      "06A": {
+        "offset": [84,177],
+        "layers": [
+          {
+            "img": "trees/elm/06A_.png",
+            "offset": [23,165],
+            "shadow": true
+          },
+          {
+            "img": "trees/elm/06A.png",
+            "offset": [16,0],
+            "z": 0
+          }
+        ]
+      },
+      "stump": {
+        "offset": [38,21],
+        "layers": [
+          {
+            "img": "trees/elm/stump_.png",
+            "offset": [5,20],
+            "shadow": true
+          },
+          {
+            "img": "trees/elm/stump.png",
+            "offset": [10,13],
+            "z": 0
+          }
+        ]
+      }
+    },
+    "hazel": {
+      "6": {
+        "offset": [86,153],
+        "layers": [
+          {
+            "img": "trees/hazel/06_.png",
+            "offset": [26,139],
+            "shadow": true
+          },
+          {
+            "img": "trees/hazel/06.png",
+            "offset": [12,9],
+            "z": 0
+          }
+        ]
+      },
+      "stump": {
+        "offset": [35,19],
+        "layers": [
+          {
+            "img": "trees/hazel/stump_.png",
+            "offset": [10,21],
+            "shadow": true
+          },
+          {
+            "img": "trees/hazel/stump.png",
+            "offset": [13,12],
+            "z": 0
+          }
+        ]
+      }
+    },
+    "log": {
+      "log": {
+        "offset": [23,20],
+        "layers": [
+          {
+            "img": "trees/trees/log_.png",
+            "offset": [0,0],
+            "shadow": true
+          },
+          {
+            "img": "trees/trees/log.png",
+            "offset": [0,0],
+            "z": 0
+          }
+        ]
+      }
+    },
+    "willow": {
+      "6": {
+        "offset": [133,179],
+        "layers": [
+          {
+            "img": "trees/willow/06_.png",
+            "offset": [30,142],
+            "shadow": true
+          },
+          {
+            "img": "trees/willow/06.png",
+            "offset": [28,13],
+            "z": 0
+          }
+        ]
+      },
+      "stump": {
+        "offset": [46,23],
+        "layers": [
+          {
+            "img": "trees/willow/stump_.png",
+            "offset": [14,21],
+            "shadow": true
+          },
+          {
+            "img": "trees/willow/stump.png",
+            "offset": [8,10],
+            "z": 0
           }
         ]
       }
