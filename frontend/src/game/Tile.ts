@@ -2,6 +2,7 @@ import {getRandomInt} from "@/utils/Util";
 import water from "./tiles/water.json"
 import water_deep from "./tiles/water_deep.json"
 import swamp from "./tiles/swamp.json"
+import wald from "./tiles/wald.json"
 import stone from "./tiles/stone.json"
 import sand from "./tiles/sand.json"
 import clay from "./tiles/clay.json"
@@ -89,7 +90,8 @@ export default class Tile {
         Tile.sets[3] = new TileSet(water)
         Tile.sets[6] = new TileSet(swamp)
         Tile.sets[10] = new TileSet(forest_leaf)
-        Tile.sets[15] = new TileSet(forest_pine)
+        Tile.sets[15] = new TileSet(wald)
+        Tile.sets[16] = new TileSet(forest_pine) // TODO
         Tile.sets[18] = new TileSet(stone)
         Tile.sets[20] = new TileSet(clay)
         Tile.sets[22] = new TileSet(sand)

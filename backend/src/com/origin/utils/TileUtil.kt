@@ -11,7 +11,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
-const val PATH = "../frontend/assets/tiles/clay_orig/"
+const val PATH = "../frontend/assets/tiles/wald_orig/"
 
 /**
  * ресайз и коррекция оригинальных тайлов
