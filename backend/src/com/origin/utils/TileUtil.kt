@@ -14,8 +14,9 @@ import kotlin.math.roundToInt
 object TileUtil {
     val logger: Logger = LoggerFactory.getLogger(TileUtil::class.java)
 
-    const val PATH = "../frontend/assets/tiles/water_backup/"
+    const val PATH = "../frontend/assets/tiles/grass_orig/"
     const val OUT_PATH = "../frontend/assets/tiles/remake/"
+    const val RED = ((0xff) shl 16) + (0xff shl 24)
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -37,9 +38,10 @@ object TileUtil {
                     try {
                         ImageIO.write(result, "png", f)
                     } catch (e: Exception) {
-                        println("error ${e.message}")
+                        logger.error("error ${e.message}")
                     }
                 }
+                return@forEach
             }
     }
 
@@ -48,31 +50,136 @@ object TileUtil {
 
         val ow = img.width.toDouble()
         val oh = img.height.toDouble()
-        logger.debug("img: $ow $oh")
+        logger.debug("img: ${img.width} ${img.height}")
+
         val mw = mask.width.toDouble()
         val mh = mask.height.toDouble()
-        logger.debug("mask: $mw $mh")
+        logger.debug("mask: ${mask.width} ${mask.height}")
 
-        for (x in 0 until mask.width) for (y in 0 until mask.height) {
-            val m = mask.getRGB(x, y) and 0x00ffffff
-            val color = 0
-            var fill: Int = 0xffffff or (0xff shl 24)
 
-            var c: Int = 0
-            if (m > 0) {
-                val kx: Double = (ow / mw) * x
+
+        for (y in 0 until mask.height) {
+            var correctionX = -1
+            var oldMask = 0xff
+            var prevA = -1
+            for (x in 0 until mask.width) {
+                val m = mask.getRGB(x, y) and 0x00ffffff
+
                 val ky: Double = (oh / mh) * y
-//                logger.debug("$kx $ky")
+                val kx: Double = (ow / mw) * x
+
+//                val kx: Double = (mw / ow) * x
+//                val ky: Double = (mh / oh) * y
+
                 val vx = kx.roundToInt()
                 val vy = ky.roundToInt()
-//                logger.debug("$vx $vy")
-                c = img.getRGB(vx, vy)
-            }
 
-            r.setRGB(x, y, c)
+                var c = 0
+                if (m > 0) {
+                    c = img.getRGB(vx, vy)
+                }
+                val a = (img.getRGB(vx, vy) shr 24) and 0xff
+
+                // построчно смотрим переход маски эти края обработаем по особому
+                if (oldMask != 0xff && oldMask != m && a < 10) {
+                    if (m > 1) {
+                        var cc = calcColor(img, vx, vy, Pair(0, 0), Pair(1, 0), Pair(2, 0))
+                        if (cc != -1) r.setRGB(x, y, cc)
+                        cc = calcColor(img, vx, vy, Pair(0, 0), Pair(1, 0), Pair(2, 0))
+                        if (cc != -1) r.setRGB(x + 1, y, cc)
+                        correctionX = x + 1
+                    } else {
+                        var cc = calcColor(img, vx, vy, Pair(-1, 0), Pair(-2, 0), Pair(-3, 0))
+                        if (cc != -1) r.setRGB(x - 1, y, cc)
+
+                        if (prevA == 0) {
+                            cc = calcColor(img, vx - 1, vy, Pair(-1, 0), Pair(-2, 0), Pair(-3, 0))
+                            if (cc != -1) r.setRGB(x - 2, y, cc)
+                        }
+                    }
+                } else {
+                    if (x != correctionX && m > 0 && a > 10) {
+                        when (Rnd.next(10)) {
+                            0, 9 -> r.setRGB(x, y, c)
+                            1 -> {
+                                val cc = calcColor(img, vx, vy, Pair(0, 0), Pair(-1, 0), Pair(1, 0))
+                                if (cc != -1) r.setRGB(x, y, cc)
+                            }
+                            2 -> {
+                                val cc = calcColor(img, vx, vy, Pair(0, 0), Pair(0, -1), Pair(0, 1))
+                                if (cc != -1) r.setRGB(x, y, cc)
+                            }
+                            3 -> {
+                                val cc = calcColor(img, vx, vy, Pair(0, 0), Pair(1, 0))
+                                if (cc != -1) r.setRGB(x, y, cc)
+                            }
+                            4 -> {
+                                val cc = calcColor(img, vx, vy, Pair(0, 0), Pair(-1, 0))
+                                if (cc != -1) r.setRGB(x, y, cc)
+                            }
+                            5 -> {
+                                val cc = calcColor(img, vx, vy, Pair(0, 0), Pair(-1, 0), Pair(0, -1))
+                                if (cc != -1) r.setRGB(x, y, cc)
+                            }
+                            6 -> {
+                                val cc = calcColor(img, vx, vy, Pair(0, 0), Pair(1, 0), Pair(0, 1))
+                                if (cc != -1) r.setRGB(x, y, cc)
+                            }
+                            7 -> {
+                                val cc = calcColor(img, vx, vy, Pair(0, 0), Pair(0, 1))
+                                if (cc != -1) r.setRGB(x, y, cc)
+                            }
+                            8 -> {
+                                val cc = calcColor(img, vx, vy, Pair(0, 0), Pair(0, -1))
+                                if (cc != -1) r.setRGB(x, y, cc)
+                            }
+                        }
+
+                    }
+                }
+                oldMask = m
+                prevA = a
+            }
         }
 
-
         return r
+    }
+
+    private fun calcColor(src: BufferedImage, x: Int, y: Int, vararg offsets: Pair<Int, Int>): Int {
+        val flag = true
+
+        if (!flag) {
+            return RED
+        } else {
+            var rsum = 0
+            var gsum = 0
+            var bsum = 0
+            var cnt = 0
+
+            for (pp in offsets) {
+                val (ox, oy) = pp
+                if (x + ox < 0 || x + ox >= src.width) continue
+                if (y + oy < 0 || y + oy >= src.height) continue
+
+                val c = src.getRGB(x + ox, y + oy)
+
+                val a = (c shr 24) and 0xff
+                val r = (c shr 16) and 0xff
+                val g = (c shr 8) and 0xff
+                val b = (c) and 0xff
+
+                if (a > 200) {
+                    rsum += r
+                    gsum += g
+                    bsum += b
+                    cnt++
+                }
+            }
+            return if (cnt > 0) {
+                (bsum / cnt) + ((gsum / cnt) shl 8) + ((rsum / cnt) shl 16) + (0xff shl 24)
+            } else {
+                -1
+            }
+        }
     }
 }

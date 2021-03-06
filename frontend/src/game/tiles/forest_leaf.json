@@ -7,6 +7,10 @@
     {
       "img": "tiles/forest_leaf/grass2.png",
       "w": 1
+    },
+    {
+      "img": "tiles/forest_leaf/grass3.png",
+      "w": 1
     }
   ],
   "borders": [
