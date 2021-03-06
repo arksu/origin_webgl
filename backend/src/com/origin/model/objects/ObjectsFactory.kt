@@ -17,6 +17,11 @@ object ObjectsFactory {
             4 -> Box(entity)
             5 -> Apple(entity)
             6 -> Oak(entity)
+            7 -> Elm(entity)
+            8 -> Hazel(entity)
+            9 -> Maple(entity)
+            10 -> Willow(entity)
+            11 -> Yew(entity)
             else -> UnknownObject(entity)
         }
     }
