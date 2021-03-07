@@ -11,7 +11,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
-const val PATH = "../frontend/assets/tiles/wald_orig/"
+const val PATH = "../frontend/assets/tiles/bog/"
 
 /**
  * ресайз и коррекция оригинальных тайлов
@@ -193,7 +193,8 @@ object TileUtil {
                 }
             }
             return if (cnt > 0) {
-                (bsum / cnt) + ((gsum / cnt) shl 8) + ((rsum / cnt) shl 16) + ((asum / cnt) shl 24)
+//                (bsum / cnt) + ((gsum / cnt) shl 8) + ((rsum / cnt) shl 16) + ((0xff) shl 24)
+                (bsum / cnt) + ((gsum / cnt) shl 8) + ((rsum / cnt) shl 16) + + ((asum / cnt) shl 24)
             } else {
                 -1
             }
@@ -275,6 +276,7 @@ object TileUtilRename {
                         val to = if (c > 1) PATH + "c${fact}_${c}.png" else PATH + "c${fact}.png"
                         logger.warn("rename $fpng -> $to")
                         fpng.renameTo(File(to))
+                        fdata.deleteOnExit()
                     }
                 }
             }

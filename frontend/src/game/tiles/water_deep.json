@@ -1,19 +1,7 @@
 {
   "ground": [
     {
-      "img": "tiles/water_deep/water_deep1.png",
-      "w": 1
-    },
-    {
-      "img": "tiles/water_deep/water_deep2.png",
-      "w": 1
-    },
-    {
-      "img": "tiles/water_deep/water_deep3.png",
-      "w": 1
-    },
-    {
-      "img": "tiles/water_deep/water_deep4.png",
+      "img": "tiles/water_deep/base_1.png",
       "w": 1
     }
   ],
@@ -22,11 +10,27 @@
       {
         "img": "tiles/water_deep/b1.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b1_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b1_3.png",
+        "w": 1
       }
     ],
     [
       {
         "img": "tiles/water_deep/b2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b2_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b2_3.png",
         "w": 1
       }
     ],
@@ -34,11 +38,27 @@
       {
         "img": "tiles/water_deep/b3.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b3_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b3_3.png",
+        "w": 1
       }
     ],
     [
       {
         "img": "tiles/water_deep/b4.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b4_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b4_3.png",
         "w": 1
       }
     ],
@@ -46,11 +66,27 @@
       {
         "img": "tiles/water_deep/b5.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b5_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b5_3.png",
+        "w": 1
       }
     ],
     [
       {
         "img": "tiles/water_deep/b6.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b6_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b6_3.png",
         "w": 1
       }
     ],
@@ -58,11 +94,27 @@
       {
         "img": "tiles/water_deep/b7.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b7_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b7_3.png",
+        "w": 1
       }
     ],
     [
       {
         "img": "tiles/water_deep/b8.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b8_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b8_3.png",
         "w": 1
       }
     ],
@@ -70,11 +122,27 @@
       {
         "img": "tiles/water_deep/b9.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b9_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b9_3.png",
+        "w": 1
       }
     ],
     [
       {
         "img": "tiles/water_deep/b10.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b10_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b10_3.png",
         "w": 1
       }
     ],
@@ -82,11 +150,27 @@
       {
         "img": "tiles/water_deep/b11.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b11_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b11_3.png",
+        "w": 1
       }
     ],
     [
       {
         "img": "tiles/water_deep/b12.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b12_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b12_3.png",
         "w": 1
       }
     ],
@@ -94,17 +178,41 @@
       {
         "img": "tiles/water_deep/b13.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b13_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b13_3.png",
+        "w": 1
       }
     ],
     [
       {
         "img": "tiles/water_deep/b14.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b14_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b14_3.png",
+        "w": 1
       }
     ],
     [
       {
         "img": "tiles/water_deep/b15.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b15_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/b15_3.png",
         "w": 1
       }
     ]
@@ -114,75 +222,195 @@
       {
         "img": "tiles/water_deep/c1.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c1_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c1_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c2_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c2_3.png",
         "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c3.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c3_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c3_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c4.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c4_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c4_3.png",
         "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c5.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c5_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c5_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c6.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c6_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c6_3.png",
         "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c7.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c7_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c7_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c8.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c8_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c8_3.png",
         "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c9.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c9_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c9_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c10.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c10_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c10_3.png",
         "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c11.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c11_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c11_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c12.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c12_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c12_3.png",
         "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c13.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c13_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c13_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c14.png",
         "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c14_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c14_3.png",
+        "w": 1
       }
     ], [
       {
         "img": "tiles/water_deep/c15.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c15_2.png",
+        "w": 1
+      },
+      {
+        "img": "tiles/water_deep/c15_3.png",
         "w": 1
       }
     ]

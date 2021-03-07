@@ -3,11 +3,32 @@ import water from "./tiles/water.json"
 import water_deep from "./tiles/water_deep.json"
 import swamp from "./tiles/swamp.json"
 import wald from "./tiles/wald.json"
-import stone from "./tiles/stone.json"
+import wald2 from "./tiles/wald2.json"
+import swamp2 from "./tiles/swamp2.json"
+import grass2 from "./tiles/grass2.json"
+import heath2 from "./tiles/heath2.json"
+import bog2 from "./tiles/bog2.json"
+import floor_stone2 from "./tiles/floor_stone2.json"
+import floor_mine2 from "./tiles/floor_mine2.json"
+import floor_wood2 from "./tiles/floor_wood2.json"
+import water2 from "./tiles/water2.json"
+import water_deep2 from "./tiles/water_deep2.json"
+
+import leaf from "./tiles/leaf.json"
+import plowed from "./tiles/plowed.json"
+import dirt from "./tiles/dirt.json"
+import floor_stone from "./tiles/floor_stone.json"
 import sand from "./tiles/sand.json"
 import clay from "./tiles/clay.json"
-import forest_leaf from "./tiles/forest_leaf.json"
+import grass from "./tiles/grass.json"
+import mountain from "./tiles/mountain.json"
+import moor from "./tiles/moor.json"
+import heath from "./tiles/heath.json"
+import fen from "./tiles/fen.json"
+import bog from "./tiles/bog.json"
+
 import forest_pine from "./tiles/forest_pine.json"
+import stone from "./tiles/stone.json"
 
 interface ResTile {
     img: string
@@ -88,13 +109,22 @@ export default class Tile {
     public static init() {
         Tile.sets[1] = new TileSet(water_deep)
         Tile.sets[3] = new TileSet(water)
-        Tile.sets[6] = new TileSet(swamp)
-        Tile.sets[10] = new TileSet(forest_leaf)
-        Tile.sets[15] = new TileSet(wald)
-        Tile.sets[16] = new TileSet(forest_pine) // TODO
-        Tile.sets[18] = new TileSet(stone)
-        Tile.sets[20] = new TileSet(clay)
-        Tile.sets[22] = new TileSet(sand)
+        // Tile.sets[11] = new TileSet(dirt)
+        Tile.sets[10] = new TileSet(leaf)
+        // Tile.sets[150] = new TileSet(clay)
+        // Tile.sets[153] = new TileSet(wald2) // Daji's wald
+        // Tile.sets[15] = new TileSet(swamp2)  // Daji's swamp
+        // Tile.sets[15] = new TileSet(swamp)
+        // Tile.sets[15] = new TileSet(heath2)
+        Tile.sets[15] = new TileSet(bog)
+        // Tile.sets[15] = new TileSet(grass)
+        // Tile.sets[154] = new TileSet(wald)
+        // Tile.sets[16] = new TileSet(forest_pine) // TODO
+        // Tile.sets[18] = new TileSet(stone)
+        // Tile.sets[20] = new TileSet(clay)
+
+        // Tile.sets[221] = new TileSet(sand)
+        Tile.sets[22] = new TileSet(plowed)
     }
 
     public static getGroundTexture(t: number): string | undefined {

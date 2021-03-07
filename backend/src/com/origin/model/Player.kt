@@ -1,6 +1,5 @@
 package com.origin.model
 
-import com.origin.model.move.CollisionResult
 import com.origin.database.DatabaseFactory.dbQueryCoroutine
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
@@ -209,10 +208,9 @@ class Player(
                         logger.warn("SHIFT")
                         val xx = x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
                         val yy = y / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
-                        executeCommand(xx, yy)
+                        if (executeCommand(xx, yy)) commandToExecute = null
                     } else
-                        executeCommand(x, y)
-                    commandToExecute = null
+                        if (executeCommand(x, y)) commandToExecute = null
                 } else {
                     startMove(Move2Point(this, x, y))
                 }
@@ -451,13 +449,16 @@ class Player(
             "tile" -> {
                 commandToExecute = cmd
             }
+            "off" -> {
+                commandToExecute = null
+            }
         }
     }
 
     /**
      * выполнить ранее сохраненную команду в указанных координатах
      */
-    private suspend fun executeCommand(x: Int, y: Int) {
+    private suspend fun executeCommand(x: Int, y: Int): Boolean {
         val params = commandToExecute!!.split(" ")
         when (params[0]) {
             "spawn" -> {
@@ -476,12 +477,14 @@ class Player(
                 val resp = CompletableDeferred<CollisionResult>()
                 obj.grid.send(GridMsg.Spawn(obj, resp))
                 resp.await()
+                return false
             }
             "tile" -> {
                 // param 1 - tile type
                 val t = params[1].toByte()
                 val p = Position(x, y, pos)
                 World.getGrid(p).send(GridMsg.SetTile(p, t))
+                return false
             }
             "tp" -> {
                 // Teleport to
@@ -490,8 +493,10 @@ class Player(
 //                    val y: Int = params[2].toInt()
                 // TODO teleport cmd
 //                }
+                return true
             }
         }
+        return true
     }
 
     override fun getMaxSoftHp(): Double {
