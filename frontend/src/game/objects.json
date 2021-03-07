@@ -1255,5 +1255,129 @@
           }
       ]
     }
+  },
+  "crate": {
+    "1": {
+      "offset": [
+          32,
+          28
+      ],
+      "layers": [
+          {
+              "img": "obj/crate/crate_empty_.png",
+              "offset": [
+                  19,
+                  10
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/crate/crate_empty.png",
+              "offset": [
+                  12,
+                  9
+              ],
+              "z": 0
+          }
+      ]
+    },
+    "2": {
+      "offset": [
+          32,
+          28
+      ],
+      "layers": [
+          {
+              "img": "obj/crate/crate_full_.png",
+              "offset": [
+                  19,
+                  10
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/crate/crate_full.png",
+              "offset": [
+                  12,
+                  9
+              ],
+              "z": 0
+          }
+      ]
+    }
+  },
+  "tub": {
+    "1": {
+      "offset": [
+          14,
+          11
+      ],
+      "layers": [
+          {
+              "img": "obj/tub/ttub_.png",
+              "offset": [
+                  0,
+                  0
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/tub/ttub.png",
+              "offset": [
+                  0,
+                  0
+              ],
+              "z": 0
+          }
+      ]
+    },
+    "2": {
+      "offset": [
+          14,
+          11
+      ],
+      "layers": [
+          {
+              "img": "obj/tub/ttuba_.png",
+              "offset": [
+                  0,
+                  0
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/tub/ttuba.png",
+              "offset": [
+                  0,
+                  0
+              ],
+              "z": 0
+          }
+      ]
+    },
+    "3": {
+      "offset": [
+          14,
+          11
+      ],
+      "layers": [
+          {
+              "img": "obj/tub/ttubw_.png",
+              "offset": [
+                  0,
+                  0
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/tub/ttubw.png",
+              "offset": [
+                  0,
+                  0
+              ],
+              "z": 0
+          }
+      ]
+    }
   }
 }
