@@ -109,22 +109,26 @@ export default class Tile {
     public static init() {
         Tile.sets[1] = new TileSet(water_deep)
         Tile.sets[3] = new TileSet(water)
-        // Tile.sets[11] = new TileSet(dirt)
-        Tile.sets[10] = new TileSet(leaf)
-        // Tile.sets[150] = new TileSet(clay)
-        // Tile.sets[153] = new TileSet(wald2) // Daji's wald
-        // Tile.sets[15] = new TileSet(swamp2)  // Daji's swamp
-        // Tile.sets[15] = new TileSet(swamp)
-        // Tile.sets[15] = new TileSet(heath2)
-        Tile.sets[15] = new TileSet(wald)
-        // Tile.sets[15] = new TileSet(grass)
-        // Tile.sets[154] = new TileSet(wald)
-        // Tile.sets[16] = new TileSet(forest_pine) // TODO
-        Tile.sets[18] = new TileSet(heath2)
-        Tile.sets[20] = new TileSet(clay)
 
-        // Tile.sets[221] = new TileSet(sand)
-        Tile.sets[22] = new TileSet(sand)
+        Tile.sets[10] = new TileSet(floor_stone)
+        Tile.sets[11] = new TileSet(plowed)
+
+
+        Tile.sets[13] = new TileSet(wald)
+        Tile.sets[15] = new TileSet(leaf)
+
+        // Todo пустошь
+        Tile.sets[16] = new TileSet(fen)
+
+        Tile.sets[17] = new TileSet(grass)
+
+        Tile.sets[18] = new TileSet(heath2)
+        Tile.sets[21] = new TileSet(moor)
+        Tile.sets[23] = new TileSet(swamp)
+        Tile.sets[29] = new TileSet(clay)
+        Tile.sets[30] = new TileSet(dirt)
+
+        Tile.sets[32] = new TileSet(sand)
     }
 
     public static getGroundTexture(t: number): string | undefined {

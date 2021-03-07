@@ -1,11 +1,7 @@
 {
   "ground": [
     {
-      "img": "tiles/water/water1.png",
-      "w": 1
-    },
-    {
-      "img": "tiles/water/water2.png",
+      "img": "tiles/water/base_1.png",
       "w": 1
     }
   ],

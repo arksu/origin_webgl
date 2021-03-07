@@ -11,13 +11,13 @@ import java.nio.file.attribute.BasicFileAttributes
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
-const val PATH = "../frontend/assets/tiles/bog/"
+const val PATH = "../frontend/assets/tiles/water/"
 
 /**
  * ресайз и коррекция оригинальных тайлов
  */
-object TileUtil {
-    val logger: Logger = LoggerFactory.getLogger(TileUtil::class.java)
+object TileUtilResize {
+    val logger: Logger = LoggerFactory.getLogger(TileUtilResize::class.java)
 
     const val OUT_PATH = "../frontend/assets/tiles/remake/"
 
