@@ -915,5 +915,345 @@
         "img": "question.png"
       }
     ]
+  },
+  "palisade": {
+    "1": {
+        "offset": [
+            66,
+            105
+        ],
+        "layers": [
+            {
+                "img": "obj/palisade/1_.png",
+                "offset": [
+                    42,
+                    101
+                ],
+                "shadow": true
+            },
+            {
+                "img": "obj/palisade/1.png",
+                "offset": [
+                    44,
+                    44
+                ],
+                "z": 0
+            }
+        ]
+    },
+    "2": {
+        "offset": [
+            87,
+            105
+        ],
+        "layers": [
+            {
+                "img": "obj/palisade/2_.png",
+                "offset": [
+                    71,
+                    101
+                ],
+                "shadow": true
+            },
+            {
+                "img": "obj/palisade/2.png",
+                "offset": [
+                    72,
+                    51
+                ],
+                "z": 0
+            }
+        ]
+    },
+    "3": {
+        "offset": [
+            66,
+            105
+        ],
+        "layers": [
+            {
+                "img": "obj/palisade/3_.png",
+                "offset": [
+                    49,
+                    101
+                ],
+                "shadow": true
+            },
+            {
+                "img": "obj/palisade/3.png",
+                "offset": [
+                    50,
+                    51
+                ],
+                "z": 0
+            }
+        ]
+    },
+    "4": {
+      "offset": [
+          64,
+          141
+      ],
+      "layers": [
+          {
+              "img": "obj/palisade/4_.png",
+              "offset": [
+                  37,
+                  123
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/palisade/4.png",
+              "offset": [
+                  37,
+                  47
+              ],
+              "z": 0
+          }
+      ]
+    },
+    "5": {
+      "offset": [
+          64,
+          141
+      ],
+      "layers": [
+          {
+              "img": "obj/palisade/5_.png",
+              "offset": [
+                  37,
+                  123
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/palisade/5.png",
+              "offset": [
+                  37,
+                  47
+              ],
+              "z": 0
+          }
+      ]
+    },
+    "6": {
+      "offset": [
+          64,
+          141
+      ],
+      "layers": [
+          {
+              "img": "obj/palisade/6_.png",
+              "offset": [
+                  37,
+                  123
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/palisade/6.png",
+              "offset": [
+                  37,
+                  47
+              ],
+              "z": 0
+          }
+      ]
+    },
+    "7": {
+      "offset": [
+          64,
+          141
+      ],
+      "layers": [
+          {
+              "img": "obj/palisade/7_.png",
+              "offset": [
+                  37,
+                  123
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/palisade/7.png",
+              "offset": [
+                  37,
+                  47
+              ],
+              "z": 0
+          }
+      ]
+    }
+  },
+  "fence":{
+    "1": {
+      "offset": [
+          27,
+          40
+      ],
+      "layers": [
+          {
+              "img": "obj/fence/1_.png",
+              "offset": [
+                  12,
+                  34
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/fence/1.png",
+              "offset": [
+                  11,
+                  8
+              ],
+              "z": 0
+          }
+      ]
+  },
+  "2": {
+      "offset": [
+          22,
+          40
+      ],
+      "layers": [
+          {
+              "img": "obj/fence/2_.png",
+              "offset": [
+                  8,
+                  34
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/fence/2.png",
+              "offset": [
+                  9,
+                  8
+              ],
+              "z": 0
+          }
+      ]
+  },
+  "3": {
+      "offset": [
+          27,
+          40
+      ],
+      "layers": [
+          {
+              "img": "obj/fence/3_.png",
+              "offset": [
+                  12,
+                  28
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/fence/3.png",
+              "offset": [
+                  14,
+                  7
+              ],
+              "z": 0
+          }
+      ]
+  },
+  "4": {
+      "offset": [
+          64,
+          141
+      ],
+      "layers": [
+          {
+              "img": "obj/fence/4_.png",
+              "offset": [
+                  37,
+                  123
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/fence/4.png",
+              "offset": [
+                  38,
+                  91
+              ],
+              "z": 0
+          }
+      ]
+  },
+  "5": {
+      "offset": [
+          64,
+          141
+      ],
+      "layers": [
+          {
+              "img": "obj/fence/5_.png",
+              "offset": [
+                  28,
+                  123
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/fence/5.png",
+              "offset": [
+                  28,
+                  91
+              ],
+              "shadow": true
+          }
+      ]
+  },
+  "6": {
+      "offset": [
+          67,
+          141
+      ],
+      "layers": [
+          {
+              "img": "obj/fence/6_.png",
+              "offset": [
+                  32,
+                  123
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/fence/6.png",
+              "offset": [
+                  42,
+                  91
+              ],
+              "shadow": true
+          }
+      ]
+  },
+  "7": {
+      "offset": [
+          67,
+          141
+      ],
+      "layers": [
+          {
+              "img": "obj/fence/7_.png",
+              "offset": [
+                  32,
+                  123
+              ],
+              "shadow": true
+          },
+          {
+              "img": "obj/fence/7.png",
+              "offset": [
+                  42,
+                  91
+              ],
+              "z": 0
+          }
+      ]
+    }
   }
 }
