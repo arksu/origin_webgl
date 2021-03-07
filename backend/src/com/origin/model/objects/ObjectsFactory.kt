@@ -3,6 +3,7 @@ package com.origin.model.objects
 import com.origin.entity.EntityObject
 import com.origin.model.GameObject
 import com.origin.model.objects.containers.Box
+import com.origin.model.objects.containers.Crate
 import com.origin.model.objects.trees.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
@@ -22,6 +23,7 @@ object ObjectsFactory {
             9 -> Maple(entity)
             10 -> Willow(entity)
             11 -> Yew(entity)
+            12 -> Crate(entity)
             else -> UnknownObject(entity)
         }
     }
