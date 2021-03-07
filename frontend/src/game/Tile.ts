@@ -116,15 +116,15 @@ export default class Tile {
         // Tile.sets[15] = new TileSet(swamp2)  // Daji's swamp
         // Tile.sets[15] = new TileSet(swamp)
         // Tile.sets[15] = new TileSet(heath2)
-        Tile.sets[15] = new TileSet(bog)
+        Tile.sets[15] = new TileSet(wald)
         // Tile.sets[15] = new TileSet(grass)
         // Tile.sets[154] = new TileSet(wald)
         // Tile.sets[16] = new TileSet(forest_pine) // TODO
-        // Tile.sets[18] = new TileSet(stone)
-        // Tile.sets[20] = new TileSet(clay)
+        Tile.sets[18] = new TileSet(heath2)
+        Tile.sets[20] = new TileSet(clay)
 
         // Tile.sets[221] = new TileSet(sand)
-        Tile.sets[22] = new TileSet(plowed)
+        Tile.sets[22] = new TileSet(sand)
     }
 
     public static getGroundTexture(t: number): string | undefined {
