@@ -72,8 +72,8 @@ export default class Grid {
         for (let i = 0; i < this.containers.length; i++) {
             const c = this.containers[i];
             setTimeout(() => {
-                c.cacheAsBitmap = true
-            }, i * 40)
+                // c.cacheAsBitmap = true
+            }, i * 5 + 5000)
         }
     }
 
@@ -136,6 +136,7 @@ export default class Grid {
 
     private makeChunk(cx: number, cy: number, idx: number): PIXI.Container {
         let container = new PIXI.Container();
+        container.sortableChildren = true
         // координаты грида с учетом чанка
         let x = this.x + cx / Grid.DIVIDER
         let y = this.y + cy / Grid.DIVIDER
@@ -181,6 +182,9 @@ export default class Grid {
                     this.sprites[idx] = spr;
 
                     this.makeTransparentTiles(container, data, idx, x, y, sx, sy)
+                    this.makeTerrainObjects(container, data[idx], x, y,
+                        // sx, sy)
+                        sx + Tile.TILE_WIDTH_HALF, sy + Tile.TILE_HEIGHT_HALF)
                 }
             }
         }
@@ -272,6 +276,16 @@ export default class Grid {
                         container.addChild(spr)
                     }
                 }
+            }
+        }
+    }
+
+    private makeTerrainObjects(container: PIXI.Container, t: number, x: number, y: number, sx: number, sy: number) {
+        let terrain = Tile.terrains[t]
+        if (terrain !== undefined) {
+            let spr = terrain.generate(x, y, sx, sy)
+            if (spr !== undefined) {
+                container.addChild(spr)
             }
         }
     }

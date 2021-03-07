@@ -1,18 +1,11 @@
-import {getRandomInt} from "@/utils/Util";
+import * as PIXI from 'pixi.js';
+
+import {Coord, getRandomByCoord, getRandomInt} from "@/utils/Util";
 import water from "./tiles/water.json"
 import water_deep from "./tiles/water_deep.json"
 import swamp from "./tiles/swamp.json"
 import wald from "./tiles/wald.json"
-import wald2 from "./tiles/wald2.json"
-import swamp2 from "./tiles/swamp2.json"
-import grass2 from "./tiles/grass2.json"
 import heath2 from "./tiles/heath2.json"
-import bog2 from "./tiles/bog2.json"
-import floor_stone2 from "./tiles/floor_stone2.json"
-import floor_mine2 from "./tiles/floor_mine2.json"
-import floor_wood2 from "./tiles/floor_wood2.json"
-import water2 from "./tiles/water2.json"
-import water_deep2 from "./tiles/water_deep2.json"
 
 import leaf from "./tiles/leaf.json"
 import plowed from "./tiles/plowed.json"
@@ -21,14 +14,10 @@ import floor_stone from "./tiles/floor_stone.json"
 import sand from "./tiles/sand.json"
 import clay from "./tiles/clay.json"
 import grass from "./tiles/grass.json"
-import mountain from "./tiles/mountain.json"
 import moor from "./tiles/moor.json"
-import heath from "./tiles/heath.json"
 import fen from "./tiles/fen.json"
-import bog from "./tiles/bog.json"
 
-import forest_pine from "./tiles/forest_pine.json"
-import stone from "./tiles/stone.json"
+import terrainWald from "./terrain/wald.json"
 
 interface ResTile {
     img: string
@@ -87,9 +76,93 @@ class TileSet {
     }
 }
 
+interface TerrainLayer {
+    img: string
+    offset: Coord
+    w: number
+    z?: number
+}
+
+interface TerrainObjectData {
+    chance: number
+    offset: Coord
+    layers: TerrainLayer[]
+}
+
+class TerrainObject {
+    data: TerrainObjectData
+    sz: number
+    tw: number
+
+    constructor(d: TerrainObjectData) {
+        this.data = d
+        this.sz = this.data.layers.length
+        this.tw = 0
+        for (let i = 0; i < this.data.layers.length; i++) {
+            this.tw += this.data.layers[i].w
+        }
+    }
+
+    public generate(x: number, y: number, sx: number, sy: number): PIXI.Sprite | undefined {
+        // TODO детерменированный рандом в зависимости от координат и шанса генерации
+        let idx = this.get(getRandomByCoord(x, y))
+        if (idx >= 0) {
+            let path = this.data.layers[idx].img
+            if (path.includes(".")) path = "assets/" + path
+            let spr = PIXI.Sprite.from(path)
+            let dx = -this.data.offset[0] + this.data.layers[idx].offset[0]
+            let dy = -this.data.offset[1] + this.data.layers[idx].offset[1]
+
+            spr.x = sx + dx
+            spr.y = sy + dy
+            spr.zIndex = 100
+            let z = this.data.layers[idx].z
+            if (z !== undefined) {
+                spr.zIndex += z
+            }
+            return spr
+        }
+    }
+
+    public get(t: number): number {
+        if (this.tw == 0) return -1
+        let w = t % this.tw
+        let i = 0
+        while (true) {
+            if ((w -= this.data.layers[i].w) < 0) {
+                break
+            }
+            i++
+        }
+        return i
+    }
+}
+
+class TileObjects {
+    list: TerrainObject[] = []
+
+    constructor(d: any) {
+        for (let i = 0; i < d.length; i++) {
+            let to = new TerrainObject(d[i])
+            this.list.push(to)
+        }
+    }
+
+    public generate(x: number, y: number, sx: number, sy: number): PIXI.Sprite | undefined {
+        // TODO детерменированный рандом в зависимости от координат и шанса генерации
+        for (let i = 0; i < this.list.length; i++) {
+            if (getRandomInt(this.list[i].data.chance) == 0) {
+                return this.list[i].generate(x, y, sx, sy)
+            }
+        }
+        return undefined
+    }
+}
+
 
 export default class Tile {
     public static sets: TileSet[] = []
+    public static terrains: TileObjects[] = []
 
     /**
      * размеры текстуры тайла
@@ -115,6 +188,8 @@ export default class Tile {
 
 
         Tile.sets[13] = new TileSet(wald)
+        Tile.terrains[13] = new TileObjects(terrainWald)
+
         Tile.sets[15] = new TileSet(leaf)
 
         // Todo пустошь
