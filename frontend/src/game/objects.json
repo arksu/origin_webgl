@@ -1364,7 +1364,7 @@
           "z": 0
         },
         {
-          "img": "obj/big_box/bbox_shadow.png",
+          "img": "obj/big_box/bbox_.png",
           "offset": [12,30],
           "shadow": true
         }
