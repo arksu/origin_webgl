@@ -1496,5 +1496,106 @@
         }
       ]
     }
+  },
+  "treeplanterspot":{
+    "empty": {
+      "offset": [0,0],
+      "layers": [
+        {
+          "interactive": true,
+          "img": "obj/treeplanterspot/treeplanterspot_empty.png",
+          "offset": [0,0],
+          "z": 0
+        }
+      ]
+    },
+    "filled": {
+      "offset": [0,0],
+      "layers": [
+        {
+          "interactive": true,
+          "img": "obj/treeplanterspot/treeplanterspot_filled.png",
+          "offset": [0,0],
+          "z": 0
+        }
+      ]
+    },
+    "sprouted": {
+      "offset": [0,0],
+      "layers": [
+        {
+          "interactive": true,
+          "img": "obj/treeplanterspot/treeplanterspot_sprouted.png",
+          "offset": [0,0],
+          "z": 0
+        }
+      ]
+    }
+  },
+  "dframe":{
+    "empty": {
+      "offset": [29,60],
+      "layers": [
+        {
+          "interactive": true,
+          "img": "obj/dframe/dframe_empty.png",
+          "offset": [0,0],
+          "z": 0
+        },
+        {
+          "img": "obj/dframe/dframe_.png",
+          "offset": [0,0],
+          "shadow": true
+        }
+      ]
+    },
+    "raw_hide": {
+      "offset": [29,60],
+      "layers": [
+        {
+          "interactive": true,
+          "img": "obj/dframe/dframe_raw_hide.png",
+          "offset": [0,0],
+          "z": 0
+        },
+        {
+          "img": "obj/dframe/dframe_.png",
+          "offset": [0,0],
+          "shadow": true
+        }
+      ]
+    },
+    "dried_hide": {
+      "offset": [29,60],
+      "layers": [
+        {
+          "interactive": true,
+          "img": "obj/dframe/dframe_dried_hide.png",
+          "offset": [0,0],
+          "z": 0
+        },
+        {
+          "img": "obj/dframe/dframe_.png",
+          "offset": [0,0],
+          "shadow": true
+        }
+      ]
+    },
+    "herbs": {
+      "offset": [29,60],
+      "layers": [
+        {
+          "interactive": true,
+          "img": "obj/dframe/dframe_herbs.png",
+          "offset": [0,0],
+          "z": 0
+        },
+        {
+          "img": "obj/dframe/dframe_.png",
+          "offset": [0,0],
+          "shadow": true
+        }
+      ]
+    }
   }
 }
