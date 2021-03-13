@@ -72,7 +72,7 @@ export default class Grid {
         for (let i = 0; i < this.containers.length; i++) {
             const c = this.containers[i];
             setTimeout(() => {
-                // c.cacheAsBitmap = true
+                c.cacheAsBitmap = true
             }, i * 5 + 5000)
         }
     }
@@ -283,9 +283,11 @@ export default class Grid {
     private makeTerrainObjects(container: PIXI.Container, t: number, x: number, y: number, sx: number, sy: number) {
         let terrain = Tile.terrains[t]
         if (terrain !== undefined) {
-            let spr = terrain.generate(x, y, sx, sy)
-            if (spr !== undefined) {
-                container.addChild(spr)
+            let sprList = terrain.generate(x, y, sx, sy)
+            if (sprList !== undefined) {
+                for (let i = 0; i < sprList.length; i++) {
+                    container.addChild(sprList[i])
+                }
             }
         }
     }

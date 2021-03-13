@@ -79,7 +79,7 @@ class TileSet {
 interface TerrainLayer {
     img: string
     offset: Coord
-    w: number
+    p: number
     z?: number
 }
 
@@ -92,53 +92,56 @@ interface TerrainObjectData {
 class TerrainObject {
     data: TerrainObjectData
     sz: number
-    tw: number
 
     constructor(d: TerrainObjectData) {
         this.data = d
         this.sz = this.data.layers.length
-        this.tw = 0
-        for (let i = 0; i < this.data.layers.length; i++) {
-            this.tw += this.data.layers[i].w
-        }
     }
 
-    public generate(x: number, y: number, sx: number, sy: number): PIXI.Sprite | undefined {
-        // TODO детерменированный рандом в зависимости от координат и шанса генерации
-        let idx = this.get(getRandomByCoord(x, y))
-        if (idx >= 0) {
-            let path = this.data.layers[idx].img
-            if (path.includes(".")) path = "assets/" + path
-            let spr = PIXI.Sprite.from(path)
-            let dx = -this.data.offset[0] + this.data.layers[idx].offset[0]
-            let dy = -this.data.offset[1] + this.data.layers[idx].offset[1]
+    /**
+     * сгенерировать список текстур объекта
+     * @param x координаты тайла
+     * @param y координаты тайла
+     * @param sx экранные координаты центра тайла куда надо поместить объект
+     * @param sy экранные координаты центра тайла куда надо поместить объект
+     */
+    public generate(x: number, y: number, sx: number, sy: number): PIXI.Sprite[] | undefined {
+        if (this.sz > 0) {
+            let list: PIXI.Sprite[] = []
 
-            spr.x = sx + dx
-            spr.y = sy + dy
-            spr.zIndex = 100
-            let z = this.data.layers[idx].z
-            if (z !== undefined) {
-                spr.zIndex += z
-            }
-            return spr
-        }
-    }
+            // TODO детерменированный рандом в зависимости от координат и шанса генерации
 
-    public get(t: number): number {
-        if (this.tw == 0) return -1
-        let w = t % this.tw
-        let i = 0
-        while (true) {
-            if ((w -= this.data.layers[i].w) < 0) {
-                break
+            for (let i = 0; i < this.sz; i++) {
+                let l = this.data.layers[i]
+                // проверим шанс генерации
+                let c = getRandomByCoord(x, y) % l.p
+                if (c == 0) {
+                    let path = l.img
+                    if (path.includes(".")) path = "assets/" + path
+                    let spr = PIXI.Sprite.from(path)
+                    let dx = -this.data.offset[0] + l.offset[0]
+                    let dy = -this.data.offset[1] + l.offset[1]
+
+                    spr.x = sx + dx
+                    spr.y = sy + dy
+                    spr.zIndex = 100
+                    let z = l.z
+                    if (z !== undefined) {
+                        spr.zIndex += z
+                    }
+                    list.push(spr)
+                }
             }
-            i++
+
+            return list
+
+        } else {
+            return undefined
         }
-        return i
     }
 }
 
-class TileObjects {
+class TerrainObjects {
     list: TerrainObject[] = []
 
     constructor(d: any) {
@@ -148,10 +151,22 @@ class TileObjects {
         }
     }
 
-    public generate(x: number, y: number, sx: number, sy: number): PIXI.Sprite | undefined {
+    /**
+     * сгенерировать список текстур террейн объекта (составляющих 1 террейн объект)
+     * в списке спрайты уже будут иметь нужные координаты
+     * @param x координаты тайла
+     * @param y координаты тайла
+     * @param sx экранные координаты центра тайла куда надо поместить объект
+     * @param sy экранные координаты центра тайла куда надо поместить объект
+     */
+    public generate(x: number, y: number, sx: number, sy: number): PIXI.Sprite[] | undefined {
         // TODO детерменированный рандом в зависимости от координат и шанса генерации
+
+        // идем по всему списку
         for (let i = 0; i < this.list.length; i++) {
+            // у каждого элемента проверяем шанс на спавн
             if (getRandomInt(this.list[i].data.chance) == 0) {
+                // генерируем террейн объект
                 return this.list[i].generate(x, y, sx, sy)
             }
         }
@@ -162,7 +177,7 @@ class TileObjects {
 
 export default class Tile {
     public static sets: TileSet[] = []
-    public static terrains: TileObjects[] = []
+    public static terrains: TerrainObjects[] = []
 
     /**
      * размеры текстуры тайла
@@ -188,7 +203,7 @@ export default class Tile {
 
 
         Tile.sets[13] = new TileSet(wald)
-        Tile.terrains[13] = new TileObjects(terrainWald)
+        Tile.terrains[13] = new TerrainObjects(terrainWald)
 
         Tile.sets[15] = new TileSet(leaf)
 
