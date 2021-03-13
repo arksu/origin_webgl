@@ -18,6 +18,7 @@ import moor from "./tiles/moor.json"
 import fen from "./tiles/fen.json"
 
 import terrainWald from "./terrain/wald.json"
+import terrainHeath from "./terrain/heath.json"
 
 interface ResTile {
     img: string
@@ -109,29 +110,32 @@ class TerrainObject {
         if (this.sz > 0) {
             let list: PIXI.Sprite[] = []
 
-            // TODO детерменированный рандом в зависимости от координат и шанса генерации
-
-            for (let i = 0; i < this.sz; i++) {
-                let l = this.data.layers[i]
-                // проверим шанс генерации
-                let c = getRandomByCoord(x, y) % l.p
-                if (c == 0) {
-                    let path = l.img
-                    // if (path.includes(".")) path = "assets/" + path
-                    let spr = PIXI.Sprite.from(path)
-                    let dx = -this.data.offset[0] + l.offset[0]
-                    let dy = -this.data.offset[1] + l.offset[1]
-
-                    spr.x = sx + dx
-                    spr.y = sy + dy
-                    spr.zIndex = 100
-                    let z = l.z
-                    if (z !== undefined) {
-                        spr.zIndex += z
+            let isShadow = false;
+            do {
+                for (let i = 0; i < this.sz; i++) {
+                    let l = this.data.layers[i]
+                    if (l.p == 0) {
+                        isShadow = true
                     }
-                    list.push(spr)
+                    // проверим шанс генерации
+                    if ((l.p == 0 && list.length == 0) || getRandomByCoord(x, y) % l.p == 0) {
+                        let path = l.img
+                        // if (path.includes(".")) path = "assets/" + path
+                        let spr = PIXI.Sprite.from(path)
+                        let dx = -this.data.offset[0] + l.offset[0]
+                        let dy = -this.data.offset[1] + l.offset[1]
+
+                        spr.x = sx + dx
+                        spr.y = sy + dy
+                        spr.zIndex = 100
+                        let z = l.z
+                        if (z !== undefined) {
+                            spr.zIndex += z
+                        }
+                        list.push(spr)
+                    }
                 }
-            }
+            } while (isShadow && list.length < 2 && this.sz > 1)
 
             return list
 
@@ -213,6 +217,7 @@ export default class Tile {
         Tile.sets[17] = new TileSet(grass)
 
         Tile.sets[18] = new TileSet(heath2)
+        Tile.terrains[18] = new TerrainObjects(terrainHeath)
         Tile.sets[21] = new TileSet(moor)
         Tile.sets[23] = new TileSet(swamp)
         Tile.sets[29] = new TileSet(clay)
