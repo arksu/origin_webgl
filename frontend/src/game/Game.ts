@@ -191,27 +191,28 @@ export default class Game {
         PIXI.utils.clearTextureCache()
 
         const loader = this.app.loader;
-        const img = PIXI.utils.TextureCache['assets/tiles.json_image'];
+        const img = PIXI.utils.TextureCache['assets/base.json_image'];
 
         if (img == undefined) {
             // load tiles parts
-            for (let i = 0; i < Tile.sets.length; i++) {
-                if (!Tile.sets[i]) continue
-                for (let j = 0; j < Tile.sets[i].ground.tiles.length; j++) {
-                    loader.add('assets/' + Tile.sets[i].ground.tiles[j].img)
-                }
-                for (let j = 0; j < Tile.sets[i].corners.length; j++) {
-                    for (let k = 0; k < Tile.sets[i].corners[j].tiles.length; k++) {
-                        loader.add('assets/' + Tile.sets[i].corners[j].tiles[k].img)
-                    }
-                }
-                for (let j = 0; j < Tile.sets[i].borders.length; j++) {
-                    for (let k = 0; k < Tile.sets[i].borders[j].tiles.length; k++) {
-                        loader.add('assets/' + Tile.sets[i].borders[j].tiles[k].img)
-                    }
-                }
-            }
+            // for (let i = 0; i < Tile.sets.length; i++) {
+            //     if (!Tile.sets[i]) continue
+            //     for (let j = 0; j < Tile.sets[i].ground.tiles.length; j++) {
+            //         loader.add('assets/' + Tile.sets[i].ground.tiles[j].img)
+            //     }
+            //     for (let j = 0; j < Tile.sets[i].corners.length; j++) {
+            //         for (let k = 0; k < Tile.sets[i].corners[j].tiles.length; k++) {
+            //             loader.add('assets/' + Tile.sets[i].corners[j].tiles[k].img)
+            //         }
+            //     }
+            //     for (let j = 0; j < Tile.sets[i].borders.length; j++) {
+            //         for (let k = 0; k < Tile.sets[i].borders[j].tiles.length; k++) {
+            //             loader.add('assets/' + Tile.sets[i].borders[j].tiles[k].img)
+            //         }
+            //     }
+            // }
 
+            loader.add("assets/base.json")
             loader.add("assets/tiles.json")
             loader.load((_, __) => {
                 this.setup();

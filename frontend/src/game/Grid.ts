@@ -73,7 +73,7 @@ export default class Grid {
             const c = this.containers[i];
             setTimeout(() => {
                 c.cacheAsBitmap = true
-            }, i * 5 + 5000)
+            }, i * 5 + 40)
         }
     }
 
@@ -167,7 +167,7 @@ export default class Grid {
                     this.spriteTextureNames[idx] = tn
 
                     let path = tn
-                    if (path.includes(".")) path = "assets/" + path
+                    // if (path.includes(".")) path = "assets/" + path
 
                     let spr = PIXI.Sprite.from(path);
 
@@ -249,7 +249,7 @@ export default class Grid {
                     let path = arr.get(getRandomByCoord(x, y))
                     if (path !== undefined) {
                         let tn = path
-                        if (path.includes(".")) path = "assets/" + path
+                        // if (path.includes(".")) path = "assets/" + path
                         let spr = PIXI.Sprite.from(path)
                         spr.x = sx
                         spr.y = sy
@@ -266,7 +266,7 @@ export default class Grid {
                     let path = arr.get(getRandomByCoord(x, y))
                     if (path !== undefined) {
                         let tn = path
-                        if (path.includes(".")) path = "assets/" + path
+                        // if (path.includes(".")) path = "assets/" + path
                         let spr = PIXI.Sprite.from(path)
                         spr.x = sx
                         spr.y = sy

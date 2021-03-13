@@ -117,7 +117,7 @@ class TerrainObject {
                 let c = getRandomByCoord(x, y) % l.p
                 if (c == 0) {
                     let path = l.img
-                    if (path.includes(".")) path = "assets/" + path
+                    // if (path.includes(".")) path = "assets/" + path
                     let spr = PIXI.Sprite.from(path)
                     let dx = -this.data.offset[0] + l.offset[0]
                     let dy = -this.data.offset[1] + l.offset[1]
