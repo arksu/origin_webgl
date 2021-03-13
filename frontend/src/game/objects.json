@@ -1604,49 +1604,49 @@
         "fps": 10,
         "offset": [88, 86],
         "layers": [
-          {"img": "obj/boat/0.png", "offset": [18, 58], "z": 0},
-          {"img": "obj/boat/1.png", "offset": [21, 56], "z": 0},
-          {"img": "obj/boat/2.png", "offset": [24, 61], "z": 0},
-          {"img": "obj/boat/3.png", "offset": [24, 62], "z": 0},
-          {"img": "obj/boat/4.png", "offset": [18, 58], "z": 0},
-          {"img": "obj/boat/5.png", "offset": [21, 56], "z": 0},
-          {"img": "obj/boat/6.png", "offset": [24, 61], "z": 0},
-          {"img": "obj/boat/7.png", "offset": [24, 62], "z": 0}
-        ]
-      },
-      "boat_f": {
-        "fps": 10,
-        "offset": [88, 86],
-        "layers": [
-          {"img": "obj/boat/8.png", "offset": [52, 74], "z": 2},
-          {"img": "obj/boat/9.png", "offset": [52, 74], "z": 2},
-          {"img": "obj/boat/10.png", "offset": [52, 74], "z": 2},
-          {"img": "obj/boat/11.png", "offset": [52, 74], "z": 2},
-          {"img": "obj/boat/12.png", "offset": [52, 74], "z": 2},
-          {"img": "obj/boat/13.png", "offset": [52, 74], "z": 2},
-          {"img": "obj/boat/14.png", "offset": [52, 74], "z": 2},
-          {"img": "obj/boat/15.png", "offset": [52, 74], "z": 2}
-        ]
-      },
-      "boat_b": {
-        "fps": 10,
-        "offset": [88, 86],
-        "layers": [
-          {"img": "obj/boat/16.png", "offset": [56, 62], "z": 1},
-          {"img": "obj/boat/17.png", "offset": [56, 62], "z": 1},
-          {"img": "obj/boat/18.png", "offset": [56, 62], "z": 1},
-          {"img": "obj/boat/19.png", "offset": [56, 62], "z": 1},
-          {"img": "obj/boat/20.png", "offset": [56, 62], "z": 1},
-          {"img": "obj/boat/21.png", "offset": [56, 62], "z": 1},
-          {"img": "obj/boat/22.png", "offset": [56, 62], "z": 1},
-          {"img": "obj/boat/23.png", "offset": [56, 62], "z": 1}
-        ]
-      },
-      "shadow": {
-        "fps": 10,
-        "offset": [88, 86],
-        "layers": [
-          {"img": "obj/boat/24.png", "offset": [56, 84], "shadow": true}
+          {
+            "frames": [
+              {"img": "obj/boat/0.png", "offset": [18, 58]},
+              {"img": "obj/boat/1.png", "offset": [21, 56]},
+              {"img": "obj/boat/2.png", "offset": [24, 61]},
+              {"img": "obj/boat/3.png", "offset": [24, 62]},
+              {"img": "obj/boat/4.png", "offset": [18, 58]},
+              {"img": "obj/boat/5.png", "offset": [21, 56]},
+              {"img": "obj/boat/6.png", "offset": [24, 61]},
+              {"img": "obj/boat/7.png", "offset": [24, 62]}
+            ],
+            "z": 0
+          }, {
+            "frames": [
+              {"img": "obj/boat/16.png", "offset": [56, 62]},
+              {"img": "obj/boat/17.png", "offset": [56, 62]},
+              {"img": "obj/boat/18.png", "offset": [56, 62]},
+              {"img": "obj/boat/19.png", "offset": [56, 62]},
+              {"img": "obj/boat/20.png", "offset": [56, 62]},
+              {"img": "obj/boat/21.png", "offset": [56, 62]},
+              {"img": "obj/boat/22.png", "offset": [56, 62]},
+              {"img": "obj/boat/23.png", "offset": [56, 62]}
+            ],
+            "z": 1
+          },
+          {
+            "frames": [
+              {"img": "obj/boat/8.png", "offset": [52, 74]},
+              {"img": "obj/boat/9.png", "offset": [52, 74]},
+              {"img": "obj/boat/10.png", "offset": [52, 74]},
+              {"img": "obj/boat/11.png", "offset": [52, 74]},
+              {"img": "obj/boat/12.png", "offset": [52, 74]},
+              {"img": "obj/boat/13.png", "offset": [52, 74]},
+              {"img": "obj/boat/14.png", "offset": [52, 74]},
+              {"img": "obj/boat/15.png", "offset": [52, 74]}
+            ],
+            "z": 2
+          },
+          {
+            "img": "obj/boat/24.png",
+            "offset": [56, 84],
+            "shadow": true
+          }
         ]
       }
     },
