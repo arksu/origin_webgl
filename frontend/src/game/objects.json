@@ -1971,69 +1971,103 @@
   "fox": {
     "0": {
       "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/0.png", "offset": [21, 27], "z":0 }]
+      "layers": [{"img": "animals/fox/0.png", "offset": [21, 27], "z": 0 }]
     },
     "1": {
       "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/1.png", "offset": [28, 25], "z":0 }]
+      "layers": [{"img": "animals/fox/1.png", "offset": [28, 25], "z": 0 }]
     },
     "2": {
       "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/2.png", "offset": [14, 30], "z":0 }]
+      "layers": [{"img": "animals/fox/2.png", "offset": [14, 30], "z": 0 }]
     },
     "3": {
       "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/3.png", "offset": [19, 30], "z":0 }]
+      "layers": [{"img": "animals/fox/3.png", "offset": [19, 30], "z": 0 }]
     },
     "4": {
       "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/4.png", "offset": [16, 27], "z":0 }]
+      "layers": [{"img": "animals/fox/4.png", "offset": [16, 27], "z": 0 }]
     },
     "5": {
       "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/5.png", "offset": [17, 30], "z":0 }]
+      "layers": [{"img": "animals/fox/5.png", "offset": [17, 30], "z": 0 }]
     },
     "6": {
       "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/6.png", "offset": [28, 29], "z":0 }]
+      "layers": [{"img": "animals/fox/6.png", "offset": [28, 29], "z": 0 }]
     },
     "7": {
       "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/7.png", "offset": [19, 30], "z":0 }]
+      "layers": [{"img": "animals/fox/7.png", "offset": [19, 30], "z": 0 }]
     }
   },
   "deer": {
     "0": {
       "offset": [33, 45],
-      "layers": [{"img": "animals/deer/0.png", "offset": [19, 2], "z":0 }]
+      "layers": [{"img": "animals/deer/0.png", "offset": [19, 2], "z": 0 }]
     },
     "1": {
       "offset": [33, 45],
-      "layers": [{"img": "animals/deer/1.png", "offset": [19, 3], "z":0 }]
+      "layers": [{"img": "animals/deer/1.png", "offset": [19, 3], "z": 0 }]
     },
     "2": {
       "offset": [33, 45],
-      "layers": [{"img": "animals/deer/2.png", "offset": [12, 3], "z":0 }]
+      "layers": [{"img": "animals/deer/2.png", "offset": [12, 3], "z": 0 }]
     },
     "3": {
       "offset": [33, 45],
-      "layers": [{"img": "animals/deer/3.png", "offset": [16, 5], "z":0 }]
+      "layers": [{"img": "animals/deer/3.png", "offset": [16, 5], "z": 0 }]
     },
     "4": {
       "offset": [33, 45],
-      "layers": [{"img": "animals/deer/4.png", "offset": [12, 2], "z":0 }]
+      "layers": [{"img": "animals/deer/4.png", "offset": [12, 2], "z": 0 }]
     },
     "5": {
       "offset": [33, 45],
-      "layers": [{"img": "animals/deer/5.png", "offset": [8, 3], "z":0 }]
+      "layers": [{"img": "animals/deer/5.png", "offset": [8, 3], "z": 0 }]
     },
     "6": {
       "offset": [33, 45],
-      "layers": [{"img": "animals/deer/6.png", "offset": [21, 11], "z":0 }]
+      "layers": [{"img": "animals/deer/6.png", "offset": [21, 11], "z": 0 }]
     },
     "7": {
       "offset": [33, 45],
-      "layers": [{"img": "animals/deer/7.png", "offset": [15, 5], "z":0 }]
+      "layers": [{"img": "animals/deer/7.png", "offset": [15, 5], "z": 0 }]
+    }
+  },
+  "bear": {
+    "0": {
+      "offset": [91, 93],
+      "layers": [{"img": "animals/bear/0.png", "offset": [57, 52], "z": 0}]
+    },
+    "1": {
+      "offset": [91, 93],
+      "layers": [{"img": "animals/bear/1.png", "offset": [68, 46], "z": 0}]
+    },
+    "2": {
+      "offset": [91, 93],
+      "layers": [{"img": "animals/bear/2.png", "offset": [58, 59], "z": 0}]
+    },
+    "3": {
+      "offset": [91, 93],
+      "layers": [{"img": "animals/bear/3.png", "offset": [60, 53], "z": 0}]
+    },
+    "4": {
+      "offset": [91, 93],
+      "layers": [{"img": "animals/bear/4.png", "offset": [51, 52], "z": 0}]
+    },
+    "5": {
+      "offset": [91, 93],
+      "layers": [{"img": "animals/bear/5.png", "offset": [51, 59], "z": 0}]
+    },
+    "6": {
+      "offset": [91, 93],
+      "layers": [{"img": "animals/bear/6.png", "offset": [68, 49], "z": 0}]
+    },
+    "7": {
+      "offset": [91, 93],
+      "layers": [{"img": "animals/bear/7.png", "offset": [54, 53], "z": 0}]
     }
   }
 }
