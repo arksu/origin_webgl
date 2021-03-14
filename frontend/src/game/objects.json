@@ -2103,5 +2103,73 @@
       "offset": [90, 92],
       "layers": [{"img": "animals/aurochs/7.png", "offset": [55, 58], "z": 0}]
     }
+  },
+  "mufflon": {
+    "0": {
+      "offset": [34, 43],
+      "layers": [{"img": "animals/mufflon/0.png", "offset": [19, 21], "z": 0}]
+    },
+    "1": {
+      "offset": [34, 43],
+      "layers": [{"img": "animals/mufflon/1.png", "offset": [26, 25], "z": 0}]
+    },
+    "2": {
+      "offset": [34, 43],
+      "layers": [{"img": "animals/mufflon/2.png", "offset": [21, 20], "z": 0}]
+    },
+    "3": {
+      "offset": [34, 43],
+      "layers": [{"img": "animals/mufflon/3.png", "offset": [24, 18], "z": 0}]
+    },
+    "4": {
+      "offset": [34, 43],
+      "layers": [{"img": "animals/mufflon/4.png", "offset": [19, 21], "z": 0}]
+    },
+    "5": {
+      "offset": [34, 43],
+      "layers": [{"img": "animals/mufflon/5.png", "offset": [18, 20], "z": 0}]
+    },
+    "6": {
+      "offset": [34, 43],
+      "layers": [{"img": "animals/mufflon/6.png", "offset": [25, 24], "z": 0}]
+    },
+    "7": {
+      "offset": [34, 43],
+      "layers": [{"img": "animals/mufflon/7.png", "offset": [24, 18], "z": 0}]
+    }
+  },
+  "sheep": {
+    "0": {
+      "offset": [36, 48],
+      "layers": [{"img": "animals/sheep/0.png", "offset": [21, 22], "z": 0}]
+    },
+    "1": {
+      "offset": [36, 48],
+      "layers": [{"img": "animals/sheep/1.png", "offset": [28, 25], "z": 0}]
+    },
+    "2": {
+      "offset": [36, 48],
+      "layers": [{"img": "animals/sheep/2.png", "offset": [19, 30], "z": 0}]
+    },
+    "3": {
+      "offset": [36, 48],
+      "layers": [{"img": "animals/sheep/3.png", "offset": [21, 25], "z": 0}]
+    },
+    "4": {
+      "offset": [36, 48],
+      "layers": [{"img": "animals/sheep/4.png", "offset": [19, 22], "z": 0}]
+    },
+    "5": {
+      "offset": [36, 48],
+      "layers": [{"img": "animals/sheep/5.png", "offset": [14, 30], "z": 0}]
+    },
+    "6": {
+      "offset": [36, 48],
+      "layers": [{"img": "animals/sheep/6.png", "offset": [27, 25], "z": 0}]
+    },
+    "7": {
+      "offset": [36, 48],
+      "layers": [{"img": "animals/sheep/7.png", "offset": [19, 25], "z": 0}]
+    }
   }
 }
