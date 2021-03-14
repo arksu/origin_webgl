@@ -2069,5 +2069,39 @@
       "offset": [91, 93],
       "layers": [{"img": "animals/bear/7.png", "offset": [54, 53], "z": 0}]
     }
+  },
+  "aurochs": {
+    "0": {
+      "offset": [90, 92],
+      "layers": [{"img": "animals/aurochs/0.png", "offset": [63, 56], "z": 0}]
+    },
+    "1": {
+      "offset": [90, 92],
+      "layers": [{"img": "animals/aurochs/1.png", "offset": [68, 54], "z": 0}]
+    },
+    "2": {
+      "offset": [90, 92],
+      "layers": [{"img": "animals/aurochs/2.png", "offset": [57, 63], "z": 0}]
+    },
+    "3": {
+      "offset": [90, 92],
+      "layers": [{"img": "animals/aurochs/3.png", "offset": [64, 58], "z": 0}]
+    },
+    "4": {
+      "offset": [90, 92],
+      "layers": [{"img": "animals/aurochs/4.png", "offset": [55, 56], "z": 0}]
+    },
+    "5": {
+      "offset": [90, 92],
+      "layers": [{"img": "animals/aurochs/5.png", "offset": [50, 63], "z": 0}]
+    },
+    "6": {
+      "offset": [90, 92],
+      "layers": [{"img": "animals/aurochs/6.png", "offset": [69, 56], "z": 0}]
+    },
+    "7": {
+      "offset": [90, 92],
+      "layers": [{"img": "animals/aurochs/7.png", "offset": [55, 58], "z": 0}]
+    }
   }
 }
