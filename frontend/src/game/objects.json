@@ -1967,5 +1967,39 @@
         {"img": "obj/boat/199.png", "offset": [56, 84], "shadow": true}
       ]
     }
+  },
+  "fox": {
+    "0": {
+      "offset": [33, 47], 
+      "layers": [{"img": "animals/fox/0.png", "offset": [21, 27], "z":0 }]
+    },
+    "1": {
+      "offset": [33, 47], 
+      "layers": [{"img": "animals/fox/1.png", "offset": [28, 25], "z":0 }]
+    },
+    "2": {
+      "offset": [33, 47], 
+      "layers": [{"img": "animals/fox/2.png", "offset": [14, 30], "z":0 }]
+    },
+    "3": {
+      "offset": [33, 47], 
+      "layers": [{"img": "animals/fox/3.png", "offset": [19, 30], "z":0 }]
+    },
+    "4": {
+      "offset": [33, 47], 
+      "layers": [{"img": "animals/fox/4.png", "offset": [16, 27], "z":0 }]
+    },
+    "5": {
+      "offset": [33, 47], 
+      "layers": [{"img": "animals/fox/5.png", "offset": [17, 30], "z":0 }]
+    },
+    "6": {
+      "offset": [33, 47], 
+      "layers": [{"img": "animals/fox/6.png", "offset": [28, 29], "z":0 }]
+    },
+    "7": {
+      "offset": [33, 47], 
+      "layers": [{"img": "animals/fox/7.png", "offset": [19, 30], "z":0 }]
+    }
   }
 }
