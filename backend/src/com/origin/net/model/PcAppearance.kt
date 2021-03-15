@@ -1,4 +1,4 @@
-package com.origin.model
+package com.origin.net.model
 
 import com.google.gson.annotations.SerializedName
 

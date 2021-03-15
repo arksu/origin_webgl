@@ -88,7 +88,7 @@ class Player(
     /**
      * внешний вид персонажа (имя, пол, волосы и тд)
      */
-    val appearance: PcAppearance = PcAppearance(character.name, "", 0)
+    val appearance = PcAppearance(character.name, "", 0)
 
     /**
      * при создании (логине) игрока запомним какой у него был онлайн

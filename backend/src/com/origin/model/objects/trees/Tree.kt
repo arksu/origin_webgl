@@ -54,14 +54,18 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                         if (!it.target.takeHP(6)) {
                             // значит хп кончилось. и дерево срубили
                             logger.warn("TREE CHOPPED!")
-                            // TODO make tree -> stump
+                            // make tree -> stump
                             transaction {
+                                // меняем тип на "пень"
                                 it.target.entity.data = "10"
+                                // дадим ему сколько то хп
                                 it.target.entity.hp = 120
                             }
                             it.target.stage = 10
                             // уведомим окружающие объекты о том что это дерево изменилось
                             it.target.grid.broadcast(BroadcastEvent.Changed(it.target))
+
+                            // TODO а тут надо заспавнить 2 бревна
                             done = true
                         } else {
                             it.sendPkt(ActionProgress(it.maxProgress - it.target.entity.hp, it.maxProgress))

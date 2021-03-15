@@ -27,7 +27,7 @@ class Action(
     private val me: Human,
     val target: GameObject,
     /**
-     * скольок тиков между действиями
+     * сколько тиков между действиями (берем по модулю, не зависимо от знака)
      */
     private val ticks: Int,
     private val startProgress: Int,
