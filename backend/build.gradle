@@ -83,3 +83,23 @@ task mapimport(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.origin.utils.MapImporter'
 }
+
+distributions {
+    main {
+        contents {
+            from 'etc/run.sh'
+            from 'etc/stop.sh'
+        }
+    }
+}
+
+jar {
+    manifest {
+        def manifestClasspath =
+                configurations.compileClasspath.collect { it.name }.join(' ')
+
+        attributes 'Implementation-Title': 'origin',
+                'Main-Class': 'com.origin.Launcher',
+                'Class-Path': manifestClasspath
+    }
+}
