@@ -9,6 +9,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 @ObsoleteCoroutinesApi
 class Hand(
     private val me: Player,
+
     val item: InventoryItem,
 
     /**

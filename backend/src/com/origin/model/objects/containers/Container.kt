@@ -47,8 +47,11 @@ abstract class Container(entity: EntityObject) : StaticObject(entity) {
 
     override suspend fun openBy(who: Human) {
         super.openBy(who)
+
         val oldSize = discoverers.size
         discoverers[who.id] = who
+        // если это первый открывший - надо всем отослать эвент изменения состояния
+        // это заставит получить новое имя ресурса и отправить его клиентам
         if (oldSize == 0) {
             grid.broadcast(BroadcastEvent.Changed(this))
         }
@@ -56,7 +59,10 @@ abstract class Container(entity: EntityObject) : StaticObject(entity) {
 
     override suspend fun closeBy(who: Human) {
         super.closeBy(who)
+
         discoverers.remove(who.id)
+        // если после закрытия не осталось тех кто открывает контейнер
+        // надо послать эвент об изменении (закрытии)
         if (discoverers.size == 0) {
             grid.broadcast(BroadcastEvent.Changed(this))
         }
