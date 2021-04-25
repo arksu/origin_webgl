@@ -21,6 +21,7 @@ sourceSets {
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.useIR = true
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -33,7 +34,7 @@ repositories {
 
 buildscript {
     ext {
-        kotlin_version = '1.4.30'
+        kotlin_version = '1.4.32'
         ktor_version = '1.5.2'
         exposed_version = '0.29.1'
         slf4j_version = '1.7.30'
@@ -43,7 +44,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32"
     }
 }
 
