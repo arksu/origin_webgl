@@ -1,6 +1,6 @@
 #!/bin/sh
 
 gradle mapgen --args="new tiles"
-python3.8 ../mapgen/rivers.py
+python3 ../mapgen/rivers.py
 gradle mapgen --args="lakes"
-python3.8 ../mapgen/spots.py
+python3 ../mapgen/spots.py
