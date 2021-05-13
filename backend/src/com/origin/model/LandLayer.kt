@@ -3,7 +3,7 @@ package com.origin.model
 import com.origin.entity.GridEntity
 import com.origin.utils.GRID_FULL_SIZE
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * слой (уровень) земли
@@ -26,7 +26,7 @@ class LandLayer(
     /**
      * гриды
      */
-    private val grids = ConcurrentLinkedQueue<Grid>()
+    private val grids = ConcurrentHashMap<String, Grid>()
 
     /**
      * найти грид среди загруженных
@@ -36,21 +36,21 @@ class LandLayer(
         if (gx < 0 || gy < 0) throw RuntimeException("wrong grid coords")
 
         // TODO: getGrid
-        //  ищем ТУПО, но в будущем надо бы переделать на hashmap или еще как с компаратором
-        //  по координатам
-        //  а также предусмотреть выгрузку гридов из памяти и удаление из списка grids
+        //  предусмотреть выгрузку гридов из памяти и удаление из списка grids
         //  также неплохо было бы убрать Synchronized на методе, и блокировать только при загрузке грида
         //  ну а самый пик различать операцию получения грида из памяти и загрузку из базы
         //  в случае если грузим из базы сделать на suspend функциях
         //  так чтобы можно было параллельно запросить загрузку сразу нескольких гридов.
         //  и ждать когда они параллельно загрузятся, а не грузить по одному несколько штук
 
-        grids.forEach { g ->
-            if (g.x == gx && g.y == gy) return g
-        }
+        var grid = grids["${gx}*${gy}"]
+        
         // если не нашли - тогда грузим из базы
-        val grid = GridEntity.load(gx, gy, this)
-        grids.add(grid)
+        if(grid == null){
+            grid = GridEntity.load(gx, gy, this)
+            grids["${gx}*${gy}"] = grid
+        }
+
         return grid
     }
 
