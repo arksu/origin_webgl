@@ -43,15 +43,7 @@ class LandLayer(
         //  так чтобы можно было параллельно запросить загрузку сразу нескольких гридов.
         //  и ждать когда они параллельно загрузятся, а не грузить по одному несколько штук
 
-        var grid = grids["${gx}*${gy}"]
-        
-        // если не нашли - тогда грузим из базы
-        if(grid == null){
-            grid = GridEntity.load(gx, gy, this)
-            grids["${gx}*${gy}"] = grid
-        }
-
-        return grid
+        return grids.getOrPut("${gx}*${gy}") { GridEntity.load(gx, gy, this) }
     }
 
     /**
