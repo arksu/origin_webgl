@@ -35,7 +35,7 @@ This will run MariaDB in docker container, create a database 'origin', user 'ori
 
 Local port 3406 will be redirected -> to container port 3306 (to avoid conflicts with the already installed MariaDB/MySQL). This port already pre-configured into `server.conf`
 
-### OR Setup database
+### OR Setup database locally
 If you can't use docker or prefer native apps
 - Install MariaDB 10+
 - create database `origin`
