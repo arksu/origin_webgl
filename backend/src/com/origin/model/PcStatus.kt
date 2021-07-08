@@ -40,7 +40,6 @@ class PcStatus(me: Human, character: Character) : Status(me) {
         return old - currentHardHp
     }
 
-
     private fun setCurrentHardHp(value: Double): Boolean {
         if (me.isDead) return false
 

@@ -31,8 +31,10 @@ object FileWatcher {
         logger.debug("start dev file watcher...")
         val len = ServerConfig.ASSETS_DIR.length
         try {
-            Files.find(Paths.get(ServerConfig.ASSETS_DIR), Int.MAX_VALUE,
-                { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile })
+            Files.find(
+                Paths.get(ServerConfig.ASSETS_DIR), Int.MAX_VALUE,
+                { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile }
+            )
                 .forEach { x: Path ->
                     run {
                         val f = x.toString().substring(len)
@@ -50,8 +52,10 @@ object FileWatcher {
                         break
                     }
 
-                    Files.find(Paths.get(ServerConfig.ASSETS_DIR), Int.MAX_VALUE,
-                        { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile })
+                    Files.find(
+                        Paths.get(ServerConfig.ASSETS_DIR), Int.MAX_VALUE,
+                        { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile }
+                    )
                         .forEach { x: Path ->
                             run {
                                 val f = x.toString().substring(len)

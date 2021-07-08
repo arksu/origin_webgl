@@ -20,5 +20,4 @@ class Hand(
 
     val mouseX: Int,
     val mouseY: Int,
-) {
-}
+)

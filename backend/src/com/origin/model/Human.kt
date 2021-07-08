@@ -176,9 +176,11 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * @param force принудительно, иначе проверка будет только если отошли на значительное расстояние от точки последней проверки
      */
     suspend fun updateVisibleObjects(force: Boolean) {
-        if (force || (lastPosUpdateVisible != null
-                    && pos.point != lastPosUpdateVisible
-                    && pos.point.dist(lastPosUpdateVisible!!) > ServerConfig.VISIBLE_UPDATE_DISTANCE)
+        if (force || (
+            lastPosUpdateVisible != null &&
+                pos.point != lastPosUpdateVisible &&
+                pos.point.dist(lastPosUpdateVisible!!) > ServerConfig.VISIBLE_UPDATE_DISTANCE
+            )
         ) {
             var newCounter = 0
             var delCounter = 0
@@ -196,7 +198,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
             }
 
             lastPosUpdateVisible = pos.point.copy()
-            logger.warn("updateVisibleObjects $this total vis=${knownList.size()} new=$newCounter del=${delCounter}")
+            logger.warn("updateVisibleObjects $this total vis=${knownList.size()} new=$newCounter del=$delCounter")
         }
     }
 

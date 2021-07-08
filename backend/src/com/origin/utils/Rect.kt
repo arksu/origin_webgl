@@ -111,7 +111,6 @@ class Rect {
         return x >= left && x < right && y >= top && y < bottom
     }
 
-
     fun clone(): Rect {
         return Rect(left, top, right, bottom)
     }

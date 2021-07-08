@@ -19,20 +19,17 @@ object EventBus {
      * послать сообщение на шину событий в кластер
      */
     fun publishMessage(channel: String, message: String) {
-
     }
 
     /**
      * обработка сообщений с шины эвентов
      */
     private fun processMessage(channel: String, message: String) {
-
     }
 
     /**
      * подписаться на шину событий в кластере
      */
     private fun subscribe() {
-
     }
 }

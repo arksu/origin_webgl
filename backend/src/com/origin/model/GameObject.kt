@@ -181,7 +181,7 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
             lift.values.forEach { _ ->
                 // TODO remove when lift it.pos.set xy coord
                 // spawn it
-                //it.pos.spawn()
+                // it.pos.spawn()
                 // store pos into db
             }
         }

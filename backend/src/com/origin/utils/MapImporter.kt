@@ -92,7 +92,7 @@ object MapImporter {
                         it[level] = 0
                         it[Grids.region] = region
                         it[lastTick] = 0
-                        it[tilesBlob] = ExposedBlob(ba);
+                        it[tilesBlob] = ExposedBlob(ba)
                     }
                 }
             }

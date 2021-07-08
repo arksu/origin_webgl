@@ -416,7 +416,6 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         }
     }
 
-
     /**
      * добавить объект в грид
      */

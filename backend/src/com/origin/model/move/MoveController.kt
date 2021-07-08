@@ -48,9 +48,11 @@ abstract class MoveController(val me: MovingObject) {
         TimeController.addMovingObject(me)
 
         // в самом начале движения пошлем пакет о том что объект уже начал движение
-        me.pos.grid.broadcast(BroadcastEvent.StartMove(
-            me, toX, toY, me.getMovementSpeed(), me.getMovementType()
-        ))
+        me.pos.grid.broadcast(
+            BroadcastEvent.StartMove(
+                me, toX, toY, me.getMovementSpeed(), me.getMovementType()
+            )
+        )
     }
 
     /**
@@ -129,9 +131,11 @@ abstract class MoveController(val me: MovingObject) {
                             me.updateVisibleObjects(false)
                         }
                         // шлем через грид эвент передвижения
-                        me.pos.grid.broadcast(BroadcastEvent.Moved(
-                            me, toX, toY, speed, moveType
-                        ))
+                        me.pos.grid.broadcast(
+                            BroadcastEvent.Moved(
+                                me, toX, toY, speed, moveType
+                            )
+                        )
                         false
                     }
                 }

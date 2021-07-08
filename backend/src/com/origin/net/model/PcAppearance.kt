@@ -11,5 +11,4 @@ class PcAppearance(
 
     @SerializedName("s")
     val sex: Byte, // Female (1)
-) {
-}
+)

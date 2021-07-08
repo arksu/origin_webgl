@@ -15,10 +15,12 @@ class ContextMenu(val obj: GameObject, vararg i: String) {
     suspend fun processItem(player: Player, item: String) {
         if (items.contains(item)) {
             // в любом действии контекстного меню надо идти к объекту
-            player.startMove(Move2Object(player, obj) {
-                // и потом запустить само действие
-                obj.processContextItem(player, item)
-            })
+            player.startMove(
+                Move2Object(player, obj) {
+                    // и потом запустить само действие
+                    obj.processContextItem(player, item)
+                }
+            )
         }
     }
 }

@@ -41,7 +41,6 @@ fun Table.timestamp(
 ): Column<Timestamp> =
     registerColumn(name, TimestampColumnType(defaultCurrentTimestamp, onUpdateCurrentTimestamp))
 
-
 object DatabaseFactory {
     val logger: Logger = LoggerFactory.getLogger(DatabaseFactory::class.java)
 

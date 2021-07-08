@@ -14,7 +14,6 @@ import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.sql.Timestamp
 import java.util.*
 
 val logger: Logger = LoggerFactory.getLogger("Auth")

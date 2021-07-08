@@ -4,7 +4,6 @@ import com.origin.database.timestamp
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
-import java.sql.Timestamp
 
 /**
  * игровой персонаж игрока
@@ -64,7 +63,6 @@ class Character(id: EntityID<Long>) : LongEntity(id) {
     var stamina by Characters.stamina
     var energy by Characters.energy
     var hunger by Characters.hunger
-
 
     var deleted by Characters.deleted
 

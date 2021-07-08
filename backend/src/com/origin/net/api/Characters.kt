@@ -17,7 +17,6 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 
-
 @ObsoleteCoroutinesApi
 fun PipelineContext<Unit, ApplicationCall>.getAccountBySsid(): Account {
     return GameServer.accountCache.get(call.request.headers[SSID_HEADER]) ?: throw AuthorizationException()
@@ -57,7 +56,7 @@ fun Route.createCharacter() {
         }
 
         val newChar = transaction {
-            val c = Character.find { (Characters.account eq acc.id) and (Characters.deleted eq false)  }.count()
+            val c = Character.find { (Characters.account eq acc.id) and (Characters.deleted eq false) }.count()
             if (c >= 5) {
                 throw BadRequest("Characters limit exceed")
             }
@@ -78,7 +77,6 @@ fun Route.createCharacter() {
                 stamina = 100.0
                 energy = 6000.0
                 hunger = 10.0
-
             }
         }
 
@@ -103,4 +101,3 @@ fun Route.deleteCharacter() {
         call.respondText("ok")
     }
 }
-

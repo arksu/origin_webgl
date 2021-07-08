@@ -17,8 +17,7 @@ class StatusUpdate(obj: Human) : ServerMessage("su") {
     val id: ObjectID = obj.id
     private val list = ArrayList<Attr>()
 
-    class Attr(private val i: Int, private val v: Int) {
-    }
+    class Attr(private val i: Int, private val v: Int)
 
     fun addAttribute(id: Int, value: Int) {
         list.add(Attr(id, value))

@@ -2,7 +2,6 @@ package com.origin.entity
 
 import com.origin.TimeController
 import com.origin.idfactory.IdFactory
-import com.origin.model.move.Position
 import com.origin.model.move.PositionData
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.dao.LongEntity

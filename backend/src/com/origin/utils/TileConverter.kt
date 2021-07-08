@@ -30,7 +30,8 @@ object TileUtilResize {
 
         Files.find(
             Paths.get(PATH), Int.MAX_VALUE,
-            { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile })
+            { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile }
+        )
             .forEach { x: Path ->
                 val f = x.fileName.toString()
                 logger.debug(f)
@@ -61,8 +62,6 @@ object TileUtilResize {
         val mw = mask.width.toDouble()
         val mh = mask.height.toDouble()
         logger.debug("mask: ${mask.width} ${mask.height}")
-
-
 
         for (y in 0 until mask.height) {
             var correctionX = -1
@@ -142,7 +141,6 @@ object TileUtilResize {
                                 if (cc != -1) r.setRGB(x, y, cc)
                             }
                         }
-
                     }
                 }
                 oldMask = m
@@ -215,8 +213,8 @@ object TileUtilRename {
         val borderCounters = HashMap<Int, Int>()
 
         for (n in 0 until 300) {
-            val fdata = File(PATH + "tile_${n}.data")
-            val fpng = File(PATH + "tile_${n}.png")
+            val fdata = File(PATH + "tile_$n.data")
+            val fpng = File(PATH + "tile_$n.png")
 
             if (!fdata.exists()) continue
 
@@ -224,7 +222,6 @@ object TileUtilRename {
 
             var tt = -1
             val lines = Files.readAllLines(fdata.toPath())
-
 
             for (li in 0 until lines.size) {
                 val l = lines[li]
@@ -237,7 +234,7 @@ object TileUtilRename {
 
                     if (tt == 103) {
                         baseCounters++
-                        val to = PATH + "base_${baseCounters}.png"
+                        val to = PATH + "base_$baseCounters.png"
                         logger.warn("rename $fpng -> $to")
                         fpng.renameTo(File(to))
                     } else if (tt == 98) {
@@ -245,7 +242,7 @@ object TileUtilRename {
                         if (c == null) c = 0
                         c++
                         borderCounters[lid] = c
-                        val to = if (c > 1) PATH + "b${lid}_${c}.png" else PATH + "b${lid}.png"
+                        val to = if (c > 1) PATH + "b${lid}_$c.png" else PATH + "b$lid.png"
                         logger.warn("rename $fpng -> $to")
                         fpng.renameTo(File(to))
                     } else if (tt == 99) {
@@ -273,7 +270,7 @@ object TileUtilRename {
                             else -> -1
                         }
 
-                        val to = if (c > 1) PATH + "c${fact}_${c}.png" else PATH + "c${fact}.png"
+                        val to = if (c > 1) PATH + "c${fact}_$c.png" else PATH + "c$fact.png"
                         logger.warn("rename $fpng -> $to")
                         fpng.renameTo(File(to))
                         fdata.deleteOnExit()

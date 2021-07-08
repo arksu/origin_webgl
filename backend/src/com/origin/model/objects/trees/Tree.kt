@@ -44,10 +44,13 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
         logger.debug("processContextItem $player $item")
         when (item) {
             "Chop" -> {
-                player.startAction(this, 3, getMaxHP() - this.entity.hp, getMaxHP(), {
-                    // возьмем у игрока часть стамины и голода
-                    it.status.checkAndReduceStamina(4.0)
-                }) {
+                player.startAction(
+                    this, 3, getMaxHP() - this.entity.hp, getMaxHP(),
+                    {
+                        // возьмем у игрока часть стамины и голода
+                        it.status.checkAndReduceStamina(4.0)
+                    }
+                ) {
                     var done = false
                     if (it.target is Tree) {
                         // не удалось снять очередные хп с дерева
@@ -75,10 +78,13 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                 }
             }
             "Take branch" -> {
-                player.startAction(this, -2, 0, 21, {
-                    // возьмем у игрока часть стамины
-                    it.status.checkAndReduceStamina(1.0)
-                }) {
+                player.startAction(
+                    this, -2, 0, 21,
+                    {
+                        // возьмем у игрока часть стамины
+                        it.status.checkAndReduceStamina(1.0)
+                    }
+                ) {
                     // TODO generate branch to players inventory
                     logger.warn("GEN BRANCH")
 
@@ -93,10 +99,13 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                 }
             }
             "Take bark" -> {
-                player.startAction(this, -2, 0, 3, {
-                    // возьмем у игрока часть стамины
-                    it.status.checkAndReduceStamina(1.0)
-                }) {
+                player.startAction(
+                    this, -2, 0, 3,
+                    {
+                        // возьмем у игрока часть стамины
+                        it.status.checkAndReduceStamina(1.0)
+                    }
+                ) {
                     // TODO generate bark to players inventory
 
                     val newItem = transaction {

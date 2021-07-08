@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'idea'
 apply plugin: 'application'
+apply plugin: "org.jmailen.kotlinter"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -42,9 +43,13 @@ buildscript {
 
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20"
+        classpath "org.jmailen.gradle:kotlinter-gradle:3.4.5"
     }
 }
 
@@ -103,4 +108,12 @@ jar {
                 'Main-Class': 'com.origin.Launcher',
                 'Class-Path': manifestClasspath
     }
+}
+
+kotlinter {
+    ignoreFailures = false
+    indentSize = 4
+    reporters = ['checkstyle', 'plain']
+    experimentalRules = false
+    disabledRules = ["no-wildcard-imports"]
 }

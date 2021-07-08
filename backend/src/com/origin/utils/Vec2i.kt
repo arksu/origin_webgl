@@ -44,7 +44,6 @@ data class Vec2i(
         return Vec2i(x % v, y % v)
     }
 
-
     /**
      * получить направление на указанную точку
      * угол направления в градусах
@@ -80,7 +79,6 @@ data class Vec2i(
         val dy = py - y
         return sqrt((dx * dx + dy * dy).toDouble())
     }
-
 
     fun clone(): Vec2i {
         return Vec2i(x, y)

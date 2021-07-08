@@ -23,5 +23,4 @@ class Shutdown : Thread() {
         }
         TimeController.shutdown()
     }
-
 }

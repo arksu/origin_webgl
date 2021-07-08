@@ -209,8 +209,7 @@ class Player(
                         val xx = x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
                         val yy = y / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
                         if (executeCommand(xx, yy)) commandToExecute = null
-                    } else
-                        if (executeCommand(x, y)) commandToExecute = null
+                    } else if (executeCommand(x, y)) commandToExecute = null
                 } else {
                     startMove(Move2Point(this, x, y))
                 }
@@ -248,9 +247,11 @@ class Player(
         if (mx <= OPEN_DISTANCE && my <= OPEN_DISTANCE) {
             openObjectsList.open(obj)
         } else {
-            startMove(Move2Object(this, obj) {
-                openObjectsList.open(obj)
-            })
+            startMove(
+                Move2Object(this, obj) {
+                    openObjectsList.open(obj)
+                }
+            )
         }
     }
 

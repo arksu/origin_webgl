@@ -69,7 +69,7 @@ class InventoryItem(
         val r = x + w - 1
         val b = y + h - 1
 
-        return (this.x in x..r || tr in x..r || x in this.x..tr || r in this.x..tr)
-                && (this.y in y..b || tb in y..b || y in this.y..tb || b in this.y..tb)
+        return (this.x in x..r || tr in x..r || x in this.x..tr || r in this.x..tr) &&
+            (this.y in y..b || tb in y..b || y in this.y..tb || b in this.y..tb)
     }
 }

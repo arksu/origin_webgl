@@ -13,7 +13,6 @@ class CollisionResult(val result: CollisionType, val px: Double, val py: Double,
 
     constructor(result: CollisionType, obj: GameObject?) : this(result, 0.0, 0.0, obj)
 
-
     enum class CollisionType {
         // обсчет коллизии не успешен
         COLLISION_FAIL,

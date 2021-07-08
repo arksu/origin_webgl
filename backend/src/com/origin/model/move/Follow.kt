@@ -18,5 +18,4 @@ class Follow(me: MovingObject, target: GameObject, followDistance: Int) : MoveCo
     override suspend fun implementation(c: CollisionResult, left: Double, speed: Double, moveType: MoveType): Boolean {
         TODO("Not yet implemented")
     }
-
 }

@@ -15,10 +15,9 @@ class Paperdoll(val player: Player) {
      * храним вещи одетые на сущность в массиве
      * доступ к элементам по индексу {@see Paperdoll.Slot}
      */
-    private val items: Array<InventoryItemEntity>? = null;
+    private val items: Array<InventoryItemEntity>? = null
 
     enum class Slot(val id: Int) {
         LEFT_HAND(1), RIGHT_HAND(2), HEAD(3), EYES(4), BODY(5), LEGS(6);
-
     }
 }

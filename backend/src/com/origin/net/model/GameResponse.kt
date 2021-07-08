@@ -163,8 +163,7 @@ class ContextMenuData(cm: ContextMenu?) : ServerMessage("cm") {
     val l = cm?.items
 }
 
-class ActionProgress(val c: Int, val t: Int) : ServerMessage("ap") {
-}
+class ActionProgress(val c: Int, val t: Int) : ServerMessage("ap")
 
 @ObsoleteCoroutinesApi
 class InventoryItemData(item: InventoryItem) {

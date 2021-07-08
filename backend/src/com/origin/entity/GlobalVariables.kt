@@ -18,7 +18,7 @@ object GlobalVariables : Table("globalVariables") {
     fun getLong(name: String, default: Long = 0): Long {
         val row = transaction {
             GlobalVariables.select { GlobalVariables.name eq name }.singleOrNull()
-        } ?: return default;
+        } ?: return default
         return row[valueLong] ?: throw RuntimeException("no value")
     }
 

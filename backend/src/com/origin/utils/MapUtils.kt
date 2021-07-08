@@ -121,5 +121,4 @@ object Tile {
     const val CAVE: Byte = 42
     // горы
     const val MOUNTAIN: Byte = 46
-
 }
