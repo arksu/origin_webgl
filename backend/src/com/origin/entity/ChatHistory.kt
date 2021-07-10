@@ -3,6 +3,9 @@ package com.origin.entity
 import com.origin.database.timestamp
 import org.jetbrains.exposed.dao.id.IntIdTable
 
+/**
+ * история сообщений в чате
+ */
 object ChatHistory : IntIdTable("chatHistory") {
 
     val owner = long("owner")

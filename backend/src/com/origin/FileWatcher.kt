@@ -23,7 +23,7 @@ import java.util.zip.CRC32
 object FileWatcher {
     val logger: Logger = LoggerFactory.getLogger(FileWatcher::class.java)
 
-    private val hash = HashMap<String, Long>()
+    private val files = HashMap<String, Long>()
 
     fun start() {
         if (!ServerConfig.IS_DEV || ServerConfig.ASSETS_DIR.isEmpty()) return
@@ -38,7 +38,7 @@ object FileWatcher {
                 .forEach { x: Path ->
                     run {
                         val f = x.toString().substring(len)
-                        hash[f] = getCRC(x)
+                        files[f] = getCRC(x)
                     }
                 }
 
@@ -60,17 +60,17 @@ object FileWatcher {
                             run {
                                 val f = x.toString().substring(len)
                                 if (!f.contains(".DS_Store")) {
-                                    if (hash.containsKey(f)) {
+                                    if (files.containsKey(f)) {
                                         val crc = getCRC(x)
-                                        if (hash[f] != crc) {
+                                        if (files[f] != crc) {
                                             logger.warn("changed file $f")
                                             sendChanged(f.replace("\\", "/"))
-                                            hash[f] = crc
+                                            files[f] = crc
                                         }
                                     } else {
                                         logger.warn("new file $f")
                                         sendAdded(f.replace("\\", "/"))
-                                        hash[f] = getCRC(x)
+                                        files[f] = getCRC(x)
                                     }
                                 }
                             }

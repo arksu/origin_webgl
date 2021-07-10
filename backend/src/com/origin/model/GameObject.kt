@@ -129,7 +129,6 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     }
 
     protected open suspend fun processMessage(msg: Any) {
-//        logger.warn("gameObject processMessage ${msg.javaClass.simpleName}")
         when (msg) {
             is GameObjectMsg.Spawn -> {
                 val result = pos.spawn()
