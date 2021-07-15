@@ -31,10 +31,6 @@ val BLACK_COLOR: Int = Color.black.getRGB()
 val rnd = SecureRandom()
 
 object MapGenerator {
-    var isMakeLakes = false
-    var isMakeTiles = false
-    var isNewImage = false
-
     val gen = Random()
 
     class Vector(var x: Double, var y: Double){
@@ -62,14 +58,10 @@ object MapGenerator {
     @JvmStatic
     fun main(args: Array<String>) {
         println("map generator start...")
-        args.forEach {
-            if (it == "lakes") isMakeLakes = true
-            if (it == "tiles") isMakeTiles = true
-            if (it == "new") isNewImage = true
-        }
+     
         val points: ArrayList<Point> = ArrayList<Point>()
 
-        val part = 512.0
+        val part = 400.0
 
         for (x in 0 until (IMG_SIZE/part).toInt() + 2 ) {
             for (y in 0 until (IMG_SIZE/part).toInt() + 2  ) {
@@ -81,40 +73,26 @@ object MapGenerator {
 
         val diagram = Voronoi(points)
 
-        val image: BufferedImage =
-            if (isNewImage) {
-                println("create new map.png")
-                BufferedImage(IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_INT_RGB)
-            } else {
-                println("load from map.png")
-                val f = File("map.png")
-                ImageIO.read(f)
-            }
+        val image: BufferedImage = BufferedImage(IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_INT_RGB)
 
-        if (isMakeLakes) {
-            println("make lakes...")
-            layer(image, 250.0, 0.69, WATER_DEEP)
-            layer(image, 280.0, 0.73, WATER_DEEP)
-        }
 
-       if (isMakeTiles) {
-           println("make tiles...")
-           layer(image, 250.0, 0.74, SWAMP)
-           layer(image, 300.0, 0.8, SWAMP)
-           layer(image, 300.0, 0.76, CLAY)
-           layer(image, 400.0, 0.8, CLAY)
-           layer(image, 170.0, 0.6, MEADOW_LOW)
-           layer(image, 220.0, 0.72, PRAIRIE)
-           layer(image, 170.0, 0.8, TUNDRA)
-           layer(image, 200.0, 0.1, FOREST_PINE)
-           layer(image, 260.0, 0.2, FOREST_PINE)
-           fill(image, FOREST_LEAF)
-       }
-
+        println("make tiles...")
+        layer(image, 250.0, 0.74, SWAMP)
+        layer(image, 300.0, 0.8, SWAMP)
+        layer(image, 300.0, 0.76, CLAY)
+        layer(image, 400.0, 0.8, CLAY)
+        layer(image, 170.0, 0.6, MEADOW_LOW)
+        layer(image, 220.0, 0.72, PRAIRIE)
+        layer(image, 170.0, 0.8, TUNDRA)
+        layer(image, 200.0, 0.1, FOREST_PINE)
+        layer(image, 260.0, 0.2, FOREST_PINE)
+        fill(image, FOREST_LEAF)
+    
         val pointsToDraw: MutableList<MutableList<Vector>> = mutableListOf<MutableList<Vector>>()
         val sizePointsToWater: MutableList<MutableList<Int>> = mutableListOf<MutableList<Int>>()
         val sizePointsToDeepWater: MutableList<MutableList<Int>> = mutableListOf<MutableList<Int>>()
         val sizePointsToSand: MutableList<MutableList<Int>> = mutableListOf<MutableList<Int>>()
+        val dropEdges: MutableList<Boolean> = mutableListOf<Boolean>()
 
         for (e in diagram.edges.subList(5,diagram.edges.size-1)) {
 
@@ -122,6 +100,8 @@ object MapGenerator {
             sizePointsToWater.add(mutableListOf<Int>())
             sizePointsToDeepWater.add(mutableListOf<Int>())
             sizePointsToSand.add(mutableListOf<Int>())
+            dropEdges.add(if(gen.nextDouble() > 0.8) false else true)
+
 
             val view = Vector(e.end.x - e.start.x, e.end.y - e.start.y)
             val dist2 = view.dist2()
@@ -130,6 +110,8 @@ object MapGenerator {
             val dv = Vector(0.0,0.0)
 
             var i = 0
+            var delta = 0.0
+            var integr = 0.0
 
             while ( dv.dist2() < dist2 ) {
 
@@ -142,19 +124,26 @@ object MapGenerator {
                 dv.y += view.y
 
                 pointsToDraw[pointsToDraw.size-1].add(Vector(dv.x + e.start.x, dv.y + e.start.y))
-                sizePointsToWater[pointsToDraw.size-1].add((gen.nextDouble()*45.0 + 20).toInt())
-                sizePointsToDeepWater[pointsToDraw.size-1].add((gen.nextDouble()*30.0 + 10).toInt())
-                sizePointsToSand[pointsToDraw.size-1].add((gen.nextDouble()*75.0).toInt())
+
+                if ( i%5 == 0 ){
+                    delta = (gen.nextDouble() - 0.5) * 0.5
+                }
+                
+                integr += delta
+
+                sizePointsToWater[pointsToDraw.size-1].add((gen.nextDouble()*10.0 + 25 + integr).toInt())
+                sizePointsToDeepWater[pointsToDraw.size-1].add((gen.nextDouble()*2.0 + 20 + integr).toInt())
+                sizePointsToSand[pointsToDraw.size-1].add((gen.nextDouble()*5.0 + integr + if(gen.nextDouble() > 0.999) 40 else 0 ).toInt())
 
                 i++
             }
-
         }
 
         var idx = 0
         println("make layer sand")
         for (e in diagram.edges.subList(5,diagram.edges.size-1)) {
-            if(gen.nextDouble() > 0.9)
+            // if(gen.nextDouble() > 0.9)
+            if(dropEdges[idx])
                 drawLine(image, pointsToDraw[idx], sizePointsToSand[idx], SAND)
             idx ++
         }
@@ -162,14 +151,42 @@ object MapGenerator {
         idx = 0
         println("make layer water")
         for (e in diagram.edges.subList(5,diagram.edges.size-1)) {
-            drawLine(image, pointsToDraw[idx], sizePointsToWater[idx], WATER)
+            if(dropEdges[idx])
+                drawLine(image, pointsToDraw[idx], sizePointsToWater[idx], WATER)
+            idx ++
+        }
+
+        val lakes: MutableList<Vector> = mutableListOf<Vector>()
+        val lakesSize: MutableList<Vector> = mutableListOf<Vector>()
+
+        idx = 0
+        println("make layer lakes")
+        for (e in diagram.edges.subList(5,diagram.edges.size-1)) {
+            if(gen.nextDouble() > 0.96){
+                lakes.add(Vector(e.start.x, e.start.y))
+                val randSize = (gen.nextDouble() - 0.5) * 300 
+                lakesSize.add(Vector(gen.nextDouble() * 50.0 + 150 + randSize , gen.nextDouble() * 50.0 + 150.0 + randSize))    
+            }
+            idx ++
+        }
+
+        idx = 0
+        for( l in lakes){
+            drawCircle(image, l.x.toInt(), l.y.toInt(), lakesSize[idx].x.toInt(), lakesSize[idx].y.toInt(), WATER)
             idx ++
         }
 
         idx = 0
         println("make layer water deep")
         for (e in diagram.edges.subList(5,diagram.edges.size-1)) {
-            drawLine(image, pointsToDraw[idx], sizePointsToDeepWater[idx], WATER_DEEP)
+            if(dropEdges[idx])
+                drawLine(image, pointsToDraw[idx], sizePointsToDeepWater[idx], WATER_DEEP)
+            idx ++
+        }
+
+        idx = 0
+        for( l in lakes){
+            drawCircle(image, l.x.toInt(), l.y.toInt(), lakesSize[idx].x.toInt() -15 , lakesSize[idx].y.toInt() -15, WATER_DEEP)
             idx ++
         }
 
@@ -184,10 +201,17 @@ object MapGenerator {
     }
 
     @JvmStatic
-    fun drawCircle(img: BufferedImage, x:Int , y:Int, radius:Int, color: Int) {
+    fun makeLake(img: BufferedImage, x:Int , y:Int, radius0:Int, radius1:Int) {
+        var g = img.graphics
+        g.setColor(Color(WATER))
+        g.fillOval(x - radius0/2, y - radius1/2, radius0, radius1)
+    }
+
+    @JvmStatic
+    fun drawCircle(img: BufferedImage, x:Int , y:Int, radius0:Int, radius1:Int, color: Int) {
         var g = img.graphics
         g.setColor(Color(color))
-        g.fillOval(x - radius/2, y - radius/2, radius, radius)
+        g.fillOval(x - radius0/2, y - radius1/2, radius0, radius1)
     }
 
     @JvmStatic
@@ -196,7 +220,8 @@ object MapGenerator {
         var idx = 0
         for( p in pointsToDraw){
             if(p.x >= 0&& p.y >=0 && p.x < IMG_SIZE && p.y < IMG_SIZE){
-                drawCircle(img, p.x.toInt(), p.y.toInt(), sizePointsToDraw[idx++], color)
+                drawCircle(img, p.x.toInt(), p.y.toInt(), sizePointsToDraw[idx],sizePointsToDraw[idx], color)
+                idx++
             }
         }
     }
@@ -209,9 +234,9 @@ object MapGenerator {
         for (x in 0 until IMG_SIZE) {
             for (y in 0 until IMG_SIZE) {
                 val oc = img.getRGB(x, y)
-                if (oc == BLACK_COLOR || !isNewImage) {
+                if (oc == BLACK_COLOR) {
                     val v = noise.eval(x.toDouble() / div, y.toDouble() / div)
-                    img.setRGB(x, y, if (v > threshold) color else (if (isNewImage) 0 else oc))
+                    img.setRGB(x, y, if (v > threshold) color else oc)
                 }
             }
         }
