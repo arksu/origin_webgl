@@ -35,9 +35,9 @@ repositories {
 
 buildscript {
     ext {
-        kotlin_version = '1.5.20'
-        ktor_version = '1.6.1'
-        exposed_version = '0.32.1'
+        kotlin_version = '1.5.31'
+        ktor_version = '1.6.3'
+        exposed_version = '0.35.1'
         slf4j_version = '1.7.30'
     }
 
