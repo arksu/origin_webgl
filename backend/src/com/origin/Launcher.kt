@@ -12,7 +12,6 @@ import java.util.*
 object Launcher {
     val logger: Logger = LoggerFactory.getLogger(Launcher::class.java)
 
-    @KtorExperimentalAPI
     @JvmStatic
     fun main(args: Array<String>) {
         Locale.setDefault(Locale.ROOT)

@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 /**
  * игровой персонаж игрока
  */
-object Characters : EntityPositions("characters") {
+object Characters : EntityPosition("characters") {
     /**
      * ид аккаунта к которому привязан персонаж
      */

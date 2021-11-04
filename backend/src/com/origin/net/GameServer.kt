@@ -25,7 +25,6 @@ object GameServer {
 
     val SSID_HEADER = HttpHeaders.Authorization
 
-    @KtorExperimentalAPI
     fun start() {
         logger.info("start game server...")
 

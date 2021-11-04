@@ -11,7 +11,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 /**
  * игровые объекты на карте
  */
-object EntityObjects : EntityPositions("objects") {
+object EntityObjects : EntityPosition("objects") {
 
     /**
      * координаты грида в котором находится объект

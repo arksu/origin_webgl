@@ -6,7 +6,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
  * позиция объектов в игровом мире
  * общие поля для всех игровых объектов
  */
-open class EntityPositions(name: String = "", columnName: String = "id") : LongIdTable(name, columnName) {
+open class EntityPosition(name: String = "", columnName: String = "id") : LongIdTable(name, columnName) {
     /**
      * на каком континенте находится объект, либо ид дома (инстанса, локации)
      */

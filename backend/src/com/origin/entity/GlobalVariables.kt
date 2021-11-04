@@ -10,7 +10,15 @@ import org.jetbrains.exposed.sql.transactions.transaction
  */
 object GlobalVariables : Table("globalVariables") {
     val name = varchar("name", 32)
+
+    /**
+     * числовая переменная
+     */
     val valueLong = long("valueLong").nullable()
+
+    /**
+     * строковая переменная
+     */
     val valueString = varchar("valueString", 1024).nullable()
 
     override val primaryKey by lazy { PrimaryKey(name) }
