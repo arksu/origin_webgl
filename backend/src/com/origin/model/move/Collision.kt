@@ -292,7 +292,7 @@ object Collision {
         }
     }
 
-    private inline fun distance(x1: Double, y1: Double, x2: Double, y2: Double): Double {
+    private fun distance(x1: Double, y1: Double, x2: Double, y2: Double): Double {
         val dx = x2 - x1
         val dy = y2 - y1
         return sqrt(dx * dx + dy * dy)

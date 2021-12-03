@@ -19,10 +19,10 @@ const val PATH = "../frontend/assets/tiles/water/"
 object TileUtilResize {
     val logger: Logger = LoggerFactory.getLogger(TileUtilResize::class.java)
 
-    const val OUT_PATH = "../frontend/assets/tiles/remake/"
+    private const val OUT_PATH = "../frontend/assets/tiles/remake/"
 
     // красный цвет
-    const val RED = ((0xff) shl 16) + (0xff shl 24)
+    private const val RED = ((0xff) shl 16) + (0xff shl 24)
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -33,17 +33,17 @@ object TileUtilResize {
             { _: Path, fileAttr: BasicFileAttributes -> fileAttr.isRegularFile }
         )
             .forEach { x: Path ->
-                val f = x.fileName.toString()
-                logger.debug(f)
+                val fileName = x.fileName.toString()
+                logger.debug(fileName)
 
                 if (x.toString().endsWith(".png")) {
                     val img = ImageIO.read(x.toFile())
                     logger.debug("process $x")
                     val result = process(mask, img)
 
-                    val f = File(OUT_PATH + f)
+                    val file = File(OUT_PATH + fileName)
                     try {
-                        ImageIO.write(result, "png", f)
+                        ImageIO.write(result, "png", file)
                     } catch (e: Exception) {
                         logger.error("error ${e.message}")
                     }
@@ -232,48 +232,52 @@ object TileUtilRename {
                     val lid = lines[li + 1].toInt()
                     logger.debug("$fpng -> $lid [$tt]")
 
-                    if (tt == 103) {
-                        baseCounters++
-                        val to = PATH + "base_$baseCounters.png"
-                        logger.warn("rename $fpng -> $to")
-                        fpng.renameTo(File(to))
-                    } else if (tt == 98) {
-                        var c = borderCounters[lid]
-                        if (c == null) c = 0
-                        c++
-                        borderCounters[lid] = c
-                        val to = if (c > 1) PATH + "b${lid}_$c.png" else PATH + "b$lid.png"
-                        logger.warn("rename $fpng -> $to")
-                        fpng.renameTo(File(to))
-                    } else if (tt == 99) {
-                        var c = cornerCounters[lid]
-                        if (c == null) c = 0
-                        c++
-                        cornerCounters[lid] = c
-
-                        val fact = when (lid) {
-                            1 -> 1
-                            2 -> 8
-                            3 -> 9
-                            4 -> 4
-                            5 -> 5
-                            6 -> 12
-                            7 -> 13
-                            8 -> 2
-                            9 -> 3
-                            10 -> 10
-                            11 -> 11
-                            12 -> 6
-                            13 -> 7
-                            14 -> 14
-                            15 -> 15
-                            else -> -1
+                    when (tt) {
+                        103 -> {
+                            baseCounters++
+                            val to = PATH + "base_$baseCounters.png"
+                            logger.warn("rename $fpng -> $to")
+                            fpng.renameTo(File(to))
                         }
+                        98 -> {
+                            var c = borderCounters[lid]
+                            if (c == null) c = 0
+                            c++
+                            borderCounters[lid] = c
+                            val to = if (c > 1) PATH + "b${lid}_$c.png" else PATH + "b$lid.png"
+                            logger.warn("rename $fpng -> $to")
+                            fpng.renameTo(File(to))
+                        }
+                        99 -> {
+                            var c = cornerCounters[lid]
+                            if (c == null) c = 0
+                            c++
+                            cornerCounters[lid] = c
 
-                        val to = if (c > 1) PATH + "c${fact}_$c.png" else PATH + "c$fact.png"
-                        logger.warn("rename $fpng -> $to")
-                        fpng.renameTo(File(to))
-                        fdata.deleteOnExit()
+                            val fact = when (lid) {
+                                1 -> 1
+                                2 -> 8
+                                3 -> 9
+                                4 -> 4
+                                5 -> 5
+                                6 -> 12
+                                7 -> 13
+                                8 -> 2
+                                9 -> 3
+                                10 -> 10
+                                11 -> 11
+                                12 -> 6
+                                13 -> 7
+                                14 -> 14
+                                15 -> 15
+                                else -> -1
+                            }
+
+                            val to = if (c > 1) PATH + "c${fact}_$c.png" else PATH + "c$fact.png"
+                            logger.warn("rename $fpng -> $to")
+                            fpng.renameTo(File(to))
+                            fdata.deleteOnExit()
+                        }
                     }
                 }
             }

@@ -90,9 +90,9 @@ module.exports = {
         host: '0.0.0.0',
         port: 3070,
         proxy: {
-            '/api': 'http://0.0.0.0:8020',
+            '/api': 'http://0.0.0.0:8010',
             '/api/game': {
-                target: 'ws://0.0.0.0:8020',
+                target: 'ws://0.0.0.0:8010',
                 ws: true
             }
         }

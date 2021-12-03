@@ -73,7 +73,6 @@ object MapGenerator {
 
         val image = BufferedImage(IMG_SIZE, IMG_SIZE, BufferedImage.TYPE_INT_RGB)
 
-
         println("make tiles...")
         layer(image, 250.0, 0.74, SWAMP)
         layer(image, 300.0, 0.8, SWAMP)
@@ -99,7 +98,6 @@ object MapGenerator {
             sizePointsToDeepWater.add(mutableListOf())
             sizePointsToSand.add(mutableListOf())
             dropEdges.add(rnd.nextDouble() <= 0.8)
-
 
             val view = Vector(e.end.x - e.start.x, e.end.y - e.start.y)
             val dist2 = view.dist2()
