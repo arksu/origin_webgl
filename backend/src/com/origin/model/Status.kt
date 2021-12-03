@@ -10,6 +10,7 @@ import kotlin.math.max
  * здоровье и стамина
  */
 @ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 open class Status(val me: Human) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(Status::class.java)
