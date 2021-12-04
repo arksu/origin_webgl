@@ -11,7 +11,7 @@ export default class Client {
     /**
      * url для открытия websocket коннекта
      */
-    public static wsUrl: string;
+    public static websocketsUrl: string;
 
     /**
      * url для работы с API методами бекенда (авторизация, регистрация и тд)

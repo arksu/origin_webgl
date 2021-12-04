@@ -49,7 +49,7 @@ export default defineComponent({
   },
   mounted() {
     Client.instance.clear()
-    Net.instance = new Net(Client.wsUrl)
+    Net.instance = new Net(Client.websocketsUrl)
 
     console.log("selectedCharacterId=" + Client.instance.selectedCharacterId)
     let historyStr = localStorage.getItem("chatHistory")

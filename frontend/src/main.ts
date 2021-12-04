@@ -14,7 +14,9 @@ import Tile from "@/game/Tile";
 // формируем ссылку для работы с бекендом
 let gameServerPort = window.location.port;
 let proto = "https:" === window.location.protocol ? "wss:" : "ws:";
-Client.wsUrl = proto + "//" + window.location.hostname + ":" + gameServerPort + "/api/game";
+// websockets для работы игрового протокола
+Client.websocketsUrl = proto + "//" + window.location.hostname + ":" + gameServerPort + "/api/game";
+// апи для логина и выбора персонажа
 Client.apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + gameServerPort
 
 // сформируем правильные тайлсеты
@@ -39,7 +41,6 @@ app.directive('focus', {
         el.focus();
     }
 })
-
 
 window.addEventListener('mousemove', (e: MouseEvent) => {
     Client.instance.mouseX = e.clientX
