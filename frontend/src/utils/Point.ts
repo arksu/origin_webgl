@@ -51,13 +51,13 @@ export default class Point {
         return this;
     }
 
-    public mulValue(v: number): Point {
+    public mul(v: number): Point {
         this.x *= v;
         this.y *= v;
         return this;
     }
 
-    public divValue(v: number): Point {
+    public div(v: number): Point {
         this.x /= v;
         this.y /= v;
         return this;

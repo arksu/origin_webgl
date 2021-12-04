@@ -79,10 +79,12 @@ export default class Net {
     /**
      * очередь запросов, запоминаем каждый запрос с его ид,
      * при получении ответа удаляем из этого списка по его ид
-     * @type {{}}
      */
     private requests: { [id: number]: Request } = {};
 
+    /**
+     * каждый запрос имеет свой id, увеличиваем его на 1 при каждом запросе
+     */
     private lastId: number = 0;
 
     constructor(url: string) {
@@ -311,7 +313,7 @@ export default class Net {
                 Game.instance?.updateMapScalePos()
                 break;
             }
-            case "su" : {
+            case "su" : { // status update
                 let su = <StatusUpdate>data
                 if (su.id == Client.instance.selectedCharacterId) {
                     for (let i = 0; i < su.list.length; i++) {

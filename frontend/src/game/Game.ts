@@ -530,12 +530,12 @@ export default class Game {
 
         let screenWidthHalf = this.app.renderer.width / 2;
         let screenHeightHalf = this.app.renderer.height / 2;
-        p.decValue(screenWidthHalf, screenHeightHalf).divValue(this.scale);
+        p.decValue(screenWidthHalf, screenHeightHalf).div(this.scale);
 
         return new Point(
             p.y / Tile.TEXTURE_HEIGHT + p.x / Tile.TEXTURE_WIDTH,
             p.y / Tile.TEXTURE_HEIGHT - p.x / Tile.TEXTURE_WIDTH)
-            .mulValue(Tile.TILE_SIZE)
+            .mul(Tile.TILE_SIZE)
             .incValue(px, py)
             .round();
     }
