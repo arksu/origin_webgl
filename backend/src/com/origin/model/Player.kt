@@ -416,6 +416,9 @@ class Player(
             "online" -> {
                 session.send(CreatureSay(0, "online: ${World.getPlayersCount()}", SYSTEM))
             }
+            "quit" -> {
+                session.logout()
+            }
             "give" -> {
                 // param 1 - type id
                 val t: Int = params[1].toInt()

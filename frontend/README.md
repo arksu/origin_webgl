@@ -10,7 +10,13 @@ for Origin MMO game
 # Getting started
 
 Start local development version:
-```sh
+```shell
 yarn dev
 ```
 It would be started on localhost port 3070
+
+on M1 Apple platform you must run
+```shell
+npm rebuild node-sass
+```
+after each change package.json

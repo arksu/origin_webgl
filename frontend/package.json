@@ -34,7 +34,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "lodash": "^4.14.176",
-    "pixi.js": "^5.3.11",
+    "pixi.js": "^6.2.0",
     "scrypt-js": "^3.0.1",
     "vue": "^3.2.23",
     "vue-router": "^4.0.12",
