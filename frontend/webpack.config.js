@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const {ProvidePlugin, HotModuleReplacementPlugin} = require("webpack");
+const {ProvidePlugin, HotModuleReplacementPlugin, DefinePlugin} = require("webpack");
 const {VueLoaderPlugin} = require('vue-loader')
 
 module.exports = {
@@ -45,6 +45,11 @@ module.exports = {
             {
                 test: /\.(jpe?g|gif|png)$/,
                 loader: 'file-loader'
+            },
+            {
+                test: /\.js$/,
+                enforce: "pre",
+                use: ["source-map-loader"],
             }
         ],
     },
@@ -68,6 +73,10 @@ module.exports = {
         new ProvidePlugin({
             process: 'process/browser',
         }),
+        new DefinePlugin({
+            __VUE_OPTIONS_API__: true,
+            __VUE_PROD_DEVTOOLS__: false,
+        })
     ],
     resolve: {
         plugins: [new TSConfigPathsPlugin({})],
