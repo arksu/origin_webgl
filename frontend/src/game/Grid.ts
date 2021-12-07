@@ -64,9 +64,16 @@ export default class Grid {
         this.absoluteX = x * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.absoluteY = y * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.key = this.x + "_" + this.y
-        console.log("new grid", this.key)
+
+        // замерим время на создание грида
+        const timerName = "make grid " + this.key;
+        console.time(timerName)
 
         this.makeChunks()
+
+        console.timeEnd(timerName)
+
+        /*
 
         // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
         for (let i = 0; i < this.containers.length; i++) {
@@ -75,6 +82,7 @@ export default class Grid {
                 c.cacheAsBitmap = true
             }, i * 5 + 40)
         }
+         */
     }
 
     private makeChunks() {
@@ -145,7 +153,7 @@ export default class Grid {
         container.y = x * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE + y * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE;
 
         this.makeTiles(container, cx, cy, idx);
-        container.calculateBounds()
+        // container.calculateBounds()
         // console.log("grid screen x=" + container.x + " y=" + container.y + " w=" + container.width + " h=" + container.height)
 
         return container;
@@ -154,8 +162,60 @@ export default class Grid {
     private makeTiles(container: PIXI.Container, cx: number, cy: number, chunk: number) {
         const data = Client.instance.map[this.key].tiles;
 
+        const geometry = new PIXI.Geometry()
+        // .addAttribute('aVertexPosition', // the attribute name
+        //     [-100, -100, // x, y
+        //         100, -100, // x, y
+        //         100, 100], // x, y
+        //     2) // the size of the attribute
+
+        // .addAttribute('aUvs', // the attribute name
+        //     [0, 0, // u, v
+        //         1, 0, // u, v
+        //         1, 1], // u, v
+        //     2); // the size of the attribute
+
+        const elements = (this.CHUNK_SIZE) * (this.CHUNK_SIZE)
+        const aVertexPosition = new Float32Array(elements * 8);
+
+        const aUVs = new Float32Array(elements * 8)
+        const indices = new Uint16Array(elements * 6)
+
+        const program = PIXI.Program.from(`
+
+    precision mediump float;
+
+    attribute vec2 aVertexPosition;
+    attribute vec2 aUVs;
+
+    uniform mat3 translationMatrix;
+    uniform mat3 projectionMatrix;
+
+    varying vec2 vUvs;
+
+    void main() {
+
+        vUvs = aUVs;
+        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+
+    }`,
+
+            `precision mediump float;
+
+    varying vec2 vUvs;
+
+    uniform sampler2D uSamplerTexture;
+
+    void main() {
+
+        gl_FragColor = texture2D(uSamplerTexture, vUvs);
+    }
+`);
+
+        // for (let tx = 0; tx < this.CHUNK_SIZE; tx++) {
+        //     for (let ty = 0; ty < this.CHUNK_SIZE; ty++) {
         for (let tx = 0; tx < this.CHUNK_SIZE; tx++) {
-            for (let ty = 0; ty < this.CHUNK_SIZE; ty++) {
+            for (let ty = 0; ty < 10; ty++) {
 
                 let x = cx * this.CHUNK_SIZE + tx;
                 let y = cy * this.CHUNK_SIZE + ty;
@@ -167,27 +227,78 @@ export default class Grid {
                     this.spriteTextureNames[idx] = tn
 
                     let path = tn
-                    // if (path.includes(".")) path = "assets/" + path
+                    if (path.includes(".")) path = "assets/" + path
 
-                    let spr = PIXI.Sprite.from(path);
+                    // let spr = PIXI.Sprite.from(path);
 
                     // spr.tint = 500000 * chunk;
 
                     const sx = tx * Tile.TILE_WIDTH_HALF - ty * Tile.TILE_WIDTH_HALF
                     const sy = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF
-                    spr.x = sx;
-                    spr.y = sy;
-                    container.addChild(spr)
 
-                    this.sprites[idx] = spr;
+                    const aIndex = (ty * this.CHUNK_SIZE + tx) * 8
+                    aVertexPosition[aIndex] = sx
+                    aVertexPosition[aIndex + 1] = sy
 
-                    this.makeTransparentTiles(container, data, idx, x, y, sx, sy)
-                    this.makeTerrainObjects(container, data[idx], x, y,
-                        // sx, sy)
-                        sx + Tile.TILE_WIDTH_HALF, sy + Tile.TILE_HEIGHT_HALF)
+                    aVertexPosition[aIndex + 2] = sx + Tile.TEXTURE_WIDTH
+                    aVertexPosition[aIndex + 3] = sy
+
+                    aVertexPosition[aIndex + 4] = sx + Tile.TEXTURE_WIDTH
+                    aVertexPosition[aIndex + 5] = sy + Tile.TEXTURE_HEIGHT
+
+                    aVertexPosition[aIndex + 6] = sx
+                    aVertexPosition[aIndex + 7] = sy + Tile.TEXTURE_HEIGHT
+
+                    aUVs[aIndex] = 0
+                    aUVs[aIndex + 1] = 0
+                    aUVs[aIndex + 2] = 1
+                    aUVs[aIndex + 3] = 0
+                    aUVs[aIndex + 4] = 1
+                    aUVs[aIndex + 5] = 1
+                    aUVs[aIndex + 6] = 0
+                    aUVs[aIndex + 7] = 1
+
+                    const iIndex = (ty * this.CHUNK_SIZE + tx) * 6
+                    indices[iIndex] = aIndex
+                    indices[iIndex + 1] = aIndex + 3
+                    indices[iIndex + 2] = aIndex + 1
+                    indices[iIndex + 3] = aIndex + 1
+                    indices[iIndex + 4] = aIndex + 3
+                    indices[iIndex + 5] = aIndex + 2
+
+                    // spr.x = sx;
+                    // spr.y = sy;
+                    // container.addChild(spr)
+
+                    // this.sprites[idx] = spr;
+
+                    // this.makeTransparentTiles(container, data, idx, x, y, sx, sy)
+                    // this.makeTerrainObjects(container, data[idx], x, y,
+                    //     // sx, sy)
+                    //     sx + Tile.TILE_WIDTH_HALF, sy + Tile.TILE_HEIGHT_HALF)
+                    // console.log(aVertexPosition)
+
+
+                    geometry.addAttribute('aVertexPosition', aVertexPosition, 2)
+                    geometry.addAttribute('aUVs', aUVs, 2)
+                    geometry.addIndex(indices)
+                    // geometry.interleave()
+
+                    // console.log(aVertexPosition)
+                    // console.log(aUVs)
+                    // console.log(indices)
+
+
+
+                    const mesh = new PIXI.Mesh(geometry, new PIXI.Shader(program, {
+                        uSamplerTexture: PIXI.Texture.from(path),
+                    }));
+
+                    container.addChild(mesh)
                 }
             }
         }
+
     }
 
     private makeTransparentTiles(container: PIXI.Container, data: number[], idx: number, x: number, y: number, sx: number, sy: number) {
