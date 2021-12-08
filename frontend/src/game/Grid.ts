@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import Tile from "@/game/Tile";
 import Client from "@/net/Client";
 import {getRandomByCoord} from "@/utils/Util";
+import VertexBuffer from "@/utils/VertexBuffer";
 
 export interface MapData {
     x: number
@@ -20,7 +21,7 @@ export interface MapData {
 
 export default class Grid {
     // 2 4 5 10
-    private static readonly DIVIDER = 2
+    private static readonly DIVIDER = 5
 
     /**
      * размер одной стороны чанка
@@ -192,16 +193,15 @@ export default class Grid {
     }
 
     private makeTiles(container: PIXI.Container, cx: number, cy: number, chunk: number) {
-        const data = Client.instance.map[this.key].tiles;
+        const tiles = Client.instance.map[this.key].tiles;
 
-        const elements = (this.CHUNK_SIZE) * (this.CHUNK_SIZE)
+        // создаем заранее массив в 2 раза больше чем надо (под кусочки тайлов)
+        const elements = this.CHUNK_SIZE * this.CHUNK_SIZE
 
-        const vertexArray = new Float32Array(elements * 8);
-        const aUVs = new Float32Array(elements * 8)
-        const indexArray = new Uint16Array(elements * 6)
+        const vertexBuffer = new VertexBuffer(elements)
 
-        let index = 0;
-        let iIndex = 0
+        let tr: number[][] = []
+
         for (let tx = 0; tx < this.CHUNK_SIZE; tx++) {
             for (let ty = 0; ty < this.CHUNK_SIZE; ty++) {
 
@@ -210,7 +210,7 @@ export default class Grid {
                 // индекс в массиве тайлов
                 const idx = y * Tile.GRID_SIZE + x
 
-                const tn = Tile.getGroundTexture(data[idx])
+                const tn = Tile.getGroundTexture(tiles[idx])
                 if (tn !== undefined) {
                     this.spriteTextureNames[idx] = tn
 
@@ -221,47 +221,107 @@ export default class Grid {
                     const sx = tx * Tile.TILE_WIDTH_HALF - ty * Tile.TILE_WIDTH_HALF
                     const sy = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF
 
-                    vertexArray[index] = sx
-                    vertexArray[index + 1] = sy
+                    vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
 
-                    vertexArray[index + 2] = sx + Tile.TEXTURE_WIDTH
-                    vertexArray[index + 3] = sy
+//=================================================================
+                    tr = []
+                    // идем по тайлам вокруг целевого и заполним массив окружающих тайлов tr
+                    for (let rx = -1; rx <= 1; rx++) {
+                        tr[rx + 1] = []
+                        for (let ry = -1; ry <= 1; ry++) {
+                            if (rx == 0 && ry == 0) {
+                                tr[rx + 1][ry + 1] = 0
+                                continue
+                            }
 
-                    vertexArray[index + 4] = sx + Tile.TEXTURE_WIDTH
-                    vertexArray[index + 5] = sy + Tile.TEXTURE_HEIGHT
+                            const dx = x + rx
+                            const dy = y + ry
+                            let tn = -1
+                            // это тайл еще текущего грида
+                            if (dx >= 0 && dx < Tile.GRID_SIZE && dy >= 0 && dy < Tile.GRID_SIZE) {
+                                tn = tiles[dy * Tile.GRID_SIZE + dx]
+                            } else {
+                                // тайл соседнего грида
+                                // смещение тайла который вылез за границы относительно текущего грида
+                                let ox = dx < 0 ? -1 : (dx >= Tile.GRID_SIZE ? 1 : 0)
+                                let oy = dy < 0 ? -1 : (dy >= Tile.GRID_SIZE ? 1 : 0)
+                                const ndata = Client.instance.map[(this.x + ox) + "_" + (this.y + oy)];
+                                // можем выйти за границы карты и такого грида не будет
+                                if (ndata !== undefined) {
+                                    let ix = dx < 0 ? Tile.GRID_SIZE + dx : (dx >= Tile.GRID_SIZE ? dx - Tile.GRID_SIZE : dx)
+                                    let iy = dy < 0 ? Tile.GRID_SIZE + dy : (dy >= Tile.GRID_SIZE ? dy - Tile.GRID_SIZE : dy)
+                                    tn = ndata.tiles[iy * Tile.GRID_SIZE + ix]
+                                }
+                            }
+                            tr[rx + 1][ry + 1] = tn
+                        }
+                    }
 
-                    vertexArray[index + 6] = sx
-                    vertexArray[index + 7] = sy + Tile.TEXTURE_HEIGHT
+                    if (tr[0][0] >= tr[1][0]) tr[0][0] = -1
+                    if (tr[0][0] >= tr[0][1]) tr[0][0] = -1
+                    if (tr[2][0] >= tr[1][0]) tr[2][0] = -1
+                    if (tr[2][0] >= tr[2][1]) tr[2][0] = -1
+                    if (tr[0][2] >= tr[0][1]) tr[0][2] = -1
+                    if (tr[0][2] >= tr[1][2]) tr[0][2] = -1
+                    if (tr[2][2] >= tr[2][1]) tr[2][2] = -1
+                    if (tr[2][2] >= tr[1][2]) tr[2][2] = -1
 
-                    let t = PIXI.Texture.from(path)
+                    // текущий (центральный тайл)
+                    for (let i = tiles[idx] - 1; i >= 0; i--) {
+                        const ts = Tile.sets[i]
+                        if (ts == undefined || ts.corners == undefined || ts.borders == undefined) continue
+                        let bm = 0
+                        let cm = 0
+                        for (let o = 0; o < 4; o++) {
+                            if (tr[Grid.bx[o]][Grid.by[o]] == i) bm |= 1 << o
+                            if (tr[Grid.cx[o]][Grid.cy[o]] == i) cm |= 1 << o
+                        }
+                        if (bm !== 0) {
+                            const arr = ts.borders[bm - 1];
+                            if (arr !== undefined) {
+                                let path = arr.get(getRandomByCoord(x, y))
+                                if (path !== undefined) {
+                                    vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
 
-                    aUVs[index] = t._uvs.x0
-                    aUVs[index + 1] = t._uvs.y0
-                    aUVs[index + 2] = t._uvs.x1
-                    aUVs[index + 3] = t._uvs.y1
-                    aUVs[index + 4] = t._uvs.x2
-                    aUVs[index + 5] = t._uvs.y2
-                    aUVs[index + 6] = t._uvs.x3
-                    aUVs[index + 7] = t._uvs.y3
+                                    // let tn = path
+                                    // let idx = this.spriteTextureNames.length
+                                    // this.spriteTextureNames[idx] = tn
+                                    // this.sprites[idx] = spr
+                                    // container.addChild(spr)
+                                }
+                            }
+                        }
+                        if (cm !== 0) {
+                            const arr = ts.corners[cm - 1];
+                            if (arr !== undefined) {
+                                let path = arr.get(getRandomByCoord(x, y))
+                                if (path !== undefined) {
+                                    vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
 
-                    const ti = index / 2
-                    indexArray[iIndex] = ti
-                    indexArray[iIndex + 1] = ti + 3
-                    indexArray[iIndex + 2] = ti + 1
-                    indexArray[iIndex + 3] = ti + 1
-                    indexArray[iIndex + 4] = ti + 3
-                    indexArray[iIndex + 5] = ti + 2
-
-                    index += 8
-                    iIndex += 6
-
-                    // spr.x = sx;
-                    // spr.y = sy;
-                    // container.addChild(spr)
-
-                    // this.sprites[idx] = spr;
-
-                    // this.makeTransparentTiles(container, data, idx, x, y, sx, sy)
+                                    // let tn = path
+                                    // if (path.includes(".")) path = "assets/" + path
+                                    // let spr = PIXI.Sprite.from(path)
+                                    // spr.x = sx
+                                    // spr.y = sy
+                                    // let idx = this.spriteTextureNames.length
+                                    // this.spriteTextureNames[idx] = tn
+                                    // this.sprites[idx] = spr
+                                    // container.addChild(spr)
+                                }
+                            }
+                        }
+                    }
+// ==========================================================================
+                    let terrain = Tile.terrains[tiles[idx]]
+                    if (terrain !== undefined) {
+                        let sprList = terrain.generate(x, y, sx, sy)
+                        if (sprList !== undefined) {
+                            for (let i = 0; i < sprList.length; i++) {
+                                container.addChild(sprList[i])
+                            }
+                        }
+                    }
+                    // this.makeTransparentTiles(container, tiles, idx, x, y, sx, sy)
                     // this.makeTerrainObjects(container, data[idx], x, y,
                     //     // sx, sy)
                     //     sx + Tile.TILE_WIDTH_HALF, sy + Tile.TILE_HEIGHT_HALF)
@@ -269,7 +329,8 @@ export default class Grid {
             }
         }
 
-        const geometry = new PIXI.MeshGeometry(vertexArray, aUVs, indexArray)
+        vertexBuffer.finish()
+        const geometry = new PIXI.MeshGeometry(vertexBuffer.vertex, vertexBuffer.uv, vertexBuffer.index)
 
         const mesh = new PIXI.Mesh(geometry, new PIXI.Shader(this._program, {
             uSamplerTexture: PIXI.Texture.from(Tile.ATLAS),
@@ -381,14 +442,15 @@ export default class Grid {
     }
 
     public onFileChange(fn: string) {
-        let path = "assets/" + fn + "?" + (+new Date())
+        // TODO поскольку тайлы теперь в VBO заменить один тайл - без перестройки всего невозможно
+
+        // let path = "assets/" + fn + "?" + (+new Date())
 
         // for (let i = 0; i < this.containers.length; i++) {
         //     this.containers[i].cacheAsBitmap = false
         // }
-        PIXI.Texture.fromURL(path).then(() => {
+        // PIXI.Texture.fromURL(path).then(() => {
 
-            // TODO
             // for (let i = 0; i < this.sprites.length; i++) {
             //     let spr = this.sprites[i]
             //
@@ -400,6 +462,6 @@ export default class Grid {
             // for (let i = 0; i < this.containers.length; i++) {
             //     this.containers[i].cacheAsBitmap = true
             // }
-        })
+        // })
     }
 }
