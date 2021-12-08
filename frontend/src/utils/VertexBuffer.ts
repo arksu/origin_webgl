@@ -1,5 +1,4 @@
 import * as PIXI from 'pixi.js';
-import Tile from "@/game/Tile";
 
 export default class VertexBuffer {
 
@@ -11,7 +10,7 @@ export default class VertexBuffer {
 
     private _count: number = 0
 
-    private _finished : boolean = false
+    private _finished: boolean = false
 
     constructor(size: number) {
         this._size = size
@@ -37,7 +36,8 @@ export default class VertexBuffer {
 
         // если место в массиве кончилось - надо добавить еще элементов
         if (this._count >= this._size) {
-            this._size += this._size / 2
+            this._size *= 2
+            console.warn("extend VertexBuffer " + this._size)
 
             const newVertex = new Float32Array(this._size * 8)
             newVertex.set(this._vertex, 0)
@@ -93,5 +93,7 @@ export default class VertexBuffer {
         this._vertex = this._vertex.slice(0, this._count * 8)
         this._uv = this._uv.slice(0, this._count * 8)
         this._index = this._index.slice(0, this._count * 6)
+
+        // console.log("final size " + this._count)
     }
 }
