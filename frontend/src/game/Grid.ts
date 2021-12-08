@@ -53,7 +53,7 @@ export default class Grid {
     public readonly key: string
 
     private spriteTextureNames: string[] = []
-    private sprites: PIXI.Sprite[] = [];
+    // private sprites: PIXI.Sprite[] = [];
 
     private _visible: boolean = true
 
@@ -80,8 +80,6 @@ export default class Grid {
             }, i * 5 + 40)
         }
          */
-
-        console.log("this.CHUNK_SIZE=" + this.CHUNK_SIZE)
 
         this._program = PIXI.Program.from(
             `precision mediump float;
@@ -168,12 +166,12 @@ export default class Grid {
         this.destroy()
         this.makeChunks()
         // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
-        for (let i = 0; i < this.containers.length; i++) {
-            const c = this.containers[i];
-            setTimeout(() => {
-                c.cacheAsBitmap = true
-            }, i * 30)
-        }
+        // for (let i = 0; i < this.containers.length; i++) {
+        //     const c = this.containers[i];
+        //     setTimeout(() => {
+        //         c.cacheAsBitmap = true
+        //     }, i * 30)
+        // }
     }
 
     private makeChunk(cx: number, cy: number, idx: number): PIXI.Container {
@@ -217,12 +215,8 @@ export default class Grid {
                     this.spriteTextureNames[idx] = tn
 
                     let path = tn
-                    if (path.includes(".")) path = "assets/" + path
+                    // if (path.includes(".")) path = "assets/" + path
                     // console.log(path)
-
-                    // let spr = PIXI.Sprite.from(path);
-
-                    // spr.tint = 500000 * chunk;
 
                     const sx = tx * Tile.TILE_WIDTH_HALF - ty * Tile.TILE_WIDTH_HALF
                     const sy = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF
@@ -239,14 +233,16 @@ export default class Grid {
                     vertexArray[index + 6] = sx
                     vertexArray[index + 7] = sy + Tile.TEXTURE_HEIGHT
 
-                    aUVs[index] = 0
-                    aUVs[index + 1] = 0
-                    aUVs[index + 2] = 1
-                    aUVs[index + 3] = 0
-                    aUVs[index + 4] = 1
-                    aUVs[index + 5] = 1
-                    aUVs[index + 6] = 0
-                    aUVs[index + 7] = 1
+                    let t = PIXI.Texture.from(path)
+
+                    aUVs[index] = t._uvs.x0
+                    aUVs[index + 1] = t._uvs.y0
+                    aUVs[index + 2] = t._uvs.x1
+                    aUVs[index + 3] = t._uvs.y1
+                    aUVs[index + 4] = t._uvs.x2
+                    aUVs[index + 5] = t._uvs.y2
+                    aUVs[index + 6] = t._uvs.x3
+                    aUVs[index + 7] = t._uvs.y3
 
                     const ti = index / 2
                     indexArray[iIndex] = ti
@@ -276,8 +272,8 @@ export default class Grid {
         const geometry = new PIXI.MeshGeometry(vertexArray, aUVs, indexArray)
 
         const mesh = new PIXI.Mesh(geometry, new PIXI.Shader(this._program, {
-            uSamplerTexture: PIXI.Texture.from('assets/tiles/leaf/base_8.png'),
-        }), PIXI.State.for2d());
+            uSamplerTexture: PIXI.Texture.from(Tile.ATLAS),
+        }), PIXI.State.for2d(), PIXI.DRAW_MODES.TRIANGLES);
 
         container.addChild(mesh)
     }
@@ -347,7 +343,7 @@ export default class Grid {
                         spr.y = sy
                         let idx = this.spriteTextureNames.length
                         this.spriteTextureNames[idx] = tn
-                        this.sprites[idx] = spr
+                        // this.sprites[idx] = spr
                         container.addChild(spr)
                     }
                 }
@@ -364,7 +360,7 @@ export default class Grid {
                         spr.y = sy
                         let idx = this.spriteTextureNames.length
                         this.spriteTextureNames[idx] = tn
-                        this.sprites[idx] = spr
+                        // this.sprites[idx] = spr
                         container.addChild(spr)
                     }
                 }
@@ -387,22 +383,23 @@ export default class Grid {
     public onFileChange(fn: string) {
         let path = "assets/" + fn + "?" + (+new Date())
 
-        for (let i = 0; i < this.containers.length; i++) {
-            this.containers[i].cacheAsBitmap = false
-        }
+        // for (let i = 0; i < this.containers.length; i++) {
+        //     this.containers[i].cacheAsBitmap = false
+        // }
         PIXI.Texture.fromURL(path).then(() => {
 
-            for (let i = 0; i < this.sprites.length; i++) {
-                let spr = this.sprites[i]
+            // TODO
+            // for (let i = 0; i < this.sprites.length; i++) {
+            //     let spr = this.sprites[i]
+            //
+            //     if (this.spriteTextureNames[i] == fn) {
+            //         spr.texture = PIXI.Texture.from(path)
+            //     }
+            // }
 
-                if (this.spriteTextureNames[i] == fn) {
-                    spr.texture = PIXI.Texture.from(path)
-                }
-            }
-
-            for (let i = 0; i < this.containers.length; i++) {
-                this.containers[i].cacheAsBitmap = true
-            }
+            // for (let i = 0; i < this.containers.length; i++) {
+            //     this.containers[i].cacheAsBitmap = true
+            // }
         })
     }
 }
