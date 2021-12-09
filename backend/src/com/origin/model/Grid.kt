@@ -240,7 +240,6 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
             addObject(obj)
             return CollisionResult.NONE
         } else {
-
             // в любом случае обновим грид до начала проверок коллизий
             update()
 

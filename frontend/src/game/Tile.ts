@@ -118,9 +118,8 @@ class TerrainObject {
                         isShadow = true
                     }
                     // проверим шанс генерации
-                    if ((l.p == 0 && list.length == 0) || getRandomByCoord(x, y) % l.p == 0) {
+                    if ((l.p == 0 && list.length == 0) || getRandomByCoord(x, y, i) % l.p == 0) {
                         let path = l.img
-                        // if (path.includes(".")) path = "assets/" + path
                         let spr = PIXI.Sprite.from(path)
                         let dx = -this.data.offset[0] + l.offset[0]
                         let dy = -this.data.offset[1] + l.offset[1]
@@ -164,12 +163,10 @@ class TerrainObjects {
      * @param sy экранные координаты центра тайла куда надо поместить объект
      */
     public generate(x: number, y: number, sx: number, sy: number): PIXI.Sprite[] | undefined {
-        // TODO детерменированный рандом в зависимости от координат и шанса генерации
-
         // идем по всему списку
         for (let i = 0; i < this.list.length; i++) {
             // у каждого элемента проверяем шанс на спавн
-            if (getRandomInt(this.list[i].data.chance) == 0) {
+            if ((getRandomByCoord(x, y)) % this.list[i].data.chance == 0) {
                 // генерируем террейн объект
                 return this.list[i].generate(x, y, sx, sy)
             }
@@ -228,19 +225,11 @@ export default class Tile {
         Tile.sets[32] = new TileSet(sand)
     }
 
-    public static getGroundTexture(t: number): string | undefined {
-        if (t > 127) {
-            t -= 127
-        }
+    public static getGroundTexture(t: number, x: number, y: number): string | undefined {
         const set = Tile.sets[t]
         if (set !== undefined) {
-            return set.ground.get(getRandomInt(25000))
+            return set.ground.get(getRandomByCoord(x, y))
         }
         return undefined
-    }
-
-    private static randomNames(s: string, n: number): string {
-        let r = getRandomInt(n) + 1
-        return s + r + '.png'
     }
 }

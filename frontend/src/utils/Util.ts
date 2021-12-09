@@ -70,13 +70,25 @@ export function log2(n: number) {
  */
 export function getRandomInt(max: number): number {
     return CustomRandom.instance.nextInt() % max
-    // return Math.floor(Math.random() * Math.floor(max));
 }
 
-export function getRandomByCoord(x: number, y: number): number {
-    // TODO детерменированный рандом на основании координат
-    // return getRandomInt(10000);
-    return CustomRandom.instance.nextInt()
+/**
+ * детерменированный рандом на основании координат
+ */
+export function getRandomByCoord(x: number, y: number, z?: number): number {
+    let seed = x
+    seed = (seed * 1103515245 + 12345) % 2147483647;
+    seed *= y
+    seed = (seed * 1103515245 + 12345) % 2147483647;
+    seed = (seed * 1103515245 + 12345) % 2147483647;
+
+    if (z != undefined) {
+        seed *= z
+        seed = (seed * 1103515245 + 12345) % 2147483647;
+        seed = (seed * 1103515245 + 12345) % 2147483647;
+    }
+
+    return seed
 }
 
 /**
