@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import CustomRandom from "@/utils/CustomRandom";
 
 export interface Coord extends Array<number | string> {
     0: number;
@@ -68,12 +69,14 @@ export function log2(n: number) {
  * получить случайное число в диапазоне (0..max-1)
  */
 export function getRandomInt(max: number): number {
-    return Math.floor(Math.random() * Math.floor(max));
+    return CustomRandom.instance.nextInt() % max
+    // return Math.floor(Math.random() * Math.floor(max));
 }
 
 export function getRandomByCoord(x: number, y: number): number {
     // TODO детерменированный рандом на основании координат
-    return getRandomInt(10000);
+    // return getRandomInt(10000);
+    return CustomRandom.instance.nextInt()
 }
 
 /**

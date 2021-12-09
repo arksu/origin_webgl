@@ -1,5 +1,8 @@
 import * as PIXI from 'pixi.js';
 
+/**
+ * класс помощник для создания буферов вершин, uv и индексов
+ */
 export default class VertexBuffer {
 
     private _vertex: Float32Array
@@ -93,7 +96,5 @@ export default class VertexBuffer {
         this._vertex = this._vertex.slice(0, this._count * 8)
         this._uv = this._uv.slice(0, this._count * 8)
         this._index = this._index.slice(0, this._count * 6)
-
-        // console.log("final size " + this._count)
     }
 }

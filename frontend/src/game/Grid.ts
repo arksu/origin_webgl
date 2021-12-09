@@ -224,11 +224,6 @@ export default class Grid {
                     const sy = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF
 
                     vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
-                    // vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
-                    // vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
-                    // vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
-                    // vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
-                    // vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
 
 //=================================================================
 
@@ -291,12 +286,6 @@ export default class Grid {
                                     let path = arr.get(getRandomByCoord(x, y))
                                     if (path !== undefined) {
                                         vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
-
-                                        // let tn = path
-                                        // let idx = this.spriteTextureNames.length
-                                        // this.spriteTextureNames[idx] = tn
-                                        // this.sprites[idx] = spr
-                                        // container.addChild(spr)
                                     }
                                 }
                             }
@@ -306,16 +295,6 @@ export default class Grid {
                                     let path = arr.get(getRandomByCoord(x, y))
                                     if (path !== undefined) {
                                         vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
-
-                                        // let tn = path
-                                        // if (path.includes(".")) path = "assets/" + path
-                                        // let spr = PIXI.Sprite.from(path)
-                                        // spr.x = sx
-                                        // spr.y = sy
-                                        // let idx = this.spriteTextureNames.length
-                                        // this.spriteTextureNames[idx] = tn
-                                        // this.sprites[idx] = spr
-                                        // container.addChild(spr)
                                     }
                                 }
                             }
@@ -323,19 +302,15 @@ export default class Grid {
 
                     }
 // ==========================================================================
-                    let terrain = Tile.terrains[tiles[idx]]
-                    if (terrain !== undefined) {
-                        let sprList = terrain.generate(x, y, sx, sy)
-                        if (sprList !== undefined) {
-                            for (let i = 0; i < sprList.length; i++) {
-                                container.addChild(sprList[i])
-                            }
-                        }
-                    }
-                    // this.makeTransparentTiles(container, tiles, idx, x, y, sx, sy)
-                    // this.makeTerrainObjects(container, data[idx], x, y,
-                    //     // sx, sy)
-                    //     sx + Tile.TILE_WIDTH_HALF, sy + Tile.TILE_HEIGHT_HALF)
+//                     let terrain = Tile.terrains[tiles[idx]]
+//                     if (terrain !== undefined) {
+//                         let sprList = terrain.generate(x, y, sx, sy)
+//                         if (sprList !== undefined) {
+//                             for (let i = 0; i < sprList.length; i++) {
+//                                 container.addChild(sprList[i])
+//                             }
+//                         }
+//                     }
                 }
             }
         }

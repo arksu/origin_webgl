@@ -229,6 +229,9 @@ export default class Tile {
     }
 
     public static getGroundTexture(t: number): string | undefined {
+        if (t > 127) {
+            t -= 127
+        }
         const set = Tile.sets[t]
         if (set !== undefined) {
             return set.ground.get(getRandomInt(25000))
