@@ -78,7 +78,7 @@ export function getRandomInt(max: number): number {
 export function getRandomByCoord(x: number, y: number, z?: number, s?: number): number {
     let seed = s !== undefined ? s : x
     seed = (seed * 1103515245 + 12345) % 2147483647;
-    seed *= y
+    seed *= y + x
     seed = (seed * 1103515245 + 12345) % 2147483647;
     seed = (seed * 1103515245 + 12345) % 2147483647;
 
