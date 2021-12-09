@@ -19,7 +19,6 @@ import PlayerStatus from "@/game/PlayerStatus";
 export default class Game {
 
     private static readonly canvas: HTMLCanvasElement = <HTMLCanvasElement>document.getElementById("game");
-    // private static readonly appDiv: HTMLElement = <HTMLElement>document.getElementById("app");
 
     public static instance?: Game = undefined;
 
@@ -134,6 +133,7 @@ export default class Game {
     }
 
     constructor() {
+        // сглаживание пикселей при масштабировании
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 
         this.app = new PIXI.Application({
@@ -187,8 +187,8 @@ export default class Game {
         this.screenSprite.on('mousewheel', this.onMouseWheel.bind(this));
 
 
-        PIXI.utils.destroyTextureCache()
         PIXI.utils.clearTextureCache()
+        PIXI.utils.destroyTextureCache()
 
         const loader = this.app.loader;
         const img = PIXI.utils.TextureCache['assets/base.json_image'];

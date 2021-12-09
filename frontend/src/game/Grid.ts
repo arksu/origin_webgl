@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import Tile from "@/game/Tile";
 import Client from "@/net/Client";
 import {getRandomByCoord} from "@/utils/Util";
+import VertexBuffer from "@/utils/VertexBuffer";
 
 export interface MapData {
     x: number
@@ -19,8 +20,10 @@ export interface MapData {
 }
 
 export default class Grid {
-    // 2 4 5
+    // 2 4 5 10
     private static readonly DIVIDER = 4
+
+    private static readonly MAKE_CORNERS = true
 
     /**
      * размер одной стороны чанка
@@ -53,9 +56,11 @@ export default class Grid {
     public readonly key: string
 
     private spriteTextureNames: string[] = []
-    private sprites: PIXI.Sprite[] = [];
+    // private sprites: PIXI.Sprite[] = [];
 
     private _visible: boolean = true
+
+    private readonly _program: PIXI.Program
 
     constructor(parent: PIXI.Container, x: number, y: number) {
         this.parent = parent;
@@ -64,14 +69,8 @@ export default class Grid {
         this.absoluteX = x * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.absoluteY = y * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.key = this.x + "_" + this.y
-        // console.log("new grid", this.key)
 
-// замерим время на создание грида
-        const timerName = "make grid " + this.key;
-        console.time(timerName)
-        this.makeChunks()
-        console.timeEnd(timerName)
-
+        /*
         // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
         for (let i = 0; i < this.containers.length; i++) {
             const c = this.containers[i];
@@ -79,6 +78,44 @@ export default class Grid {
                 c.cacheAsBitmap = true
             }, i * 5 + 40)
         }
+         */
+
+        this._program = PIXI.Program.from(
+            `precision mediump float;
+
+    attribute vec2 aVertexPosition;
+    attribute vec2 aTextureCoord;
+
+    uniform mat3 translationMatrix;
+    uniform mat3 projectionMatrix;
+
+    varying vec2 vUvs;
+
+    void main() {
+
+        vUvs = aTextureCoord;
+        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+
+    }`,
+            `precision mediump float;
+
+    varying vec2 vUvs;
+
+    uniform sampler2D uSamplerTexture;
+
+    void main() {
+
+        gl_FragColor = texture2D(uSamplerTexture, vUvs);
+    }`);
+
+        // замерим время на создание грида
+        const timerName = "make grid " + this.key;
+        console.time(timerName)
+
+        this.makeChunks()
+
+        console.timeEnd(timerName)
+
     }
 
     private makeChunks() {
@@ -129,13 +166,6 @@ export default class Grid {
 
         this.destroy()
         this.makeChunks()
-        // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
-        for (let i = 0; i < this.containers.length; i++) {
-            const c = this.containers[i];
-            setTimeout(() => {
-                c.cacheAsBitmap = true
-            }, i * 30)
-        }
     }
 
     private makeChunk(cx: number, cy: number, idx: number): PIXI.Container {
@@ -156,7 +186,14 @@ export default class Grid {
     }
 
     private makeTiles(container: PIXI.Container, cx: number, cy: number, chunk: number) {
-        const data = Client.instance.map[this.key].tiles;
+        const tiles = Client.instance.map[this.key].tiles;
+
+        // создаем заранее массив в 2 раза больше чем надо (под кусочки тайлов)
+        const elements = this.CHUNK_SIZE * this.CHUNK_SIZE * 2
+
+        const vertexBuffer = new VertexBuffer(elements)
+
+        let tr: number[][] = []
 
         for (let tx = 0; tx < this.CHUNK_SIZE; tx++) {
             for (let ty = 0; ty < this.CHUNK_SIZE; ty++) {
@@ -166,155 +203,140 @@ export default class Grid {
                 // индекс в массиве тайлов
                 const idx = y * Tile.GRID_SIZE + x
 
-                const tn = Tile.getGroundTexture(data[idx])
+                const tn = Tile.getGroundTexture(tiles[idx], x, y)
                 if (tn !== undefined) {
                     this.spriteTextureNames[idx] = tn
 
                     let path = tn
                     // if (path.includes(".")) path = "assets/" + path
-
-                    let spr = PIXI.Sprite.from(path);
-
-                    // spr.tint = 500000 * chunk;
+                    // console.log(path)
 
                     const sx = tx * Tile.TILE_WIDTH_HALF - ty * Tile.TILE_WIDTH_HALF
                     const sy = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF
-                    spr.x = sx;
-                    spr.y = sy;
-                    container.addChild(spr)
 
-                    this.sprites[idx] = spr;
+                    vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
 
-                    this.makeTransparentTiles(container, data, idx, x, y, sx, sy)
-                    this.makeTerrainObjects(container, data[idx], x, y,
-                        // sx, sy)
-                        sx + Tile.TILE_WIDTH_HALF, sy + Tile.TILE_HEIGHT_HALF)
-                }
-            }
-        }
-    }
+//=================================================================
 
-    private makeTransparentTiles(container: PIXI.Container, data: number[], idx: number, x: number, y: number, sx: number, sy: number) {
-        const tr: number[][] = []
-        // идем по тайлам вокруг целевого и заполним массив окружающих тайлов tr
-        for (let rx = -1; rx <= 1; rx++) {
-            tr[rx + 1] = []
-            for (let ry = -1; ry <= 1; ry++) {
-                if (rx == 0 && ry == 0) {
-                    tr[rx + 1][ry + 1] = 0
-                    continue
-                }
+                    if (Grid.MAKE_CORNERS) {
+                        tr = []
+                        // идем по тайлам вокруг целевого и заполним массив окружающих тайлов tr
+                        for (let rx = -1; rx <= 1; rx++) {
+                            tr[rx + 1] = []
+                            for (let ry = -1; ry <= 1; ry++) {
+                                if (rx == 0 && ry == 0) {
+                                    tr[rx + 1][ry + 1] = 0
+                                    continue
+                                }
 
-                const dx = x + rx
-                const dy = y + ry
-                let tn = -1
-                // это тайл еще текущего грида
-                if (dx >= 0 && dx < Tile.GRID_SIZE && dy >= 0 && dy < Tile.GRID_SIZE) {
-                    tn = data[dy * Tile.GRID_SIZE + dx]
-                } else {
-                    // тайл соседнего грида
-                    // смещение тайла который вылез за границы относительно текущего грида
-                    let ox = dx < 0 ? -1 : (dx >= Tile.GRID_SIZE ? 1 : 0)
-                    let oy = dy < 0 ? -1 : (dy >= Tile.GRID_SIZE ? 1 : 0)
-                    const ndata = Client.instance.map[(this.x + ox) + "_" + (this.y + oy)];
-                    // можем выйти за границы карты и такого грида не будет
-                    if (ndata !== undefined) {
-                        let ix = dx < 0 ? Tile.GRID_SIZE + dx : (dx >= Tile.GRID_SIZE ? dx - Tile.GRID_SIZE : dx)
-                        let iy = dy < 0 ? Tile.GRID_SIZE + dy : (dy >= Tile.GRID_SIZE ? dy - Tile.GRID_SIZE : dy)
-                        tn = ndata.tiles[iy * Tile.GRID_SIZE + ix]
+                                const dx = x + rx
+                                const dy = y + ry
+                                let tn = -1
+                                // это тайл еще текущего грида
+                                if (dx >= 0 && dx < Tile.GRID_SIZE && dy >= 0 && dy < Tile.GRID_SIZE) {
+                                    tn = tiles[dy * Tile.GRID_SIZE + dx]
+                                } else {
+                                    // тайл соседнего грида
+                                    // смещение тайла который вылез за границы относительно текущего грида
+                                    let ox = dx < 0 ? -1 : (dx >= Tile.GRID_SIZE ? 1 : 0)
+                                    let oy = dy < 0 ? -1 : (dy >= Tile.GRID_SIZE ? 1 : 0)
+                                    const ndata = Client.instance.map[(this.x + ox) + "_" + (this.y + oy)];
+                                    // можем выйти за границы карты и такого грида не будет
+                                    if (ndata !== undefined) {
+                                        let ix = dx < 0 ? Tile.GRID_SIZE + dx : (dx >= Tile.GRID_SIZE ? dx - Tile.GRID_SIZE : dx)
+                                        let iy = dy < 0 ? Tile.GRID_SIZE + dy : (dy >= Tile.GRID_SIZE ? dy - Tile.GRID_SIZE : dy)
+                                        tn = ndata.tiles[iy * Tile.GRID_SIZE + ix]
+                                    }
+                                }
+                                tr[rx + 1][ry + 1] = tn
+                            }
+                        }
+
+                        if (tr[0][0] >= tr[1][0]) tr[0][0] = -1
+                        if (tr[0][0] >= tr[0][1]) tr[0][0] = -1
+                        if (tr[2][0] >= tr[1][0]) tr[2][0] = -1
+                        if (tr[2][0] >= tr[2][1]) tr[2][0] = -1
+                        if (tr[0][2] >= tr[0][1]) tr[0][2] = -1
+                        if (tr[0][2] >= tr[1][2]) tr[0][2] = -1
+                        if (tr[2][2] >= tr[2][1]) tr[2][2] = -1
+                        if (tr[2][2] >= tr[1][2]) tr[2][2] = -1
+
+                        // текущий (центральный тайл)
+                        for (let i = tiles[idx] - 1; i >= 0; i--) {
+                            const ts = Tile.sets[i]
+                            if (ts == undefined || ts.corners == undefined || ts.borders == undefined) continue
+                            let bm = 0
+                            let cm = 0
+                            for (let o = 0; o < 4; o++) {
+                                if (tr[Grid.bx[o]][Grid.by[o]] == i) bm |= 1 << o
+                                if (tr[Grid.cx[o]][Grid.cy[o]] == i) cm |= 1 << o
+                            }
+                            if (bm !== 0) {
+                                const arr = ts.borders[bm - 1];
+                                if (arr !== undefined) {
+                                    let path = arr.get(getRandomByCoord(x, y))
+                                    if (path !== undefined) {
+                                        vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
+                                    }
+                                }
+                            }
+                            if (cm !== 0) {
+                                const arr = ts.corners[cm - 1];
+                                if (arr !== undefined) {
+                                    let path = arr.get(getRandomByCoord(x, y))
+                                    if (path !== undefined) {
+                                        vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
+                                    }
+                                }
+                            }
+                        }
+
                     }
-                }
-                tr[rx + 1][ry + 1] = tn
-            }
-        }
-
-        if (tr[0][0] >= tr[1][0]) tr[0][0] = -1
-        if (tr[0][0] >= tr[0][1]) tr[0][0] = -1
-        if (tr[2][0] >= tr[1][0]) tr[2][0] = -1
-        if (tr[2][0] >= tr[2][1]) tr[2][0] = -1
-        if (tr[0][2] >= tr[0][1]) tr[0][2] = -1
-        if (tr[0][2] >= tr[1][2]) tr[0][2] = -1
-        if (tr[2][2] >= tr[2][1]) tr[2][2] = -1
-        if (tr[2][2] >= tr[1][2]) tr[2][2] = -1
-
-        // текущий (центральный тайл)
-        for (let i = data[idx] - 1; i >= 0; i--) {
-            const ts = Tile.sets[i]
-            if (ts == undefined || ts.corners == undefined || ts.borders == undefined) continue
-            let bm = 0
-            let cm = 0
-            for (let o = 0; o < 4; o++) {
-                if (tr[Grid.bx[o]][Grid.by[o]] == i) bm |= 1 << o
-                if (tr[Grid.cx[o]][Grid.cy[o]] == i) cm |= 1 << o
-            }
-            if (bm !== 0) {
-                const arr = ts.borders[bm - 1];
-                if (arr !== undefined) {
-                    let path = arr.get(getRandomByCoord(x, y))
-                    if (path !== undefined) {
-                        let tn = path
-                        // if (path.includes(".")) path = "assets/" + path
-                        let spr = PIXI.Sprite.from(path)
-                        spr.x = sx
-                        spr.y = sy
-                        let idx = this.spriteTextureNames.length
-                        this.spriteTextureNames[idx] = tn
-                        this.sprites[idx] = spr
-                        container.addChild(spr)
-                    }
-                }
-            }
-            if (cm !== 0) {
-                const arr = ts.corners[cm - 1];
-                if (arr !== undefined) {
-                    let path = arr.get(getRandomByCoord(x, y))
-                    if (path !== undefined) {
-                        let tn = path
-                        // if (path.includes(".")) path = "assets/" + path
-                        let spr = PIXI.Sprite.from(path)
-                        spr.x = sx
-                        spr.y = sy
-                        let idx = this.spriteTextureNames.length
-                        this.spriteTextureNames[idx] = tn
-                        this.sprites[idx] = spr
-                        container.addChild(spr)
+// ==========================================================================
+                    let terrain = Tile.terrains[tiles[idx]]
+                    if (terrain !== undefined) {
+                        let sprList = terrain.generate(x, y, sx, sy)
+                        if (sprList !== undefined) {
+                            for (let i = 0; i < sprList.length; i++) {
+                                container.addChild(sprList[i])
+                            }
+                        }
                     }
                 }
             }
         }
-    }
 
-    private makeTerrainObjects(container: PIXI.Container, t: number, x: number, y: number, sx: number, sy: number) {
-        let terrain = Tile.terrains[t]
-        if (terrain !== undefined) {
-            let sprList = terrain.generate(x, y, sx, sy)
-            if (sprList !== undefined) {
-                for (let i = 0; i < sprList.length; i++) {
-                    container.addChild(sprList[i])
-                }
-            }
-        }
+        vertexBuffer.finish()
+        const geometry = new PIXI.MeshGeometry(vertexBuffer.vertex, vertexBuffer.uv, vertexBuffer.index)
+
+        const mesh = new PIXI.Mesh(geometry, new PIXI.Shader(this._program, {
+            uSamplerTexture: PIXI.Texture.from(Tile.ATLAS),
+        }), PIXI.State.for2d(), PIXI.DRAW_MODES.TRIANGLES);
+
+        container.addChild(mesh)
     }
 
     public onFileChange(fn: string) {
-        let path = "assets/" + fn + "?" + (+new Date())
+        // TODO поскольку тайлы теперь в VBO заменить один тайл - без перестройки всего невозможно
 
-        for (let i = 0; i < this.containers.length; i++) {
-            this.containers[i].cacheAsBitmap = false
-        }
-        PIXI.Texture.fromURL(path).then(() => {
+        // let path = "assets/" + fn + "?" + (+new Date())
 
-            for (let i = 0; i < this.sprites.length; i++) {
-                let spr = this.sprites[i]
+        // for (let i = 0; i < this.containers.length; i++) {
+        //     this.containers[i].cacheAsBitmap = false
+        // }
+        // PIXI.Texture.fromURL(path).then(() => {
 
-                if (this.spriteTextureNames[i] == fn) {
-                    spr.texture = PIXI.Texture.from(path)
-                }
-            }
+        // for (let i = 0; i < this.sprites.length; i++) {
+        //     let spr = this.sprites[i]
+        //
+        //     if (this.spriteTextureNames[i] == fn) {
+        //         spr.texture = PIXI.Texture.from(path)
+        //     }
+        // }
 
-            for (let i = 0; i < this.containers.length; i++) {
-                this.containers[i].cacheAsBitmap = true
-            }
-        })
+        // for (let i = 0; i < this.containers.length; i++) {
+        //     this.containers[i].cacheAsBitmap = true
+        // }
+        // })
     }
 }
