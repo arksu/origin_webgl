@@ -200,7 +200,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
                 }
                 activeObjects.forEach {
                     if (it is Player) {
-                        it.session.send(MapGridData(this, 2))
+                        it.session.send(MapGridData(this, MapGridData.Type.CHANGE))
                     }
                 }
                 msg.job?.complete()
@@ -459,7 +459,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
 
             activeObjects.add(human)
             if (human is Player) {
-                human.session.send(MapGridData(this, 1))
+                human.session.send(MapGridData(this, MapGridData.Type.ADD))
             }
 
             TimeController.addActiveGrid(this)
@@ -473,7 +473,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     private suspend fun deactivate(human: Human) {
         activeObjects.remove(human)
         if (human is Player) {
-            human.session.send(MapGridData(this, 0))
+            human.session.send(MapGridData(this, MapGridData.Type.REMOVE))
         }
         if (!isActive) {
             TimeController.removeActiveGrid(this)

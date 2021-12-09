@@ -70,9 +70,6 @@ export default class Grid {
         this.absoluteY = y * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.key = this.x + "_" + this.y
 
-        // замерим время на создание грида
-        const timerName = "make grid " + this.key;
-
         /*
 
         // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
@@ -112,6 +109,8 @@ export default class Grid {
         gl_FragColor = texture2D(uSamplerTexture, vUvs);
     }`);
 
+        // замерим время на создание грида
+        const timerName = "make grid " + this.key;
         console.time(timerName)
 
         this.makeChunks()

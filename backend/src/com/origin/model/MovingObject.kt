@@ -72,6 +72,7 @@ abstract class MovingObject(id: ObjectID, x: Int, y: Int, level: Int, region: In
             if (grid.layer.validateCoord(gx, gy)) {
                 val g = World.getGrid(pos.region, pos.level, gx, gy)
                 grids.add(g)
+                // TODO выполнять onEnterGrid параллельно в корутинах
                 onEnterGrid(g)
             }
         }
