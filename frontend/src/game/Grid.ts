@@ -95,6 +95,8 @@ export default class Grid {
         gl_FragColor = texture2D(uSamplerTexture, vUvs);
     }`);
 
+        console.log()
+
         // замерим время на создание грида
         const timerName = "make grid " + this.key;
         console.time(timerName)

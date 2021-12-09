@@ -111,6 +111,7 @@ class TerrainObject {
             let list: PIXI.Sprite[] = []
 
             let isShadow = false;
+            const seed = getRandomByCoord(x,y)
             do {
                 for (let i = 0; i < this.sz; i++) {
                     let l = this.data.layers[i]
@@ -118,7 +119,7 @@ class TerrainObject {
                         isShadow = true
                     }
                     // проверим шанс генерации
-                    if ((l.p == 0 && list.length == 0) || getRandomByCoord(x, y, i) % l.p == 0) {
+                    if ((l.p == 0 && list.length == 0) || getRandomByCoord(x, y, i, seed) % l.p == 0) {
                         let path = l.img
                         let spr = PIXI.Sprite.from(path)
                         let dx = -this.data.offset[0] + l.offset[0]
