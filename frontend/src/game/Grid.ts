@@ -71,7 +71,6 @@ export default class Grid {
         this.key = this.x + "_" + this.y
 
         /*
-
         // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
         for (let i = 0; i < this.containers.length; i++) {
             const c = this.containers[i];
