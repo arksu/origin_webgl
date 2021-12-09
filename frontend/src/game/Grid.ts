@@ -55,9 +55,6 @@ export default class Grid {
 
     public readonly key: string
 
-    private spriteTextureNames: string[] = []
-    // private sprites: PIXI.Sprite[] = [];
-
     private _visible: boolean = true
 
     private readonly _program: PIXI.Program
@@ -69,16 +66,6 @@ export default class Grid {
         this.absoluteX = x * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.absoluteY = y * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.key = this.x + "_" + this.y
-
-        /*
-        // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
-        for (let i = 0; i < this.containers.length; i++) {
-            const c = this.containers[i];
-            setTimeout(() => {
-                c.cacheAsBitmap = true
-            }, i * 5 + 40)
-        }
-         */
 
         this._program = PIXI.Program.from(
             `precision mediump float;
@@ -122,9 +109,7 @@ export default class Grid {
         // создаем чанки грида 4x4
         for (let cx = 0; cx < Grid.DIVIDER; cx++) {
             for (let cy = 0; cy < Grid.DIVIDER; cy++) {
-                let idx = cx + cy * Grid.DIVIDER
-                let container = this.makeChunk(cx, cy, idx)
-                // container.visible = false
+                let container = this.makeChunk(cx, cy)
                 this.containers.push(container)
                 this.parent.addChild(container)
             }
@@ -161,14 +146,11 @@ export default class Grid {
      */
     public rebuild() {
         console.log("grid rebuild", this.key)
-        // TODO перестраивать только ту часть грида которая реально изменилась
-        //  надо делать дифф тайлов по которым построли чанки и актуальными тайлами
-
         this.destroy()
         this.makeChunks()
     }
 
-    private makeChunk(cx: number, cy: number, idx: number): PIXI.Container {
+    private makeChunk(cx: number, cy: number): PIXI.Container {
         let container = new PIXI.Container();
         container.sortableChildren = true
         // координаты грида с учетом чанка
@@ -178,14 +160,14 @@ export default class Grid {
         container.x = x * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE - y * Tile.TILE_WIDTH_HALF * Tile.GRID_SIZE - Tile.TILE_WIDTH_HALF;
         container.y = x * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE + y * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE;
 
-        this.makeTiles(container, cx, cy, idx);
+        this.makeTiles(container, cx, cy);
         container.calculateBounds()
         // console.log("grid screen x=" + container.x + " y=" + container.y + " w=" + container.width + " h=" + container.height)
 
         return container;
     }
 
-    private makeTiles(container: PIXI.Container, cx: number, cy: number, chunk: number) {
+    private makeTiles(container: PIXI.Container, cx: number, cy: number) {
         const tiles = Client.instance.map[this.key].tiles;
 
         // создаем заранее массив в 2 раза больше чем надо (под кусочки тайлов)
@@ -205,11 +187,7 @@ export default class Grid {
 
                 const tn = Tile.getGroundTexture(tiles[idx], x, y)
                 if (tn !== undefined) {
-                    this.spriteTextureNames[idx] = tn
-
                     let path = tn
-                    // if (path.includes(".")) path = "assets/" + path
-                    // console.log(path)
 
                     const sx = tx * Tile.TILE_WIDTH_HALF - ty * Tile.TILE_WIDTH_HALF
                     const sy = tx * Tile.TILE_HEIGHT_HALF + ty * Tile.TILE_HEIGHT_HALF
