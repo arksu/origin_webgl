@@ -64,9 +64,13 @@ export default class Grid {
         this.absoluteX = x * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.absoluteY = y * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.key = this.x + "_" + this.y
-        console.log("new grid", this.key)
+        // console.log("new grid", this.key)
 
+// замерим время на создание грида
+        const timerName = "make grid " + this.key;
+        console.time(timerName)
         this.makeChunks()
+        console.timeEnd(timerName)
 
         // агрессивное кэширование гридов карты, иначе каждый раз все рендерится потайлово
         for (let i = 0; i < this.containers.length; i++) {
