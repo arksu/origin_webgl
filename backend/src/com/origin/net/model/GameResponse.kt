@@ -81,21 +81,6 @@ class MapGridData(grid: Grid, flag: Type) : ServerMessage("m") {
     private val a: Int = flag.ordinal
 
     private val tiles: ByteArray? = if (a > 0) grid.tilesBlob else null
-
-//    private val etiles: ByteArray?
-
-//    init {
-//        if (tiles == null) {
-//            etiles = null
-//        } else {
-//            val bt = ArrayList<Byte>(GRID_SQUARE * 2)
-//            for (x in 0..GRID_SIZE) for (y in 0..GRID_SIZE) {
-//                val idx = y * GRID_SIZE + x
-//                val baseTile = tiles[idx]
-//            }
-//            etiles = ByteArray(2)
-//        }
-//    }
 }
 
 /**

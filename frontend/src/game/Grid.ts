@@ -25,6 +25,34 @@ export default class Grid {
 
     private static readonly MAKE_CORNERS = true
 
+    private static readonly PROGRAM: PIXI.Program = PIXI.Program.from(
+        `precision mediump float;
+
+    attribute vec2 aVertexPosition;
+    attribute vec2 aTextureCoord;
+
+    uniform mat3 translationMatrix;
+    uniform mat3 projectionMatrix;
+
+    varying vec2 vUvs;
+
+    void main() {
+
+        vUvs = aTextureCoord;
+        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+
+    }`,
+        `precision mediump float;
+
+    varying vec2 vUvs;
+
+    uniform sampler2D uSamplerTexture;
+
+    void main() {
+
+        gl_FragColor = texture2D(uSamplerTexture, vUvs);
+    }`);
+
     /**
      * размер одной стороны чанка
      */
@@ -57,8 +85,6 @@ export default class Grid {
 
     private _visible: boolean = true
 
-    private readonly _program: PIXI.Program
-
     constructor(parent: PIXI.Container, x: number, y: number) {
         this.parent = parent;
         this.x = x;
@@ -67,36 +93,6 @@ export default class Grid {
         this.absoluteY = y * Tile.FULL_GRID_SIZE + Tile.FULL_GRID_SIZE / 2
         this.key = this.x + "_" + this.y
 
-        this._program = PIXI.Program.from(
-            `precision mediump float;
-
-    attribute vec2 aVertexPosition;
-    attribute vec2 aTextureCoord;
-
-    uniform mat3 translationMatrix;
-    uniform mat3 projectionMatrix;
-
-    varying vec2 vUvs;
-
-    void main() {
-
-        vUvs = aTextureCoord;
-        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-
-    }`,
-            `precision mediump float;
-
-    varying vec2 vUvs;
-
-    uniform sampler2D uSamplerTexture;
-
-    void main() {
-
-        gl_FragColor = texture2D(uSamplerTexture, vUvs);
-    }`);
-
-        console.log()
-
         // замерим время на создание грида
         const timerName = "make grid " + this.key;
         console.time(timerName)
@@ -104,7 +100,6 @@ export default class Grid {
         this.makeChunks()
 
         console.timeEnd(timerName)
-
     }
 
     private makeChunks() {
@@ -289,7 +284,7 @@ export default class Grid {
         vertexBuffer.finish()
         const geometry = new PIXI.MeshGeometry(vertexBuffer.vertex, vertexBuffer.uv, vertexBuffer.index)
 
-        const mesh = new PIXI.Mesh(geometry, new PIXI.Shader(this._program, {
+        const mesh = new PIXI.Mesh(geometry, new PIXI.Shader(Grid.PROGRAM, {
             uSamplerTexture: PIXI.Texture.from(Tile.ATLAS),
         }), PIXI.State.for2d(), PIXI.DRAW_MODES.TRIANGLES);
 
