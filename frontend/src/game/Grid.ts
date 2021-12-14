@@ -193,6 +193,7 @@ export default class Grid {
 
 //=================================================================
 
+                    let wasCorners = false
                     if (Grid.MAKE_CORNERS) {
                         tr = []
                         // идем по тайлам вокруг целевого и заполним массив окружающих тайлов tr
@@ -251,6 +252,7 @@ export default class Grid {
                                 if (arr !== undefined) {
                                     let path = arr.get(getRandomByCoord(x, y))
                                     if (path !== undefined) {
+                                        wasCorners = true
                                         vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
                                     }
                                 }
@@ -260,6 +262,7 @@ export default class Grid {
                                 if (arr !== undefined) {
                                     let path = arr.get(getRandomByCoord(x, y))
                                     if (path !== undefined) {
+                                        wasCorners = true
                                         vertexBuffer.addVertex(sx, sy, Tile.TEXTURE_WIDTH, Tile.TEXTURE_HEIGHT, PIXI.Texture.from(path))
                                     }
                                 }
@@ -268,12 +271,14 @@ export default class Grid {
 
                     }
 // ==========================================================================
-                    let terrain = Tile.terrains[tiles[idx]]
-                    if (terrain !== undefined) {
-                        let sprList = terrain.generate(x, y, sx, sy)
-                        if (sprList !== undefined) {
-                            for (let i = 0; i < sprList.length; i++) {
-                                container.addChild(sprList[i])
+                    if (!wasCorners) {
+                        let terrain = Tile.terrains[tiles[idx]]
+                        if (terrain !== undefined) {
+                            let sprList = terrain.generate(x, y, sx + Tile.TILE_WIDTH_HALF, sy + Tile.TILE_HEIGHT_HALF)
+                            if (sprList !== undefined) {
+                                for (let i = 0; i < sprList.length; i++) {
+                                    container.addChild(sprList[i])
+                                }
                             }
                         }
                     }
