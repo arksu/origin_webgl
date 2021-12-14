@@ -86,7 +86,7 @@ export default class Game {
     /**
      * таймер для непрерывного движения пока нажата ЛКМ
      */
-    private continousMovingTimer: number = -1
+    private continuousMovingTimer: number = -1
 
     /**
      * последние экранные координаты при нажатой ЛКМ
@@ -317,7 +317,7 @@ export default class Game {
             })
 
             // запускаем таймер который периодически шлет клики по карте на сервер в текущие экранные координаты
-            this.continousMovingTimer = setInterval(() => {
+            this.continuousMovingTimer = setInterval(() => {
                 if (this.lastMoveCoord !== undefined) {
                     console.log("lastMoveCoord", this.lastMoveCoord)
                     const cp = this.coordScreen2Game(this.lastMoveCoord.clone());
@@ -371,11 +371,11 @@ export default class Game {
             this.touchCurrent = {}
         } else {
             // выключим таймер непрерывного движения
-            if (this.continousMovingTimer !== -1) {
-                clearInterval(this.continousMovingTimer)
+            if (this.continuousMovingTimer !== -1) {
+                clearInterval(this.continuousMovingTimer)
             }
             this.lastMoveCoord = undefined
-            this.continousMovingTimer = -1
+            this.continuousMovingTimer = -1
         }
     }
 

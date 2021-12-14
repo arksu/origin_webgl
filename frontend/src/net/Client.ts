@@ -18,7 +18,6 @@ export default class Client {
      */
     public static apiUrl: string;
 
-
     /**
      * была ли хоть одна попытка входа?
      */

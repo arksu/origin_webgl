@@ -1,5 +1,20 @@
 import {GameObject} from "@/game/GameObject";
 
+export const MAP_DATA = "m";
+export const MAP_CONFIRMED = "mc";
+export const OBJECT_ADD = "oa";
+export const OBJECT_DELETE = "od";
+export const OBJECT_MOVE = "om";
+export const OBJECT_STOP = "os";
+export const STATUS_UPDATE = "su";
+export const CONTEXT_MENU = "cm";
+export const ACTION_PROGRESS = "ap";
+export const INVENTORY_UPDATE = "iv";
+export const INVENTORY_CLOSE = "ic";
+export const PLAYER_HAND = "ph";
+export const CREATURE_SAY = "cs";
+export const FILE_CHANGED = "fc";
+
 export interface MapGridData {
     readonly x: number
     readonly y: number
@@ -83,14 +98,16 @@ export interface ActionProgressData {
     readonly t: number
 }
 
-export interface Attr {
+export interface StatusUpdateAttribute {
+    // index
     readonly i: number
+    // value
     readonly v: number
 }
 
 export interface StatusUpdate {
     readonly id: number
-    readonly list: Attr[]
+    readonly list: StatusUpdateAttribute[]
 }
 
 export interface InvItem {

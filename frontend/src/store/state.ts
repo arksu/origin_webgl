@@ -7,7 +7,7 @@ export const state = {
     ssid: localStorage.getItem("ssid") || undefined as undefined | string,
 
     /**
-     * последняя ошибка зарегистрированная
+     * последняя зарегистрированная ошибка
      */
     lastError: undefined as string | undefined,
 
