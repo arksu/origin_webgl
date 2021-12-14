@@ -76,5 +76,6 @@ export default class Client {
         this.objects = {}
         this.chatHistory = []
         store.commit(MutationTypes.INVENTORIES_CLEAR)
+        store.commit(MutationTypes.SET_HAND, undefined)
     }
 }

@@ -16,6 +16,7 @@ import Client from "@/net/Client";
 export default defineComponent({
   name: "Hand",
   props: {
+    // offset in px
     ox: Number,
     oy: Number
   },

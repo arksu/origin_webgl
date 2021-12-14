@@ -21,10 +21,10 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import Item from "@/views/Item.vue";
-import Window from "@/views/Window.vue";
+import Item from "@/views/game/Item.vue";
+import Window from "@/views/game/Window.vue";
 import {InventoryUpdate, InvItem} from "@/net/Packets";
-import ItemSlot from "@/views/ItemSlot.vue";
+import ItemSlot from "@/views/game/ItemSlot.vue";
 import Net from "@/net/Net";
 
 export default defineComponent({

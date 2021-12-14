@@ -114,6 +114,7 @@ export interface InventoryUpdate {
 
 export interface HandData {
     readonly icon ?: string
+    // offset in px
     readonly mx : number
     readonly my : number
 }

@@ -6,7 +6,7 @@
     </div>
 
     <div class="close-btn-back">
-      <img alt="" style="float: right; margin-right: 3px" src="assets/window_close.png">
+      <img alt="" style="float: right; margin-right: 3px" src="../../../assets/window_close.png">
     </div>
     <div class="header" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
       <div class="title">

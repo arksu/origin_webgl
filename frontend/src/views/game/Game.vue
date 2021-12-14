@@ -5,13 +5,16 @@
     </div>
   </div>
 
+  <!-- CHAT -->
   <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px; pointer-events: none;"
         @submit.prevent="chatSubmit"
         action="#">
     <div>
-      <li v-for="r in chatRows">
-        <span class="chat-line">{{ r }}</span>
-      </li>
+      <ul>
+        <li v-for="r in chatRows">
+          <span class="chat-line">{{ r }}</span>
+        </li>
+      </ul>
       <!-- hack for refresh chatRows value -->
       <span style="display: none">{{ cnt }}</span>
     </div>
@@ -20,8 +23,9 @@
     <input style="pointer-events: auto;" type="submit" value=">">
   </form>
 
-  <Inventory :inv="i" v-for="i in $store.state.inventories" :key="i.id"></Inventory>
-  <Hand v-if="$store.state.hand !== undefined" :ox="$store.state.hand.mx" :oy="$store.state.hand.my"></Hand>
+  <Inventory v-if="active" :inv="i" v-for="i in $store.state.inventories" :key="i.id"></Inventory>
+
+  <Hand v-if="$store.state.hand !== undefined && active" :ox="$store.state.hand.mx" :oy="$store.state.hand.my"></Hand>
 </template>
 
 <script lang="ts">
@@ -30,8 +34,8 @@ import Net from "@/net/Net";
 import router from "@/router";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
-import Inventory from "@/views/Inventory.vue";
-import Hand from "@/views/Hand.vue";
+import Inventory from "@/views/game/Inventory.vue";
+import Hand from "@/views/game/Hand.vue";
 import {ActionTypes} from "@/store/action-types";
 
 export default defineComponent({
@@ -93,11 +97,12 @@ export default defineComponent({
     }
   },
   unmounted() {
+    Client.instance.onChatMessage = undefined;
     if (Net.instance) Net.instance.disconnect();
   },
   methods: {
     chatSubmit() {
-      if (this.chatText !== undefined && this.chatText.length > 0) {
+      if (this.chatText.length > 0) {
         console.log("chat submit " + this.chatText)
         this.chatHistory.unshift(this.chatText)
         this.chatHistory.splice(7)
