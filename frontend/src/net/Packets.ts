@@ -1,19 +1,21 @@
 import {GameObject} from "@/game/GameObject";
 
-export const MAP_DATA = "m";
-export const MAP_CONFIRMED = "mc";
-export const OBJECT_ADD = "oa";
-export const OBJECT_DELETE = "od";
-export const OBJECT_MOVE = "om";
-export const OBJECT_STOP = "os";
-export const STATUS_UPDATE = "su";
-export const CONTEXT_MENU = "cm";
-export const ACTION_PROGRESS = "ap";
-export const INVENTORY_UPDATE = "iv";
-export const INVENTORY_CLOSE = "ic";
-export const PLAYER_HAND = "ph";
-export const CREATURE_SAY = "cs";
-export const FILE_CHANGED = "fc";
+export enum ServerPacket {
+    MAP_DATA = "m",
+    MAP_CONFIRMED = "mc",
+    OBJECT_ADD = "oa",
+    OBJECT_DELETE = "od",
+    OBJECT_MOVE = "om",
+    OBJECT_STOP = "os",
+    STATUS_UPDATE = "su",
+    CONTEXT_MENU = "cm",
+    ACTION_PROGRESS = "ap",
+    INVENTORY_UPDATE = "iv",
+    INVENTORY_CLOSE = "ic",
+    PLAYER_HAND = "ph",
+    CREATURE_SAY = "cs",
+    FILE_CHANGED = "fc",
+}
 
 export interface MapGridData {
     readonly x: number
@@ -130,8 +132,8 @@ export interface InventoryUpdate {
 }
 
 export interface HandData {
-    readonly icon ?: string
+    readonly icon?: string
     // offset in px
-    readonly mx : number
-    readonly my : number
+    readonly mx: number
+    readonly my: number
 }

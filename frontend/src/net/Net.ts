@@ -13,15 +13,7 @@ import {
     ObjectMoved,
     ObjectStopped,
     StatusUpdate,
-    MAP_DATA,
-    MAP_CONFIRMED,
-    OBJECT_ADD,
-    OBJECT_DELETE,
-    OBJECT_MOVE,
-    OBJECT_STOP,
-    STATUS_UPDATE,
-    CONTEXT_MENU,
-    ACTION_PROGRESS, INVENTORY_UPDATE, INVENTORY_CLOSE, PLAYER_HAND, CREATURE_SAY, FILE_CHANGED
+    ServerPacket
 } from "@/net/Packets";
 import {MutationTypes} from "@/store/mutation-types";
 
@@ -244,7 +236,7 @@ export default class Net {
      */
     protected onChannelMessage(channel: string, data: any) {
         switch (channel) {
-            case MAP_DATA: {
+            case ServerPacket.MAP_DATA: {
                 let p = (<MapGridData>data)
                 let key = p.x + "_" + p.y;
                 switch (p.a) {
@@ -268,7 +260,7 @@ export default class Net {
                 }
                 break;
             }
-            case MAP_CONFIRMED : {
+            case ServerPacket.MAP_CONFIRMED : {
                 for (let mapKey in Client.instance.map) {
                     let s = mapKey.split("_");
                     let x: number = +s[0];
@@ -277,7 +269,7 @@ export default class Net {
                 }
                 break
             }
-            case OBJECT_ADD: {
+            case ServerPacket.OBJECT_ADD: {
                 const old = Client.instance.objects[data.id]
                 Client.instance.objects[data.id] = data
                 if (old !== undefined) {
@@ -288,14 +280,14 @@ export default class Net {
                 Game.instance?.updateMapScalePos()
                 break;
             }
-            case OBJECT_DELETE: {
+            case ServerPacket.OBJECT_DELETE: {
                 let obj = Client.instance.objects[(<ObjectDel>data).id];
                 obj.moveController?.stop()
                 Game.instance?.onObjectDelete(obj)
                 delete Client.instance.objects[(<ObjectDel>data).id];
                 break;
             }
-            case OBJECT_MOVE : {
+            case ServerPacket.OBJECT_MOVE : {
                 let obj = Client.instance.objects[data.id];
                 if (obj !== undefined) {
                     if (obj.moveController === undefined) {
@@ -306,7 +298,7 @@ export default class Net {
                 }
                 break;
             }
-            case OBJECT_STOP : {
+            case ServerPacket.OBJECT_STOP : {
                 let obj = Client.instance.objects[data.id];
                 if (obj !== undefined) {
                     if (obj.moveController !== undefined) {
@@ -322,7 +314,7 @@ export default class Net {
                 Game.instance?.updateMapScalePos()
                 break;
             }
-            case STATUS_UPDATE : {
+            case ServerPacket.STATUS_UPDATE : {
                 let statusUpdate = <StatusUpdate>data
                 if (statusUpdate.id == Client.instance.selectedCharacterId) {
                     for (let i = 0; i < statusUpdate.list.length; i++) {
@@ -332,7 +324,7 @@ export default class Net {
                 }
                 break
             }
-            case CONTEXT_MENU : {
+            case ServerPacket.CONTEXT_MENU : {
                 let cm = <ContextMenuData>data
                 let obj = Client.instance.objects[cm.id];
                 if (obj !== undefined) {
@@ -343,21 +335,21 @@ export default class Net {
                 }
                 break
             }
-            case ACTION_PROGRESS : {
+            case ServerPacket.ACTION_PROGRESS : {
                 let ap = <ActionProgressData>data
                 Game.instance?.setActionProgress(ap)
                 break
             }
-            case INVENTORY_UPDATE : {
+            case ServerPacket.INVENTORY_UPDATE : {
                 let inv = <InventoryUpdate>data
                 store.commit(MutationTypes.INVENTORY_UPDATE, inv)
                 break
             }
-            case INVENTORY_CLOSE : {
+            case ServerPacket.INVENTORY_CLOSE : {
                 store.commit(MutationTypes.INVENTORY_CLOSE, data.id)
                 break
             }
-            case PLAYER_HAND : { // player hand
+            case ServerPacket.PLAYER_HAND : { // player hand
                 let hd = <HandData>data
                 if (hd.icon !== undefined) {
                     store.commit(MutationTypes.SET_HAND, hd)
@@ -366,7 +358,7 @@ export default class Net {
                 }
                 break
             }
-            case CREATURE_SAY : {
+            case ServerPacket.CREATURE_SAY : {
                 let obj = Client.instance.objects[data.id]
                 // канал в который пришло сообщение
                 let c = data.c == 0xff ? "System" : ((obj !== undefined && obj.a !== undefined) ? obj.a.n : "unknown")
@@ -377,7 +369,7 @@ export default class Net {
                 break;
             }
 
-            case FILE_CHANGED : {
+            case ServerPacket.FILE_CHANGED : {
                 let f: string = data.f
                 for (let key in Client.instance.objects) {
                     Client.instance.objects[key].view?.onAssetsChanged(f)
