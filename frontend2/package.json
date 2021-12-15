@@ -1,0 +1,20 @@
+{
+  "name": "origin",
+  "version": "0.5.1",
+  "author": "arksu",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack serve",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^5.5.0",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0"
+  },
+  "dependencies": {
+    "pixi.js": "^6.2.0",
+    "scrypt-js": "^3.0.1"
+  }
+}
