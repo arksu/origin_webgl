@@ -1,10 +1,19 @@
 const path = require('path');
+
+const {DefinePlugin} = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {VueLoaderPlugin} = require('vue-loader')
 
 module.exports = {
     mode: 'development',
-    entry: './src/main.js',
+    entry: './src/main.ts',
+    devtool: 'inline-source-map',
+    resolve: {
+        alias: {
+            // '@': path.join(__dirname, 'src')
+        },
+        extensions: ['.ts', '.js'],
+    },
     plugins: [
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
@@ -12,6 +21,10 @@ module.exports = {
             template: "./src/index.html",
             filename: 'index.html'
         }),
+        new DefinePlugin({
+            __VUE_OPTIONS_API__: true,
+            __VUE_PROD_DEVTOOLS__: false,
+        })
     ],
     output: {
         filename: '[name].bundle.js',
@@ -20,6 +33,14 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+                options: {
+                    appendTsSuffixTo: [/\.vue$/],
+                },
+                exclude: /node_modules/,
+            },
             {
                 test: /\.vue$/,
                 use: 'vue-loader'

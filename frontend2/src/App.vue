@@ -4,16 +4,13 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "App"
-}
+<script lang="ts">
 </script>
 
 <style scoped lang="scss">
 
 .some {
-  color: red;
+  color: #093366;
 }
 
 </style>
