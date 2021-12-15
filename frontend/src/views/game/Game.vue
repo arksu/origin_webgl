@@ -5,6 +5,9 @@
     </div>
   </div>
 
+  <!-- AVATAR -->
+  <avatar></avatar>
+
   <!-- CHAT -->
   <form v-if="active" style="position: absolute; z-index: 10; left: 20px; bottom: 20px; pointer-events: none;"
         @submit.prevent="chatSubmit"
@@ -34,13 +37,14 @@ import Net from "@/net/Net";
 import router from "@/router";
 import Client from "@/net/Client";
 import Game from "@/game/Game";
-import Inventory from "@/views/game/Inventory.vue";
-import Hand from "@/views/game/Hand.vue";
+import Inventory from "./Inventory.vue";
+import Hand from "./Hand.vue";
+import Avatar from  "./Avatar.vue";
 import {ActionTypes} from "@/store/action-types";
 
 export default defineComponent({
   name: "Game",
-  components: {Hand, Inventory},
+  components: {Hand, Inventory, Avatar},
   data() {
     return {
       active: false as boolean,

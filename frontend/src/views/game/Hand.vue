@@ -3,6 +3,7 @@
       :style="'left: ' + (left - ox) + 'px; top: ' + (top - oy) + 'px;'"
       class="tooltip">
     <img
+        alt="hand"
         style="display: block"
         :src="'/assets' +$store.state.hand.icon"
     />
