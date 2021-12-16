@@ -30,6 +30,7 @@ import PasswordField from "../components/PasswordField.vue"
 import SubmitButton from "../components/SubmitButton.vue";
 import Logo from "../components/Logo.vue";
 import {makeHash} from "../utils/passwordHash";
+import {useMainStore} from "../store";
 
 export default defineComponent({
   name: "Login",
@@ -37,6 +38,8 @@ export default defineComponent({
   setup() {
     const login = ref('');
     const password = ref('');
+
+    const store = useMainStore()
 
     const submit = () => {
       // запомним что ввели в поля ввода
@@ -49,7 +52,7 @@ export default defineComponent({
       // password.value = ''
     }
 
-    return {login, password, submit}
+    return {login, password, submit, store}
   }
 })
 </script>
