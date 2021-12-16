@@ -7,6 +7,9 @@
     "dev": "webpack serve",
     "build": "webpack"
   },
+  "browser": {
+    "buffer": false
+  },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.2.26",
     "css-loader": "^6.5.1",

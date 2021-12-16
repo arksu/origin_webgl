@@ -1,12 +1,25 @@
 <template>
-  <input type="password" placeholder="Password" required v-model="password">
+  <input type="password" placeholder="Password" required v-model="value">
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {computed, defineComponent} from 'vue'
 
 export default defineComponent({
-  name: "PasswordField"
+  name: "PasswordField",
+  props: {
+    modelValue: String
+  },
+  setup(props, {emit}) {
+    const value = computed({
+      get: () => props.modelValue,
+      set: (value) => emit('update:modelValue', value)
+    })
+
+    return {
+      value,
+    }
+  }
 })
 
 </script>

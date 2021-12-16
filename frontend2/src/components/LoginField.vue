@@ -1,15 +1,24 @@
 <template>
-  <input v-focus type="text" placeholder="Login" required v-model="login">
+  <input v-focus type="text" placeholder="Login" required v-model="value">
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {computed, defineComponent} from 'vue'
 
 export default defineComponent({
-  name: "LoginField"
+  name: "LoginField",
+  props: {
+    modelValue: String
+  },
+  setup(props, {emit}) {
+    const value = computed({
+      get: () => props.modelValue,
+      set: (value) => emit('update:modelValue', value)
+    })
+
+    return {
+      value,
+    }
+  }
 })
 </script>
-
-<style scoped>
-
-</style>

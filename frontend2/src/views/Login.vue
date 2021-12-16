@@ -7,10 +7,9 @@
 
       <div class="login-panel">
         <form @submit.prevent="submit" action="#">
-          <login-field/>
-          <password-field/>
-
-          <submit-button/>
+          <login-field v-model="login"/>
+          <password-field v-model="password"/>
+          <submit-button :disabled="false"/>
 
           <div class="signup-link">
             Not a member?
@@ -24,16 +23,34 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {ref, defineComponent} from 'vue'
 
 import LoginField from "../components/LoginField.vue";
 import PasswordField from "../components/PasswordField.vue"
 import SubmitButton from "../components/SubmitButton.vue";
 import Logo from "../components/Logo.vue";
+import {makeHash} from "../utils/passwordHash";
 
 export default defineComponent({
   name: "Login",
-  components: {Logo, LoginField, PasswordField, SubmitButton}
+  components: {Logo, LoginField, PasswordField, SubmitButton},
+  setup() {
+    const login = ref('');
+    const password = ref('');
+
+    const submit = () => {
+      // запомним что ввели в поля ввода
+      localStorage.setItem("login", login.value || "");
+      localStorage.setItem("password", password.value || "");
+
+      const hash = makeHash(password.value);
+
+      // login.value = ''
+      // password.value = ''
+    }
+
+    return {login, password, submit}
+  }
 })
 </script>
 

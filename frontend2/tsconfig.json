@@ -14,9 +14,9 @@
     "moduleResolution": "node",
     "baseUrl": "src",
     "paths": {
-      "src/*": [
-        "src/*"
-      ]
+//      "src/*": [
+//        "src/*"
+//      ]
     },
     "lib": [
       "esnext",
