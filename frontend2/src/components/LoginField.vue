@@ -1,20 +1,15 @@
 <template>
-  <router-view />
+  <input v-focus type="text" placeholder="Login" required v-model="login">
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue'
 
 export default defineComponent({
-  name: "App",
+  name: "LoginField"
 })
-
 </script>
 
-<style scoped lang="scss">
-
-.some {
-  color: #093366;
-}
+<style scoped>
 
 </style>

@@ -1,20 +1,15 @@
 <template>
-  <router-view />
+
 </template>
 
-<script lang="ts">
+<script>
 import {defineComponent} from 'vue'
 
 export default defineComponent({
-  name: "App",
+  name: "SignUp",
 })
-
 </script>
 
-<style scoped lang="scss">
-
-.some {
-  color: #093366;
-}
+<style scoped>
 
 </style>

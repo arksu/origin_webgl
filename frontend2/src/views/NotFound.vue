@@ -1,20 +1,17 @@
 <template>
-  <router-view />
+  <p>
+    Not found
+  </p>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue'
 
 export default defineComponent({
-  name: "App",
+  name: "NotFound",
 })
-
 </script>
 
-<style scoped lang="scss">
-
-.some {
-  color: #093366;
-}
+<style scoped>
 
 </style>

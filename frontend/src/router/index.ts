@@ -1,11 +1,9 @@
 import {createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw} from "vue-router";
-import store from "@/store/store"
 
 import Login from "@/views/Login.vue";
 import Signup from "@/views/Signup.vue";
 import Game from "@/views/game/Game.vue";
 import NotFound from "@/views/NotFound.vue";
-import Client from "@/net/Client";
 import Characters from "@/views/characters/Characters.vue";
 import NewCharacter from "@/views/characters/NewCharacter.vue";
 import About from "@/views/About.vue";
