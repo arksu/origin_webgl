@@ -2,8 +2,7 @@ import {defineStore} from 'pinia'
 
 export const useMainStore = defineStore('main', {
     state: () => ({
-        counter: 0,
-        name: 'Eduardo',
+        lastError: null as string | null,
         ssid: localStorage.getItem('ssid')
     }),
     getters: {
