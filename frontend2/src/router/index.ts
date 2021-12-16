@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw} from "vue-router";
 import Login from "../views/Login.vue";
 import NotFound from "../views/NotFound.vue";
+import SignUp from "../views/SignUp.vue";
 import About from "../views/About.vue";
 import guards from "./guards";
 
@@ -9,6 +10,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/login",
         name: "Login",
         component: Login
+    },
+    {
+        path: "/signup",
+        name: "SignUp",
+        component: SignUp
     },
     {
         path: "/about",
