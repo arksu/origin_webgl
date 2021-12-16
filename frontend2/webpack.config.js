@@ -9,10 +9,11 @@ module.exports = {
     entry: './src/main.ts',
     devtool: 'inline-source-map',
     resolve: {
-        alias: {
-            // '@': path.join(__dirname, 'src')
-        },
         extensions: ['.ts', '.js'],
+        alias: {
+            'src': path.resolve(__dirname, 'src')
+            // 'vue': '@vue/runtime-dom', // ?????
+        }
     },
     plugins: [
         new VueLoaderPlugin(),

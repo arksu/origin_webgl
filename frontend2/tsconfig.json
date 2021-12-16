@@ -12,15 +12,12 @@
     "strict": true,
     "jsx": "preserve",
     "moduleResolution": "node",
-    "baseUrl": ".",
-//    "types": [
-//      "webpack-env"
-//    ],
-//    "paths": {
-//      "@/*": [
-//        "src/*"
-//      ]
-//    },
+    "baseUrl": "src",
+    "paths": {
+      "src/*": [
+        "src/*"
+      ]
+    },
     "lib": [
       "esnext",
       "dom",

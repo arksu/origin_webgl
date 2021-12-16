@@ -1,3 +1,10 @@
+@use "variables" as *;
+
+$inactiveTextColor: #bebebe;
+$textColor : #d5eeed;
+$linkColor: #7ed0fc;
+$linkHoverColor: rgba(65, 238, 238, 0.8);
+
 .padding-all {
   display: flex;
   align-items: center;
@@ -11,6 +18,10 @@
   max-width: 600px;
 }
 
+.form-container input {
+  font-family: $mainFontName, $secondFont, sans-serif;
+}
+
 .login-panel {
   border-radius: 18px;
   padding: 30px 30px 30px;
@@ -20,7 +31,6 @@
   margin: 0 auto;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 
-  font-family: $mainFontName, $secondFont;
   font-size: 19px;
 }
 
@@ -31,16 +41,15 @@
   outline: none;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid #bebebe;
+  border-bottom: 1px solid $inactiveTextColor;
   border-radius: 4px;
-  font-family: $mainFontName, $secondFont;
   font-size: 19px;
   letter-spacing: 1.6px;
-  color: #d5eeed;
+  color: $textColor;
 }
 
 ::placeholder {
-  color: #bebebe;
+  color: $inactiveTextColor;
 }
 
 .login-button {
@@ -57,7 +66,6 @@
   color: #fff;
   cursor: pointer;
   margin: 0 auto;
-  font-family: $mainFontName, $secondFont;
   -webkit-transition-duration: 0.9s;
   transition-duration: 0.9s;
 }
@@ -91,25 +99,23 @@
 
 .signup-link {
   font-size: 15px;
-  color: #a9b5be;
+  color: $inactiveTextColor;
   padding-top: 20px;
-  font-family: $mainFontName, $secondFont;
   text-align: center;
 }
 
 .signup-link a {
   transition: text-shadow 0.4s ease-in-out;
-  color: #75c4fd;
+  color: $linkColor;
   text-decoration: none;
 }
 
 .signup-link a:hover {
-  text-shadow: 0 0 10px #37cdcdCB;
+  text-shadow: 0 0 10px $linkHoverColor;
 }
 
 .error-message {
   font-size: 16px;
-  font-family: $mainFontName, $secondFont;
   border-radius: 6px;
   color: #cdd2e0;
   background-color: rgba(252, 13, 13, 0.5);

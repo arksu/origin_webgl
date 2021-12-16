@@ -1,14 +1,13 @@
 <template>
-  <input type="password" placeholder="Password" required v-model="password">
+  <input type="submit" value="login" :disabled="isProcessing" class="login-button">
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue'
 
 export default defineComponent({
-  name: "PasswordField"
+  name: "SubmitButton"
 })
-
 </script>
 
 <style scoped>
