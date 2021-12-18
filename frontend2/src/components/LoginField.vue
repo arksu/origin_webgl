@@ -1,5 +1,5 @@
 <template>
-  <input v-focus type="text" placeholder="Login" required v-model="value">
+  <input v-focus id="login" type="text" placeholder="Login" required v-model="value">
 </template>
 
 <script lang="ts">

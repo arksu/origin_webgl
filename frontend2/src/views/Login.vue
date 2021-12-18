@@ -1,5 +1,4 @@
 <template>
-
   <div class="padding-all">
     <div class="form-container">
 
@@ -56,7 +55,7 @@ export default defineComponent({
     })
 
     const submit = async () => {
-      store.ssid = null;
+      store.ssid = null
       store.lastError = null
 
       request.login = login.value
@@ -66,8 +65,8 @@ export default defineComponent({
       store.successLogin(data.value.ssid)
 
       // запомним что ввели в поля ввода в локалсторадже
-      localStorage.setItem("login", login.value || "");
-      localStorage.setItem("password", password.value || "");
+      localStorage.setItem("login", login.value || "")
+      localStorage.setItem("password", password.value || "")
     }
 
     return {login, password, submit, isLoading, response}

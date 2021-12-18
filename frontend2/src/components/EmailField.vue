@@ -1,5 +1,5 @@
 <template>
-  <input type="text" placeholder="Email (optional)" v-model="value">
+  <input type="text" id="email" placeholder="Email (optional)" v-model="value">
 </template>
 
 <script lang="ts">

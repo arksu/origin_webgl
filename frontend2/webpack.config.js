@@ -70,7 +70,7 @@ module.exports = {
         },
         static: ['assets'],
         host: '0.0.0.0',
-        port: 3080,
+        port: 3070,
         proxy: {
             '/api': 'http://0.0.0.0:8010',
             '/api/game': {

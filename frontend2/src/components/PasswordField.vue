@@ -1,5 +1,5 @@
 <template>
-  <input type="password" placeholder="Password" required v-model="value">
+  <input type="password" id="password" placeholder="Password" required v-model="value">
 </template>
 
 <script lang="ts">

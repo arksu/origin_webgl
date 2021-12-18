@@ -2,10 +2,10 @@ import {createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormal
 import Login from "../views/Login.vue";
 import NotFound from "../views/NotFound.vue";
 import SignUp from "../views/SignUp.vue";
-import Characters from "../views/Characters.vue";
 import About from "../views/About.vue";
 import guards from "./guards";
 import {RouteNames} from "./routeNames";
+import Characters from "../views/characters/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
