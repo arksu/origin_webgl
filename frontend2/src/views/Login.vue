@@ -18,7 +18,9 @@
             <router-link :to="{ name: 'SignUp'}">Signup now</router-link>
           </div>
 
-          isLoading : {{ isLoading }}
+          isLoading : {{ isLoading }}<br>
+          response:
+          <pre>{{ response }}</pre>
         </form>
       </div>
     </div>
@@ -26,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import {ref, defineComponent, onMounted} from 'vue'
+import {defineComponent, onMounted, ref} from 'vue'
 
 import LoginField from "../components/LoginField.vue";
 import PasswordField from "../components/PasswordField.vue"
@@ -35,7 +37,7 @@ import ErrorMessage from "../components/ErrorMessage.vue";
 import Logo from "../components/Logo.vue";
 import {makeHash} from "../utils/passwordHash";
 import {useMainStore} from "../store";
-import useApiGetRequest from "../composition/apiRequest";
+import {useApi} from "../composition/useFetch";
 
 export default defineComponent({
   name: "Login",
@@ -46,21 +48,32 @@ export default defineComponent({
     const login = ref('');
     const password = ref('');
 
-    const {isLoading, doRequest, response} = useApiGetRequest("login")
+    const request = {
+      login: '',
+      hash: ''
+    }
 
-    const submit = () => {
+    const {isLoading, response, data, error, fetch} = useApi("login1", {
+      method: "POST",
+      skip: true,
+      data: request
+    })
+    store.lastError = error
+
+    const submit = async () => {
+
+      const hash = makeHash(password.value);
+      store.ssid = null;
+
+      request.login = login.value
+      request.hash = hash
+      store.lastError = null
+      await fetch()
+
+      console.log("success")
       // запомним что ввели в поля ввода
       localStorage.setItem("login", login.value || "");
       localStorage.setItem("password", password.value || "");
-
-      const hash = makeHash(password.value);
-      store.lastError = null;
-      store.ssid = null;
-
-      (async () => {
-        doRequest().then()
-        console.log(response.value)
-      })();
 
       // login.value = ''
       // password.value = ''
@@ -69,7 +82,7 @@ export default defineComponent({
     onMounted(() => {
     })
 
-    return {login, password, submit, isLoading}
+    return {login, password, submit, isLoading, response}
   }
 })
 </script>

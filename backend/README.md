@@ -50,8 +50,13 @@ CREATE DATABASE origin;
 CREATE USER 'origin'@'localhost' IDENTIFIED BY 'origin';
 GRANT ALL PRIVILEGES ON origin.* TO origin@localhost;
 ```
-
 See [server.conf](/backend/config/server.conf)
+
+### Also, you can install phpMyAdmin for easy admin the database
+```shell
+docker run --name pma-origin -d -e PMA_USER=origin -e PMA_PASSWORD=origin --link mariadb-origin:db -p 8030:80 phpmyadmin
+```
+phpMyAdmin will start at 8030 port on localhost
   
 ### Generate map
 ```shell
