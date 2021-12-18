@@ -26,6 +26,7 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
     const store = useMainStore()
 
     const isLoading = ref<boolean>(false)
+    const isSuccess = ref<boolean>(false)
     const error = ref<any>(null)
     const response = ref<null | AxiosResponse>(null)
     const data = ref<any>(null)
@@ -58,22 +59,31 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
             response.value = result
             data.value = result.data
             console.info("api data:", result.data)
+            isSuccess.value = true
             return data
         } catch (ex: any) {
             if (axios.isAxiosError(ex)) {
                 const e = ex as AxiosError
-                // при 403 ответе просто берем ответ сервера
-                if (e.response?.status == 403) {
-                    error.value = e.response.data
+                // console.log('code', e.code)
+                // console.log('message', e.message)
+                // console.log('name', e.name)
+
+                if (e.response) {
+                    // при 403 ответе просто берем ответ сервера
+                    if (e.response.status == 403) {
+                        error.value = e.response.data
+                    } else {
+                        // в остальных случаях формируем ошибку из кода ответа и статуса
+                        error.value = "Error: [" + e.response.status + "] " + e.response.statusText
+                    }
                 } else {
-                    // в остальных случаях формируем ошибку из кода ответа и статуса
-                    error.value = "Error: [" + e.response?.status + "] " + e.response?.statusText
+                    error.value = e.message
                 }
-                store.lastError = error.value
-                console.error(error.value)
             } else {
                 error.value = ex
             }
+            store.lastError = error.value
+            console.error(error.value)
             if (config.logoutOnError) {
                 router.push({name: RouteNames.LOGIN})
             }
@@ -85,5 +95,5 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
     // если не надо пропускать - только тогда сразу выполним запрос
     if (!config.skip) fetch()
 
-    return {isLoading, error, response, data, fetch}
+    return {isLoading, error, isSuccess, response, data, fetch}
 }

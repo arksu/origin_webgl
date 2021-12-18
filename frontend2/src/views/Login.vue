@@ -50,7 +50,7 @@ export default defineComponent({
       hash: ''
     }
 
-    const {isLoading, data, fetch} = useApi("login", {
+    const {isLoading, data, isSuccess, fetch} = useApi("login", {
       method: "POST",
       authorized: false,
       logoutOnError: false,
@@ -66,11 +66,13 @@ export default defineComponent({
       request.hash = hash;
       await fetch()
 
-      store.onSuccessLogin(data.value.ssid)
+      if (isSuccess.value) {
+        store.onSuccessLogin(data.value.ssid)
 
-      // запомним что ввели в поля ввода в локалсторадже
-      localStorage.setItem("login", login.value || "")
-      localStorage.setItem("hash", hash)
+        // запомним что ввели в поля ввода в локалсторадже
+        localStorage.setItem("login", login.value || "")
+        localStorage.setItem("hash", hash)
+      }
     }
 
     // TODO: only for dev
