@@ -1,23 +1,24 @@
 import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
 import {useMainStore} from "../store";
+import {RouteNames} from "./routeNames";
 
 export default function guards(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext) {
     const store = useMainStore()
 
     console.warn("route ", from.name, " => ", to.name);
     // всегда даем переход на "о нас"
-    if (to.name == 'About') {
+    if (to.name == RouteNames.ABOUT) {
         next();
     }
     // всегда даем зарегистрироваться
-    else if (to.name == 'Signup') {
+    else if (to.name == RouteNames.SIGN_UP) {
         next();
-    } else if (to.name == 'Login') {
+    } else if (to.name == RouteNames.LOGIN) {
         next();
-    } else if (to.name == 'Game') {
+    } else if (to.name == RouteNames.GAME) {
         if (!store.isLogged) {
             console.log("not logged")
-            next({name: "Login"})
+            next({name: RouteNames.LOGIN})
             // } else if (Client.instance.selectedCharacterId == undefined) {
             //     next({name: "Characters"})
         } else {
@@ -25,13 +26,13 @@ export default function guards(from: RouteLocationNormalized, to: RouteLocationN
         }
     }
     // если не авторизованы надо перейти на логин форму
-    else if (to.name !== 'Login' && !store.isLogged) {
+    else if (to.name !== RouteNames.LOGIN && !store.isLogged) {
         // это первый запуск?
         if (from.name == undefined) {
             // Client.instance.needAutologin = true;
         }
         console.log("auth required, redirect to login")
-        next({name: "Login"})
+        next({name: RouteNames.LOGIN})
     } else {
         next();
     }

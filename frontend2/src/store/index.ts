@@ -1,4 +1,6 @@
 import {defineStore} from 'pinia'
+import router from "../router";
+import {RouteNames} from "../router/routeNames";
 
 export const useMainStore = defineStore('main', {
     state: () => ({
@@ -10,5 +12,10 @@ export const useMainStore = defineStore('main', {
             return state.ssid != null
         }
     },
-    actions: {}
+    actions: {
+        successLogin(ssid: string) {
+            this.ssid = ssid
+            router.push({name: RouteNames.CHARACTERS})
+        }
+    }
 })

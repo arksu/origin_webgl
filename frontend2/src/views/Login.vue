@@ -15,7 +15,7 @@
 
           <div class="signup-link">
             Not a member?
-            <router-link :to="{ name: 'SignUp'}">Signup now</router-link>
+            <router-link :to="{ name: 'SIGN_UP'}">Signup now</router-link>
           </div>
 
           isLoading : {{ isLoading }}<br>
@@ -53,7 +53,7 @@ export default defineComponent({
       hash: ''
     }
 
-    const {isLoading, response, data, error, fetch} = useApi("login1", {
+    const {isLoading, response, data, error, fetch} = useApi("login", {
       method: "POST",
       skip: true,
       data: request
@@ -70,13 +70,11 @@ export default defineComponent({
       store.lastError = null
       await fetch()
 
-      console.log("success")
-      // запомним что ввели в поля ввода
+      store.successLogin(data.value.ssid)
+
+      // запомним что ввели в поля ввода в локалсторадже
       localStorage.setItem("login", login.value || "");
       localStorage.setItem("password", password.value || "");
-
-      // login.value = ''
-      // password.value = ''
     }
 
     onMounted(() => {
