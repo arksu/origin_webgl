@@ -27,6 +27,7 @@ export const useMainStore = defineStore('main', {
         // выйти (разлогиниться)
         logout() {
             this.ssid = null
+            localStorage.removeItem("hash")
             router.push({name: RouteNames.LOGIN})
         }
     }

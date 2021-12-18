@@ -19,6 +19,8 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useApi} from "../../composition/useApi";
+import router from "../../router";
+import {RouteNames} from "../../router/routeNames";
 
 export default defineComponent({
   name: 'CharacterRow',
@@ -33,26 +35,31 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
-    if (props.id == 0) return;
+  emits: ['onDeleted'],
+  setup(props, {emit}) {
 
-    const {isLoading: deleteInProcess, fetch} = useApi("characters/" + props.id, {
+    const {isLoading: deleteInProcess, fetch: fetchDelete} = useApi("characters/" + props.id, {
       method: 'DELETE',
-      skip: true
     })
 
-    const deleteChar = () => {
+    const selectChar = () => {
+      router.push({name: RouteNames.NEW_CHARACTER})
+    }
+
+    const deleteChar = async () => {
+      // не даем удалять строку которая создает нового чара
+      if (props.id == 0) return;
+
       // if (!confirm("Are you sure to delete this character: " + props.name)) return;
       if (deleteInProcess.value) return
 
-      fetch()
+      await fetchDelete()
+
+      // пошлем в родителя эвент, чтобы он удалил из списка эту строку
+      emit('onDeleted', props.id)
     }
 
-    const selectChar = () => {
-
-    }
-
-    return {deleteChar, deleteInProcess}
+    return {selectChar, deleteChar, deleteInProcess}
   }
 })
 </script>

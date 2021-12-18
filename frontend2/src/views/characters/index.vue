@@ -5,7 +5,7 @@
         Characters<br>
 
         <spinner v-if="isLoading"/>
-        <row v-else v-for="c in list" :id="c.id" :name="c.name"></row>
+        <row v-else v-for="c in list" :id="c.id" :name="c.name" @onDeleted="deleteItem"></row>
 
         <submit-button caption="logout" :onClick="logout"></submit-button>
       </div>
@@ -36,15 +36,21 @@ export default defineComponent({
 
     const {isLoading, data, fetch} = useApi("characters", {
       method: "GET",
-      skip: true,
-      headers: {'Authorization': store.ssid!!}
     })
+
+    const deleteItem = (id: number) => {
+      list.value = list.value.filter(c => c.id != id)
+      const len = 5 - list.value.length
+      for (let i = 0; i < len; i++) {
+        list.value.push({id: 0, name: 'Create New'})
+      }
+    }
 
     onMounted(async () => {
       await fetch()
       list.value = data.value.list
-      const e = 5 - list.value.length
-      for (let i = 0; i < e; i++) {
+      const len = 5 - list.value.length
+      for (let i = 0; i < len; i++) {
         list.value.push({id: 0, name: 'Create New'})
       }
     })
@@ -53,7 +59,7 @@ export default defineComponent({
       store.logout()
     }
 
-    return {list, isLoading, logout}
+    return {list, isLoading, logout, deleteItem}
   }
 })
 </script>

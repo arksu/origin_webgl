@@ -3,10 +3,13 @@ import Login from "../views/Login.vue";
 import NotFound from "../views/NotFound.vue";
 import SignUp from "../views/SignUp.vue";
 import About from "../views/About.vue";
+import Characters from "../views/characters/index.vue";
+import CreateNewCharacter from "../views/characters/CreateNew.vue";
+import Test from "../views/Test.vue"
+
 import guards from "./guards";
 import {RouteNames} from "./routeNames";
-import Characters from "../views/characters/index.vue";
-import Test from "../views/Test.vue"
+
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -23,6 +26,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/characters",
         name: RouteNames.CHARACTERS,
         component: Characters
+    },
+    {
+        path: "/new-character",
+        name: RouteNames.NEW_CHARACTER,
+        component: CreateNewCharacter
     },
     {
         path: "/about",

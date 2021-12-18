@@ -53,7 +53,8 @@ export default defineComponent({
 
     const {isLoading, data, fetch} = useApi("signup", {
       method: "POST",
-      skip: true,
+      authorized: false,
+      logoutOnError: false,
       data: request
     })
 

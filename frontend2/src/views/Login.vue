@@ -52,7 +52,8 @@ export default defineComponent({
 
     const {isLoading, data, fetch} = useApi("login", {
       method: "POST",
-      skip: true,
+      authorized: false,
+      logoutOnError: false,
       data: request
     })
 
@@ -73,7 +74,7 @@ export default defineComponent({
     }
 
     // TODO: only for dev
-    if (login.value && savedHash && !store.wasAutoLogin) {
+    if (login.value && savedHash && !store.wasAutoLogin && !store.lastError) {
       store.wasAutoLogin = true
       submit()
     }
