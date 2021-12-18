@@ -17,10 +17,10 @@
 import {defineComponent, onMounted, ref} from 'vue'
 import Row from "./Row.vue";
 import SubmitButton from "../../components/SubmitButton.vue";
-import {useMainStore} from "../../store";
-import {useApi} from "../../composition/useApi";
 import Test from "../Test.vue";
 import Spinner from "../../components/Spinner.vue";
+import {useMainStore} from "../../store";
+import {useApi} from "../../composition/useApi";
 
 type CharactersResponse = {
   id: number,
@@ -43,6 +43,10 @@ export default defineComponent({
     onMounted(async () => {
       await fetch()
       list.value = data.value.list
+      const e = 5 - list.value.length
+      for (let i = 0; i < e; i++) {
+        list.value.push({id: 0, name: 'Create New'})
+      }
     })
 
     const logout = () => {
