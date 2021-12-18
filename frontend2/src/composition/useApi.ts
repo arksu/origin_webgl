@@ -17,14 +17,15 @@ export const useApi = (path: string, config: AxiosRequestConfig & { skip?: boole
         isLoading.value = true
         try {
             // TODO remove
-            await sleep(350)
+            await sleep(600)
 
-            const result = await axios.request({
-                url: apiUrl + path,
-                ...config
-            })
+            const url = apiUrl + path
+            console.info("api request " + config.method + " [" + url + "]", config.data)
+            const result = await axios.request({url, ...config})
             response.value = result
             data.value = result.data
+            console.info("api data:", result.data)
+            return data
         } catch (ex: any) {
             if (axios.isAxiosError(ex)) {
                 const e = ex as AxiosError

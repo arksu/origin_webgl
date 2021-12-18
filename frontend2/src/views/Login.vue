@@ -40,15 +40,17 @@ export default defineComponent({
   setup() {
     const store = useMainStore()
 
-    const login = ref('');
+    const login = ref(localStorage.getItem('login') || '');
     const password = ref('');
+
+    const savedHash = localStorage.getItem('hash') || ''
 
     const request = {
       login: '',
       hash: ''
     }
 
-    const {isLoading, response, data, fetch} = useApi("login", {
+    const {isLoading, data, fetch} = useApi("login", {
       method: "POST",
       skip: true,
       data: request
@@ -59,17 +61,24 @@ export default defineComponent({
       store.lastError = null
 
       request.login = login.value
-      request.hash = makeHash(password.value);
+      const hash = savedHash || makeHash(password.value);
+      request.hash = hash;
       await fetch()
 
-      store.successLogin(data.value.ssid)
+      store.onSuccessLogin(data.value.ssid)
 
       // запомним что ввели в поля ввода в локалсторадже
       localStorage.setItem("login", login.value || "")
-      localStorage.setItem("password", password.value || "")
+      localStorage.setItem("hash", hash)
     }
 
-    return {login, password, submit, isLoading, response}
+    // TODO: only for dev
+    if (login.value && savedHash && !store.wasAutoLogin) {
+      store.wasAutoLogin = true
+      submit()
+    }
+
+    return {login, password, submit, isLoading}
   }
 })
 </script>

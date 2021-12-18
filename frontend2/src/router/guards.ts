@@ -7,7 +7,7 @@ export default function guards(from: RouteLocationNormalized, to: RouteLocationN
 
     console.warn("route ", from.name, " => ", to.name);
     // всегда даем переход на "о нас"
-    if (to.name == RouteNames.ABOUT) {
+    if (to.name == RouteNames.ABOUT || to.name == 'test') {
         next();
     }
     // всегда даем зарегистрироваться

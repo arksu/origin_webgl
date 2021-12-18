@@ -1,5 +1,6 @@
 <template>
-  <button type="submit" class="login-button" v-bind:class="{'login-button-loading': loading}" v-bind:disabled="loading">
+  <button type="submit" class="login-button" v-bind:class="{'login-button-loading': loading}" v-bind:disabled="loading"
+          :onclick="$emit('onClick')">
     <span class="button__text">{{ caption }}</span>
   </button>
 </template>
@@ -19,6 +20,10 @@ export default defineComponent({
       required: false,
       default: false
     }
+  },
+  emits: ['onClick'],
+  setup() {
+
   }
 })
 </script>

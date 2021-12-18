@@ -4,8 +4,14 @@ import {RouteNames} from "../router/routeNames";
 
 export const useMainStore = defineStore('main', {
     state: () => ({
+        // текст последней ошибки при запросе к апи
         lastError: null as string | null,
-        ssid: localStorage.getItem('ssid')
+
+        // ид сессии (если залогинены)
+        ssid: localStorage.getItem('ssid'),
+
+        // был выполнен автологин по сохраненным учетным данным?
+        wasAutoLogin: false
     }),
     getters: {
         isLogged: (state) => {
@@ -13,9 +19,15 @@ export const useMainStore = defineStore('main', {
         }
     },
     actions: {
-        successLogin(ssid: string) {
+        // был выполнен успешный вход (авторизация или регистрация)
+        onSuccessLogin(ssid: string) {
             this.ssid = ssid
             router.push({name: RouteNames.CHARACTERS})
+        },
+        // выйти (разлогиниться)
+        logout() {
+            this.ssid = null
+            router.push({name: RouteNames.LOGIN})
         }
     }
 })

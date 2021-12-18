@@ -33,6 +33,7 @@ import EmailField from "../components/EmailField.vue";
 import SubmitButton from "../components/SubmitButton.vue";
 import {useMainStore} from "../store";
 import {useApi} from "../composition/useApi";
+import {makeHash} from "../utils/passwordHash";
 
 export default defineComponent({
   name: "SignUp",
@@ -50,7 +51,7 @@ export default defineComponent({
       password: ''
     }
 
-    const {isLoading, response, data, fetch} = useApi("signup", {
+    const {isLoading, data, fetch} = useApi("signup", {
       method: "POST",
       skip: true,
       data: request
@@ -65,15 +66,15 @@ export default defineComponent({
       request.password = password.value
       await fetch()
 
-      store.successLogin(data.value.ssid)
+      store.onSuccessLogin(data.value.ssid)
 
       // запомним что ввели в поля ввода в локалсторадже
       localStorage.setItem("login", login.value || "")
-      localStorage.setItem("password", password.value || "")
+      localStorage.setItem("hash", makeHash(password.value))
     }
 
     return {
-      login, password, email, submit, isLoading, response
+      login, password, email, submit, isLoading
     }
   }
 })

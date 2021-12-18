@@ -6,6 +6,7 @@ import About from "../views/About.vue";
 import guards from "./guards";
 import {RouteNames} from "./routeNames";
 import Characters from "../views/characters/index.vue";
+import Test from "../views/Test.vue"
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -27,6 +28,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/about",
         name: RouteNames.ABOUT,
         component: About
+    },
+    {
+        path: "/test",
+        name: "test",
+        component : Test
     },
     {
         path: "/:catchAll(.*)",

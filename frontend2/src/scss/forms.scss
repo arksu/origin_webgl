@@ -67,10 +67,6 @@ $linkHoverColor: rgba(65, 238, 238, 0.8);
   transition-duration: 0.9s;
 }
 
-.login-button:active {
-  background: #007a63;
-}
-
 .button__text {
   transition: all 0.1s;
 }
@@ -125,24 +121,6 @@ $linkHoverColor: rgba(65, 238, 238, 0.8);
   color: #838383;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
   animation: none;
-}
-
-
-.spinner-frame {
-  font-size: 19px;
-  padding: 10px 20px;
-  letter-spacing: 1.2px;
-  border: none;
-  text-transform: uppercase;
-  outline: none;
-  border-radius: 6px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  background: #1a4f72;
-  color: #fff;
-  margin: 0 auto;
-  -webkit-transition-duration: 0.9s;
-  transition-duration: 0.9s;
 }
 
 @keyframes btn-glow {
