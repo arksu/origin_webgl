@@ -1,7 +1,7 @@
 @use "variables" as *;
 
 $inactiveTextColor: #bebebe;
-$textColor : #d5eeed;
+$textColor: #d5eeed;
 $linkColor: #7ed0fc;
 $linkHoverColor: rgba(65, 238, 238, 0.8);
 
@@ -16,10 +16,6 @@ $linkHoverColor: rgba(65, 238, 238, 0.8);
   margin-top: -12%;
   width: 36%;
   max-width: 600px;
-}
-
-.form-container input {
-  font-family: $mainFontName, $secondFont, sans-serif;
 }
 
 .login-panel {
@@ -53,23 +49,67 @@ $linkHoverColor: rgba(65, 238, 238, 0.8);
 }
 
 .login-button {
+  position: relative;
   font-size: 19px;
   padding: 10px 20px;
   letter-spacing: 1.2px;
   border: none;
+  border-radius: 6px;
+  cursor: pointer;
   text-transform: uppercase;
   outline: none;
-  border-radius: 6px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   background: #1a4f72;
   color: #fff;
-  cursor: pointer;
   margin: 0 auto;
   -webkit-transition-duration: 0.9s;
   transition-duration: 0.9s;
 }
 
+.login-button:active {
+  background: #007a63;
+}
+
+.button__text {
+  transition: all 0.1s;
+}
+
+.login-button-loading .button__text {
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.1s;
+}
+
+.login-button-loading::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 4px solid;
+  border-radius: 80%;
+  border-color: #fff transparent #fff transparent;
+  animation: button-loading-spinner 1.2s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  0% {
+    transform: rotate(0);
+    animation-timing-function: cubic-bezier(0.3, 0.055, 0.675, 0.19);
+  }
+  60% {
+    transform: rotate(360deg);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.5, 1);
+  }
+  100% {
+    transform: rotate(540deg);
+  }
+}
 .login-button:hover {
   -webkit-transition-duration: 0.5s;
   transition-duration: 0.6s;
@@ -87,6 +127,23 @@ $linkHoverColor: rgba(65, 238, 238, 0.8);
   animation: none;
 }
 
+
+.spinner-frame {
+  font-size: 19px;
+  padding: 10px 20px;
+  letter-spacing: 1.2px;
+  border: none;
+  text-transform: uppercase;
+  outline: none;
+  border-radius: 6px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  background: #1a4f72;
+  color: #fff;
+  margin: 0 auto;
+  -webkit-transition-duration: 0.9s;
+  transition-duration: 0.9s;
+}
 
 @keyframes btn-glow {
   from {

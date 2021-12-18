@@ -1,10 +1,13 @@
 import axios, {AxiosError, AxiosRequestConfig, AxiosResponse} from "axios";
 import {ref} from "vue";
 import sleep from "../utils/sleep";
+import {useMainStore} from "../store";
 
 export const apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/"
 
 export const useApi = (path: string, config: AxiosRequestConfig & { skip?: boolean } = {}) => {
+    const store = useMainStore()
+
     const isLoading = ref<boolean>(false)
     const error = ref<any>(null)
     const response = ref<null | AxiosResponse>(null)
@@ -13,7 +16,9 @@ export const useApi = (path: string, config: AxiosRequestConfig & { skip?: boole
     const fetch = async () => {
         isLoading.value = true
         try {
-            await sleep(1000)
+            // TODO remove
+            await sleep(350)
+
             const result = await axios.request({
                 url: apiUrl + path,
                 ...config
@@ -26,8 +31,9 @@ export const useApi = (path: string, config: AxiosRequestConfig & { skip?: boole
                 if (e.response?.status == 403) {
                     error.value = e.response.data
                 } else {
-                    error.value = e.response?.status + " " + e.response?.statusText
+                    error.value = "Error: [" + e.response?.status + "] " + e.response?.statusText
                 }
+                store.lastError = error.value
                 console.error(error.value)
             } else {
                 error.value = ex
