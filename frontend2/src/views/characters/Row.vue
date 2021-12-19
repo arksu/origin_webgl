@@ -1,10 +1,11 @@
 <template>
   <div class="container">
-    <div class="row" v-bind:class="{new_char: id === 0, bg : deleteInProcess }" @click.prevent="selectChar">
+    <div class="row" v-bind:class="{new_char: id === 0, bg_deleting : deleteInProcess, bg_selecting: selectInProcess }"
+         @click.prevent="selectChar">
       {{ name }} {{ id !== 0 ? "[id " + id + "]" : "" }}
     </div>
 
-    <div v-if="id !== 0" class="row delete-char" @click.prevent="deleteChar">
+    <div v-if="id !== 0" class="row delete-char" v-bind:class="{bg_selecting: selectInProcess}" @click.prevent="deleteChar">
       <div v-if="deleteInProcess">
         <i class="fas fa-sync fa-spin"></i>
       </div>
@@ -21,6 +22,7 @@ import {defineComponent} from 'vue'
 import {useApi} from "../../composition/useApi";
 import router from "../../router";
 import {RouteNames} from "../../router/routeNames";
+import {useMainStore} from "../../store";
 
 export default defineComponent({
   name: 'CharacterRow',
@@ -37,16 +39,26 @@ export default defineComponent({
   },
   emits: ['onDeleted'],
   setup(props, {emit}) {
+    const store = useMainStore()
 
     const {isLoading: deleteInProcess, fetch: fetchDelete} = useApi("characters/" + props.id, {
       method: 'DELETE',
     })
 
-    const selectChar = () => {
+    const {isLoading: selectInProcess, isSuccess, fetch: fetchSelect} = useApi("characters/select/" + props.id, {
+      method: 'POST',
+    })
+
+    const selectChar = async () => {
       if (props.id == 0) {
-        router.replace({name: RouteNames.NEW_CHARACTER})
+        await router.replace({name: RouteNames.NEW_CHARACTER})
       } else {
-        router.push({name: RouteNames.GAME})
+        if (store.enteringWorld) return
+        store.enteringWorld = true
+        await fetchSelect()
+        if (isSuccess.value) {
+          await router.push({name: RouteNames.GAME})
+        }
       }
     }
 
@@ -63,7 +75,7 @@ export default defineComponent({
       emit('onDeleted', props.id)
     }
 
-    return {selectChar, deleteChar, deleteInProcess}
+    return {selectChar, deleteChar, deleteInProcess, selectInProcess}
   }
 })
 </script>
@@ -89,10 +101,9 @@ export default defineComponent({
   width: 80%;
 }
 
-.row:hover {
-  -webkit-transition-duration: 0.5s;
+.row:hover:not(.bg_selecting):not(.new_char) {
   transition-duration: 0.6s;
-  background: rgb(34, 140, 190);
+  background: #228CBEFF;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
   animation: btn-glow 0.6s ease-in-out infinite alternate;
 }
@@ -101,13 +112,20 @@ export default defineComponent({
   background-color: rgba(35, 93, 41, 0.6);
 }
 
+.new_char:hover {
+  transition-duration: 0.6s;
+  background: #4A9854FF;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+  animation: btn-glow 0.6s ease-in-out infinite alternate;
+}
+
 .delete-char {
   width: 12%;
   background-color: rgba(174, 35, 39, 0.6);
 }
 
 .delete-char:hover {
-  background: rgba(210, 57, 63, 0.6);
+  background: rgba(220, 41, 48, 0.6) !important;
 }
 
 .loading {
@@ -121,7 +139,7 @@ export default defineComponent({
   font-style: italic;
 }
 
-.bg {
+.bg_deleting {
   color: #c49e9e;
   background: repeating-linear-gradient(
           -45deg,
@@ -129,6 +147,19 @@ export default defineComponent({
           #6c6161 10px,
           #625253 10px,
           #625253 20px
+  );
+  background-size: 400% 400%;
+  animation: moving-back 12s linear infinite;
+}
+
+.bg_selecting {
+  color: #7ec7d0;
+  background: repeating-linear-gradient(
+          -45deg,
+          #548f8f,
+          #548f8f 10px,
+          #4b7d83 10px,
+          #4b7d83 20px
   );
   background-size: 400% 400%;
   animation: moving-back 12s linear infinite;

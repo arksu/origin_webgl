@@ -3,7 +3,7 @@
 $inactiveTextColor: #bebebe;
 $textColor: #d5eeed;
 $linkColor: #7ed0fc;
-$linkHoverColor: rgba(65, 238, 238, 0.8);
+$linkHoverColor: rgba(40, 246, 246, 0.8);
 
 .padding-all {
   display: flex;
@@ -132,6 +132,15 @@ $linkHoverColor: rgba(65, 238, 238, 0.8);
   }
 }
 
+@keyframes link-glow {
+  from {
+    text-shadow: 0 0 6px #2a4f4f;
+  }
+  to {
+    text-shadow: 0 0 10px rgba(87, 248, 248, 0.8);
+  }
+}
+
 .signup-link {
   font-size: 15px;
   color: $inactiveTextColor;
@@ -146,7 +155,8 @@ $linkHoverColor: rgba(65, 238, 238, 0.8);
 }
 
 .signup-link a:hover {
-  text-shadow: 0 0 10px $linkHoverColor;
+  //text-shadow: 0 0 10px $linkHoverColor;
+  animation: link-glow 0.6s ease-in-out infinite alternate;
 }
 
 .error-message {

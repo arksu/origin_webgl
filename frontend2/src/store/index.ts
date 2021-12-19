@@ -11,7 +11,9 @@ export const useMainStore = defineStore('main', {
         ssid: localStorage.getItem('ssid'),
 
         // был выполнен автологин по сохраненным учетным данным?
-        wasAutoLogin: false
+        wasAutoLogin: false,
+
+        enteringWorld : false,
     }),
     getters: {
         isLogged: (state) => {

@@ -6,6 +6,7 @@ import About from "../views/About.vue";
 import Characters from "../views/characters/index.vue";
 import CreateNewCharacter from "../views/characters/CreateNew.vue";
 import Test from "../views/Test.vue"
+import GameView from "../views/game/GameView.vue";
 
 import guards from "./guards";
 import {RouteNames} from "./routeNames";
@@ -31,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/new-character",
         name: RouteNames.NEW_CHARACTER,
         component: CreateNewCharacter
+    },
+    {
+        path: "/game",
+        name: RouteNames.GAME,
+        component: GameView
     },
     {
         path: "/about",

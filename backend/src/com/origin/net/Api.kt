@@ -9,8 +9,6 @@ fun Route.api() {
     route("/api") {
         login()
         signup()
-        getCharactersList()
-        createCharacter()
-        deleteCharacter()
+        characters()
     }
 }
