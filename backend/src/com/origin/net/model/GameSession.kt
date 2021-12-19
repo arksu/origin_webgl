@@ -79,13 +79,16 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
                 // спавним игрока в мир, прогружаются гриды, активируются
                 val resp = CompletableDeferred<Boolean>()
+                // SPAWN at the same position
                 player.send(GameObjectMsg.Spawn(resp))
 
                 if (!resp.await()) {
                     val resp2 = CompletableDeferred<Boolean>()
+                    // SPAWN NEAR
                     player.send(GameObjectMsg.SpawnNear(resp2))
                     if (!resp2.await()) {
                         val resp3 = CompletableDeferred<Boolean>()
+                        // SPAWN RANDOM
                         player.send(GameObjectMsg.SpawnRandom(resp3))
                         if (!resp3.await()) {
                             throw RuntimeException("failed spawn player into world")

@@ -1,4 +1,6 @@
 import {MapGridData, ServerPacket} from "./packets";
+import GameData from "./GameData";
+import Render from "../game/Render";
 
 enum State {
     Disconnected,
@@ -32,6 +34,22 @@ interface Response {
 
 export default class GameClient {
     public static instance?: GameClient
+
+    /**
+     * создаем хранилище игровых данных каждый раз при создании клиента сети
+     */
+    public readonly _data: GameData = new GameData()
+
+    /**
+     * возвращаем данные только если есть инстанс игрового клиента
+     */
+    public static get data(): GameData {
+        if (GameClient.instance == null) {
+            throw new Error('no GameClient.instance on request GameData')
+        } else {
+            return GameClient.instance._data
+        }
+    }
 
     /**
      * ссылка для коннекта к вебсокет серверу
@@ -236,30 +254,32 @@ export default class GameClient {
      * @param data
      */
     protected onChannelMessage(channel: string, data: any) {
+        const gameData = GameClient.data
+
         switch (channel) {
             case ServerPacket.MAP_DATA: {
                 let p = (<MapGridData>data)
                 let key = p.x + "_" + p.y;
                 console.log('map', key)
-                /* switch (p.a) {
-                     case 0 : // delete
-                         delete Client.instance.map[key]
-                         Render.instance?.deleteGrid(p.x, p.y)
-                         break
-                     case 1: // add
-                         Client.instance.map[key] = {
-                             x: p.x,
-                             y: p.y,
-                             tiles: p.tiles,
-                             isChanged: false
-                         };
-                         break
-                     case 2: // change
-                         Client.instance.map[key].tiles = p.tiles;
-                         Client.instance.map[key].isChanged = true
-                         Game.instance?.addGrid(p.x, p.y)
-                         break
-                 }*/
+                switch (p.a) {
+                    case 0 : // delete
+                        delete gameData.map[key]
+                        Render.instance?.deleteGrid(p.x, p.y)
+                        break
+                    case 1: // add
+                        gameData.map[key] = {
+                            x: p.x,
+                            y: p.y,
+                            tiles: p.tiles,
+                            isChanged: false
+                        };
+                        break
+                    case 2: // change
+                        gameData.map[key].tiles = p.tiles;
+                        gameData.map[key].isChanged = true
+                        Render.instance?.addGrid(p.x, p.y)
+                        break
+                }
                 break;
             }
         }

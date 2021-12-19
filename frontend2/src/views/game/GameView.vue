@@ -39,6 +39,7 @@ export default defineComponent({
             .then(r => {
               active.value = true
               gameStore.selectedCharacterId = r.charId
+              GameClient.data.selectedCharacterId = r.charId
               Render.start()
             })
       }
@@ -46,7 +47,7 @@ export default defineComponent({
         active.value = false
         console.error(m)
         Render.stop()
-        store.gameError(m)
+        store.onGameError(m)
       }
       client.onDisconnect = () => {
         active.value = false

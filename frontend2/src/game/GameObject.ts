@@ -1,6 +1,8 @@
 import {ObjectAdd} from "../net/packets";
+import ObjectView from "./ObjectView";
+import MoveController from "./MoveController";
 
-export interface GameObject extends ObjectAdd {
-    // moveController?: MoveController
-    // view?: ObjectView
+export default interface GameObject extends ObjectAdd {
+    moveController?: MoveController
+    view?: ObjectView
 }

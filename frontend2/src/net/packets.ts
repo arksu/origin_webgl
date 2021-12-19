@@ -1,4 +1,4 @@
-import {GameObject} from "../game/GameObject";
+import GameObject from "../game/GameObject";
 
 export enum ServerPacket {
     MAP_DATA = "m",

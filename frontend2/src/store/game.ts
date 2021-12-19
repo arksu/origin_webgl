@@ -5,8 +5,6 @@ export const useGameStore = defineStore('game', {
         selectedCharacterId: undefined as number | undefined
     }),
     actions: {
-        clear() {
-            this.selectedCharacterId = undefined
-        }
+
     }
 })
