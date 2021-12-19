@@ -31,7 +31,7 @@ import LoginField from "../components/LoginField.vue";
 import PasswordField from "../components/PasswordField.vue";
 import EmailField from "../components/EmailField.vue";
 import SubmitButton from "../components/SubmitButton.vue";
-import {useMainStore} from "../store";
+import {useMainStore} from "../store/main";
 import {useApi} from "../composition/useApi";
 import {makeHash} from "../utils/passwordHash";
 

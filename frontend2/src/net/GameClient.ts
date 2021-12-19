@@ -1,5 +1,4 @@
-// websockets для работы игрового протокола
-const websocketsUrl = ("https:" === window.location.protocol ? "wss:" : "ws:") + "//" + window.location.hostname + ":" + window.location.port + "/api/game";
+import {MapGridData, ServerPacket} from "./packets";
 
 enum State {
     Disconnected,
@@ -69,7 +68,7 @@ export default class GameClient {
      * обработчик отключения сети (вызывается только если очередь запросов была пуста, иначе там reject)
      */
     public onDisconnect?: () => void;
-    public onServerError?: (m: string) => void
+    public onError?: (m: string) => void
     public onConnect?: () => void;
 
     public static createNew(): GameClient {
@@ -78,6 +77,38 @@ export default class GameClient {
         }
         GameClient.instance = new GameClient();
         return GameClient.instance
+    }
+
+    /**
+     * создать запрос на игровой сервер
+     * @param target к чему именно обращаемся на сервере
+     * @param data данные
+     */
+    public static async remoteCall(target: string, data?: any): Promise<any> {
+        // проверим что сеть вообще создана
+        if (this.instance == undefined) {
+            throw Error("net instance is undefined");
+        }
+
+        // формируем запрос на сервер
+        let id = ++this.instance.lastId;
+        let request = {
+            id: id,
+            t: target,
+            d: data
+        };
+
+        return new Promise((resolve, reject) => {
+            // отправляем данные в сокет
+            this.instance!!.socketSend(request);
+
+            // запишем запрос в мапу запросов
+            // промис завершится, когда придет ответ
+            this.instance!!.requests[id] = {
+                resolve,
+                reject
+            };
+        });
     }
 
     private constructor() {
@@ -146,8 +177,8 @@ export default class GameClient {
         this.state = State.Disconnected;
         this.socket = undefined;
 
-        if (ev.code == 1011 && this.onServerError !== undefined) {
-            this.onServerError(ev.reason)
+        if (ev.code == 1011 && this.onError !== undefined) {
+            this.onError(ev.reason)
         } else if (this.onDisconnect !== undefined) {
             this.onDisconnect();
         }
@@ -189,11 +220,48 @@ export default class GameClient {
     }
 
     /**
+     * прямая отправка данных в сокет
+     * @param data
+     * @private
+     */
+    private socketSend(data: any): void {
+        let d = JSON.stringify(data);
+        // console.log("%cSEND", 'color: red', _.cloneDeep(data));
+        this.socket!.send(d);
+    }
+
+    /**
      * приходит сообщение от сервера в определенный канал
      * @param {string} channel канал данных
      * @param data
      */
     protected onChannelMessage(channel: string, data: any) {
-
+        switch (channel) {
+            case ServerPacket.MAP_DATA: {
+                let p = (<MapGridData>data)
+                let key = p.x + "_" + p.y;
+                console.log('map', key)
+                /* switch (p.a) {
+                     case 0 : // delete
+                         delete Client.instance.map[key]
+                         Render.instance?.deleteGrid(p.x, p.y)
+                         break
+                     case 1: // add
+                         Client.instance.map[key] = {
+                             x: p.x,
+                             y: p.y,
+                             tiles: p.tiles,
+                             isChanged: false
+                         };
+                         break
+                     case 2: // change
+                         Client.instance.map[key].tiles = p.tiles;
+                         Client.instance.map[key].isChanged = true
+                         Game.instance?.addGrid(p.x, p.y)
+                         break
+                 }*/
+                break;
+            }
+        }
     }
 }

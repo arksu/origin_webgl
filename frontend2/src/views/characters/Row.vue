@@ -62,9 +62,9 @@ export default defineComponent({
         emit('onSelect')
         await fetchSelect()
         if (isSuccess.value) {
-          const token = data.token
+          const token = data.value.token
           console.log("token", token)
-          await router.push({name: RouteNames.GAME})
+          await router.push({name: RouteNames.GAME, params: {token}})
         }
         // пошлем событие конца выбора и входа в мир
         // emit('onEnter')

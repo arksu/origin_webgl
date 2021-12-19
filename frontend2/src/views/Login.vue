@@ -31,7 +31,7 @@ import SubmitButton from "../components/SubmitButton.vue";
 import ErrorMessage from "../components/ErrorMessage.vue";
 import Logo from "../components/Logo.vue";
 import {makeHash} from "../utils/passwordHash";
-import {useMainStore} from "../store";
+import {useMainStore} from "../store/main";
 import {useApi} from "../composition/useApi";
 
 export default defineComponent({

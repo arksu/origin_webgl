@@ -29,6 +29,12 @@ export const useMainStore = defineStore('main', {
             this.ssid = null
             localStorage.removeItem("hash")
             router.push({name: RouteNames.LOGIN})
+        },
+        gameError(msg: string) {
+            this.lastError = msg
+            localStorage.removeItem("hash")
+            this.wasAutoLogin = true
+            router.push({name: RouteNames.LOGIN})
         }
     }
 })

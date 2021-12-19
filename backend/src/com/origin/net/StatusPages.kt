@@ -12,8 +12,8 @@ fun StatusPages.Configuration.statusPages() {
     exception<UserNotFound> {
         call.respond(HttpStatusCode.Forbidden, "User not found")
     }
-    exception<AuthorizationException> {
-        call.respond(HttpStatusCode.Unauthorized, "Not authorized")
+    exception<AuthorizationException> { e ->
+        call.respond(HttpStatusCode.Unauthorized, e.message ?: "Not authorized")
     }
     exception<WrongPassword> {
         call.respond(HttpStatusCode.Forbidden, "Wrong password")

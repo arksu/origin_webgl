@@ -18,12 +18,12 @@ object Accounts : IntIdTable("accounts") {
     /**
      * id сессии для доступа к REST Api
      */
-    val ssid = char("ssid", 32).nullable()
+    val ssid = char("ssid", 32).nullable().index()
 
     /**
      * одноразовый токен для коннекта к WS игровой части сервера
      */
-    val wsToken = char("ws_token", 32).nullable()
+    val wsToken = char("ws_token", 32).nullable().index()
 
     /**
      * ид выбранного персонажа на этапе логина

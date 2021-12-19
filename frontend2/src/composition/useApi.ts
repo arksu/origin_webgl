@@ -1,7 +1,7 @@
 import axios, {AxiosError, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse} from "axios";
 import {ref} from "vue";
 import sleep from "../utils/sleep";
-import {useMainStore} from "../store";
+import {useMainStore} from "../store/main";
 import router from "../router";
 import {RouteNames} from "../router/routeNames";
 

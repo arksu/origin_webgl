@@ -1,25 +1,31 @@
 import * as PIXI from 'pixi.js';
+import {useGameStore} from "../store/game";
 
-export default class GameRender {
+export default class Render {
 
-    public static instance?: GameRender = undefined;
+    public static instance?: Render = undefined;
 
     /**
      * PIXI app
      */
-    readonly app: PIXI.Application;
+    private readonly app: PIXI.Application;
+
+    /**
+     * хранилище игровых данных
+     * @private
+     */
+    private readonly store = useGameStore()
 
     public static start() {
         console.warn("pixi start");
-        this.instance = new GameRender();
+        this.instance = new Render();
     }
 
     public static stop() {
         console.warn("pixi stop");
 
-        GameRender.instance?.destroy();
-        GameRender.instance = undefined;
-        // Client.instance.clear();
+        Render.instance?.destroy();
+        Render.instance = undefined;
     }
 
 

@@ -1,5 +1,5 @@
 import {NavigationGuardNext, RouteLocationNormalized} from "vue-router";
-import {useMainStore} from "../store";
+import {useMainStore} from "../store/main";
 import {RouteNames} from "./routeNames";
 
 export default function guards(from: RouteLocationNormalized, to: RouteLocationNormalized, next: NavigationGuardNext) {
@@ -19,6 +19,7 @@ export default function guards(from: RouteLocationNormalized, to: RouteLocationN
         if (!store.isLogged) {
             console.log("not logged")
             next({name: RouteNames.LOGIN})
+            // TODO
             // } else if (Client.instance.selectedCharacterId == undefined) {
             //     next({name: "Characters"})
         } else {
@@ -29,6 +30,7 @@ export default function guards(from: RouteLocationNormalized, to: RouteLocationN
     else if (to.name !== RouteNames.LOGIN && !store.isLogged) {
         // это первый запуск?
         if (from.name == undefined) {
+            // TODO
             // Client.instance.needAutologin = true;
         }
         console.log("auth required, redirect to login")

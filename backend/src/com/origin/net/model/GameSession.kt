@@ -1,16 +1,12 @@
 package com.origin.net.model
 
 import com.origin.ServerConfig
-import com.origin.entity.Account
-import com.origin.entity.Character
-import com.origin.entity.Characters
-import com.origin.entity.ChatHistory
+import com.origin.entity.*
 import com.origin.model.BroadcastEvent
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
 import com.origin.model.GameObjectMsg
 import com.origin.model.Player
 import com.origin.model.PlayerMsg
-import com.origin.net.GameServer
 import com.origin.net.api.AuthorizationException
 import com.origin.net.api.BadRequest
 import com.origin.net.gsonSerializer
@@ -25,6 +21,14 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
+ * ответ на авторизацию по токену
+ */
+data class AuthorizeTokenResponse(
+    val charId: ObjectID,
+    val proto: String
+)
+
+/**
  * игровая сессия (коннект)
  */
 @ObsoleteCoroutinesApi
@@ -33,8 +37,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         val logger: Logger = LoggerFactory.getLogger(GameSession::class.java)
     }
 
-    var ssid: String? = null
-        private set
+    private var authorized: Boolean = false
 
     private var account: Account? = null
 
@@ -44,28 +47,32 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
     suspend fun received(r: GameRequest) {
         // инициализация сессии
-        if (ssid == null) {
+        if (!authorized) {
             // начальная точка входа клиента в игру (авторизация по ssid)
             // также передается выбранный персонаж
-            if (r.target == "ssid") {
-                // установим ssid
-                ssid = (r.data["ssid"] as String?) ?: throw BadRequest("wrong ssid")
-                // и найдем наш аккаунт в кэше
-                account = GameServer.accountCache.get(ssid) ?: throw AuthorizationException()
+            if (r.target == "token") {
+                // получим токен из запроса
+                val token = (r.data["token"] as String?) ?: throw BadRequest("wrong ssid")
+                // найдем наш аккаунт по токену
+                val acc = transaction {
+                    val a = Account.find { Accounts.wsToken eq token }.singleOrNull()
+                        ?: throw AuthorizationException("Wrong token")
+                    // токен можно использовать только 1 раз, поэтому зануляем его
+                    a.wsToken = null
+                    a
+                }
+                account = acc
 
-                // выбраннй перс
-                val selectedCharacterId: ObjectID = (r.data["selectedCharacterId"] as ObjectID)
-
-                // load char
+                // загрузим выбранного персонажа
                 val character = transaction {
                     val c =
-                        Character.find { Characters.account eq account!!.id and Characters.id.eq(selectedCharacterId) }
+                        Character.find { Characters.account eq account!!.id and Characters.id.eq(acc.selectedCharacter) }
                             .singleOrNull()
                             ?: throw BadRequest("character not found")
-                    account!!.selectedCharacter = selectedCharacterId
 //                    c.lastLogged = Timestamp(Date().time)
                     c
                 }
+                authorized = true
                 // создали игрока, его позицию
                 val player = Player(character, this)
                 this.player = player
@@ -88,7 +95,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
 
                 player.send(PlayerMsg.Connected())
 
-                ack(r, "welcome to Origin ${ServerConfig.PROTO_VERSION}")
+                ack(r, AuthorizeTokenResponse(character.id.value, ServerConfig.PROTO_VERSION))
             }
         } else {
             when (r.target) {

@@ -11,7 +11,7 @@ object ServerConfig {
 
     private const val WORK_DIR = "./"
 
-    const val PROTO_VERSION = "0.0.1"
+    const val PROTO_VERSION = "0.0.2"
 
     @JvmField
     var PORT = 0

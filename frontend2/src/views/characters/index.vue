@@ -19,7 +19,7 @@ import Row from "./Row.vue";
 import SubmitButton from "../../components/SubmitButton.vue";
 import Test from "../Test.vue";
 import Spinner from "../../components/Spinner.vue";
-import {useMainStore} from "../../store";
+import {useMainStore} from "../../store/main";
 import {useApi} from "../../composition/useApi";
 
 type CharactersResponse = {

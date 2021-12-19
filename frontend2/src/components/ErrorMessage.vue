@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import {computed, defineComponent} from "vue";
-import {useMainStore} from "../store";
+import {useMainStore} from "../store/main";
 
 export default defineComponent({
   setup() {

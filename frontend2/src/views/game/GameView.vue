@@ -13,26 +13,50 @@
 <script lang="ts">
 import {defineComponent, onMounted, onUnmounted, ref} from 'vue'
 import GameClient from "../../net/GameClient";
-import GameRender from "../../game/GameRender";
+import Render from "../../game/Render";
+import {useGameStore} from "../../store/game";
+import {useRoute, useRouter} from "vue-router";
+import router from "../../router";
+import {RouteNames} from "../../router/routeNames";
+import {useMainStore} from "../../store/main";
 
 export default defineComponent({
   name: "GameView",
   setup() {
+    const route = useRoute()
     const active = ref(false)
+    const store = useMainStore()
+    const gameStore = useGameStore()
 
     onMounted(() => {
       const client = GameClient.createNew()
       client.onConnect = () => {
-        // client.se
-
-
-        active.value = true
-        GameRender.start()
+        // берем токен из параметров роута (туда положили при переходе из списка персонажей)
+        const token = route.params.token
+        console.log('token', token)
+        // шлем запрос с токеном на сервер для первичной авторизации и активации токена
+        GameClient.remoteCall('token', {token})
+            .then(r => {
+              active.value = true
+              gameStore.selectedCharacterId = r.charId
+              Render.start()
+            })
+      }
+      client.onError = m => {
+        active.value = false
+        console.error(m)
+        Render.stop()
+        store.gameError(m)
+      }
+      client.onDisconnect = () => {
+        active.value = false
+        Render.stop()
+        router.push({name: RouteNames.LOGIN})
       }
     })
 
     onUnmounted(() => {
-      GameRender.stop()
+      Render.stop()
     })
 
     return {active}
