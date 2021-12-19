@@ -5,7 +5,7 @@
         Characters<br>
 
         <spinner v-if="isLoading"/>
-        <row v-else v-for="c in list" :id="c.id" :name="c.name" @onDeleted="deleteItem"></row>
+        <row v-else v-for="c in list" :id="c.id" :name="c.name" :busy="busy" @onDeleted="deleteItem" @onSelect="onSelect" @onEnter="onEnter"></row>
 
         <submit-button caption="logout" :onClick="logout"></submit-button>
       </div>
@@ -32,7 +32,18 @@ export default defineComponent({
   components: {Row, SubmitButton, Test, Spinner},
   setup() {
     const store = useMainStore()
-    let list = ref<CharactersResponse[]>([])
+    const list = ref<CharactersResponse[]>([])
+    const busy = ref(false)
+
+    const onSelect = () => {
+      console.log('onSelect')
+      busy.value = true
+    }
+
+    const onEnter = () => {
+      console.log('onEnter')
+      busy.value = false
+    }
 
     const {isLoading, data, fetch} = useApi("characters", {
       method: "GET",
@@ -59,7 +70,7 @@ export default defineComponent({
       store.logout()
     }
 
-    return {list, isLoading, logout, deleteItem}
+    return {list, isLoading, logout, deleteItem, busy, onSelect, onEnter}
   }
 })
 </script>

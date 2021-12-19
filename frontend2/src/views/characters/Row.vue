@@ -5,7 +5,8 @@
       {{ name }} {{ id !== 0 ? "[id " + id + "]" : "" }}
     </div>
 
-    <div v-if="id !== 0" class="row delete-char" v-bind:class="{bg_selecting: selectInProcess}" @click.prevent="deleteChar">
+    <div v-if="id !== 0" class="row delete-char" v-bind:class="{bg_selecting: selectInProcess}"
+         @click.prevent="deleteChar">
       <div v-if="deleteInProcess">
         <i class="fas fa-sync fa-spin"></i>
       </div>
@@ -22,7 +23,6 @@ import {defineComponent} from 'vue'
 import {useApi} from "../../composition/useApi";
 import router from "../../router";
 import {RouteNames} from "../../router/routeNames";
-import {useMainStore} from "../../store";
 
 export default defineComponent({
   name: 'CharacterRow',
@@ -35,11 +35,15 @@ export default defineComponent({
     id: {
       type: Number,
       required: true
+    },
+    // "занят" ли чар (происходит вход в мир каким то персонажем), нельзя выбрать перса сейчас
+    busy: {
+      type: Boolean,
+      required: true
     }
   },
-  emits: ['onDeleted'],
+  emits: ['onDeleted', 'onSelect', 'onEnter'],
   setup(props, {emit}) {
-    const store = useMainStore()
 
     const {isLoading: deleteInProcess, fetch: fetchDelete} = useApi("characters/" + props.id, {
       method: 'DELETE',
@@ -53,12 +57,15 @@ export default defineComponent({
       if (props.id == 0) {
         await router.replace({name: RouteNames.NEW_CHARACTER})
       } else {
-        if (store.enteringWorld) return
-        store.enteringWorld = true
+        if (props.busy) return
+        // шлем в родителя события выбора чара, чтобы он заблокировал все остальнеы строки
+        emit('onSelect')
         await fetchSelect()
         if (isSuccess.value) {
           await router.push({name: RouteNames.GAME})
         }
+        // пошлем событие конца выбора и входа в мир
+        // emit('onEnter')
       }
     }
 

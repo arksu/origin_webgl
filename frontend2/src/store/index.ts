@@ -12,8 +12,6 @@ export const useMainStore = defineStore('main', {
 
         // был выполнен автологин по сохраненным учетным данным?
         wasAutoLogin: false,
-
-        enteringWorld : false,
     }),
     getters: {
         isLogged: (state) => {

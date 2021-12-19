@@ -2,6 +2,7 @@ import _ from "lodash";
 import store from "@/store/store"
 import Client from "@/net/Client";
 import Game from "@/game/Game";
+import {MutationTypes} from "@/store/mutation-types";
 import MoveController from "@/game/MoveController";
 import {
     ActionProgressData,
@@ -15,7 +16,6 @@ import {
     StatusUpdate,
     ServerPacket
 } from "@/net/Packets";
-import {MutationTypes} from "@/store/mutation-types";
 
 enum State {
     Disconnected,
