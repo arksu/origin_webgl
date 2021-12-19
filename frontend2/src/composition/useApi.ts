@@ -69,10 +69,13 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
         } catch (ex: any) {
             if (axios.isAxiosError(ex)) {
                 const e = ex as AxiosError
-                console.log('code', e.code)
-                console.log('message', e.message)
-                console.log('name', e.name)
-                console.log('e.response', e.response)
+                // console.log('code', e.code)
+                // console.log('message', e.message)
+                // console.log('name', e.name)
+                // console.log('e.response', e.response)
+
+                // TODO: возможно надо игнорировать 404 ошибку когда делаем GET запрос на получение каких то данных по id в пути запроса.
+                //  но при этом надо учитывать что данные таки не получены при обработке ответа
 
                 if (e.response) {
                     // при 403 ответе просто берем ответ сервера

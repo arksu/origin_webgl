@@ -27,6 +27,8 @@ data class CharacterResponse(val id: ObjectID, val name: String)
 
 data class CreateCharacterResponse(val name: String, val id: ObjectID)
 
+data class SelectCharacterResponse(val token: String)
+
 data class CreateCharacter(val name: String) {
     fun validate(): Boolean {
         val regex = Regex("([a-z]|[A-Z])([a-z]|[A-Z]|[0-9]|[_-])*")
@@ -37,6 +39,10 @@ data class CreateCharacter(val name: String) {
 @ObsoleteCoroutinesApi
 fun Route.characters() {
     route("/characters") {
+
+        /**
+         * get all player's characters
+         */
         get() {
             val account = getAccountBySsid()
             val list = transaction {
@@ -48,15 +54,22 @@ fun Route.characters() {
             call.respond(mapOf("list" to list))
         }
 
+        /**
+         * select character for enter world
+         */
         post("select/{id}") {
             val account = getAccountBySsid()
             val selected = call.parameters["id"].toObjectID()
             transaction {
                 account.selectedCharacter = selected
+                account.generateWsToken()
             }
-            call.respond(HttpStatusCode.NoContent)
+            call.respond(SelectCharacterResponse(account.wsToken!!))
         }
 
+        /**
+         * create new character
+         */
         put() {
             val acc = getAccountBySsid()
             val data = call.receive<CreateCharacter>()
@@ -92,6 +105,9 @@ fun Route.characters() {
             call.respond(CreateCharacterResponse(newChar.name, newChar.id.value))
         }
 
+        /**
+         * delete character
+         */
         delete("{id}") {
             val account = getAccountBySsid()
             val id: ObjectID = call.parameters["id"].toObjectID()

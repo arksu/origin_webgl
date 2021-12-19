@@ -22,7 +22,7 @@ data class UserSignup(val login: String, val email: String?, val password: Strin
 data class LoginResponse(val ssid: String)
 
 @ObsoleteCoroutinesApi
-fun Route.login() {
+fun Route.auth() {
     post("/login") {
         val userLogin = call.receive<UserLogin>()
 
@@ -42,10 +42,7 @@ fun Route.login() {
         logger.debug("user auth successful ${account.login}")
         call.respond(LoginResponse(account.ssid!!))
     }
-}
 
-@ObsoleteCoroutinesApi
-fun Route.signup() {
     post("/signup") {
         val userSignup = call.receive<UserSignup>()
         val email =  if (userSignup.email != null && userSignup.email.isEmpty()) {

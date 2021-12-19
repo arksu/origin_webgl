@@ -49,7 +49,7 @@ export default defineComponent({
       method: 'DELETE',
     })
 
-    const {isLoading: selectInProcess, isSuccess, fetch: fetchSelect} = useApi("characters/select/" + props.id, {
+    const {isLoading: selectInProcess, data, isSuccess, fetch: fetchSelect} = useApi("characters/select/" + props.id, {
       method: 'POST',
     })
 
@@ -62,6 +62,8 @@ export default defineComponent({
         emit('onSelect')
         await fetchSelect()
         if (isSuccess.value) {
+          const token = data.token
+          console.log("token", token)
           await router.push({name: RouteNames.GAME})
         }
         // пошлем событие конца выбора и входа в мир

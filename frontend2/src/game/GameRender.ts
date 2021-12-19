@@ -1,9 +1,8 @@
 import * as PIXI from 'pixi.js';
 
-export default class Game {
-    private static readonly canvas: HTMLCanvasElement = <HTMLCanvasElement>window.document.getElementById("game");
+export default class GameRender {
 
-    public static instance?: Game = undefined;
+    public static instance?: GameRender = undefined;
 
     /**
      * PIXI app
@@ -12,19 +11,15 @@ export default class Game {
 
     public static start() {
         console.warn("pixi start");
-
-        this.canvas.style.display = "block";
-        this.instance = new Game();
+        this.instance = new GameRender();
     }
 
     public static stop() {
         console.warn("pixi stop");
 
-        Game.instance?.destroy();
-        Game.instance = undefined;
+        GameRender.instance?.destroy();
+        GameRender.instance = undefined;
         // Client.instance.clear();
-
-        this.canvas.style.display = "none";
     }
 
 
@@ -35,13 +30,11 @@ export default class Game {
         this.app = new PIXI.Application({
             width: window.innerWidth,
             height: window.innerHeight,
-            view: Game.canvas,
+            view: <HTMLCanvasElement>window.document.getElementById("game"),
             autoDensity: true,
             preserveDrawingBuffer: true,
             powerPreference: 'high-performance',
-            // resizeTo: window,
             antialias: false,
-            // clearBeforeRender: true,
             backgroundColor: 0x333333
         });
     }

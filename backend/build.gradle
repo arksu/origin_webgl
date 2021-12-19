@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'idea'
 apply plugin: 'application'
-apply plugin: "org.jmailen.kotlinter"
+//apply plugin: "org.jmailen.kotlinter"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -35,7 +35,7 @@ repositories {
 
 buildscript {
     ext {
-        kotlin_version = '1.6.0'
+        kotlin_version = '1.6.10'
         // https://youtrack.jetbrains.com/issue/KTOR-3358 1.6.5+ is broken
         ktor_version = '1.6.4'
         exposed_version = '0.36.2'
@@ -49,8 +49,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
-        classpath "org.jmailen.gradle:kotlinter-gradle:3.4.5"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
+//        classpath "org.jmailen.gradle:kotlinter-gradle:3.4.5"
     }
 }
 
@@ -111,10 +111,10 @@ jar {
     }
 }
 
-kotlinter {
-    ignoreFailures = false
-    indentSize = 4
-    reporters = ['checkstyle', 'plain']
-    experimentalRules = false
-    disabledRules = ["no-wildcard-imports"]
-}
+//kotlinter {
+//    ignoreFailures = false
+//    indentSize = 4
+//    reporters = ['checkstyle', 'plain']
+//    experimentalRules = false
+//    disabledRules = ["no-wildcard-imports"]
+//}

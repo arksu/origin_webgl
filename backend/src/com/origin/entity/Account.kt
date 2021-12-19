@@ -14,9 +14,30 @@ object Accounts : IntIdTable("accounts") {
     val login = varchar("login", 64).uniqueIndex()
     val password = varchar("password", 64)
     val email = varchar("email", 64).nullable()
+
+    /**
+     * id сессии для доступа к REST Api
+     */
     val ssid = char("ssid", 32).nullable()
+
+    /**
+     * одноразовый токен для коннекта к WS игровой части сервера
+     */
+    val wsToken = char("ws_token", 32).nullable()
+
+    /**
+     * ид выбранного персонажа на этапе логина
+     */
     val selectedCharacter = long("selectedCharacter").nullable()
+
+    /**
+     * дата создания
+     */
     val created = timestamp("createTime", true).nullable()
+
+    /**
+     * общее время в игре проведенное любыми персонажами аккаунта
+     */
     val onlineTime = long("onlineTime").default(0)
 
     /**
@@ -35,10 +56,15 @@ class Account(id: EntityID<Int>) : IntEntity(id) {
     var onlineTime by Accounts.onlineTime
 //    var lastLogged by Accounts.lastLogged
     var ssid by Accounts.ssid
+    var wsToken by Accounts.wsToken
     var selectedCharacter by Accounts.selectedCharacter
 
     fun generateSessionId() {
         ssid = Utils.generateString(32)
+    }
+
+    fun generateWsToken() {
+        wsToken = Utils.generateString(32)
     }
 
     fun appendOnlineTime(v: Int) {
