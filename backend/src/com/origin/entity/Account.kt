@@ -13,7 +13,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 object Accounts : IntIdTable("accounts") {
     val login = varchar("login", 64).uniqueIndex()
     val password = varchar("password", 64)
-    val email = varchar("email", 64).nullable().uniqueIndex()
+    val email = varchar("email", 64).nullable()
     val ssid = char("ssid", 32).nullable()
     val selectedCharacter = long("selectedCharacter").nullable()
     val created = timestamp("createTime", true).nullable()

@@ -31,6 +31,11 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
     const response = ref<null | AxiosResponse>(null)
     const data = ref<any>(null)
 
+    const logout = () => {
+        store.wasAutoLogin = true
+        router.push({name: RouteNames.LOGIN})
+    }
+
     const fetch = async () => {
         isLoading.value = true
         try {
@@ -44,7 +49,7 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
                 if (store.ssid == null) {
                     error.value = 'Authorized request without ssid'
                     if (config.logoutOnError) {
-                        router.push({name: RouteNames.LOGIN})
+                        logout()
                     }
                     return
                 } else {
@@ -64,18 +69,20 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
         } catch (ex: any) {
             if (axios.isAxiosError(ex)) {
                 const e = ex as AxiosError
-                // console.log('code', e.code)
-                // console.log('message', e.message)
-                // console.log('name', e.name)
+                console.log('code', e.code)
+                console.log('message', e.message)
+                console.log('name', e.name)
+                console.log('e.response', e.response)
 
                 if (e.response) {
                     // при 403 ответе просто берем ответ сервера
-                    if (e.response.status == 403) {
-                        error.value = e.response.data
-                    } else {
-                        // в остальных случаях формируем ошибку из кода ответа и статуса
-                        error.value = "Error: [" + e.response.status + "] " + e.response.statusText
-                    }
+                    // if (e.response.status == 403 || e.response.status == 500) {
+                    // если есть в теле ответа причина - возьем ее. иначе statusText с кодом
+                    error.value = e.response.data ? `[${e.response.status}] ${e.response.data}` : `Error [${e.response.status}] ${e.response.statusText}`
+                    // } else {
+                    // в остальных случаях формируем ошибку из кода ответа и статуса
+                    // error.value = `Error [${e.response.status}] ${e.response.statusText}`
+                    // }
                 } else {
                     error.value = e.message
                 }
@@ -85,7 +92,7 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
             store.lastError = error.value
             console.error(error.value)
             if (config.logoutOnError) {
-                router.push({name: RouteNames.LOGIN})
+                logout()
             }
         } finally {
             isLoading.value = false

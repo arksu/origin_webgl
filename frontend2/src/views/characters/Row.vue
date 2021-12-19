@@ -43,7 +43,11 @@ export default defineComponent({
     })
 
     const selectChar = () => {
-      router.push({name: RouteNames.NEW_CHARACTER})
+      if (props.id == 0) {
+        router.replace({name: RouteNames.NEW_CHARACTER})
+      } else {
+        router.push({name: RouteNames.GAME})
+      }
     }
 
     const deleteChar = async () => {

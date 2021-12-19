@@ -14,7 +14,6 @@ import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.*
 
 val logger: Logger = LoggerFactory.getLogger("Auth")
 
@@ -49,18 +48,23 @@ fun Route.login() {
 fun Route.signup() {
     post("/signup") {
         val userSignup = call.receive<UserSignup>()
+        val email =  if (userSignup.email != null && userSignup.email.isEmpty()) {
+             null
+        } else {
+            userSignup.email
+        }
 
         val account = transaction {
             val accountInDatabase =
                 Account.find {
-                    (Accounts.login eq userSignup.login) or (Accounts.email.neq(null) and (Accounts.email eq userSignup.email))
+                    (Accounts.login eq userSignup.login) or ((Accounts.email.neq(null) and (Accounts.email eq email)))
                 }.firstOrNull()
             if (accountInDatabase != null) throw UserExists()
 
             val acc = Account.new {
                 login = userSignup.login
                 password = userSignup.password
-                email = userSignup.email
+                this.email = userSignup.email
             }
             GameServer.accountCache.addWithAuth(acc)
             acc

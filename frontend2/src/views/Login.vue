@@ -62,7 +62,7 @@ export default defineComponent({
       store.lastError = null
 
       request.login = login.value
-      const hash = savedHash || makeHash(password.value);
+      const hash = (savedHash && !store.wasAutoLogin) ? savedHash : makeHash(password.value);
       request.hash = hash;
       await fetch()
 
@@ -77,8 +77,8 @@ export default defineComponent({
 
     // TODO: only for dev
     if (login.value && savedHash && !store.wasAutoLogin && !store.lastError) {
-      store.wasAutoLogin = true
       submit()
+      store.wasAutoLogin = true
     }
 
     return {login, password, submit, isLoading}
