@@ -3,6 +3,7 @@ const path = require('path');
 const {DefinePlugin} = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {VueLoaderPlugin} = require('vue-loader')
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     mode: 'development',
@@ -16,6 +17,13 @@ module.exports = {
         }
     },
     plugins: [
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: "assets/game/**"
+                }
+            ]
+        }),
         new VueLoaderPlugin(),
         new HtmlWebpackPlugin({
             title: 'Origin',
@@ -30,6 +38,7 @@ module.exports = {
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, "dist"),
+        publicPath: "/",
         clean: true,
     },
     module: {

@@ -181,7 +181,7 @@ class TerrainObjects {
 }
 
 export default class Tile {
-    public static readonly ATLAS = 'assets/tiles.png'
+    public static readonly ATLAS = 'assets/game/tiles.png'
 
     public static sets: TileSet[] = []
     public static terrains: TerrainObjects[] = []

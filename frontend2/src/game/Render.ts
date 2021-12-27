@@ -13,10 +13,14 @@ export default class Render {
     public static instance?: Render = undefined;
 
     /**
-     * PIXI app
+     * PIXI application
      */
     private readonly app: PIXI.Application;
 
+    /**
+     * не реагируем на апдейт после уничтожения рендера
+     * апдейт биндится в pixi ticker
+     */
     private destroyed: boolean = false
 
     /**
