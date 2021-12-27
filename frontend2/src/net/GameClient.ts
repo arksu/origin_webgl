@@ -1,6 +1,7 @@
-import {MapGridData, ServerPacket} from "./packets";
+import {ContextMenuData, MapGridData, ObjectDel, ObjectMoved, ObjectStopped, ServerPacket} from "./packets";
 import GameData from "./GameData";
 import Render from "../game/Render";
+import MoveController from "../game/MoveController";
 
 enum State {
     Disconnected,
@@ -210,6 +211,7 @@ export default class GameClient {
         if (typeof ev.data === "string") {
             let response: Response = JSON.parse(ev.data);
             // console.log("%cRECV", 'color: #1BAC19', _.cloneDeep(response));
+            console.log("%cRECV", 'color: #1BAC19', response);
 
             // пришло сообщение в общий канал (не ответ на запрос серверу)
             if (response.id === 0 && response.c !== undefined) {
@@ -281,6 +283,71 @@ export default class GameClient {
                         break
                 }
                 break;
+            }
+            case ServerPacket.MAP_CONFIRMED : {
+                for (let mapKey in gameData.map) {
+                    const s = mapKey.split("_");
+                    const x: number = +s[0];
+                    const y: number = +s[1];
+                    Render.instance?.addGrid(x, y)
+                }
+                break
+            }
+            case ServerPacket.OBJECT_ADD: {
+                const old = gameData.objects[data.id]
+                gameData.objects[data.id] = data
+                if (old !== undefined) {
+                    gameData.objects[data.id].moveController = old.moveController
+                    gameData.objects[data.id].view = old.view
+                }
+                Render.instance?.onObjectAdd(gameData.objects[data.id])
+                Render.instance?.updateMapScalePos()
+                break;
+            }
+            case ServerPacket.OBJECT_DELETE: {
+                let obj = gameData.objects[(<ObjectDel>data).id];
+                obj.moveController?.stop()
+                Render.instance?.onObjectDelete(obj)
+                delete gameData.objects[(<ObjectDel>data).id];
+                break;
+            }
+            case ServerPacket.OBJECT_MOVE : {
+                let obj = gameData.objects[data.id];
+                if (obj !== undefined) {
+                    if (obj.moveController === undefined) {
+                        obj.moveController = new MoveController(obj, (<ObjectMoved>data))
+                    } else {
+                        obj.moveController.applyData((<ObjectMoved>data))
+                    }
+                }
+                break;
+            }
+            case ServerPacket.OBJECT_STOP : {
+                let obj = gameData.objects[data.id];
+                if (obj !== undefined) {
+                    if (obj.moveController !== undefined) {
+                        obj.moveController.serverStop(<ObjectStopped>data)
+                    } else {
+                        console.warn("stopped: set pos")
+                        obj.x = data.x
+                        obj.y = data.y
+                        Render.instance?.onObjectMoved(obj)
+                    }
+                }
+
+                Render.instance?.updateMapScalePos()
+                break;
+            }
+            case ServerPacket.CONTEXT_MENU : {
+                let cm = <ContextMenuData>data
+                let obj = gameData.objects[cm.id];
+                if (obj !== undefined) {
+                    cm.obj = obj
+                    Render.instance?.makeContextMenu(cm)
+                } else {
+                    Render.instance?.makeContextMenu(undefined)
+                }
+                break
             }
         }
     }

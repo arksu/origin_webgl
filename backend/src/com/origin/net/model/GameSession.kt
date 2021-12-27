@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory
  * ответ на авторизацию по токену
  */
 data class AuthorizeTokenResponse(
-    val charId: ObjectID,
+    val characterId: ObjectID,
     val proto: String
 )
 
@@ -52,7 +52,8 @@ class GameSession(private val connect: DefaultWebSocketSession) {
             // также передается выбранный персонаж
             if (r.target == "token") {
                 // получим токен из запроса
-                val token = (r.data["token"] as String?) ?: throw BadRequest("wrong ssid")
+                val token = (r.data["token"] as String?) ?: throw BadRequest("wrong token")
+
                 // найдем наш аккаунт по токену
                 val acc = transaction {
                     val a = Account.find { Accounts.wsToken eq token }.singleOrNull()
@@ -73,6 +74,8 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     c
                 }
                 authorized = true
+                ack(r, AuthorizeTokenResponse(character.id.value, ServerConfig.PROTO_VERSION))
+
                 // создали игрока, его позицию
                 val player = Player(character, this)
                 this.player = player
@@ -97,8 +100,6 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                 }
 
                 player.send(PlayerMsg.Connected())
-
-                ack(r, AuthorizeTokenResponse(character.id.value, ServerConfig.PROTO_VERSION))
             }
         } else {
             when (r.target) {

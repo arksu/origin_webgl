@@ -163,7 +163,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     }
 
     /**
-     * вижу ли я указаный объект
+     * Вижу ли я указанный объект
      */
     private fun isObjectVisibleForMe(obj: GameObject): Boolean {
         // себя всегда видим!

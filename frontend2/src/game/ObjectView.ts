@@ -5,6 +5,7 @@ import Render from "./Render";
 import GameClient from "../net/GameClient";
 import {getKeyFlags} from "../utils/keyboard";
 import Point from "./Point";
+import objects from "./objects.json"
 
 export interface Layer {
     img: string
@@ -77,7 +78,7 @@ export default class ObjectView {
     private addLayer(l: Layer) {
         let path = l.img
         // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
-        if (path.includes(".")) path = "assets/" + path
+        if (path.includes(".")) path = "assets/game/" + path
 
         // если есть оффсет надо его проставить
         if (l.offset != undefined) {
@@ -136,7 +137,7 @@ export default class ObjectView {
                 let l = this.res.layers[i]
                 let path = l.img
                 // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
-                if (path.includes(".")) path = "assets/" + path + "?" + (+new Date())
+                if (path.includes(".")) path = "assets/game/" + path + "?" + (+new Date())
 
                 this.view[i].texture = PIXI.Texture.from(path)
             }

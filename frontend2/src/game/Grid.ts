@@ -67,7 +67,7 @@ export default class Grid {
     /**
      * чанки-контейнеры на которые делим грид (иначе по размеру текстуры целый грид не влезает в память)
      */
-    public containers: PIXI.Container[] = [];
+    public chunks: PIXI.Container[] = [];
 
     private parent: PIXI.Container
 
@@ -107,20 +107,21 @@ export default class Grid {
         // создаем чанки грида 4x4
         for (let cx = 0; cx < Grid.DIVIDER; cx++) {
             for (let cy = 0; cy < Grid.DIVIDER; cy++) {
-                let container = this.makeChunk(cx, cy)
-                this.containers.push(container)
+                const container = this.makeChunk(cx, cy)
+                this.chunks.push(container)
                 this.parent.addChild(container)
+                console.log(container)
             }
         }
     }
 
     public destroy() {
-        for (let container of this.containers) {
+        for (let container of this.chunks) {
             container.destroy({
                 children: true
             })
         }
-        this.containers = []
+        this.chunks = []
     }
 
     /**
@@ -129,8 +130,8 @@ export default class Grid {
     public set visible(v: boolean) {
         if (this._visible != v) {
             this._visible = v
-            for (let i = 0; i < this.containers.length; i++) {
-                this.containers[i].visible = v
+            for (let i = 0; i < this.chunks.length; i++) {
+                this.chunks[i].visible = v
             }
         }
     }

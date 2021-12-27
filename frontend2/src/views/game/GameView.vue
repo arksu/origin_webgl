@@ -5,9 +5,6 @@
     </div>
   </div>
 
-  <!-- pixi canvas, рулим через display чтобы Render мог найти элемент в DOM дереве при создании контекста PIXI -->
-  <canvas id="game" v-bind:style="{display: active ? 'block' : 'none' }"></canvas>
-
 </template>
 
 <script lang="ts">
@@ -38,8 +35,8 @@ export default defineComponent({
         GameClient.remoteCall('token', {token})
             .then(r => {
               active.value = true
-              gameStore.selectedCharacterId = r.charId
-              GameClient.data.selectedCharacterId = r.charId
+              gameStore.selectedCharacterId = r.characterId
+              GameClient.data.selectedCharacterId = r.characterId
               Render.start()
             })
       }

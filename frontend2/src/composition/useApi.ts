@@ -40,7 +40,7 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
         isLoading.value = true
         try {
             // TODO remove
-            await sleep(600)
+            // await sleep(600)
 
             const headers: AxiosRequestHeaders = {...config.headers}
             // если надо послать авторизацию в запросе
