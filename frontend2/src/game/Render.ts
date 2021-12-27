@@ -112,7 +112,9 @@ export default class Render {
 
     public static start() {
         console.warn("pixi start");
-        this.instance = new Render();
+        const canvas = document.createElement('canvas');
+        this.instance = new Render(canvas);
+        this.initCanvasHandlers(canvas)
     }
 
     public static stop() {
@@ -123,9 +125,8 @@ export default class Render {
     }
 
 
-    private constructor() {
+    private constructor(canvas: HTMLCanvasElement) {
         // создаем канвас для рендера
-        const canvas = document.createElement('canvas');
         canvas.id = "game"
         canvas.style.display = "block"
         // добавим его в дом дерево
@@ -592,6 +593,23 @@ export default class Render {
         this.updateScale()
     }
 
+    private onKeyDown(e: KeyboardEvent) {
+        console.log("onKeyDown:", e.key)
+        switch (e.key) {
+            case "Enter":
+                document.getElementById("inputChat")?.focus();
+                break;
+            case "Home":
+                this.scale = 1
+                this.updateScale()
+                break;
+        }
+    }
+
+    private onMouseRightClick(e: MouseEvent) {
+
+    }
+
     /**
      * создать и отобразить контекстное меню которое прислал сервер
      */
@@ -608,5 +626,49 @@ export default class Render {
             this.contextMenu.container.y = sc[1]
             console.log(this.contextMenu.container)
         }
+    }
+
+    /**
+     * навешиваем на канвас обработчики
+     */
+    public static initCanvasHandlers(canvas : HTMLCanvasElement) {
+        // ловим прокрутку страницы и делаем скейл на основе этого
+        canvas.addEventListener('wheel', (e: WheelEvent) => {
+            e.preventDefault();
+            this.instance?.onMouseWheel(-e.deltaY);
+        });
+
+        // ловим правый клик за счет вызоыва context menu
+        canvas.addEventListener('contextmenu', (e: Event) => {
+            e.preventDefault();
+            if (e instanceof MouseEvent) {
+                console.log("right click " + e.x + " " + e.y);
+                console.log(e.button + " alt=" + e.altKey + " shift=" + e.shiftKey + " meta=" + e.metaKey);
+                this.instance?.onMouseRightClick(e);
+            }
+        });
+
+        // обработчик resize
+        let resizeTimeout: any = undefined;
+        window.addEventListener('resize', () => {
+            if (resizeTimeout == undefined) {
+                resizeTimeout = setTimeout(() => {
+                    resizeTimeout = undefined;
+                    console.log("resize");
+                    this.instance?.onResize();
+                }, 333);
+            }
+        });
+
+        // переворот экрана
+        window.addEventListener("orientationchange", () => {
+            this.instance?.onResize();
+        });
+
+        document.addEventListener('keydown', (e: Event) => {
+            if (e.target == document.body && e instanceof KeyboardEvent) {
+                this.instance?.onKeyDown(e)
+            }
+        })
     }
 }
