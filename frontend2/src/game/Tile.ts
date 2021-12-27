@@ -237,3 +237,5 @@ export default class Tile {
         return undefined
     }
 }
+
+Tile.init()

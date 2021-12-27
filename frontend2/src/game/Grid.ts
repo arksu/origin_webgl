@@ -110,7 +110,6 @@ export default class Grid {
                 const container = this.makeChunk(cx, cy)
                 this.chunks.push(container)
                 this.parent.addChild(container)
-                console.log(container)
             }
         }
     }

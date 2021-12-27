@@ -32,12 +32,12 @@ export default defineComponent({
         const token = route.params.token
         console.log('token', token)
         // шлем запрос с токеном на сервер для первичной авторизации и активации токена
+        Render.start()
         GameClient.remoteCall('token', {token})
             .then(r => {
               active.value = true
               gameStore.selectedCharacterId = r.characterId
               GameClient.data.selectedCharacterId = r.characterId
-              Render.start()
             })
       }
       client.onError = m => {

@@ -16,6 +16,8 @@ export default class Render {
 
     public static instance?: Render = undefined;
 
+    private canvas : HTMLCanvasElement;
+
     /**
      * игра запущена на мобилке?
      */
@@ -112,9 +114,7 @@ export default class Render {
 
     public static start() {
         console.warn("pixi start");
-        const canvas = document.createElement('canvas');
-        this.instance = new Render(canvas);
-        this.initCanvasHandlers(canvas)
+        this.instance = new Render()
     }
 
     public static stop() {
@@ -125,12 +125,15 @@ export default class Render {
     }
 
 
-    private constructor(canvas: HTMLCanvasElement) {
+    private constructor() {
+        this.canvas = document.createElement('canvas');
         // создаем канвас для рендера
-        canvas.id = "game"
-        canvas.style.display = "block"
+        this.canvas.id = "game"
+        this.canvas.style.display = "none"
         // добавим его в дом дерево
-        document.body.appendChild(canvas);
+        document.body.appendChild(this.canvas);
+        this.initCanvasHandlers()
+
 
         // сглаживание пикселей при масштабировании
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
@@ -138,7 +141,7 @@ export default class Render {
         this.app = new PIXI.Application({
             width: window.innerWidth,
             height: window.innerHeight,
-            view: canvas,
+            view: this.canvas,
             autoDensity: true,
             preserveDrawingBuffer: true,
             powerPreference: 'high-performance',
@@ -193,9 +196,11 @@ export default class Render {
             loader.add("assets/game/base.json")
             loader.add("assets/game/tiles.json")
             loader.load((_, __) => {
+                console.log("render setup after load")
                 this.setup();
             })
         } else {
+            console.log("render setup")
             this.setup();
         }
     }
@@ -218,6 +223,9 @@ export default class Render {
     }
 
     private setup() {
+        console.log("setup")
+        this.canvas.style.display = "block"
+
         const gameData = GameClient.data;
 
         // идем по всем полученным кусочкам карты
@@ -315,9 +323,6 @@ export default class Render {
             this.actionProgress.sprite.x = this.app.renderer.width / 2
             this.actionProgress.sprite.y = this.app.renderer.height / 2
         }
-
-        console.log(this.mapGrids.x)
-        console.log(this.mapGrids.y)
     }
 
     private static getPlayerCoord(): { sx: number, sy: number } {
@@ -631,20 +636,20 @@ export default class Render {
     /**
      * навешиваем на канвас обработчики
      */
-    public static initCanvasHandlers(canvas : HTMLCanvasElement) {
+    private initCanvasHandlers() {
         // ловим прокрутку страницы и делаем скейл на основе этого
-        canvas.addEventListener('wheel', (e: WheelEvent) => {
+        this.canvas.addEventListener('wheel', (e: WheelEvent) => {
             e.preventDefault();
-            this.instance?.onMouseWheel(-e.deltaY);
+            this.onMouseWheel(-e.deltaY);
         });
 
         // ловим правый клик за счет вызоыва context menu
-        canvas.addEventListener('contextmenu', (e: Event) => {
+        this.canvas.addEventListener('contextmenu', (e: Event) => {
             e.preventDefault();
             if (e instanceof MouseEvent) {
                 console.log("right click " + e.x + " " + e.y);
                 console.log(e.button + " alt=" + e.altKey + " shift=" + e.shiftKey + " meta=" + e.metaKey);
-                this.instance?.onMouseRightClick(e);
+                this.onMouseRightClick(e);
             }
         });
 
@@ -655,19 +660,19 @@ export default class Render {
                 resizeTimeout = setTimeout(() => {
                     resizeTimeout = undefined;
                     console.log("resize");
-                    this.instance?.onResize();
+                    this.onResize();
                 }, 333);
             }
         });
 
         // переворот экрана
         window.addEventListener("orientationchange", () => {
-            this.instance?.onResize();
+            this.onResize();
         });
 
         document.addEventListener('keydown', (e: Event) => {
             if (e.target == document.body && e instanceof KeyboardEvent) {
-                this.instance?.onKeyDown(e)
+                this.onKeyDown(e)
             }
         })
     }
