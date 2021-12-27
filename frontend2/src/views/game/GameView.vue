@@ -31,13 +31,23 @@ export default defineComponent({
         // берем токен из параметров роута (туда положили при переходе из списка персонажей)
         const token = route.params.token
         console.log('token', token)
-        // шлем запрос с токеном на сервер для первичной авторизации и активации токена
+        // запустим старт рендера, загрузку атласов
         Render.start()
-        GameClient.remoteCall('token', {token})
-            .then(r => {
-              active.value = true
-              gameStore.selectedCharacterId = r.characterId
-              GameClient.data.selectedCharacterId = r.characterId
+            // как только атласы загружены
+            .then(() => {
+              // шлем запрос с токеном на сервер для первичной авторизации и активации токена
+              GameClient.remoteCall('token', {token})
+                  .then(r => {
+                    active.value = true
+                    gameStore.selectedCharacterId = r.characterId
+                    GameClient.data.selectedCharacterId = r.characterId
+                  })
+            })
+            // в случае сбоя запуска рендера
+            .catch((e) => {
+              active.value = false
+              Render.stop()
+              store.onGameError(e)
             })
       }
       client.onError = m => {

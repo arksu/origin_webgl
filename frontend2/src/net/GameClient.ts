@@ -247,6 +247,7 @@ export default class GameClient {
     private socketSend(data: any): void {
         let d = JSON.stringify(data);
         // console.log("%cSEND", 'color: red', _.cloneDeep(data));
+        console.log("%cSEND", 'color: red', data);
         this.socket!.send(d);
     }
 

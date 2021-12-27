@@ -16,7 +16,7 @@ export default class Render {
 
     public static instance?: Render = undefined;
 
-    private canvas : HTMLCanvasElement;
+    private canvas: HTMLCanvasElement;
 
     /**
      * игра запущена на мобилке?
@@ -112,23 +112,24 @@ export default class Render {
      */
     private contextMenu ?: ContextMenu
 
-    public static start() {
+    public static start(): Promise<undefined> {
         console.warn("pixi start");
         this.instance = new Render()
+        // сразу запустим загрузку ресурсов и вернем промис
+        return this.instance.load()
     }
 
     public static stop() {
         console.warn("pixi stop");
-
         Render.instance?.destroy();
         Render.instance = undefined;
     }
 
-
     private constructor() {
-        this.canvas = document.createElement('canvas');
         // создаем канвас для рендера
+        this.canvas = document.createElement('canvas');
         this.canvas.id = "game"
+        // но не показываем его, покажем после загрузки всех ресурсов
         this.canvas.style.display = "none"
         // добавим его в дом дерево
         document.body.appendChild(this.canvas);
@@ -148,8 +149,6 @@ export default class Render {
             antialias: false,
             backgroundColor: 0x333333
         });
-
-        console.warn('render size ' + this.app.renderer.width + ' ' + this.app.renderer.height)
 
         this.app.ticker.maxFPS = 60
         this.app.ticker.minFPS = 60
@@ -184,25 +183,35 @@ export default class Render {
         this.screenSprite.on('mousemove', this.onMouseMove.bind(this));
         this.screenSprite.on('touchmove', this.onMouseMove.bind(this));
 
-        this.screenSprite.on('mousewheel', this.onMouseWheel.bind(this));
+        // TODO удалить. onMouseWheel биндим в initCanvasHandlers
+        // this.screenSprite.on('mousewheel', this.onMouseWheel.bind(this));
+    }
 
+    /**
+     * загрузить необходимые для старта атласы
+     * @private
+     */
+    private load(): Promise<undefined> {
         PIXI.utils.clearTextureCache()
         PIXI.utils.destroyTextureCache()
 
         const loader = this.app.loader;
-        const img = PIXI.utils.TextureCache['assets/game/base.json_image'];
 
-        if (img == undefined) {
+        const render = this;
+        return new Promise(function (resolve, reject) {
+            loader.onError.add((e) => {
+                reject(e)
+            })
+
+            // грузим нужные нам атласы
             loader.add("assets/game/base.json")
             loader.add("assets/game/tiles.json")
+
             loader.load((_, __) => {
-                console.log("render setup after load")
-                this.setup();
+                render.setup()
+                resolve(undefined)
             })
-        } else {
-            console.log("render setup")
-            this.setup();
-        }
+        });
     }
 
     private destroy() {
@@ -223,7 +232,6 @@ export default class Render {
     }
 
     private setup() {
-        console.log("setup")
         this.canvas.style.display = "block"
 
         const gameData = GameClient.data;
@@ -589,7 +597,6 @@ export default class Render {
     }
 
     private onMouseWheel(delta: number) {
-        console.log(delta)
         if (this.scale < 1) {
             this.scale += delta / (1000) * (this.scale * 0.5);
         } else {
