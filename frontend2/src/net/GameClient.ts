@@ -1,7 +1,16 @@
-import {ContextMenuData, MapGridData, ObjectDel, ObjectMoved, ObjectStopped, ServerPacket} from "./packets";
+import {
+    ContextMenuData,
+    MapGridData,
+    ObjectDel,
+    ObjectMoved,
+    ObjectStopped,
+    ServerPacket,
+    StatusUpdate
+} from "./packets";
 import GameData from "./GameData";
 import Render from "../game/Render";
 import MoveController from "../game/MoveController";
+import {useGameStore} from "../store/game";
 
 enum State {
     Disconnected,
@@ -258,6 +267,7 @@ export default class GameClient {
      */
     protected onChannelMessage(channel: string, data: any) {
         const gameData = GameClient.data
+        const store = useGameStore()
 
         switch (channel) {
             case ServerPacket.MAP_DATA: {
@@ -347,6 +357,51 @@ export default class GameClient {
                     Render.instance?.makeContextMenu(cm)
                 } else {
                     Render.instance?.makeContextMenu(undefined)
+                }
+                break
+            }
+            case ServerPacket.STATUS_UPDATE : {
+                let statusUpdate = <StatusUpdate>data
+                // если пришел апдейт статуса моего персонажа
+                if (statusUpdate.id == gameData.selectedCharacterId) {
+                    for (let i = 0; i < statusUpdate.list.length; i++) {
+                        const key = statusUpdate.list[i].i
+                        const value = statusUpdate.list[i].v
+                        /*
+                         const val CUR_SHP = 0
+                         const val CUR_HHP = 1
+                         const val MAX_HP = 2
+                         const val CUR_STAMINA = 3
+                         const val MAX_STAMINA = 4
+                         const val CUR_ENERGY = 5
+                         const val MAX_ENERGY = 6
+                         */
+                        switch (key) {
+                            case 0:
+                                store.CUR_SHP = value
+                                break
+                            case 1 :
+                                store.CUR_HHP = value
+                                break
+                            case 2:
+                                store.MAX_HP = value
+                                break
+                            case 3:
+                                store.CUR_STAMINA = value
+                                break
+                            case 4:
+                                store.MAX_STAMINA = value
+                                break
+                            case 5:
+                                store.CUR_ENERGY = value
+                                break
+                            case 6:
+                                store.MAX_ENERGY = value
+                                break
+                            default:
+                                throw new Error("unknown status parameter " + key)
+                        }
+                    }
                 }
                 break
             }

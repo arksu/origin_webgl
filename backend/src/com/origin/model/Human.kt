@@ -256,7 +256,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
     }
 
     /**
-     * совершить перманентную смерть
+     * существо умирает
      */
     fun doDie() {
         isDead = true
