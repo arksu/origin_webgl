@@ -17,6 +17,9 @@ import router from "../../router";
 import {RouteNames} from "../../router/routeNames";
 import {useMainStore} from "../../store/main";
 
+/**
+ * игровой вид, рендер и весь UI для игры
+ */
 export default defineComponent({
   name: "GameView",
   setup() {
@@ -26,6 +29,7 @@ export default defineComponent({
     const gameStore = useGameStore()
 
     onMounted(() => {
+      // подключаемся к вебсокету на игровом сервере
       const client = GameClient.createNew()
       client.onConnect = () => {
         // берем токен из параметров роута (туда положили при переходе из списка персонажей)
@@ -64,6 +68,7 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
+      GameClient.instance?.disconnect()
       Render.stop()
     })
 
@@ -71,16 +76,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style scoped lang="scss">
-
-canvas {
-  background-color: #4b3932;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-</style>

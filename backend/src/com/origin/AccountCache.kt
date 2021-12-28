@@ -50,15 +50,6 @@ class AccountCache {
             if (oldSsid != null) {
                 // удалим старую сессию
                 accounts.remove(oldSsid)
-                // TODO кикнуть все сессии такого же юзера надо искать по аккаунт ид а не по ssid
-                // среди активных игровых сессий (коннектов) ищем с тем же ssid
-//                gameSessions.forEach { s ->
-//                    if (s.ssid == oldSsid) {
-//                        runBlocking {
-//                            s.kick()
-//                        }
-//                    }
-//                }
             }
             do {
                 // генерим аккаунту новый ssid

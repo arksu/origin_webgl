@@ -9,11 +9,13 @@ import com.origin.model.Player
 import com.origin.model.PlayerMsg
 import com.origin.net.api.AuthorizationException
 import com.origin.net.api.BadRequest
+import com.origin.net.gameSessions
 import com.origin.net.gsonSerializer
 import com.origin.utils.ObjectID
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -37,6 +39,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
         val logger: Logger = LoggerFactory.getLogger(GameSession::class.java)
     }
 
+    @Volatile
     private var authorized: Boolean = false
 
     private var account: Account? = null
@@ -62,18 +65,28 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                     a.wsToken = null
                     a
                 }
+                authorized = true
                 account = acc
 
                 // загрузим выбранного персонажа
                 val character = transaction {
                     val c =
-                        Character.find { Characters.account eq account!!.id and Characters.id.eq(acc.selectedCharacter) }
+                        Character.find { Characters.account eq acc.id and Characters.id.eq(acc.selectedCharacter) }
                             .singleOrNull()
                             ?: throw BadRequest("character not found")
 //                    c.lastLogged = Timestamp(Date().time)
                     c
                 }
-                authorized = true
+
+                // кикнуть таких же персонажей этого юзера
+                // (можно заходить в игру своими разными персонажами одновременно)
+                gameSessions.forEach { s ->
+                    if (s.authorized && s::player.isInitialized && s.player.id == character.id.value) {
+                        runBlocking {
+                            s.kick()
+                        }
+                    }
+                }
                 ack(r, AuthorizeTokenResponse(character.id.value, ServerConfig.PROTO_VERSION))
 
                 // создали игрока, его позицию
