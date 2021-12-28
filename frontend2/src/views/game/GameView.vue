@@ -5,10 +5,19 @@
     </div>
   </div>
 
+  <div class="game-ui">
+    <avatar/>
+    <stats/>
+    <chat/>
+  </div>
+
 </template>
 
 <script lang="ts">
 import {defineComponent, onMounted, onUnmounted, ref} from 'vue'
+import Avatar from "./Avatar.vue";
+import Stats from "./Stats.vue";
+import Chat from "./Chat.vue";
 import GameClient from "../../net/GameClient";
 import Render from "../../game/Render";
 import {useGameStore} from "../../store/game";
@@ -22,6 +31,7 @@ import {useMainStore} from "../../store/main";
  */
 export default defineComponent({
   name: "GameView",
+  components: {Avatar, Stats, Chat},
   setup() {
     const route = useRoute()
     const active = ref(false)
@@ -76,3 +86,14 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped lang="scss">
+
+.game-ui {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+</style>
