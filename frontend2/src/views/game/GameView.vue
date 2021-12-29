@@ -5,7 +5,7 @@
     </div>
   </div>
 
-  <div class="game-ui">
+  <div class="game-ui" v-if="active">
     <avatar/>
     <stats/>
     <chat/>

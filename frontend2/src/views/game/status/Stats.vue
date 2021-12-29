@@ -1,11 +1,21 @@
 <template>
   <div class="stats-container">
     <stat-bar
+        frame-color="#9e3f41ba"
+        bar-back-color="#1c0808"
+        bar1-color="#611813"
+        bar2-color="#b3261d"
+        :percent1="store.hardHp"
+        :percent2="store.softHp"
+        :tooltip="'HP: ' + store.CUR_SHP + '/' + store.CUR_HHP" />
+
+    <stat-bar
         frame-color="#4B81BEBA"
-        bar-color="#2243EE"
         bar-back-color="#08111c"
-        :percent="store.stamina"
-        :tooltip="'Stamina: ' + store.stamina"/>
+        bar1-color="#2243EE"
+        :percent1="store.stamina"
+        :tooltip="'Stamina: ' + store.CUR_STAMINA"/>
+
   </div>
 </template>
 
@@ -30,5 +40,6 @@ export default defineComponent({
   position: absolute;
   left: 110px;
   top: 16px;
+  height: 100px;
 }
 </style>
