@@ -19,5 +19,10 @@ export const useGameStore = defineStore('game', {
 
         chatHistory: [] as ChatItem[]
     }),
+    getters: {
+        stamina(): number {
+            return this.CUR_STAMINA / this.MAX_STAMINA * 100
+        }
+    },
     actions: {}
 })

@@ -16,7 +16,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, onUnmounted, ref} from 'vue'
 import Avatar from "./Avatar.vue";
-import Stats from "./Stats.vue";
+import Stats from "./status/Stats.vue";
 import Chat from "./Chat.vue";
 import GameClient from "../../net/GameClient";
 import Render from "../../game/Render";
