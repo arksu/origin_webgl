@@ -6,14 +6,12 @@
           action="#">
       <div>
         <ul>
-          <li v-for="r in chatRows">
-            <span class="chat-line">{{ r }}</span>
+          <li v-for="r in store.chatHistory">
+            <span class="chat-line">{{ r.title }}: {{ r.text }}</span>
           </li>
         </ul>
-        <!-- hack for refresh chatRows value -->
-        <span style="display: none">{{ cnt }}</span>
       </div>
-      <input class="text-input" type="text" v-model="chatText" id="inputChat"
+      <input class="text-input" autocomplete="off" type="text" v-model="chatText" id="inputChat"
              v-on:keyup.prevent="keyup">
       <input type="submit" value=">">
     </form>
@@ -22,23 +20,42 @@
 
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
+import GameClient from "../../net/GameClient";
+import {useGameStore} from "../../store/game";
 
 export default defineComponent({
   name: "Chat",
   setup() {
-    const chatRows = ref([])
-    const cnt = ref(4)
+    const store = useGameStore()
     const chatText = ref("")
+    let chatHistoryIndex = 0
 
-    const keyup = () => {
-
+    const keyup = (e: KeyboardEvent) => {
+      // navigate by chat history
+      if (e.key == "ArrowDown") {
+        if (store.chatHistory.length > 0 && chatHistoryIndex < store.chatHistory.length - 1) {
+          chatHistoryIndex++
+          chatText.value = store.chatHistory[chatHistoryIndex].text
+        }
+      } else if (e.key == "ArrowUp") {
+        if (store.chatHistory.length > 0 && chatHistoryIndex > 0) {
+          chatHistoryIndex--
+          chatText.value = store.chatHistory[chatHistoryIndex].text
+        }
+      }
     }
 
     const chatSubmit = () => {
-
+      if (chatText.value.length > 0) {
+        console.log("chat submit", chatText.value)
+        GameClient.remoteCall("chat", {
+          text: chatText.value
+        })
+        chatText.value = ""
+      }
     }
 
-    return {chatRows, cnt, chatText, keyup, chatSubmit}
+    return {store, chatText, keyup, chatSubmit}
   }
 })
 </script>

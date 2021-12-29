@@ -10,7 +10,7 @@ import {
 import GameData from "./GameData";
 import Render from "../game/Render";
 import MoveController from "../game/MoveController";
-import {useGameStore} from "../store/game";
+import {ChatItem, useGameStore} from "../store/game";
 
 enum State {
     Disconnected,
@@ -404,6 +404,24 @@ export default class GameClient {
                     }
                 }
                 break
+            }
+            case ServerPacket.CREATURE_SAY : {
+                let obj = gameData.objects[data.id]
+                // канал в который пришло сообщение
+                let c = data.c == 0xff ? "System" : ((obj !== undefined && obj.a !== undefined) ? obj.a.n : "unknown")
+                let item: ChatItem = {
+                    title: c,
+                    text: data.t
+                }
+
+                // сохраним сообщение в сторе
+                const len = store.chatHistory.push(item)
+                // ограничим максимальную длину истории чата
+                const MAX_LEN = 10
+                if (len > MAX_LEN) {
+                    store.chatHistory.splice(0, len - MAX_LEN,)
+                }
+                break;
             }
         }
     }
