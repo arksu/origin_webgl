@@ -112,6 +112,12 @@ export interface StatusUpdate {
     readonly list: StatusUpdateAttribute[]
 }
 
+export interface CreatureSay {
+    readonly id: number
+    readonly c: number
+    readonly t: string
+}
+
 export interface InvItem {
     readonly id: number
     readonly x: number

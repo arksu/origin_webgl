@@ -28,19 +28,21 @@ export default defineComponent({
   setup() {
     const store = useGameStore()
     const chatText = ref("")
-    let chatHistoryIndex = 0
+    // индекс в истории от конца
+    let chatHistoryIndex = -1
 
     const keyup = (e: KeyboardEvent) => {
       // navigate by chat history
-      if (e.key == "ArrowDown") {
-        if (store.chatHistory.length > 0 && chatHistoryIndex < store.chatHistory.length - 1) {
+      const length = store.chatHistory.length;
+      if (e.key == "ArrowUp") {
+        if (length > 0 && chatHistoryIndex < length - 1) {
           chatHistoryIndex++
-          chatText.value = store.chatHistory[chatHistoryIndex].text
+          chatText.value = store.chatHistory[length - chatHistoryIndex - 1].text
         }
-      } else if (e.key == "ArrowUp") {
-        if (store.chatHistory.length > 0 && chatHistoryIndex > 0) {
+      } else if (e.key == "ArrowDown") {
+        if (length > 0 && chatHistoryIndex > 0) {
           chatHistoryIndex--
-          chatText.value = store.chatHistory[chatHistoryIndex].text
+          chatText.value = store.chatHistory[length - chatHistoryIndex - 1].text
         }
       }
     }
@@ -52,6 +54,7 @@ export default defineComponent({
           text: chatText.value
         })
         chatText.value = ""
+        chatHistoryIndex = -1
       }
     }
 

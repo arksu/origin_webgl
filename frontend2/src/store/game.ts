@@ -2,7 +2,8 @@ import {defineStore} from "pinia";
 
 export type ChatItem = {
     title: string,
-    text: string
+    text: string,
+    channel: number
 }
 
 export const useGameStore = defineStore('game', {

@@ -1,5 +1,5 @@
 import {
-    ContextMenuData,
+    ContextMenuData, CreatureSay,
     MapGridData,
     ObjectDel,
     ObjectMoved,
@@ -406,12 +406,14 @@ export default class GameClient {
                 break
             }
             case ServerPacket.CREATURE_SAY : {
-                let obj = gameData.objects[data.id]
+                const creatureSay = <CreatureSay>data
+                let obj = gameData.objects[creatureSay.id]
                 // канал в который пришло сообщение
-                let c = data.c == 0xff ? "System" : ((obj !== undefined && obj.a !== undefined) ? obj.a.n : "unknown")
+                let c = creatureSay.c == 0xff ? "System" : ((obj !== undefined && obj.a !== undefined) ? obj.a.n : "unknown")
                 let item: ChatItem = {
                     title: c,
-                    text: data.t
+                    text: creatureSay.t,
+                    channel: creatureSay.c
                 }
 
                 // сохраним сообщение в сторе
