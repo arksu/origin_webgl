@@ -9,6 +9,7 @@
     <avatar/>
     <stats/>
     <chat/>
+    <action-hour-glass/>
   </div>
 
 </template>
@@ -18,6 +19,7 @@ import {defineComponent, onMounted, onUnmounted, ref} from 'vue'
 import Avatar from "./Avatar.vue";
 import Stats from "./status/Stats.vue";
 import Chat from "./Chat.vue";
+import ActionHourGlass from "./ActionHourGlass.vue";
 import GameClient from "../../net/GameClient";
 import Render from "../../game/Render";
 import {useGameStore} from "../../store/game";
@@ -31,7 +33,7 @@ import {useMainStore} from "../../store/main";
  */
 export default defineComponent({
   name: "GameView",
-  components: {Avatar, Stats, Chat},
+  components: {Avatar, Stats, Chat, ActionHourGlass},
   setup() {
     const route = useRoute()
     const active = ref(false)

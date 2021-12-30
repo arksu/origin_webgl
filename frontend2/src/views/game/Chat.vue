@@ -4,16 +4,19 @@
     <form class="chat-form"
           @submit.prevent="chatSubmit"
           action="#">
-      <div>
-        <ul>
-          <li v-for="r in store.chatHistory">
-            <span class="chat-line">{{ r.title }}: {{ r.text }}</span>
-          </li>
-        </ul>
+      <ul>
+        <li v-for="r in store.chatHistory">
+          <span class="chat-line">{{ r.title }}: {{ r.text }}</span>
+        </li>
+      </ul>
+
+      <div class="input-container">
+        <input class="text-input" autocomplete="off" type="text" v-model="chatText" id="inputChat"
+               v-on:keyup.prevent="keyup">
+        <span @click="chatSubmit">
+          <input type="submit" value="&#xf1d8" class="far fa-paper-plane fa-lg">
+        </span>
       </div>
-      <input class="text-input" autocomplete="off" type="text" v-model="chatText" id="inputChat"
-             v-on:keyup.prevent="keyup">
-      <input type="submit" value=">">
     </form>
   </div>
 </template>
@@ -65,6 +68,14 @@ export default defineComponent({
 
 <style scoped lang="scss">
 
+.input-container {
+  border: 2px solid #103c2ab5;
+  border-radius: 6px;
+  background-color: #7b917eb3;
+  padding: 5px 10px;
+  pointer-events: auto;
+}
+
 .chat-form {
   position: absolute;
   left: 20px;
@@ -75,7 +86,7 @@ export default defineComponent({
 .chat-line {
   pointer-events: none;
   font-family: Bitter, Georgia, serif;
-  font-size: 25px;
+  font-size: 20px;
   color: #daedfa;
   text-shadow: 2px 2px 0 #000,
   -1px -1px 0 #000,
@@ -85,10 +96,18 @@ export default defineComponent({
 }
 
 .text-input {
+  background: transparent;
+  outline: none;
+  border: none;
   width: 300px;
-  font-size: 20px;
+  font-size: 16px;
   pointer-events: auto;
+  color: #17241d;
 }
 
+span {
+  color: #264a44;
+  cursor: pointer;
+}
 
 </style>

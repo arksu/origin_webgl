@@ -1,5 +1,6 @@
 <template>
   <div class="stats-container">
+    <!-- hp-->
     <stat-bar
         frame-color="#9e3f41ba"
         bar-back-color="#1c0808"
@@ -9,6 +10,7 @@
         :percent2="store.softHp"
         :tooltip="'HP: ' + store.CUR_SHP + '/' + store.CUR_HHP" />
 
+    <!-- stamina-->
     <stat-bar
         frame-color="#4B81BEBA"
         bar-back-color="#08111c"
@@ -38,8 +40,8 @@ export default defineComponent({
 <style scoped lang="scss">
 .stats-container {
   position: absolute;
-  left: 110px;
-  top: 16px;
+  left: 100px;
+  top: 10px;
   height: 100px;
 }
 </style>

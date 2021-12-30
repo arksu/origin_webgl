@@ -122,4 +122,8 @@ open class Status(val me: Human) {
         // TODO
         setCurrentStamina(currentStamina + 1.0)
     }
+
+    fun TEST_restore() {
+        setCurrentStamina(100.0)
+    }
 }

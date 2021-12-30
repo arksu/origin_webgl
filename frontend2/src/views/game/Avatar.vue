@@ -25,7 +25,7 @@ export default defineComponent({
   left: 10px;
   top: 10px;
   pointer-events: auto;
-  border: 4px solid rgba(70, 48, 31, 0.63);
+  border: 4px solid rgba(70, 48, 31, 0.75);
   border-radius: 3px;
 }
 

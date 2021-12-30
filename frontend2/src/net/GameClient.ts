@@ -1,4 +1,5 @@
 import {
+    ActionProgressData,
     ContextMenuData, CreatureSay,
     MapGridData,
     ObjectDel,
@@ -424,6 +425,12 @@ export default class GameClient {
                     store.chatHistory.splice(0, len - MAX_LEN,)
                 }
                 break;
+            }
+            case ServerPacket.ACTION_PROGRESS : {
+                let ap = <ActionProgressData>data
+                store.actionProgress.total = ap.t
+                store.actionProgress.current = ap.c
+                break
             }
         }
     }

@@ -6,6 +6,11 @@ export type ChatItem = {
     channel: number
 }
 
+export type ActionProgress = {
+    total: number,
+    current: number
+}
+
 export const useGameStore = defineStore('game', {
     state: () => ({
         selectedCharacterId: undefined as number | undefined,
@@ -20,18 +25,26 @@ export const useGameStore = defineStore('game', {
         CUR_ENERGY: 0 as number,
         MAX_ENERGY: 0 as number,
 
-        chatHistory: [] as ChatItem[]
+        chatHistory: [] as ChatItem[],
+
+        actionProgress: {
+            total: 0,
+            current: 0
+        } as ActionProgress
     }),
     getters: {
         stamina(): number {
             return this.CUR_STAMINA / this.MAX_STAMINA * 100
         },
-        softHp() : number {
+        softHp(): number {
             return this.CUR_SHP / this.MAX_HP * 100
         },
-        hardHp() : number {
+        hardHp(): number {
             return this.CUR_HHP / this.MAX_HP * 100
         },
+        actionFrame(): number {
+            return Math.round((this.actionProgress.current / this.actionProgress.total) * 21)
+        }
     },
     actions: {}
 })

@@ -453,6 +453,9 @@ class Player(
             "tile" -> {
                 commandToExecute = cmd
             }
+            "restore" -> {
+                status.TEST_restore()
+            }
             "off" -> {
                 commandToExecute = null
             }
