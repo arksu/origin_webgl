@@ -10,6 +10,7 @@
     <stats/>
     <chat/>
     <action-hour-glass/>
+    <window id="11" title="Some" width="200" height="300"/>
   </div>
 
 </template>
@@ -20,6 +21,7 @@ import Avatar from "./Avatar.vue";
 import Stats from "./status/Stats.vue";
 import Chat from "./Chat.vue";
 import ActionHourGlass from "./ActionHourGlass.vue";
+import Window from "./Window.vue";
 import GameClient from "../../net/GameClient";
 import Render from "../../game/Render";
 import {useGameStore} from "../../store/game";
@@ -33,7 +35,7 @@ import {useMainStore} from "../../store/main";
  */
 export default defineComponent({
   name: "GameView",
-  components: {Avatar, Stats, Chat, ActionHourGlass},
+  components: {Avatar, Stats, Chat, ActionHourGlass, Window},
   setup() {
     const route = useRoute()
     const active = ref(false)
