@@ -10,7 +10,7 @@
     <stats/>
     <chat/>
     <action-hour-glass/>
-    <window id="11" title="Some" width="200" height="300"/>
+    <window id="11" title="Player" width="200" height="300"/>
   </div>
 
 </template>

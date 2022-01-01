@@ -143,8 +143,8 @@ export default defineComponent({
 
 .title-text {
   color: #eeee59;
-  font-size: 14px;
-  font-family: Georgia, serif;
+  font-size: 13px;
+  vertical-align: top;
 }
 
 .frame {
