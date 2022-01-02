@@ -38,15 +38,18 @@ export const useGameStore = defineStore('game', {
         hand : undefined as HandData | undefined,
     }),
     getters: {
-        stamina(): number {
+        staminaPercent(): number {
             return this.CUR_STAMINA / this.MAX_STAMINA * 100
         },
-        softHp(): number {
+        softHpPercent(): number {
             return this.CUR_SHP / this.MAX_HP * 100
         },
-        hardHp(): number {
+        hardHpPercent(): number {
             return this.CUR_HHP / this.MAX_HP * 100
         },
+        /**
+         * номер кадра (часов) для выполняемого действия
+         */
         actionFrame(): number {
             return Math.round((this.actionProgress.current / this.actionProgress.total) * 21)
         }

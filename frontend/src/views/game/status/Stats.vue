@@ -6,8 +6,8 @@
         bar-back-color="#1c0808"
         bar1-color="#611813"
         bar2-color="#b3261d"
-        :percent1="store.hardHp"
-        :percent2="store.softHp"
+        :percent1="store.hardHpPercent"
+        :percent2="store.softHpPercent"
         :tooltip="'HP: ' + store.CUR_SHP + '/' + store.CUR_HHP" />
 
     <!-- stamina-->
@@ -15,7 +15,7 @@
         frame-color="#4B81BEBA"
         bar-back-color="#08111c"
         bar1-color="#2243EE"
-        :percent1="store.stamina"
+        :percent1="store.staminaPercent"
         :tooltip="'Stamina: ' + store.CUR_STAMINA"/>
 
   </div>
