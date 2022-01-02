@@ -3,35 +3,34 @@
        alt="item"
        :style="'left: ' + (17 + item.x * 31) + 'px; top: ' + (23 + item.y * 31) + 'px;'"
        v-if="item !== undefined"
-       :src="'/assets/' + item.icon"
-       @click="click">
+       :src="'/assets/game/' + item.icon"
+       @click.prevent="onClick">
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent} from 'vue'
+import {InvItem} from "../../net/packets";
 
 export default defineComponent({
   name: "Item",
   props: {
-    item: Object,
+    item: {
+      type: Object as () => InvItem,
+    },
   },
-  emits: {
-    itemClick: null
-  },
-  computed: {},
-  methods: {
-    click(e: MouseEvent) {
-      console.log(e)
-      e.preventDefault()
-      this.$emit('itemClick', this.item, e.offsetX, e.offsetY)
+  emits: ['itemClick'],
+  setup(props, {emit}) {
+
+    const onClick = (e: MouseEvent) => {
+      emit('itemClick', props.item, e.offsetX, e.offsetY)
     }
+
+    return {onClick}
   }
 })
 </script>
 
-<style scoped>
-
-
+<style scoped lang="scss">
 .item-image {
   position: absolute;
   cursor: pointer;

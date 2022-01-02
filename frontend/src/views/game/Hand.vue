@@ -1,54 +1,33 @@
 <template>
   <div
-      :style="'left: ' + (left - ox) + 'px; top: ' + (top - oy) + 'px;'"
+      :style="'left: ' + (left - hand.mx) + 'px; top: ' + (top - hand.my) + 'px;'"
       class="tooltip">
     <img
         alt="hand"
         style="display: block"
-        :src="'/assets' +$store.state.hand.icon"
+        :src="'/assets/game' + hand.icon"
     />
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
-import Client from "@/net/Client";
+import {defineComponent} from 'vue'
+import {HandData} from "../../net/packets";
 
+/**
+ * предмет который держим в руке (перетаскивание между инвентарями)
+ */
 export default defineComponent({
   name: "Hand",
   props: {
-    // offset in px
-    ox: Number,
-    oy: Number
+    hand: Object as () => HandData,
+    left: Number,
+    top: Number,
   },
-  data() {
-    return {
-      left: 0 as number,
-      top: 0 as number
-    }
-  },
-  methods: {
-    onMove(e: MouseEvent) {
-      this.left = e.clientX
-      this.top = e.clientY
-    }
-  },
-  mounted() {
-    console.warn("hand mount")
-    console.log(window.onmousemove)
-    window.onmousemove = this.onMove
-    this.left = Client.instance.mouseX
-    this.top = Client.instance.mouseY
-  },
-  unmounted() {
-    console.warn("hand unmount")
-    window.onmousemove = null
-  }
 })
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
 .tooltip {
   display: inline-block;
   pointer-events: none;
@@ -56,5 +35,4 @@ export default defineComponent({
   z-index: 9999;
   padding: 0;
 }
-
 </style>

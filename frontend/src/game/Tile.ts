@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
+import {getRandomByCoord} from "../utils/random";
+import Coord from "./Coord";
 
-import {Coord, getRandomByCoord, getRandomInt} from "@/utils/Util";
 import water from "./tiles/water.json"
 import water_deep from "./tiles/water_deep.json"
 import swamp from "./tiles/swamp.json"
@@ -179,9 +180,8 @@ class TerrainObjects {
     }
 }
 
-
 export default class Tile {
-    public static readonly ATLAS = 'assets/tiles.png'
+    public static readonly ATLAS = 'assets/game/tiles.png'
 
     public static sets: TileSet[] = []
     public static terrains: TerrainObjects[] = []
@@ -237,3 +237,5 @@ export default class Tile {
         return undefined
     }
 }
+
+Tile.init()

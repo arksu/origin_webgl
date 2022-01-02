@@ -1,49 +1,52 @@
 import {createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw} from "vue-router";
+import Login from "../views/Login.vue";
+import NotFound from "../views/NotFound.vue";
+import SignUp from "../views/SignUp.vue";
+import About from "../views/About.vue";
+import Characters from "../views/characters/index.vue";
+import CreateNewCharacter from "../views/characters/CreateNew.vue";
+import Test from "../views/Test.vue"
+import GameView from "../views/game/GameView.vue";
 
-import Login from "@/views/Login.vue";
-import Signup from "@/views/Signup.vue";
-import Game from "@/views/game/Game.vue";
-import NotFound from "@/views/NotFound.vue";
-import Characters from "@/views/characters/Characters.vue";
-import NewCharacter from "@/views/characters/NewCharacter.vue";
-import About from "@/views/About.vue";
-import guards from "./guards"
+import guards from "./guards";
+import {RouteNames} from "./routeNames";
+
 
 const routes: Array<RouteRecordRaw> = [
     {
-        path: "/",
-        name: "Game",
-        component: Game
-    },
-    {
         path: "/login",
-        name: "Login",
+        name: RouteNames.LOGIN,
         component: Login
     },
     {
         path: "/signup",
-        name: "Signup",
-        component: Signup
+        name: RouteNames.SIGN_UP,
+        component: SignUp
     },
     {
         path: "/characters",
-        name: "Characters",
+        name: RouteNames.CHARACTERS,
         component: Characters
     },
     {
         path: "/new-character",
-        name: "NewCharacter",
-        // component: () => import("@/views/characters/NewCharacter.vue")
-        component: NewCharacter
+        name: RouteNames.NEW_CHARACTER,
+        component: CreateNewCharacter
+    },
+    {
+        path: "/game",
+        name: RouteNames.GAME,
+        component: GameView
     },
     {
         path: "/about",
-        name: "About",
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        // component: () => import(/* webpackChunkName: "about" */ "@/views/About.vue")
+        name: RouteNames.ABOUT,
         component: About
+    },
+    {
+        path: "/test",
+        name: "test",
+        component : Test
     },
     {
         path: "/:catchAll(.*)",
@@ -51,10 +54,12 @@ const routes: Array<RouteRecordRaw> = [
     }
 ];
 
+
 const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
+    history: createWebHistory(),
     routes
 });
+
 
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
     guards(from, to, next);

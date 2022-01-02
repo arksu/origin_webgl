@@ -1,16 +1,46 @@
-// noinspection HttpUrlsUsage
-
 const path = require('path');
+
+const {DefinePlugin} = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const CopyPlugin = require("copy-webpack-plugin");
-const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-const {ProvidePlugin, HotModuleReplacementPlugin, DefinePlugin} = require("webpack");
 const {VueLoaderPlugin} = require('vue-loader')
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     mode: 'development',
     entry: './src/main.ts',
+    devtool: 'inline-source-map',
+    resolve: {
+        extensions: ['.ts', '.js'],
+        alias: {
+            // 'src': path.resolve(__dirname, 'src')
+            // 'vue': '@vue/runtime-dom', // ?????
+        }
+    },
+    plugins: [
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: "assets/game/**"
+                }
+            ]
+        }),
+        new VueLoaderPlugin(),
+        new HtmlWebpackPlugin({
+            title: 'Origin',
+            template: "./src/index.html",
+            filename: 'index.html'
+        }),
+        new DefinePlugin({
+            __VUE_OPTIONS_API__: true,
+            __VUE_PROD_DEVTOOLS__: false,
+        })
+    ],
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, "dist"),
+        publicPath: "/",
+        clean: true,
+    },
     module: {
         rules: [
             {
@@ -23,81 +53,31 @@ module.exports = {
             },
             {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                use: 'vue-loader'
             },
             {
-                test: /\.s[ac]ss|css$/,
+                test: /\.s[ac]ss$/i,
                 use: [
-                    {
-                        loader: "vue-style-loader"
-                    },
-                    {
-                        loader: "style-loader" // creates style nodes from JS strings
-                    },
-                    {
-                        loader: "css-loader" // translates CSS into CommonJS
-                    },
-                    {
-                        loader: "sass-loader" // compiles Sass to CSS
-                    }
+                    // Creates `style` nodes from JS strings
+                    "style-loader",
+                    // Translates CSS into CommonJS
+                    "css-loader",
+                    // Compiles Sass to CSS
+                    "sass-loader"
                 ]
             },
             {
                 test: /\.(jpe?g|gif|png)$/,
-                loader: 'file-loader'
+                type: 'asset/resource'
             },
-            {
-                test: /\.js$/,
-                enforce: "pre",
-                use: ["source-map-loader"],
-            }
-        ],
-    },
-    plugins: [
-        new CleanWebpackPlugin(),
-        new CopyPlugin({
-            patterns: [
-                {
-                    from: "assets/**/*"
-                }
-            ]
-        }),
-        new HotModuleReplacementPlugin(),
-        new VueLoaderPlugin(),
-        new HtmlWebpackPlugin({
-            hash: true,
-            title: 'Origin',
-            template: "./src/index.html",
-            filename: 'index.html'
-        }),
-        new ProvidePlugin({
-            process: 'process/browser',
-        }),
-        new DefinePlugin({
-            __VUE_OPTIONS_API__: true,
-            __VUE_PROD_DEVTOOLS__: false,
-        })
-    ],
-    resolve: {
-        plugins: [new TSConfigPathsPlugin({})],
-        modules: ["node_modules"],
-        extensions: [".js", ".ts", ".tsx", ".vue"],
-        alias: {
-            'vue': '@vue/runtime-dom',
-        }
-    },
-    output: {
-        filename: '[name].bundle.js',
-        path: path.resolve(path.join(__dirname, ".", "dist")),
+        ]
     },
     devServer: {
         historyApiFallback: true,
-        inline: true,
-        hot: true,
-        stats: 'minimal',
-        compress: true,
-        overlay: true,
-        progress: true,
+        client: {
+            progress: true,
+        },
+        static: ['assets'],
         host: '0.0.0.0',
         port: 3070,
         proxy: {
@@ -108,5 +88,4 @@ module.exports = {
             }
         }
     },
-    target: "web"
 };

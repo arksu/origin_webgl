@@ -1,20 +1,17 @@
 <template>
-  <div class="container">
-    <h1>Page: {{ $route.params.catchAll }}</h1>
-    <h1>Oops, it looks like the page you're looking for doesn't exist.</h1>
-  </div>
+  <p>
+    Not found
+  </p>
 </template>
 
-<script>
-export default {
-  name: "NotFound"
-}
+<script lang="ts">
+import {defineComponent} from 'vue'
+
+export default defineComponent({
+  name: "NotFound",
+})
 </script>
 
 <style scoped>
-
-.container {
-  text-align: center;
-}
 
 </style>

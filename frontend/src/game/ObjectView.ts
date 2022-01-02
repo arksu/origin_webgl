@@ -1,13 +1,28 @@
 import * as PIXI from 'pixi.js';
-import {GameObject} from "@/game/GameObject";
-import Net from "@/net/Net";
+import Coord from "./Coord";
+import GameObject from "./GameObject";
+import Render from "./Render";
+import GameClient from "../net/GameClient";
+import {getKeyFlags} from "../utils/keyboard";
+import Point from "./Point";
 import objects from "./objects.json"
-import Game from "@/game/Game";
-import {Coord, getKeyFlags, Layer, Resource} from "@/utils/Util";
-import Point from "@/utils/Point";
+
+export interface Layer {
+    img: string
+    interactive?: boolean
+    offset?: Coord
+    z?: number
+    shadow?: boolean
+}
+
+export interface Resource {
+    size?: Coord
+    offset?: Coord
+    layers: Layer[]
+}
 
 /**
- * внешнее представлениен объекта в игре
+ * внешнее представление объекта в игре
  */
 export default class ObjectView {
     obj: GameObject
@@ -63,7 +78,7 @@ export default class ObjectView {
     private addLayer(l: Layer) {
         let path = l.img
         // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
-        if (path.includes(".")) path = "assets/" + path
+        if (path.includes(".")) path = "assets/game/" + path
 
         // если есть оффсет надо его проставить
         if (l.offset != undefined) {
@@ -90,7 +105,7 @@ export default class ObjectView {
     }
 
     public onMoved() {
-        let coord = Game.coordGame2Screen(this.obj.x, this.obj.y)
+        let coord = Render.coordGame2Screen(this.obj.x, this.obj.y)
 
         for (let i = 0; i < this.view.length; i++) {
             // оффсет слоя
@@ -122,7 +137,7 @@ export default class ObjectView {
                 let l = this.res.layers[i]
                 let path = l.img
                 // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
-                if (path.includes(".")) path = "assets/" + path + "?" + (+new Date())
+                if (path.includes(".")) path = "assets/game/" + path + "?" + (+new Date())
 
                 this.view[i].texture = PIXI.Texture.from(path)
             }
@@ -136,18 +151,18 @@ export default class ObjectView {
         })
         target.on("touchstart", (e: PIXI.InteractionEvent) => {
             this.isTouched = true
-            this.touchTimer = setTimeout(() => {
-                if (this.isTouched) {
-                    this.isTouched = false
-                    // укажем что был правый клик (сработал)
-                    this.wasRightClick = true
-                    console.log("rightclick")
-                    this.onRightClick(e)
-
-                    clearTimeout(this.touchTimer)
-                    this.touchTimer = -1
-                }
-            }, 800)
+            // this.touchTimer = setTimeout(() => {
+            //     if (this.isTouched) {
+            //         this.isTouched = false
+            //         // укажем что был правый клик (сработал)
+            //         this.wasRightClick = true
+            //         console.log("rightclick")
+            //         this.onRightClick(e)
+            //
+            //         clearTimeout(this.touchTimer)
+            //         this.touchTimer = -1
+            //     }
+            // }, 800)
         })
         target.on("touchend", (e: PIXI.InteractionEvent) => {
             this.isTouched = false
@@ -177,12 +192,12 @@ export default class ObjectView {
     private onClick(e: PIXI.InteractionEvent) {
         // screen point coord
         const p = new Point(e.data.global).round();
-        if (Game.instance !== undefined) {
+        if (Render.instance !== undefined) {
             // вычислим игровые координаты куда тыкнула мышь
             // их тоже отправим на сервер
-            let cp = Game.instance?.coordScreen2Game(p);
+            let cp = Render.instance.coordScreen2Game(p);
 
-            Net.remoteCall("objclick", {
+            GameClient.remoteCall("objclick", {
                 id: this.obj.id,
                 f: getKeyFlags(e),
                 x: cp.x,
@@ -193,11 +208,11 @@ export default class ObjectView {
 
     private onRightClick(e: PIXI.InteractionEvent) {
         console.log(e)
-        if (Game.instance != undefined) {
+        if (Render.instance != undefined) {
             const p = new Point(e.data.global).round();
-            let cp = Game.instance.coordScreen2Game(p);
+            let cp = Render.instance.coordScreen2Game(p);
 
-            Net.remoteCall("objrclick", {
+            GameClient.remoteCall("objrclick", {
                 id: this.obj.id,
                 x: cp.x,
                 y: cp.y

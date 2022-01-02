@@ -1,6 +1,6 @@
-import {ContextMenuData} from "@/net/Packets";
 import * as PIXI from 'pixi.js';
-import Net from "@/net/Net";
+import {ContextMenuData} from "../net/packets";
+import GameClient from "../net/GameClient";
 
 export default class ContextMenu {
     /**
@@ -92,7 +92,7 @@ export default class ContextMenu {
 
     private click(t: string) {
         console.log("cl")
-        Net.remoteCall("cmselect", {
+        GameClient.remoteCall("cmselect", {
             item: t
         })
         this.destroy()

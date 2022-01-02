@@ -1,38 +1,20 @@
 import '@fortawesome/fontawesome-free/js/fontawesome'
 import '@fortawesome/fontawesome-free/js/solid'
+import '@fortawesome/fontawesome-free/js/regular'
 
-import store from "@/store/store"
-import router from "@/router";
-import App from "@/App.vue";
-
-import "@/scss/main.scss";
+import "./scss/main.scss"
 import {createApp} from "vue";
-import Client from "@/net/Client";
-import Game from "@/game/Game";
-import Tile from "@/game/Tile";
+import {createPinia} from 'pinia'
+import router from "./router";
 
-// формируем ссылку для работы с бекендом
-let gameServerPort = window.location.port;
-let proto = "https:" === window.location.protocol ? "wss:" : "ws:";
-// websockets для работы игрового протокола
-Client.websocketsUrl = proto + "//" + window.location.hostname + ":" + gameServerPort + "/api/game";
-// апи для логина и выбора персонажа
-Client.apiUrl = window.location.protocol + "//" + window.location.hostname + ":" + gameServerPort
+import App from "./App.vue";
+import {preloadClock} from "./utils/imagePreload";
 
-// сформируем правильные тайлсеты
-Tile.init()
+// preloadClock()
 
-// создадим синглтон для клиента где будем хранить наш игровой стейт
-Client.instance = new Client();
-
-// навешиваем на канвас обработчики
-Game.initCanvasHandlers();
-
-// создаем vue приложение
-const app = createApp(App);
-app.use(store)
+const app = createApp(App)
+app.use(createPinia())
 app.use(router)
-app.mount("#app");
 
 // добавим свою кастомную директиву для автофокуса input (v-focus)
 // используем в форме логина и регистрации
@@ -41,8 +23,6 @@ app.directive('focus', {
         el.focus();
     }
 })
+app.mount("#app")
 
-window.addEventListener('mousemove', (e: MouseEvent) => {
-    Client.instance.mouseX = e.clientX
-    Client.instance.mouseY = e.clientY
-})
+

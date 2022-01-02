@@ -1,5 +1,5 @@
-import {ActionProgressData} from "@/net/Packets";
 import * as PIXI from 'pixi.js';
+import {ActionProgressData} from "../net/packets";
 
 export default class ActionProgress {
     public sprite: PIXI.Sprite

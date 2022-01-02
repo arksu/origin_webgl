@@ -6,7 +6,7 @@
     </div>
 
     <div class="close-btn-back">
-      <img alt="" style="float: right; margin-right: 3px" src="../../../assets/window_close.png">
+      <img alt="" style="float: right; margin-right: 3px" src="../../../assets/img/window_close.png">
     </div>
     <div class="header" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
       <div class="title">
@@ -22,95 +22,101 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, ref} from 'vue'
 
 export default defineComponent({
   name: "Window",
   props: {
-    title: String,
-    id: Number, // id окна по которому восстанавливаем/сохраняем размеры
-    width: Number,
-    height: Number
-  },
-  emits: {
-    close: null
-  },
-  data() {
-    return {
-      clientX: 0 as number,
-      clientY: 0 as number,
-      movementX: 0 as number,
-      movementY: 0 as number,
-      touchId: -1 as number,
-      left: 0 as number,
-      top: 0 as number
-    }
-  },
-  methods: {
-    onTouchStart: function (event: TouchEvent) {
-      if (event.touches.length == 1) {
-        this.clientX = event.touches[0].clientX
-        this.clientY = event.touches[0].clientY
-        this.touchId = event.touches[0].identifier
-        document.ontouchmove = this.onTouchDrag
-        document.ontouchend = this.onTouchDragEnd
-      }
+    id: {
+      type: Number,
+      required: true
     },
-    onTouchDrag: function (event: TouchEvent) {
+    title: {
+      type: String,
+      required: true
+    },
+    width: {
+      type: Number,
+      required: true
+    },
+    height: {
+      type: Number,
+      required: true
+    },
+  },
+  emits: ['close'],
+  setup(props) {
+    const left = ref(110)
+    const top = ref(50)
+    const draggableTarget = ref<any>(null)
+
+    let clientX = 0
+    let clientY = 0
+    let movementX = 0
+    let movementY = 0
+    let touchId = -1
+
+    const onTouchDrag = function (event: TouchEvent) {
       event.preventDefault()
-      if (event.touches.length == 1 && event.touches[0].identifier == this.touchId) {
+      if (event.touches.length == 1 && event.touches[0].identifier == touchId) {
 
-        this.movementX = this.clientX - event.touches[0].clientX
-        this.movementY = this.clientY - event.touches[0].clientY
-        this.clientX = event.touches[0].clientX
-        this.clientY = event.touches[0].clientY
+        movementX = clientX - event.touches[0].clientX
+        movementY = clientY - event.touches[0].clientY
+        clientX = event.touches[0].clientX
+        clientY = event.touches[0].clientY
 
-        const el = <HTMLDivElement>this.$refs.draggableTarget
-        this.left = (el.offsetLeft - this.movementX)
-        this.top = (el.offsetTop - this.movementY)
+        const el = <HTMLDivElement>draggableTarget.value
+        left.value = (el.offsetLeft - movementX)
+        top.value = (el.offsetTop - movementY)
       }
-    },
-    onTouchDragEnd: function (event: TouchEvent) {
+    }
+    const onTouchDragEnd = function (event: TouchEvent) {
       console.log(event)
       document.ontouchmove = null
       document.ontouchend = null
-      localStorage.setItem("wnd_" + this.id + "_left", "" + this.left)
-      localStorage.setItem("wnd_" + this.id + "_top", "" + this.top)
-    },
-    onMouseDown: function (event: MouseEvent) {
-      console.log(event)
-      if (event.button == 0) {
-        this.clientX = event.clientX
-        this.clientY = event.clientY
-        document.onmousemove = this.onDrag
-        document.onmouseup = this.onDragEnd
-      }
-    },
-    onDrag: function (event: MouseEvent) {
-      event.preventDefault()
-      this.movementX = this.clientX - event.clientX
-      this.movementY = this.clientY - event.clientY
-      this.clientX = event.clientX
-      this.clientY = event.clientY
+      localStorage.setItem("wnd_" + props.id + "_left", "" + left.value)
+      localStorage.setItem("wnd_" + props.id + "_top", "" + top.value)
+    }
 
-      const el = <HTMLDivElement>this.$refs.draggableTarget
-      this.left = (el.offsetLeft - this.movementX)
-      this.top = (el.offsetTop - this.movementY)
-    },
-    onDragEnd: function () {
+    const onTouchStart = (event: TouchEvent) => {
+      if (event.touches.length == 1) {
+        clientX = event.touches[0].clientX
+        clientY = event.touches[0].clientY
+        touchId = event.touches[0].identifier
+        document.ontouchmove = onTouchDrag
+        document.ontouchend = onTouchDragEnd
+      }
+    }
+
+
+    const onDrag = function (event: MouseEvent) {
+      event.preventDefault()
+      movementX = clientX - event.clientX
+      movementY = clientY - event.clientY
+      clientX = event.clientX
+      clientY = event.clientY
+
+      const el = <HTMLDivElement>draggableTarget.value
+      left.value = (el.offsetLeft - movementX)
+      top.value = (el.offsetTop - movementY)
+    }
+    const onDragEnd = function () {
       document.onmousemove = null
       document.onmouseup = null
-      localStorage.setItem("wnd_" + this.id + "_left", "" + this.left)
-      localStorage.setItem("wnd_" + this.id + "_top", "" + this.top)
+      localStorage.setItem("wnd_" + props.id + "_left", "" + left.value)
+      localStorage.setItem("wnd_" + props.id + "_top", "" + top.value)
     }
-  },
-  mounted() {
-    this.left = parseInt(localStorage.getItem("wnd_" + this.id + "_left") ?? "100")
-    this.top = parseInt(localStorage.getItem("wnd_" + this.id + "_top") ?? "150")
-    if (this.left + this.width! > window.innerWidth || this.top + this.height! > window.innerHeight) {
-      this.left = 100
-      this.top = 150
+    const onMouseDown = (event: MouseEvent) => {
+      console.log('onMouseDown', event)
+      if (event.button == 0) {
+        clientX = event.clientX
+        clientY = event.clientY
+        document.onmousemove = onDrag
+        document.onmouseup = onDragEnd
+      }
     }
+
+    return {draggableTarget, left, top, onTouchStart, onMouseDown}
   }
 })
 </script>
@@ -120,12 +126,13 @@ export default defineComponent({
   display: flex;
   justify-content: right;
   position: absolute;
-  z-index: 100;
+  z-index: 10;
   text-align: center;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  pointer-events: auto;
 }
 
 .header {
@@ -140,7 +147,7 @@ export default defineComponent({
   border-right: 18px solid transparent;
   border-top: 0 solid transparent;
   border-bottom: 0 solid transparent;
-  border-image: url('/assets/window_title.png') 0 30% 0 30% fill / 0 18px 0 18px;
+  border-image: url('../../../assets/img/window_title.png') 0 30% 0 30% fill / 0 18px 0 18px;
   position: relative;
   height: 22px;
   display: inline-block;
@@ -148,15 +155,15 @@ export default defineComponent({
 
 .title-text {
   color: #eeee59;
-  font-size: 14px;
-  font-family: Georgia, serif;
+  font-size: 13px;
+  vertical-align: top;
 }
 
 .frame {
   position: absolute;
   top: 7px;
   border-width: 0;
-  border-image: url('/assets/window_frame.png') 34% fill / 8px repeat repeat;
+  border-image: url('../../../assets/img/window_frame.png') 34% fill / 8px repeat repeat;
 }
 
 .close-btn-back {
@@ -185,6 +192,6 @@ export default defineComponent({
 }
 
 .close-btn:hover {
-  background-image: url('/assets/btn_close_hover.png');
+  background-image: url('../../../assets/img/btn_close_hover.png');
 }
 </style>

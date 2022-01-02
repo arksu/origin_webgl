@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js';
-import Tile from "@/game/Tile";
-import Client from "@/net/Client";
-import {getRandomByCoord} from "@/utils/Util";
-import VertexBuffer from "@/utils/VertexBuffer";
+import Tile from "./Tile";
+import GameClient from "../net/GameClient";
+import VertexBuffer from "../utils/VertexBuffer";
+import {getRandomByCoord} from "../utils/random";
 
 export interface MapData {
     x: number
@@ -18,6 +18,7 @@ export interface MapData {
      */
     isChanged: boolean
 }
+
 
 export default class Grid {
     // 2 4 5 10
@@ -66,7 +67,7 @@ export default class Grid {
     /**
      * чанки-контейнеры на которые делим грид (иначе по размеру текстуры целый грид не влезает в память)
      */
-    public containers: PIXI.Container[] = [];
+    public chunks: PIXI.Container[] = [];
 
     private parent: PIXI.Container
 
@@ -106,20 +107,20 @@ export default class Grid {
         // создаем чанки грида 4x4
         for (let cx = 0; cx < Grid.DIVIDER; cx++) {
             for (let cy = 0; cy < Grid.DIVIDER; cy++) {
-                let container = this.makeChunk(cx, cy)
-                this.containers.push(container)
+                const container = this.makeChunk(cx, cy)
+                this.chunks.push(container)
                 this.parent.addChild(container)
             }
         }
     }
 
     public destroy() {
-        for (let container of this.containers) {
+        for (let container of this.chunks) {
             container.destroy({
                 children: true
             })
         }
-        this.containers = []
+        this.chunks = []
     }
 
     /**
@@ -128,8 +129,8 @@ export default class Grid {
     public set visible(v: boolean) {
         if (this._visible != v) {
             this._visible = v
-            for (let i = 0; i < this.containers.length; i++) {
-                this.containers[i].visible = v
+            for (let i = 0; i < this.chunks.length; i++) {
+                this.chunks[i].visible = v
             }
         }
     }
@@ -165,7 +166,8 @@ export default class Grid {
     }
 
     private makeTiles(container: PIXI.Container, cx: number, cy: number) {
-        const tiles = Client.instance.map[this.key].tiles;
+        const gameData = GameClient.data;
+        const tiles = gameData.map[this.key].tiles;
 
         // создаем заранее массив в 2 раза больше чем надо (под кусочки тайлов)
         const elements = this.CHUNK_SIZE * this.CHUNK_SIZE * 2
@@ -216,7 +218,7 @@ export default class Grid {
                                     // смещение тайла который вылез за границы относительно текущего грида
                                     let ox = dx < 0 ? -1 : (dx >= Tile.GRID_SIZE ? 1 : 0)
                                     let oy = dy < 0 ? -1 : (dy >= Tile.GRID_SIZE ? 1 : 0)
-                                    const ndata = Client.instance.map[(this.x + ox) + "_" + (this.y + oy)];
+                                    const ndata = gameData.map[(this.x + ox) + "_" + (this.y + oy)];
                                     // можем выйти за границы карты и такого грида не будет
                                     if (ndata !== undefined) {
                                         let ix = dx < 0 ? Tile.GRID_SIZE + dx : (dx >= Tile.GRID_SIZE ? dx - Tile.GRID_SIZE : dx)
@@ -293,29 +295,5 @@ export default class Grid {
         }), PIXI.State.for2d(), PIXI.DRAW_MODES.TRIANGLES);
 
         container.addChild(mesh)
-    }
-
-    public onFileChange(fn: string) {
-        // TODO поскольку тайлы теперь в VBO заменить один тайл - без перестройки всего невозможно
-
-        // let path = "assets/" + fn + "?" + (+new Date())
-
-        // for (let i = 0; i < this.containers.length; i++) {
-        //     this.containers[i].cacheAsBitmap = false
-        // }
-        // PIXI.Texture.fromURL(path).then(() => {
-
-        // for (let i = 0; i < this.sprites.length; i++) {
-        //     let spr = this.sprites[i]
-        //
-        //     if (this.spriteTextureNames[i] == fn) {
-        //         spr.texture = PIXI.Texture.from(path)
-        //     }
-        // }
-
-        // for (let i = 0; i < this.containers.length; i++) {
-        //     this.containers[i].cacheAsBitmap = true
-        // }
-        // })
     }
 }

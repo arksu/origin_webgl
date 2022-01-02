@@ -1,15 +1,15 @@
+@use "variables" as *;
+
 @import url('https://fonts.googleapis.com/css2?family=BioRhyme:wght@400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bitter:wght@600&display=swap');
 
-$mainFontName: BioRhyme;
-$secondFont: Georgia;
-
-body {
+body, input, button, textarea {
   padding: 0;
   margin: 0;
-  font-family: "Arial", sans-serif;
-
-  background-image: url("/assets/back1_80.jpg");
+  font-family: $mainFontName, $secondFont, sans-serif;
+}
+body {
+  background-image: url("/assets/img/background.jpg");
   background-position: 17% 70%;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -18,265 +18,14 @@ body {
 }
 
 canvas {
-  background-color: black;
-  display: none;
+  background-color: #4b3932;
   position: absolute;
   width: 100%;
   height: 100%;
   padding: 0;
   margin: 0;
+  z-index: -1;
 }
 
-/*-- forms --*/
-
-.padding-all {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.form-container {
-  margin-top: -12%;
-  width: 36%;
-  max-width: 600px;
-}
-
-.login-panel {
-  border-radius: 18px;
-  padding: 30px 30px 30px;
-  text-align: center;
-  background: rgba(16, 96, 109, 0.65);
-  color: #d5eeed;
-  margin: 0 auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-
-  font-family: $mainFontName, $secondFont;
-  font-size: 19px;
-}
-
-.logo-container {
-  line-height: 55px;
-  text-align: center;
-}
-
-.form-container img {
-  max-width: 100%;
-  max-height: 100%;
-  vertical-align: middle;
-}
-
-.login-panel input[type="text"], .login-panel input[type="password"] {
-  margin-bottom: 25px;
-  padding: 8px 10px;
-  width: 92.5%;
-  outline: none;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid #bebebe;
-  border-radius: 4px;
-  font-family: $mainFontName, $secondFont;
-  font-size: 19px;
-  letter-spacing: 1.6px;
-  color: #d5eeed;
-}
-
-::placeholder {
-  color: #bebebe;
-}
-
-.login-button {
-  font-size: 19px;
-  padding: 10px 20px;
-  letter-spacing: 1.2px;
-  border: none;
-  text-transform: uppercase;
-  outline: none;
-  border-radius: 6px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  background: #1a4f72;
-  color: #fff;
-  cursor: pointer;
-  margin: 0 auto;
-  font-family: $mainFontName, $secondFont;
-  -webkit-transition-duration: 0.9s;
-  transition-duration: 0.9s;
-}
-
-.login-button:hover {
-  -webkit-transition-duration: 0.5s;
-  transition-duration: 0.6s;
-  background: rgb(34, 140, 190);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-  animation: btn-glow 0.6s ease-in-out infinite alternate;
-}
-
-.login-button:disabled {
-  -webkit-transition-duration: 0.1s;
-  transition-duration: 0.6s;
-  background: rgb(86, 86, 91);
-  color: #838383;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-  animation: none;
-}
-
-
-@keyframes btn-glow {
-  from {
-    box-shadow: 0 0 10px rgba(52, 78, 88, 0.71);
-  }
-  to {
-    box-shadow: 0 0 20px rgba(23, 180, 200, 0.71);
-  }
-}
-
-.signup-link {
-  font-size: 15px;
-  color: #a9b5be;
-  padding-top: 20px;
-  font-family: $mainFontName, $secondFont;
-  text-align: center;
-}
-
-.signup-link a {
-  transition: text-shadow 0.4s ease-in-out;
-  color: #75c4fd;
-  text-decoration: none;
-}
-
-.signup-link a:hover {
-  text-shadow: 0 0 10px #37cdcdCB;
-}
-
-.error-message {
-  font-size: 16px;
-  font-family: $mainFontName, $secondFont;
-  border-radius: 6px;
-  color: #cdd2e0;
-  background-color: rgba(252, 13, 13, 0.5);
-}
-
-/*-- responsive media queries --*/
-
-
-@media screen and (max-height: 600px) {
-  .form-container {
-    margin-top: -2%;
-  }
-}
-
-@media screen and (max-width: 1440px) {
-  .form-container {
-    width: 40%;
-  }
-}
-
-@media screen and (max-width: 1366px) {
-
-}
-
-@media screen and (max-width: 1280px) {
-  .form-container {
-    width: 46%;
-  }
-  .login-panel {
-    padding: 25px;
-    border-radius: 15px;
-  }
-}
-
-@media screen and (max-width: 1080px) {
-  .padding-all {
-    //padding: 8% 50px 1%;
-  }
-}
-
-@media screen and (max-width: 991px) {
-  .form-container {
-    width: 54%;
-  }
-}
-
-@media screen and (max-width: 800px) {
-  .padding-all {
-    //padding: 7% 30px;
-  }
-  .form-container {
-    width: 60%;
-  }
-  .footer {
-    padding-top: 50px;
-  }
-}
-
-@media screen and (max-width: 667px) {
-  .form-container {
-    width: 75%;
-  }
-}
-
-@media screen and (max-width: 640px) {
-  .login-panel {
-    padding: 25px 25px;
-    border-radius: 10px;
-  }
-  .login-panel input[type="text"], .login-panel input[type="password"] {
-    font-size: 15px;
-  }
-  .login-panel input[type="submit"] {
-    font-size: 15px;
-  }
-  .signup-link {
-    font-size: 13px;
-  }
-  .footer p {
-    font-size: 14px;
-  }
-}
-
-@media screen and (max-width: 568px) {
-  .padding-all {
-    //padding: 6% 20px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .login-panel {
-    padding: 15px 15px;
-    border-radius: 10px;
-  }
-  .form-container {
-    width: 92%;
-  }
-  .login-panel input[type="text"], .login-panel input[type="password"] {
-    font-size: 14px;
-  }
-  .login-panel input[type="submit"] {
-    font-size: 14px;
-  }
-  .signup-link {
-    font-size: 12px;
-  }
-  .footer p {
-    font-size: 13px;
-  }
-}
-
-@media screen and (max-width: 414px) {
-  .padding-all {
-    //padding: 5% 10px;
-  }
-}
-
-@media screen and (max-width: 384px) {
-  .form-container {
-    width: 100%;
-  }
-}
-
-@media screen and (max-width: 320px) {
-
-}
-
-@import "characters";
+@import "forms";
+@import "responsive";

@@ -1,9 +1,8 @@
 import * as PIXI from 'pixi.js';
-
-import {GameObject} from "@/game/GameObject";
-import Game from "@/game/Game";
-import Client from "@/net/Client";
-import {ObjectMoved, ObjectStopped} from "@/net/Packets";
+import GameObject from "./GameObject";
+import {ObjectMoved, ObjectStopped} from "../net/packets";
+import Render from "./Render";
+import GameClient from "../net/GameClient";
 
 export default class MoveController {
 
@@ -34,12 +33,12 @@ export default class MoveController {
         this.serverY = data.y
 
         this.lineView = new PIXI.Graphics()
-        Game.instance?.objectsContainer.addChild(this.lineView)
+        Render.instance?.objectsContainer.addChild(this.lineView)
 
         this.applyData(data)
 
-        if (Game.instance !== undefined) {
-            Game.instance.movingObjects[obj.id] = obj
+        if (Render.instance !== undefined) {
+            Render.instance.movingObjects[obj.id] = obj
         }
     }
 
@@ -67,8 +66,8 @@ export default class MoveController {
         let ld = Math.sqrt(Math.pow(this.toX - this.me.x, 2) + Math.pow(this.toY - this.me.y, 2))
 
         // let c1 = Game.coordGame2Screen(this.me.x, this.me.y)
-        let c1 = Game.coordGame2Screen(this.serverX, this.serverY)
-        let c2 = Game.coordGame2Screen(this.toX, this.toY)
+        let c1 = Render.coordGame2Screen(this.serverX, this.serverY)
+        let c2 = Render.coordGame2Screen(this.toX, this.toY)
         this.lineView.clear().lineStyle(2, 0x00ff00).moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1])
 
         // корректировка скорости
@@ -103,7 +102,7 @@ export default class MoveController {
             this.me.y = data.y
             console.warn("hard stop ld=" + ld.toFixed(2))
             this.stop()
-            Game.instance?.onObjectMoved(this.me)
+            Render.instance?.onObjectMoved(this.me)
         }
 
         // this.lineView.destroy({children: true, texture: true})
@@ -121,8 +120,8 @@ export default class MoveController {
             this.me.y = this.toY
         }
 
-        if (Game.instance !== undefined) {
-            delete Game.instance.movingObjects[this.me.id]
+        if (Render.instance !== undefined) {
+            delete Render.instance.movingObjects[this.me.id]
         }
         this.lineView.destroy({children: true, texture: true})
         this.stopped = true
@@ -168,7 +167,7 @@ export default class MoveController {
             // console.log(this.me.x, this.me.y)
         }
 
-        Game.instance?.onObjectMoved(this.me)
-        if (Client.instance.selectedCharacterId == this.me.id) Game.instance?.updateMapScalePos()
+        Render.instance?.onObjectMoved(this.me)
+        if (GameClient.data.selectedCharacterId == this.me.id) Render.instance?.updateMapScalePos()
     }
 }
