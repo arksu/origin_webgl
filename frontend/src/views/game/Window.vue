@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
+import {defineComponent, onMounted, ref} from 'vue'
 
 export default defineComponent({
   name: "Window",
@@ -70,6 +70,7 @@ export default defineComponent({
         top.value = (el.offsetTop - movementY)
       }
     }
+
     const onTouchDragEnd = function (event: TouchEvent) {
       console.log(event)
       document.ontouchmove = null
@@ -88,7 +89,6 @@ export default defineComponent({
       }
     }
 
-
     const onDrag = function (event: MouseEvent) {
       event.preventDefault()
       movementX = clientX - event.clientX
@@ -100,12 +100,14 @@ export default defineComponent({
       left.value = (el.offsetLeft - movementX)
       top.value = (el.offsetTop - movementY)
     }
+
     const onDragEnd = function () {
       document.onmousemove = null
       document.onmouseup = null
       localStorage.setItem("wnd_" + props.id + "_left", "" + left.value)
       localStorage.setItem("wnd_" + props.id + "_top", "" + top.value)
     }
+
     const onMouseDown = (event: MouseEvent) => {
       console.log('onMouseDown', event)
       if (event.button == 0) {
@@ -115,6 +117,17 @@ export default defineComponent({
         document.onmouseup = onDragEnd
       }
     }
+
+    onMounted(() => {
+      const l = localStorage.getItem("wnd_" + props.id + "_left")
+      if (l) {
+        left.value = +l
+      }
+      const t = localStorage.getItem("wnd_" + props.id + "_top")
+      if (t) {
+        top.value = +t
+      }
+    })
 
     return {draggableTarget, left, top, onTouchStart, onMouseDown}
   }
