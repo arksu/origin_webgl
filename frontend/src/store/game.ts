@@ -26,7 +26,8 @@ export const useGameStore = defineStore('game', {
         CUR_ENERGY: 0 as number,
         MAX_ENERGY: 0 as number,
 
-        chatHistory: [] as ChatItem[],
+        chatLines: [] as ChatItem[],
+        chatHistory: [] as string[],
 
         actionProgress: {
             total: 0,

@@ -14,6 +14,7 @@
     <!-- inventories-->
     <inventory v-for="i in gameStore.inventories" :inventory="i"/>
 
+    <!-- player hand-->
     <hand v-if="gameStore.hand !== undefined" :left="mouseX" :top="mouseY" :hand="gameStore.hand"/>
 
     <day-time v-if="gameStore.time !== undefined"/>

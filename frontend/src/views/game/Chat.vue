@@ -5,7 +5,7 @@
           @submit.prevent="chatSubmit"
           action="#">
       <ul>
-        <li v-for="r in store.chatHistory">
+        <li v-for="r in store.chatLines">
           <span class="chat-line">{{ r.title }}: {{ r.text }}</span>
         </li>
       </ul>
@@ -40,12 +40,12 @@ export default defineComponent({
       if (e.key == "ArrowUp") {
         if (length > 0 && chatHistoryIndex < length - 1) {
           chatHistoryIndex++
-          chatText.value = store.chatHistory[length - chatHistoryIndex - 1].text
+          chatText.value = store.chatHistory[length - chatHistoryIndex - 1]
         }
       } else if (e.key == "ArrowDown") {
         if (length > 0 && chatHistoryIndex > 0) {
           chatHistoryIndex--
-          chatText.value = store.chatHistory[length - chatHistoryIndex - 1].text
+          chatText.value = store.chatHistory[length - chatHistoryIndex - 1]
         }
       }
     }
@@ -56,6 +56,7 @@ export default defineComponent({
         GameClient.remoteCall("chat", {
           text: chatText.value
         })
+        store.chatHistory.push(chatText.value)
         chatText.value = ""
         chatHistoryIndex = -1
       }

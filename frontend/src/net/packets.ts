@@ -155,5 +155,7 @@ export interface TimeUpdate {
     // day
     readonly d: number,
     // month
-    readonly  mm: number
+    readonly  mm: number,
+    // night value 0-255
+    readonly nv: number
 }

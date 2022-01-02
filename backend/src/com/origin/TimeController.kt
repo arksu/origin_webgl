@@ -125,6 +125,10 @@ object TimeController : Thread("TimeController") {
         GlobalVariables.saveLong(KEY, tickCount)
     }
 
+    fun addTicks(value: Long) {
+        tickCount += value
+    }
+
     /**
      * текущее игровое время суток в игровых минутах (минут от начала дня)
      */
@@ -165,6 +169,26 @@ object TimeController : Thread("TimeController") {
      */
     fun getGameMinute(): Int {
         return getGameTime() % 60
+    }
+
+    /**
+     * на сколько сильно "наступила" ночь (0-255)
+     */
+    fun getNightValue(): Int {
+        val h = getGameHour()
+        val m = getGameMinute()
+        return when (h) {
+            5 -> {
+                return (((60 - m).toFloat() / 60f) * 255f).toInt()
+            }
+            in 6..20 -> {
+                return 0
+            }
+            21 -> {
+                return ((m.toFloat() / 60f) * 255f).toInt()
+            }
+            else -> 255
+        }
     }
 
     fun addMovingObject(obj: MovingObject) {

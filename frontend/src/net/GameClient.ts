@@ -418,11 +418,11 @@ export default class GameClient {
                 }
 
                 // сохраним сообщение в сторе
-                const len = store.chatHistory.push(item)
+                const len = store.chatLines.push(item)
                 // ограничим максимальную длину истории чата
                 const MAX_LEN = 10
                 if (len > MAX_LEN) {
-                    store.chatHistory.splice(0, len - MAX_LEN,)
+                    store.chatLines.splice(0, len - MAX_LEN,)
                 }
                 break;
             }

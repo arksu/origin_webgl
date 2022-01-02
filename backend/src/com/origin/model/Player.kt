@@ -356,7 +356,8 @@ class Player(
                         TimeController.getGameHour(),
                         TimeController.getGameMinute(),
                         TimeController.getGameDay(),
-                        TimeController.getGameMonth()
+                        TimeController.getGameMonth(),
+                        TimeController.getNightValue()
                     )
                 )
                 delay(3000L)
@@ -477,6 +478,10 @@ class Player(
             }
             "restore" -> {
                 status.TEST_restore()
+            }
+            "addtick" -> {
+                val t: Long = params[1].toLong()
+                TimeController.addTicks(t)
             }
             "off" -> {
                 commandToExecute = null

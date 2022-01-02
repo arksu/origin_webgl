@@ -1,4 +1,4 @@
-export const myMixin = {
+export const padMixin = {
     methods: {
         /**
          * leading zero for numbers
