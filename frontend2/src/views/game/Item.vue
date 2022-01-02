@@ -9,16 +9,17 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {useGameStore} from "../../store/game";
+import {InvItem} from "../../net/packets";
 
 export default defineComponent({
   name: "Item",
   props: {
-    item: Object
+    item: {
+      type: Object as () => InvItem,
+    },
   },
   emits: ['itemClick'],
   setup(props, {emit}) {
-    const store = useGameStore()
 
     const onClick = (e: MouseEvent) => {
       emit('itemClick', props.item, e.offsetX, e.offsetY)

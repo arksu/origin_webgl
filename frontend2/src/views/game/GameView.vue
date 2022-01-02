@@ -12,7 +12,9 @@
     <action-hour-glass/>
 
     <!-- inventories-->
-    <inventory v-for="i in gameStore.inventories" :inventory="i"></inventory>
+    <inventory v-for="i in gameStore.inventories" :inventory="i"/>
+
+    <hand v-if="gameStore.hand !== undefined" :left="mouseX" :top="mouseY" :hand="gameStore.hand"/>
   </div>
 
 </template>
@@ -23,12 +25,12 @@ import Avatar from "./Avatar.vue";
 import Stats from "./status/Stats.vue";
 import Chat from "./Chat.vue";
 import ActionHourGlass from "./ActionHourGlass.vue";
-import Window from "./Window.vue";
 import Inventory from "./Inventory.vue";
+import Hand from "./Hand.vue";
 import GameClient from "../../net/GameClient";
 import Render from "../../game/Render";
 import {useGameStore} from "../../store/game";
-import {useRoute, useRouter} from "vue-router";
+import {useRoute} from "vue-router";
 import router from "../../router";
 import {RouteNames} from "../../router/routeNames";
 import {useMainStore} from "../../store/main";
@@ -38,13 +40,20 @@ import {useMainStore} from "../../store/main";
  */
 export default defineComponent({
   name: "GameView",
-  components: {Avatar, Stats, Chat, ActionHourGlass, Inventory},
+  components: {Avatar, Stats, Chat, ActionHourGlass, Inventory, Hand},
   setup() {
     const route = useRoute()
     const active = ref(false)
     const store = useMainStore()
     const gameStore = useGameStore()
 
+    const mouseX = ref(0)
+    const mouseY = ref(0)
+
+    const onMouseMove = (e: MouseEvent) => {
+      mouseX.value = e.clientX
+      mouseY.value = e.clientY
+    }
     onMounted(() => {
       // подключаемся к вебсокету на игровом сервере
       const client = GameClient.createNew()
@@ -59,6 +68,7 @@ export default defineComponent({
               // шлем запрос с токеном на сервер для первичной авторизации и активации токена
               GameClient.remoteCall('token', {token})
                   .then(r => {
+                    window.addEventListener('mousemove', onMouseMove)
                     active.value = true
                     gameStore.selectedCharacterId = r.characterId
                     GameClient.data.selectedCharacterId = r.characterId
@@ -85,11 +95,12 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
+      window.removeEventListener('mousemove', onMouseMove)
       GameClient.instance?.disconnect()
       Render.stop()
     })
 
-    return {active, store, gameStore}
+    return {active, mouseX, mouseY, store, gameStore}
   }
 })
 </script>

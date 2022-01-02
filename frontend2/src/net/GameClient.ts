@@ -1,6 +1,6 @@
 import {
     ActionProgressData,
-    ContextMenuData, CreatureSay, InventoryUpdate,
+    ContextMenuData, CreatureSay, HandData, InventoryUpdate,
     MapGridData,
     ObjectDel,
     ObjectMoved,
@@ -435,6 +435,15 @@ export default class GameClient {
             case ServerPacket.INVENTORY_UPDATE : {
                 const inv = <InventoryUpdate>data
                 store.setInventory(inv)
+                break
+            }
+            case ServerPacket.INVENTORY_CLOSE : {
+                store.closeInventory(data.id)
+                break
+            }
+            case ServerPacket.PLAYER_HAND : {
+                let handData = <HandData>data
+                store.hand = handData.icon !== undefined ? handData : undefined
                 break
             }
         }

@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {InventoryUpdate, InvItem} from "../net/packets";
+import {HandData, InventoryUpdate, InvItem} from "../net/packets";
 
 export type ChatItem = {
     title: string,
@@ -34,6 +34,8 @@ export const useGameStore = defineStore('game', {
         } as ActionProgress,
 
         inventories: [] as InventoryUpdate[],
+
+        hand : undefined as HandData | undefined,
     }),
     getters: {
         stamina(): number {
@@ -59,6 +61,10 @@ export const useGameStore = defineStore('game', {
             } else {
                 this.inventories[idx] = payload
             }
+        },
+        closeInventory(id : number) {
+            const idx = this.inventories.findIndex(i => i.id == id)
+            this.inventories.splice(idx, 1)
         }
     }
 })

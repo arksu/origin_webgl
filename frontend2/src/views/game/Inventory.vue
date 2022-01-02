@@ -46,6 +46,7 @@ export default defineComponent({
       })
     }
 
+    // клик по пустому слоту (класть вещь в инвентарь)
     const onSlotClick = (x: number, y: number, ox: number, oy: number) => {
       console.log('onSlotClick', x, y)
       GameClient.remoteCall("itemclick", {
@@ -57,6 +58,8 @@ export default defineComponent({
         oy
       })
     }
+
+    // клик по вещи (взять ее)
     const onItemClick = (item: InvItem, ox: number, oy: number) => {
       console.log("itemClick", item.c)
       GameClient.remoteCall("itemclick", {
@@ -74,6 +77,3 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-
-</style>
