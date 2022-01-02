@@ -89,7 +89,6 @@ open class Status(val me: Human) {
         if (wasChanged) {
             me.broadcastStatusUpdate()
         }
-//        logger.debug("stamina $me $old -> $currentStamina")
         return wasChanged
     }
 

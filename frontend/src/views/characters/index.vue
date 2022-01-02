@@ -36,12 +36,10 @@ export default defineComponent({
     const busy = ref(false)
 
     const onSelect = () => {
-      console.log('onSelect')
       busy.value = true
     }
 
     const onEnter = () => {
-      console.log('onEnter')
       busy.value = false
     }
 

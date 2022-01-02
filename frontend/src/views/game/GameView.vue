@@ -15,6 +15,8 @@
     <inventory v-for="i in gameStore.inventories" :inventory="i"/>
 
     <hand v-if="gameStore.hand !== undefined" :left="mouseX" :top="mouseY" :hand="gameStore.hand"/>
+
+    <day-time v-if="gameStore.time !== undefined"/>
   </div>
 
 </template>
@@ -27,6 +29,7 @@ import Chat from "./Chat.vue";
 import ActionHourGlass from "./ActionHourGlass.vue";
 import Inventory from "./Inventory.vue";
 import Hand from "./Hand.vue";
+import DayTime from "./DayTime.vue";
 import GameClient from "../../net/GameClient";
 import Render from "../../game/Render";
 import {useGameStore} from "../../store/game";
@@ -40,7 +43,7 @@ import {useMainStore} from "../../store/main";
  */
 export default defineComponent({
   name: "GameView",
-  components: {Avatar, Stats, Chat, ActionHourGlass, Inventory, Hand},
+  components: {Avatar, Stats, Chat, ActionHourGlass, Inventory, Hand, DayTime},
   setup() {
     const route = useRoute()
     const active = ref(false)
@@ -112,6 +115,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   pointer-events: none;
+  user-select: none;
 }
 
 </style>

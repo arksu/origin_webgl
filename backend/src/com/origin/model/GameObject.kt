@@ -122,7 +122,7 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     }
 
     /**
-     * отправить сообщение объекту
+     * отправить сообщение объекту не дожидаясь ответа
      */
     suspend fun send(msg: Any) {
         actor.send(msg)

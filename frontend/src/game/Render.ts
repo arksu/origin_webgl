@@ -150,8 +150,8 @@ export default class Render {
             backgroundColor: 0x333333
         });
 
-        this.app.ticker.maxFPS = 60
-        this.app.ticker.minFPS = 60
+        this.app.ticker.maxFPS = 20
+        this.app.ticker.minFPS = 10
 
         PIXI.Ticker.shared.add(this.update.bind(this))
 

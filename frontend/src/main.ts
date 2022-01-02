@@ -8,13 +8,12 @@ import {createPinia} from 'pinia'
 import router from "./router";
 
 import App from "./App.vue";
-import {preloadClock} from "./utils/imagePreload";
-
-// preloadClock()
+import {myMixin} from "./utils/mixins";
 
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
+app.mixin(myMixin)
 
 // добавим свою кастомную директиву для автофокуса input (v-focus)
 // используем в форме логина и регистрации

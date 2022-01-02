@@ -40,8 +40,13 @@ export default defineComponent({
 <style scoped lang="scss">
 .stats-container {
   position: absolute;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   left: 100px;
-  top: 10px;
-  height: 100px;
+  top: 1px;
+  height: 20px;
+  padding: 0;
 }
 </style>

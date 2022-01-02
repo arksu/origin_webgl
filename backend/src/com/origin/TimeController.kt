@@ -30,7 +30,7 @@ object TimeController : Thread("TimeController") {
     /**
      * период обновления гридов и объектов в них (в тиках)
      */
-    const val GRID_UPDATE_PERIOD = 10 * TICKS_PER_SECOND
+    const val GRID_UPDATE_PERIOD = 12 * TICKS_PER_SECOND
 
     /**
      * сколько мсек длится минимальный игровой тик (между итерациями движения)
@@ -40,7 +40,17 @@ object TimeController : Thread("TimeController") {
     /**
      * сколько реальных часов длится игровой день
      */
-    private const val GAME_DAY_IN_REAL_HOURS = 8
+    private const val GAME_DAY_IN_REAL_HOURS = 1
+
+    /**
+     * сколько игровых дней в одном игровом месяце (нужно для фаз луны и прочего)
+     */
+    private const val GAME_DAYS_IN_MONTH = 30
+
+    /**
+     * сколько игровых месяцев в одноум году
+     */
+    private const val GAME_MONTH_IN_YEAR = 12
 
     /**
      * сколько реальных секунд в игровом дне
@@ -125,8 +135,22 @@ object TimeController : Thread("TimeController") {
     /**
      * сколько тиков апдейтов гридов прошло с начала мира
      */
-    private fun getGridTicks(): Int {
-        return (tickCount / GRID_UPDATE_PERIOD).toInt()
+    private fun getGridTicks(): Long {
+        return (tickCount / GRID_UPDATE_PERIOD)
+    }
+
+    /**
+     * номер текущего игрового дня в месяце
+     */
+    fun getGameDay(): Int {
+        return ((tickCount / TICKS_IN_GAME_DAY) % GAME_DAYS_IN_MONTH).toInt()
+    }
+
+    /**
+     * номер игрового месяца
+     */
+    fun getGameMonth(): Int {
+        return (tickCount / (TICKS_IN_GAME_DAY * GAME_DAYS_IN_MONTH)).toInt()
     }
 
     /**

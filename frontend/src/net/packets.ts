@@ -14,6 +14,7 @@ export enum ServerPacket {
     INVENTORY_CLOSE = "ic",
     PLAYER_HAND = "ph",
     CREATURE_SAY = "cs",
+    TIME_UPDATE = "tu",
     FILE_CHANGED = "fc",
 }
 
@@ -142,4 +143,17 @@ export interface HandData {
     // offset in px
     readonly mx: number
     readonly my: number
+}
+
+export interface TimeUpdate {
+    // world ticks
+    readonly t: number
+    // in game hour
+    readonly h: number
+    // minute
+    readonly m: number
+    // day
+    readonly d: number,
+    // month
+    readonly  mm: number
 }

@@ -208,11 +208,13 @@ class GameSession(private val connect: DefaultWebSocketSession) {
     }
 
     suspend fun kick() {
-        logger.warn("kick")
+        logger.warn("kick player")
+        isDisconnected = true
         connect.close(CloseReason(CloseReason.Codes.NORMAL, "kicked"))
     }
 
     suspend fun logout() {
+        isDisconnected = true
         connect.close(CloseReason(CloseReason.Codes.NORMAL, "logout"))
     }
 }

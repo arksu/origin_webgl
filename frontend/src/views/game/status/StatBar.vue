@@ -27,7 +27,6 @@ export default defineComponent({
     bar2Color: String,
   },
   setup() {
-
     return {}
   }
 })
@@ -37,12 +36,13 @@ export default defineComponent({
 
 .frame {
   position: relative;
+  margin-top: 8px;
   height: 5px;
   width: 120px;
   border: 2px solid;
   border-radius: 10px;
   pointer-events: auto;
-  display:inline-block;
+  display: inline-block;
   margin-right: 20px;
 }
 

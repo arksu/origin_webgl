@@ -6,7 +6,7 @@ import {
     ObjectMoved,
     ObjectStopped,
     ServerPacket,
-    StatusUpdate
+    StatusUpdate, TimeUpdate
 } from "./packets";
 import GameData from "./GameData";
 import Render from "../game/Render";
@@ -442,9 +442,14 @@ export default class GameClient {
                 break
             }
             case ServerPacket.PLAYER_HAND : {
-                let handData = <HandData>data
+                const handData = <HandData>data
                 store.hand = handData.icon !== undefined ? handData : undefined
                 break
+            }
+            case ServerPacket.TIME_UPDATE : {
+                const timeUpdate = <TimeUpdate>data
+                store.time = timeUpdate
+                console.log('timeUpdate h:', timeUpdate.h, 'm: ', timeUpdate.m, "day", timeUpdate.d, 'month', timeUpdate.mm)
             }
         }
     }

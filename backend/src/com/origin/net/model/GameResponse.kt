@@ -222,6 +222,8 @@ class HandUpdate : ServerMessage {
     }
 }
 
+class TimeUpdate(val t: Long, val h: Int, val m: Int, val d: Int, val mm: Int) : ServerMessage("tu")
+
 /**
  * уведомления об изменениях в папке с ассетами
  */

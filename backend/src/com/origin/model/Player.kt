@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.TimeController
 import com.origin.database.DatabaseFactory.dbQueryCoroutine
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 @ObsoleteCoroutinesApi
-class PlayerMsg {
+sealed class PlayerMsg {
     class Connected
     class Disconnected
     class Store
@@ -99,6 +100,11 @@ class Player(
      * корутина на периодическое сохранение состояния в базу
      */
     private var autoSaveJob: Job? = null
+
+    /**
+     * таск на отправку текущего игрового времени клиенту
+     */
+    private var timeUpdateJob: Job? = null
 
     override suspend fun processMessage(msg: Any) {
         logger.debug("Player $this msg ${msg.javaClass.simpleName}")
@@ -342,6 +348,20 @@ class Player(
                 this@Player.send(PlayerMsg.Store())
             }
         }
+        timeUpdateJob = WorkerScope.launch {
+            while (true) {
+                this@Player.session.send(
+                    TimeUpdate(
+                        TimeController.tickCount,
+                        TimeController.getGameHour(),
+                        TimeController.getGameMinute(),
+                        TimeController.getGameDay(),
+                        TimeController.getGameMonth()
+                    )
+                )
+                delay(3000L)
+            }
+        }
     }
 
     /**
@@ -350,6 +370,8 @@ class Player(
     private suspend fun disconnected() {
         autoSaveJob?.cancel()
         autoSaveJob = null
+        timeUpdateJob?.cancel()
+        timeUpdateJob = null
 
         World.removePlayer(this)
 

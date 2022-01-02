@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, onMounted} from 'vue'
 import {useApi} from "../../composition/useApi";
 import router from "../../router";
 import {RouteNames} from "../../router/routeNames";
@@ -63,11 +63,10 @@ export default defineComponent({
         await fetchSelect()
         if (isSuccess.value) {
           const token = data.value.token
-          console.log("token", token)
+          localStorage.setItem('lastSelectedChar', "" + props.id)
+          console.log("token for game", token)
           await router.push({name: RouteNames.GAME, params: {token}})
         }
-        // пошлем событие конца выбора и входа в мир
-        // emit('onEnter')
       }
     }
 
@@ -83,6 +82,16 @@ export default defineComponent({
       // пошлем в родителя эвент, чтобы он удалил из списка эту строку
       emit('onDeleted', props.id)
     }
+
+    onMounted(() => {
+      // реализуем автовход последним выбранным персонажем если установлен режим разработчика
+      if (localStorage.getItem("dev") === "1") {
+        const last = localStorage.getItem("lastSelectedChar")
+        if (last) {
+          selectChar()
+        }
+      }
+    })
 
     return {selectChar, deleteChar, deleteInProcess, selectInProcess}
   }
