@@ -10,7 +10,9 @@
     <stats/>
     <chat/>
     <action-hour-glass/>
-    <window id="11" title="Player" width="200" height="300"/>
+
+    <!-- inventories-->
+    <inventory v-for="i in gameStore.inventories" :inventory="i"></inventory>
   </div>
 
 </template>
@@ -22,6 +24,7 @@ import Stats from "./status/Stats.vue";
 import Chat from "./Chat.vue";
 import ActionHourGlass from "./ActionHourGlass.vue";
 import Window from "./Window.vue";
+import Inventory from "./Inventory.vue";
 import GameClient from "../../net/GameClient";
 import Render from "../../game/Render";
 import {useGameStore} from "../../store/game";
@@ -35,7 +38,7 @@ import {useMainStore} from "../../store/main";
  */
 export default defineComponent({
   name: "GameView",
-  components: {Avatar, Stats, Chat, ActionHourGlass, Window},
+  components: {Avatar, Stats, Chat, ActionHourGlass, Inventory},
   setup() {
     const route = useRoute()
     const active = ref(false)
@@ -86,7 +89,7 @@ export default defineComponent({
       Render.stop()
     })
 
-    return {active}
+    return {active, store, gameStore}
   }
 })
 </script>

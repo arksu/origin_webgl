@@ -1,5 +1,10 @@
 <template>
-
+  <img class="item-image"
+       alt="item"
+       :style="'left: ' + (17 + item.x * 31) + 'px; top: ' + (23 + item.y * 31) + 'px;'"
+       v-if="item !== undefined"
+       :src="'/assets/game/' + item.icon"
+       @click.prevent="onClick">
 </template>
 
 <script lang="ts">
@@ -8,13 +13,25 @@ import {useGameStore} from "../../store/game";
 
 export default defineComponent({
   name: "Item",
-  setup() {
+  props: {
+    item: Object
+  },
+  emits: ['itemClick'],
+  setup(props, {emit}) {
     const store = useGameStore()
 
-    return {}
+    const onClick = (e: MouseEvent) => {
+      emit('itemClick', props.item, e.offsetX, e.offsetY)
+    }
+
+    return {onClick}
   }
 })
 </script>
-<style scoped>
 
+<style scoped lang="scss">
+.item-image {
+  position: absolute;
+  cursor: pointer;
+}
 </style>

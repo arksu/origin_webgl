@@ -1,6 +1,6 @@
 import {
     ActionProgressData,
-    ContextMenuData, CreatureSay,
+    ContextMenuData, CreatureSay, InventoryUpdate,
     MapGridData,
     ObjectDel,
     ObjectMoved,
@@ -272,8 +272,8 @@ export default class GameClient {
 
         switch (channel) {
             case ServerPacket.MAP_DATA: {
-                let p = (<MapGridData>data)
-                let key = p.x + "_" + p.y;
+                const p = (<MapGridData>data)
+                const key = p.x + "_" + p.y;
                 console.log('map', key)
                 switch (p.a) {
                     case 0 : // delete
@@ -317,14 +317,14 @@ export default class GameClient {
                 break;
             }
             case ServerPacket.OBJECT_DELETE: {
-                let obj = gameData.objects[(<ObjectDel>data).id];
+                const obj = gameData.objects[(<ObjectDel>data).id];
                 obj.moveController?.stop()
                 Render.instance?.onObjectDelete(obj)
                 delete gameData.objects[(<ObjectDel>data).id];
                 break;
             }
             case ServerPacket.OBJECT_MOVE : {
-                let obj = gameData.objects[data.id];
+                const obj = gameData.objects[data.id];
                 if (obj !== undefined) {
                     if (obj.moveController === undefined) {
                         obj.moveController = new MoveController(obj, (<ObjectMoved>data))
@@ -335,7 +335,7 @@ export default class GameClient {
                 break;
             }
             case ServerPacket.OBJECT_STOP : {
-                let obj = gameData.objects[data.id];
+                const obj = gameData.objects[data.id];
                 if (obj !== undefined) {
                     if (obj.moveController !== undefined) {
                         obj.moveController.serverStop(<ObjectStopped>data)
@@ -351,8 +351,8 @@ export default class GameClient {
                 break;
             }
             case ServerPacket.CONTEXT_MENU : {
-                let cm = <ContextMenuData>data
-                let obj = gameData.objects[cm.id];
+                const cm = <ContextMenuData>data
+                const obj = gameData.objects[cm.id];
                 if (obj !== undefined) {
                     cm.obj = obj
                     Render.instance?.makeContextMenu(cm)
@@ -362,7 +362,7 @@ export default class GameClient {
                 break
             }
             case ServerPacket.STATUS_UPDATE : {
-                let statusUpdate = <StatusUpdate>data
+                const statusUpdate = <StatusUpdate>data
                 // если пришел апдейт статуса моего персонажа
                 if (statusUpdate.id == gameData.selectedCharacterId) {
                     for (let i = 0; i < statusUpdate.list.length; i++) {
@@ -408,7 +408,7 @@ export default class GameClient {
             }
             case ServerPacket.CREATURE_SAY : {
                 const creatureSay = <CreatureSay>data
-                let obj = gameData.objects[creatureSay.id]
+                const obj = gameData.objects[creatureSay.id]
                 // канал в который пришло сообщение
                 let c = creatureSay.c == 0xff ? "System" : ((obj !== undefined && obj.a !== undefined) ? obj.a.n : "unknown")
                 let item: ChatItem = {
@@ -427,9 +427,14 @@ export default class GameClient {
                 break;
             }
             case ServerPacket.ACTION_PROGRESS : {
-                let ap = <ActionProgressData>data
+                const ap = <ActionProgressData>data
                 store.actionProgress.total = ap.t
                 store.actionProgress.current = ap.c
+                break
+            }
+            case ServerPacket.INVENTORY_UPDATE : {
+                const inv = <InventoryUpdate>data
+                store.setInventory(inv)
                 break
             }
         }

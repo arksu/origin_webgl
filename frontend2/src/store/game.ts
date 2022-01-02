@@ -1,4 +1,5 @@
 import {defineStore} from "pinia";
+import {InventoryUpdate, InvItem} from "../net/packets";
 
 export type ChatItem = {
     title: string,
@@ -30,7 +31,9 @@ export const useGameStore = defineStore('game', {
         actionProgress: {
             total: 0,
             current: 0
-        } as ActionProgress
+        } as ActionProgress,
+
+        inventories: [] as InventoryUpdate[],
     }),
     getters: {
         stamina(): number {
@@ -46,5 +49,16 @@ export const useGameStore = defineStore('game', {
             return Math.round((this.actionProgress.current / this.actionProgress.total) * 21)
         }
     },
-    actions: {}
+    actions: {
+        setInventory(payload: InventoryUpdate) {
+            const idx = this.inventories.findIndex((e: InventoryUpdate) => {
+                return e.id == payload.id
+            })
+            if (idx < 0) {
+                this.inventories.push(payload)
+            } else {
+                this.inventories[idx] = payload
+            }
+        }
+    }
 })

@@ -27,10 +27,22 @@ import {defineComponent, ref} from 'vue'
 export default defineComponent({
   name: "Window",
   props: {
-    id: Number,
-    title: String,
-    width: Number,
-    height: Number,
+    id: {
+      type: Number,
+      required: true
+    },
+    title: {
+      type: String,
+      required: true
+    },
+    width: {
+      type: Number,
+      required: true
+    },
+    height: {
+      type: Number,
+      required: true
+    },
   },
   emits: ['close'],
   setup(props) {
