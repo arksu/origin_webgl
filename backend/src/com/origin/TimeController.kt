@@ -178,16 +178,28 @@ object TimeController : Thread("TimeController") {
         val h = getGameHour()
         val m = getGameMinute()
         return when (h) {
+            // рассвет
             5 -> {
                 return (((60 - m).toFloat() / 60f) * 255f).toInt()
             }
             in 6..20 -> {
                 return 0
             }
+            // закат
             21 -> {
                 return ((m.toFloat() / 60f) * 255f).toInt()
             }
             else -> 255
+        }
+    }
+
+    /**
+     * угол подъема солнца. от восхода к закату. 0-255, 127 - зенит
+     */
+    fun getSunValue(): Int {
+        return when (val h = getGameHour()) {
+            in 6..21 -> (((h - 5).toFloat() / 16f) * 255f).toInt()
+            else -> 0
         }
     }
 

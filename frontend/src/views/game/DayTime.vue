@@ -3,8 +3,12 @@
     <img alt="sky" src="../../../assets/img/daysky.png">
     <img alt="sky" :style="{opacity: store.time.nv / 255}" src="../../../assets/img/nightsky.png">
 
-    <img alt="sky" src="../../../assets/img/dayscape.png">
-    <img alt="sky" :style="{opacity: store.time.nv / 255}" src="../../../assets/img/nightscape.png">
+    <img alt="sun" :style="{'left' : 60+(store.sunX * sunL)+'px', 'top' : 26+(store.sunY * sunL)+'px'}" src="../../../assets/img/sun.png">
+
+    <img alt="scape" src="../../../assets/img/dayscape.png">
+    <img alt="scape" :style="{opacity: store.time.nv / 255}" src="../../../assets/img/nightscape.png">
+
+
     <div class="time">
       <span>{{ pad(store.time.h, 2) }}:{{ pad(store.time.m, 2) }}</span>
     </div>
@@ -12,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, ref} from 'vue'
 import {useGameStore} from "../../store/game";
 
 export default defineComponent({
@@ -20,7 +24,10 @@ export default defineComponent({
   setup() {
     const store = useGameStore()
 
-    return {store}
+    // offset center 60, 26
+    const sunL = ref(23)
+
+    return {store, sunL}
   }
 })
 </script>
@@ -38,6 +45,7 @@ export default defineComponent({
 
 img {
   position: absolute;
+  pointer-events: auto;
 }
 
 .time {

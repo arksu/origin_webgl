@@ -233,7 +233,11 @@ class TimeUpdate(
     // month
     val mm: Int,
     // night value
-    val nv : Int
+    val nv : Int,
+    // sun value
+    val sv : Int,
+    // moon value
+    val mv : Int
 ) : ServerMessage("tu")
 
 /**

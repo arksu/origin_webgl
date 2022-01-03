@@ -12,6 +12,9 @@ export type ActionProgress = {
     current: number
 }
 
+const SUN_ANGLE_MULT = 0.6
+const SUN_ANGLE_OFFSET = 0.2
+
 export const useGameStore = defineStore('game', {
     state: () => ({
         selectedCharacterId: undefined as number | undefined,
@@ -55,6 +58,16 @@ export const useGameStore = defineStore('game', {
          */
         actionFrame(): number {
             return Math.round((this.actionProgress.current / this.actionProgress.total) * 21)
+        },
+        sunX(): number {
+            if (this.time !== undefined) {
+                return -Math.cos((this.time.sv / 255.0) * (Math.PI + SUN_ANGLE_MULT) - SUN_ANGLE_OFFSET)
+            } else return 0
+        },
+        sunY(): number {
+            if (this.time !== undefined) {
+                return -Math.sin((this.time.sv / 255.0) * (Math.PI + SUN_ANGLE_MULT) - SUN_ANGLE_OFFSET)
+            } else return 0
         }
     },
     actions: {

@@ -26,8 +26,8 @@
     <img :style="{display: store.actionFrame===21 ? 'block' : 'none'}" src="../../../assets/img/hourglass/clock21.png" alt="action">
 
     <div class="frame">
-      <div class="bar-back" :style="{'background-color' : barBackColor}"></div>
-      <div class="bar" :style="{width: Math.round(store.actionProgress.current / store.actionProgress.total * 100) + '%', 'background-color': bar1Color}"></div>
+      <div class="bar-back"></div>
+      <div class="bar" :style="{width: Math.round(store.actionProgress.current / store.actionProgress.total * 100) + '%'}"></div>
     </div>
   </div>
 </template>
@@ -65,7 +65,7 @@ export default defineComponent({
   position: absolute;
   height: 5px;
   width: 120px;
-  border: 2px solid #204b22;
+  border: 2px solid #132d15;
   border-radius: 10px;
   pointer-events: auto;
   display:inline-block;
@@ -75,7 +75,7 @@ export default defineComponent({
 }
 
 .frame .bar-back {
-  background-color: #254829;
+  background-color: #354b39;
   position: absolute;
   width: 100%;
   height: 5px;

@@ -357,10 +357,12 @@ class Player(
                         TimeController.getGameMinute(),
                         TimeController.getGameDay(),
                         TimeController.getGameMonth(),
-                        TimeController.getNightValue()
+                        TimeController.getNightValue(),
+                        TimeController.getSunValue(),
+                        0
                     )
                 )
-                delay(3000L)
+                delay(1000L)
             }
         }
     }

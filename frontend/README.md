@@ -10,10 +10,14 @@ for Origin MMO game
 - [PixiJS](https://github.com/pixijs/pixi.js) as WebglGL graphics render
 
 # Getting started
+First, install node_modules
+```shell
+npm install
+```
 
 Start local development version:
 ```shell
-yarn dev
+npm run dev
 ```
 It would be started on localhost port 3070
 
