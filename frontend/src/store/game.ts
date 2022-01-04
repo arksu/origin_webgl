@@ -68,7 +68,20 @@ export const useGameStore = defineStore('game', {
             if (this.time !== undefined) {
                 return -Math.sin((this.time.sv / 255.0) * (Math.PI + SUN_ANGLE_MULT) - SUN_ANGLE_OFFSET)
             } else return 0
-        }
+        },
+        /**
+         * ищем инвентарь по ид
+         * @param state
+         * @return InventoryUpdate | undefined
+         */
+        getInventoryById(state) {
+            return (id: number) => {
+                const idx = state.inventories.findIndex((e: InventoryUpdate) => {
+                    return e.id == id
+                })
+                return (idx >= 0) ? state.inventories[idx] : undefined
+            }
+        },
     },
     actions: {
         setInventory(payload: InventoryUpdate) {

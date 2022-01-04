@@ -143,13 +143,6 @@ class Player(
         }
     }
 
-    override suspend fun afterSpawn() {
-        super.afterSpawn()
-
-        // TODO открывать инвентарь игрока по запросу клиента
-        inventory.send(this)
-    }
-
     private suspend fun itemClick(msg: PlayerMsg.ItemClick) {
         if (contextMenu != null) clearContextMenu()
 

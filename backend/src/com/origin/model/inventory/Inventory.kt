@@ -57,6 +57,7 @@ class Inventory(private val parent: GameObject) {
 
     /**
      * отправить игроку содержимое данного инвентаря
+     * @param player какому игроку отправить содержимое этого инвентаря
      */
     suspend fun send(player: Player) {
         player.session.send(InventoryUpdate(this))

@@ -11,7 +11,7 @@
       </ul>
 
       <div class="input-container">
-        <input class="text-input" autocomplete="off" type="text" v-model="chatText" id="inputChat"
+        <input class="text-input" placeholder="Type text here" autocomplete="off" type="text" v-model="chatText" id="inputChat"
                v-on:keyup.prevent="keyup">
         <span @click="chatSubmit">
           <input type="submit" value="&#xf1d8" class="far fa-paper-plane fa-lg">
@@ -104,6 +104,9 @@ export default defineComponent({
   font-size: 16px;
   pointer-events: auto;
   color: #17241d;
+}
+.text-input::placeholder {
+  color: #446755;
 }
 
 span {

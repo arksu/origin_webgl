@@ -23,6 +23,7 @@ import {defineComponent, onMounted} from 'vue'
 import {useApi} from "../../composition/useApi";
 import router from "../../router";
 import {RouteNames} from "../../router/routeNames";
+import {useMainStore} from "../../store/main";
 
 export default defineComponent({
   name: 'CharacterRow',
@@ -43,7 +44,8 @@ export default defineComponent({
     }
   },
   emits: ['onDeleted', 'onSelect', 'onEnter'],
-  setup(props, {emit}) {
+  setup: function (props, {emit}) {
+    const store = useMainStore()
 
     const {isLoading: deleteInProcess, fetch: fetchDelete} = useApi("characters/" + props.id, {
       method: 'DELETE',
@@ -54,6 +56,7 @@ export default defineComponent({
     })
 
     const selectChar = async () => {
+      console.log("props.id", props.id)
       if (props.id == 0) {
         await router.replace({name: RouteNames.NEW_CHARACTER})
       } else {
@@ -85,9 +88,11 @@ export default defineComponent({
 
     onMounted(() => {
       // реализуем автовход последним выбранным персонажем если установлен режим разработчика
-      if (localStorage.getItem("dev") === "1") {
+      if (localStorage.getItem("dev") === "1" && !store.autologinCompleted) {
         const last = localStorage.getItem("lastSelectedChar")
-        if (last) {
+        if (last != null && +last === props.id) {
+          console.log("autologin", last)
+          store.autologinCompleted = true
           selectChar()
         }
       }

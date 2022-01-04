@@ -8,12 +8,14 @@ export const useMainStore = defineStore('main', {
         lastError: null as string | null,
 
         // ид сессии (если залогинены)
-        ssid: localStorage.getItem('ssid'),
+        ssid: null as string | null,
 
         // был выполнен автологин по сохраненным учетным данным?
         wasAutoLogin: false,
 
         gameActive: false,
+
+        autologinCompleted: false,
     }),
     getters: {
         isLogged: (state) => {

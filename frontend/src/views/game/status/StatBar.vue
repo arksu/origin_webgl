@@ -3,7 +3,7 @@
     <div class="bar-back" :style="{'background-color' : barBackColor}"></div>
     <div class="bar1" :style="{width: percent1 + '%', 'background-color': bar1Color}"></div>
     <div class="bar2" :style="{width: percent2 + '%', 'background-color': bar2Color}"></div>
-    <tooltip :text="tooltip"/>
+    <tooltip>{{tooltip}}</tooltip>
   </div>
 </template>
 

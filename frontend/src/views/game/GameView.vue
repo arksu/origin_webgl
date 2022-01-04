@@ -18,6 +18,25 @@
     <hand v-if="gameStore.hand !== undefined" :left="mouseX" :top="mouseY" :hand="gameStore.hand"/>
 
     <day-time v-if="gameStore.time !== undefined"/>
+
+    <div style="right: 0; bottom :0; position: absolute">
+      <game-button
+          tooltip="Inventory"
+          @click="openInventory"
+          font-color="#142628"
+          border-color="#25484B"
+          back-color="#315B5E">
+        <i class="fas fa-box"></i>
+      </game-button>
+      <game-button
+          tooltip="Logout"
+          @click="logout"
+          font-color="#301717"
+          border-color="#59322C"
+          back-color="#683E36">
+        <i class="fas fa-sign-out-alt"></i>
+      </game-button>
+    </div>
   </div>
 
 </template>
@@ -31,6 +50,7 @@ import ActionHourGlass from "./ActionHourGlass.vue";
 import Inventory from "./Inventory.vue";
 import Hand from "./Hand.vue";
 import DayTime from "./DayTime.vue";
+import GameButton from "./buttons/GameButton.vue";
 import GameClient from "../../net/GameClient";
 import Render from "../../game/Render";
 import {useGameStore} from "../../store/game";
@@ -44,7 +64,7 @@ import {useMainStore} from "../../store/main";
  */
 export default defineComponent({
   name: "GameView",
-  components: {Avatar, Stats, Chat, ActionHourGlass, Inventory, Hand, DayTime},
+  components: {Avatar, Stats, Chat, ActionHourGlass, Inventory, Hand, DayTime, GameButton},
   setup() {
     const route = useRoute()
     const active = ref(false)
@@ -99,12 +119,34 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
+      if (GameClient.instance != undefined) {
+        GameClient.instance.onDisconnect = undefined
+        GameClient.instance.disconnect()
+      }
+      gameStore.$reset()
       window.removeEventListener('mousemove', onMouseMove)
-      GameClient.instance?.disconnect()
       Render.stop()
     })
 
-    return {active, mouseX, mouseY, store, gameStore}
+    const toggleInventory = () => {
+      console.log('openInventory')
+      const selectedCharacterId = gameStore.selectedCharacterId;
+      if (selectedCharacterId != undefined) {
+        if (gameStore.getInventoryById(selectedCharacterId) == undefined) {
+          GameClient.remoteCall("openmyinv")
+        } else {
+          GameClient.remoteCall("invclose", {
+            iid: selectedCharacterId
+          })
+        }
+      }
+    }
+
+    const logout = () => {
+      router.push({name: RouteNames.CHARACTERS})
+    }
+
+    return {active, mouseX, mouseY, store, gameStore, openInventory: toggleInventory, logout}
   }
 })
 </script>
