@@ -1,19 +1,21 @@
 <template>
-  <div>
-
-    <form class="chat-form"
-          @submit.prevent="chatSubmit"
-          action="#">
+  <div class="chat">
+    <div class="rows">
       <ul>
         <li v-for="r in store.chatLines">
           <span class="chat-line">{{ r.title }}: {{ r.text }}</span>
         </li>
       </ul>
+    </div>
 
+    <form class="chat-form"
+          @submit.prevent="chatSubmit"
+          action="#">
       <div class="input-container">
-        <input class="text-input" placeholder="Type text here" autocomplete="off" type="text" v-model="chatText" id="inputChat"
+        <input class="text-input" placeholder="Type text here" autocomplete="off" type="text" v-model="chatText"
+               id="inputChat"
                v-on:keyup.prevent="keyup">
-        <span @click="chatSubmit">
+        <span class="submit-logo" @click="chatSubmit">
           <input type="submit" value="&#xf1d8" class="far fa-paper-plane fa-lg">
         </span>
       </div>
@@ -69,22 +71,15 @@ export default defineComponent({
 
 <style scoped lang="scss">
 
-.input-container {
-  border: 2px solid #103c2ab5;
-  border-radius: 6px;
-  background-color: #7b917eb3;
-  padding: 5px 10px;
-  pointer-events: auto;
-}
-
-.chat-form {
+.chat {
   position: absolute;
-  left: 20px;
-  bottom: 20px;
-  pointer-events: none;
+  left: 10px;
+  bottom: 10px;
+  width: calc(100% - 70px);
+  max-width: 340px;
 }
 
-.chat-line {
+.rows {
   pointer-events: none;
   font-family: Bitter, Georgia, serif;
   font-size: 20px;
@@ -96,20 +91,38 @@ export default defineComponent({
   1px 1px 0 #000;
 }
 
+.input-container {
+  border: 2px solid #103c2ab5;
+  border-radius: 6px;
+  background-color: #7b917eb3;
+  padding: 0.3em 0.8em;
+  pointer-events: auto;
+  //width: 100%;
+  white-space: nowrap;
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat-form {
+  pointer-events: none;
+}
+
 .text-input {
   background: transparent;
   outline: none;
   border: none;
-  width: 300px;
+  width: 100%;
   font-size: 16px;
   pointer-events: auto;
   color: #17241d;
 }
+
 .text-input::placeholder {
   color: #446755;
 }
 
-span {
+.submit-logo {
+  //width: 15%;
   color: #264a44;
   cursor: pointer;
 }

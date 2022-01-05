@@ -7,13 +7,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     entry: {
-        app: {
-            import: './src/main.ts',
-            dependOn: ['pixi']
-        },
-        fontawesome: './src/fontawesome.ts',
-        pixi: 'pixi.js',
-        axios: 'axios',
+        app: ['./src/main.ts', './src/fontawesome.ts']
     },
     output: {
         filename: '[name].bundle.js',
