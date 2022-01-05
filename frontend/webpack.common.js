@@ -6,9 +6,21 @@ const {VueLoaderPlugin} = require('vue-loader')
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-    mode: 'development',
-    entry: './src/main.ts',
-    devtool: 'inline-source-map',
+    entry: {
+        app: {
+            import: './src/main.ts',
+            dependOn: ['pixi']
+        },
+        fontawesome: './src/fontawesome.ts',
+        pixi: 'pixi.js',
+        axios: 'axios',
+    },
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, "dist"),
+        publicPath: "/",
+        clean: true,
+    },
     resolve: {
         extensions: ['.ts', '.js'],
         alias: {
@@ -35,12 +47,6 @@ module.exports = {
             __VUE_PROD_DEVTOOLS__: false,
         })
     ],
-    output: {
-        filename: '[name].bundle.js',
-        path: path.resolve(__dirname, "dist"),
-        publicPath: "/",
-        clean: true,
-    },
     module: {
         rules: [
             {
@@ -71,21 +77,5 @@ module.exports = {
                 type: 'asset/resource'
             },
         ]
-    },
-    devServer: {
-        historyApiFallback: true,
-        client: {
-            progress: true,
-        },
-        static: ['assets'],
-        host: '0.0.0.0',
-        port: 3070,
-        proxy: {
-            '/api': 'http://0.0.0.0:8010',
-            '/api/game': {
-                target: 'ws://0.0.0.0:8010',
-                ws: true
-            }
-        }
     },
 };
