@@ -19,13 +19,11 @@ class InventoryItem(
             return entity.id.value
         }
 
-    private val template: ItemTemplate = ItemsFactory.getTemplate(entity)
+    private val type: ItemType = ItemType.fromId(entity.type)
 
-    val width: Int = template.width
-
-    val height: Int = template.height
-
-    val icon: String = template.icon
+    val width get() = type.width
+    val height get() = type.height
+    val icon get() = type.icon
 
     var x: Int = entity.x
 
@@ -64,8 +62,8 @@ class InventoryItem(
      * находится ли внутри этой вещи
      */
     fun collide(x: Int, y: Int, w: Int, h: Int): Boolean {
-        val tr = this.x + width - 1
-        val tb = this.y + height - 1
+        val tr = this.x + type.width - 1
+        val tb = this.y + type.height - 1
         val r = x + w - 1
         val b = y + h - 1
 

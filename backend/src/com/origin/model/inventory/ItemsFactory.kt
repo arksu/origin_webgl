@@ -1,32 +1,15 @@
 package com.origin.model.inventory
 
-import com.origin.entity.InventoryItemEntity
-import kotlinx.coroutines.ObsoleteCoroutinesApi
+enum class ItemType(val id: Int, val icon: String, val width: Int = 1, val height: Int = 1) {
+    STONE(1, "/items/stone.png"),
+    APPLE(2, "/items/apple.png"),
+    BRANCH(3, "/items/branch.png"),
+    RABBIT(4, "/items/rabbit.png", 2, 2),
+    BOARD(5, "/items/board.png", 1, 4),
+    BARK(6, "/items/bark.png");
 
-enum class ItemType(val id: Int) {
-    STONE(1),
-    APPLE(2),
-    BRANCH(3),
-    RABBIT(4),
-    BOARD(5),
-    BARK(6),
-}
-
-@ObsoleteCoroutinesApi
-object ItemsFactory {
-
-    private val types = HashMap<Int, ItemTemplate>()
-
-    init {
-        types[ItemType.STONE.id] = ItemTemplate("/items/stone.png")
-        types[ItemType.APPLE.id] = ItemTemplate("/items/apple.png")
-        types[ItemType.BRANCH.id] = ItemTemplate("/items/branch.png")
-        types[ItemType.RABBIT.id] = ItemTemplate("/items/rabbit.png", 2, 2)
-        types[ItemType.BOARD.id] = ItemTemplate("/items/board.png", 1, 4)
-        types[ItemType.BARK.id] = ItemTemplate("/items/bark.png")
-    }
-
-    fun getTemplate(entity: InventoryItemEntity): ItemTemplate {
-        return types[entity.type] ?: return ItemTemplate("/items/unknown.png")
+    companion object {
+        private val map = values().associateBy(ItemType::id)
+        fun fromId(id: Int) = map[id] ?: throw IllegalArgumentException("item type not found $id")
     }
 }
