@@ -75,8 +75,8 @@ export default defineComponent({
       }
     }
 
-    // TODO: only for dev
-    if (login.value && savedHash && !store.wasAutoLogin && !store.lastError) {
+    // only for dev
+    if (login.value && savedHash && !store.wasAutoLogin && !store.lastError && localStorage.getItem("dev") === "1") {
       submit()
       store.wasAutoLogin = true
     }

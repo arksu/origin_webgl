@@ -19,10 +19,20 @@
 
     <day-time v-if="gameStore.time !== undefined"/>
 
+    <craft :visible="true"></craft>
+
     <div style="right: 0; bottom :0; position: absolute">
       <game-button
+          tooltip="Craft"
+          @click="toggleCraftWindow"
+          font-color="#142628"
+          border-color="#25484B"
+          back-color="#315B5E">
+        <i class="fas fa-tools"></i>
+      </game-button>
+      <game-button
           tooltip="Inventory"
-          @click="openInventory"
+          @click="gameStore.toggleInventory"
           font-color="#142628"
           border-color="#25484B"
           back-color="#315B5E">
@@ -51,6 +61,7 @@ import Inventory from "./Inventory.vue";
 import Hand from "./Hand.vue";
 import DayTime from "./DayTime.vue";
 import GameButton from "./buttons/GameButton.vue";
+import Craft from "./Craft.vue";
 import GameClient from "../../net/GameClient";
 import Render from "../../game/Render";
 import {useGameStore} from "../../store/game";
@@ -64,7 +75,7 @@ import {useMainStore} from "../../store/main";
  */
 export default defineComponent({
   name: "GameView",
-  components: {Avatar, Stats, Chat, ActionHourGlass, Inventory, Hand, DayTime, GameButton},
+  components: {Avatar, Stats, Chat, ActionHourGlass, Inventory, Hand, DayTime, GameButton, Craft},
   setup() {
     const route = useRoute()
     const active = ref(false)
@@ -128,25 +139,15 @@ export default defineComponent({
       Render.stop()
     })
 
-    const toggleInventory = () => {
-      console.log('openInventory')
-      const selectedCharacterId = gameStore.selectedCharacterId;
-      if (selectedCharacterId != undefined) {
-        if (gameStore.getInventoryById(selectedCharacterId) == undefined) {
-          GameClient.remoteCall("openmyinv")
-        } else {
-          GameClient.remoteCall("invclose", {
-            iid: selectedCharacterId
-          })
-        }
-      }
+    const toggleCraftWindow = () => {
+      console.log('toggleCraftWindow')
     }
 
     const logout = () => {
       router.push({name: RouteNames.CHARACTERS})
     }
 
-    return {active, mouseX, mouseY, store, gameStore, openInventory: toggleInventory, logout}
+    return {active, mouseX, mouseY, store, gameStore, logout, toggleCraftWindow}
   }
 })
 </script>

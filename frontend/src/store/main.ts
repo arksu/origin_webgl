@@ -37,7 +37,10 @@ export const useMainStore = defineStore('main', {
         // произошла ошибка в игровом протоколе
         onGameError(msg: string) {
             this.lastError = msg
-            localStorage.removeItem("hash")
+            // в режиме разработки - не удаляем хэш
+            if (localStorage.getItem("dev") !== "1") {
+                localStorage.removeItem("hash")
+            }
             this.wasAutoLogin = true
             router.push({name: RouteNames.LOGIN})
         }

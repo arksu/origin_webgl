@@ -20,7 +20,7 @@ object ItemsFactory {
     init {
         types[ItemType.STONE.id] = ItemTemplate("/items/stone.png")
         types[ItemType.APPLE.id] = ItemTemplate("/items/apple.png")
-        types[ItemType.BRANCH.id] = ItemTemplate("/items/bone.png")
+        types[ItemType.BRANCH.id] = ItemTemplate("/items/branch.png")
         types[ItemType.RABBIT.id] = ItemTemplate("/items/rabbit.png", 2, 2)
         types[ItemType.BOARD.id] = ItemTemplate("/items/board.png", 1, 4)
         types[ItemType.BARK.id] = ItemTemplate("/items/bark.png")

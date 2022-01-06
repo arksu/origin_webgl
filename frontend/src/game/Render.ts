@@ -11,6 +11,7 @@ import {ContextMenuData} from "../net/packets";
 import ContextMenu from "./ContextMenu";
 import {mobileAndTabletCheck} from "../utils/mobileCheck";
 import {getKeyFlags} from "../utils/keyboard";
+import {useGameStore} from "../store/game";
 
 export default class Render {
 
@@ -111,6 +112,8 @@ export default class Render {
      * текущее открытое контекстное меню
      */
     private contextMenu ?: ContextMenu
+
+    private readonly store = useGameStore();
 
     public static start(): Promise<undefined> {
         console.warn("pixi start");
@@ -608,6 +611,10 @@ export default class Render {
     private onKeyDown(e: KeyboardEvent) {
         console.log("onKeyDown:", e.key)
         switch (e.key) {
+            case "Tab":
+                e.preventDefault()
+                this.store.toggleInventory()
+                break
             case "Enter":
                 document.getElementById("inputChat")?.focus();
                 break;

@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import {HandData, InventoryUpdate, InvItem, TimeUpdate} from "../net/packets";
+import GameClient from "../net/GameClient";
 
 export type ChatItem = {
     title: string,
@@ -97,6 +98,19 @@ export const useGameStore = defineStore('game', {
         closeInventory(id: number) {
             const idx = this.inventories.findIndex(i => i.id == id)
             this.inventories.splice(idx, 1)
-        }
+        },
+        toggleInventory() {
+            console.log('openInventory')
+            const selectedCharacterId = this.selectedCharacterId;
+            if (selectedCharacterId != undefined) {
+                if (this.getInventoryById(selectedCharacterId) == undefined) {
+                    GameClient.remoteCall("openmyinv")
+                } else {
+                    GameClient.remoteCall("invclose", {
+                        iid: selectedCharacterId
+                    })
+                }
+            }
+        },
     }
 })
