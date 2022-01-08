@@ -615,6 +615,10 @@ export default class Render {
                 e.preventDefault()
                 this.store.toggleInventory()
                 break
+            case "c":
+                e.preventDefault()
+                this.store.craftWindowOpened = !this.store.craftWindowOpened
+                break
             case "Enter":
                 document.getElementById("inputChat")?.focus();
                 break;

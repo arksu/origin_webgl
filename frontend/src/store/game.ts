@@ -43,6 +43,7 @@ export const useGameStore = defineStore('game', {
         hand: undefined as HandData | undefined,
 
         time: undefined as TimeUpdate | undefined,
+        craftWindowOpened : false as Boolean,
     }),
     getters: {
         staminaPercent(): number {

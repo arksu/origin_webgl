@@ -141,14 +141,9 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .window-container {
-  display: flex;
-  justify-content: right;
   position: absolute;
   z-index: 10;
   text-align: center;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   pointer-events: auto;
 }
@@ -188,6 +183,9 @@ export default defineComponent({
 
 .content {
   padding: 22px 16px 16px 16px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .close-btn-back {
