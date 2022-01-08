@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="window-container">
     <div class="row" v-bind:class="{new_char: id === 0, bg_deleting : deleteInProcess, bg_selecting: selectInProcess }"
          @click.prevent="selectChar">
       {{ name }} {{ id !== 0 ? "[id " + id + "]" : "" }}
@@ -104,7 +104,7 @@ export default defineComponent({
 </script>
 <style scoped lang="scss">
 
-.container {
+.window-container {
   width: 100%;
   display: table;
   margin: 10px 0;

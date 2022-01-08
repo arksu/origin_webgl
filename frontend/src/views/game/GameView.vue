@@ -19,7 +19,8 @@
 
     <day-time v-if="gameStore.time !== undefined"/>
 
-    <craft :visible="true"></craft>
+    <craft :visible="true">
+    </craft>
 
     <div style="right: 0; bottom :0; position: absolute">
       <game-button

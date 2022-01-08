@@ -3,8 +3,8 @@
       v-if="visible"
       :id="inventory.id"
       :title="inventory.t"
-      :width="32 + inventory.w * 31"
-      :height="38 + inventory.h * 31"
+      :inner-width="inventory.w * 31"
+      :inner-height="inventory.h * 31"
       @close="onClose"
   >
     <div v-for="y in inventory.h">

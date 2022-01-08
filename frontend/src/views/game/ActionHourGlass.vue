@@ -1,5 +1,5 @@
 <template>
-  <div v-if="store.actionProgress.total > 0" class="container">
+  <div v-if="store.actionProgress.total > 0" class="window-container">
 <!--  такой ублюдочный код - потому что надо сделать preload картинок  -->
 <!--  v-if тут не подходит. он будет создавать каждый тег каждый кадр и заметно мерцание пока грузится картинка  -->
     <img :style="{display: store.actionFrame===0 ? 'block' : 'none'}" src="../../../assets/img/hourglass/clock0.png" alt="action">
@@ -48,7 +48,7 @@ export default defineComponent({
 })
 </script>
 <style scoped lang="scss">
-.container {
+.window-container {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -58,7 +58,7 @@ export default defineComponent({
   height: 36px;
   z-index: 100;
 }
-.container img {
+.window-container img {
   position: absolute;
 }
 .frame {

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="window-container">
     <img alt="sky" src="../../../assets/img/daysky.png">
     <img alt="sky" :style="{opacity: store.time.nv / 255}" src="../../../assets/img/nightsky.png">
 
@@ -33,7 +33,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.container {
+.window-container {
   position: absolute;
   top: 20px;
   left: 50%;

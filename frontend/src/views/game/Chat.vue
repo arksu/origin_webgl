@@ -12,7 +12,7 @@
           @submit.prevent="chatSubmit"
           action="#">
       <div class="input-container">
-        <input class="text-input" placeholder="Type text here" autocomplete="off" type="text" v-model="chatText"
+        <input class="text-input" placeholder="Chat here" autocomplete="off" type="text" v-model="chatText"
                id="inputChat"
                v-on:keyup.prevent="keyup">
         <span class="submit-logo" @click="chatSubmit">

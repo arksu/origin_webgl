@@ -3,18 +3,21 @@
       v-if="visible"
       :id="33"
       title="Craft"
-      :width="300"
-      :height="200"
+      :inner-width="100"
+      :inner-height="200"
       @close="visible = false"
   >
   </window>
 </template>
 
 <script lang="ts">
+import Window from "./Window.vue";
+
 import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "Craft",
+  components: {Window},
   props: {
     visible: Boolean
   },

@@ -1,13 +1,17 @@
 <template>
-  <div ref="draggableTarget" class="container"
-       :style="'width: ' + width + 'px; height: ' + height + 'px; left: '+left +'px; top: '+top+'px;'">
-    <div class="frame" :style="'width: ' + width + 'px; height: ' + height + 'px;'">
-      <slot></slot>
+  <div ref="draggableTarget" class="window-container"
+       :style="'width: ' + (innerWidth + 32) + 'px; height: ' + (innerHeight + 38) + 'px; left: '+left +'px; top: '+top+'px;'">
+
+    <div class="frame">
+      <div class="content">
+        <slot></slot>
+      </div>
     </div>
 
     <div class="close-btn-back">
-      <img alt="" style="float: right; margin-right: 3px" src="../../../assets/img/window_close.png">
+      <img alt="" src="../../../assets/img/window_close.png">
     </div>
+
     <div class="header" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
       <div class="title">
         <span class="title-text">
@@ -15,7 +19,8 @@
         </span>
       </div>
     </div>
-    <div class="close-btn-back2">
+
+    <div class="close-btn-click">
       <div class="close-btn" @click="$emit('close')"></div>
     </div>
   </div>
@@ -35,11 +40,11 @@ export default defineComponent({
       type: String,
       required: true
     },
-    width: {
+    innerWidth: {
       type: Number,
       required: true
     },
-    height: {
+    innerHeight: {
       type: Number,
       required: true
     },
@@ -135,7 +140,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.container {
+.window-container {
   display: flex;
   justify-content: right;
   position: absolute;
@@ -174,9 +179,15 @@ export default defineComponent({
 
 .frame {
   position: absolute;
+  width: 100%;
+  height: 100%;
   top: 7px;
   border-width: 0;
   border-image: url('../../../assets/img/window_frame.png') 34% fill / 8px repeat repeat;
+}
+
+.content {
+  padding: 22px 16px 16px 16px;
 }
 
 .close-btn-back {
@@ -184,8 +195,11 @@ export default defineComponent({
   top: 10px;
   width: 100%;
 }
+.close-btn-back img {
+  float: right; margin-right: 3px
+}
 
-.close-btn-back2 {
+.close-btn-click {
   text-align: right;
   position: relative;
   width: 20%;
