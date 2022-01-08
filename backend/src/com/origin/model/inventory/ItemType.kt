@@ -15,3 +15,8 @@ enum class ItemType(val id: Int, val icon: String, val width: Int = 1, val heigh
         fun fromId(id: Int) = map[id] ?: throw IllegalArgumentException("item type not found $id")
     }
 }
+
+data class ItemWithCount(
+    val item: ItemType,
+    val count: Int = 1
+)

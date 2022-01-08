@@ -19,7 +19,7 @@
 
     <day-time v-if="gameStore.time !== undefined"/>
 
-    <craft :visible="gameStore.craftWindowOpened" @close="toggleCraftWindow">
+    <craft :visible="gameStore.craft.isOpened" @close="toggleCraftWindow">
     </craft>
 
     <div style="right: 0; bottom :0; position: absolute">
@@ -142,7 +142,7 @@ export default defineComponent({
 
     const toggleCraftWindow = () => {
       console.log('toggleCraftWindow')
-      gameStore.craftWindowOpened = !gameStore.craftWindowOpened
+      gameStore.craft.isOpened = !gameStore.craft.isOpened
     }
 
     const logout = () => {

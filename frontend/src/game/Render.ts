@@ -617,7 +617,7 @@ export default class Render {
                 break
             case "c":
                 e.preventDefault()
-                this.store.craftWindowOpened = !this.store.craftWindowOpened
+                this.store.craft.isOpened = !this.store.craft.isOpened
                 break
             case "Enter":
                 document.getElementById("inputChat")?.focus();

@@ -6,8 +6,8 @@ package com.origin.model.skills
 enum class Skill(
     val id: Int
 ) {
-    Lumberjacking(1),
-    Carpentry(2),
-    Pottery(3),
-    Fishing(4)
+    LUMBERJACKING(1),
+    CARPENTRY(2),
+    POTTERY(3),
+    FISHING(4)
 }
