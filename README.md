@@ -1,5 +1,5 @@
 
-# ![Origin](frontend/assets/logo.png)
+# ![Origin](frontend/assets/img/logo.png)
 
 Origin is a survival MMO game
 
