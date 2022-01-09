@@ -12,7 +12,7 @@ import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
 import com.origin.model.move.*
 import com.origin.model.objects.ObjectsFactory
-import com.origin.model.skills.Skill
+import com.origin.model.skills.SkillsList
 import com.origin.net.model.*
 import com.origin.utils.ObjectID
 import com.origin.utils.Rect
@@ -23,7 +23,6 @@ import kotlinx.coroutines.Dispatchers.IO
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -85,7 +84,7 @@ class Player(
     /**
      * скиллы которые изучил игрок
      */
-    val skills : Set<Skill> = TreeSet()
+    val skills = SkillsList(this)
 
     override val status = PcStatus(this, character)
 

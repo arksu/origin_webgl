@@ -1,22 +1,14 @@
 package com.origin.entity
 
-import org.jetbrains.exposed.dao.LongEntity
-import org.jetbrains.exposed.dao.LongEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.Table
 
-object Skills : LongIdTable("skills") {
-    val character = reference("character", Characters)
+object Skills : Table("skills") {
+    val characterId = long("character_id").references(Characters.id)
     val skillId = integer("skill_id")
+    val level = integer("level").default(1)
 
     init {
-        uniqueIndex(character, skillId)
+        // нельзя добавить один и тот же скилл несколько раз одному игроку
+        uniqueIndex(characterId, skillId)
     }
-}
-
-class Skill(id: EntityID<Long>) : LongEntity(id) {
-    companion object : LongEntityClass<Skill>(Skills)
-
-    val character by Character referrersOn Skills.character
-    val skillId by Skills.skillId
 }
