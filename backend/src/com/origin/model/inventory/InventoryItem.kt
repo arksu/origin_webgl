@@ -2,12 +2,14 @@ package com.origin.model.inventory
 
 import com.origin.entity.InventoryItemEntity
 import com.origin.utils.ObjectID
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * вещь в инвентаре / эквипе / руке и тд
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class InventoryItem(
     private val entity: InventoryItemEntity,

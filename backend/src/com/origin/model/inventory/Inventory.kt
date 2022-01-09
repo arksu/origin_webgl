@@ -7,7 +7,9 @@ import com.origin.model.Player
 import com.origin.model.objects.containers.Container
 import com.origin.net.model.InventoryUpdate
 import com.origin.utils.ObjectID
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.concurrent.ConcurrentHashMap
 
@@ -15,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
  * интвентарь объектов
  * синхронизирован по актору объекта владельца инвентаря (parent)
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class Inventory(private val parent: GameObject) {
 
@@ -32,15 +35,17 @@ class Inventory(private val parent: GameObject) {
 
     init {
         transaction {
-            val list = InventoryItemEntity.find { InventoryItems.inventoryId eq inventoryId }
-            list.forEach {
-                items[it.id.value] = InventoryItem(it, this@Inventory)
-            }
+            // при загрузке учтем ограничение слотов
+            InventoryItemEntity
+                .find { (InventoryItems.inventoryId eq inventoryId) and (InventoryItems.x less 200) and (InventoryItems.y less 200) }
+                .forEach {
+                    items[it.id.value] = InventoryItem(it, this@Inventory)
+                }
         }
     }
 
     fun getWidth(): Int {
-        // TODO
+        // TODO get inventory size
         if (parent is Player) {
             return 4
         }
@@ -48,7 +53,7 @@ class Inventory(private val parent: GameObject) {
     }
 
     fun getHeight(): Int {
-        // TODO
+        // TODO get inventory size
         if (parent is Player) {
             return 4
         }

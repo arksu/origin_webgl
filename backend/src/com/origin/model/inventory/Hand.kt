@@ -1,11 +1,13 @@
 package com.origin.model.inventory
 
 import com.origin.model.Player
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
  * рука в которой игрок держит вещь (inventory item)
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class Hand(
     private val me: Player,

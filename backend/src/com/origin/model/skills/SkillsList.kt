@@ -1,5 +1,6 @@
 package com.origin.model.skills
 
+import com.origin.entity.Characters
 import com.origin.entity.Skills
 import com.origin.model.Player
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -31,11 +32,14 @@ class SkillsList(val player: Player) {
      */
     fun add(skill: Skill) {
         transaction {
-            Skills.insert {
-                it[characterId] = player.id
-                it[skillId] = skill.id
+            // проверим что такого скилла еще нет в списке
+            if (!list.contains(skill)) {
+                Skills.insert {
+                    it[characterId] = player.id
+                    it[skillId] = skill.id
+                }
+                list.add(skill)
             }
         }
-        list.add(skill)
     }
 }

@@ -2,7 +2,7 @@ package com.origin.model
 
 import com.origin.TimeController
 import com.origin.TimeController.GRID_UPDATE_PERIOD
-import com.origin.database.DatabaseFactory.dbQueryCoroutine
+import com.origin.database.dbQueryCoroutine
 import com.origin.entity.EntityObject
 import com.origin.entity.EntityObjects
 import com.origin.entity.GridEntity

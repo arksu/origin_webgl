@@ -1,7 +1,7 @@
 package com.origin.model
 
 import com.origin.TimeController
-import com.origin.database.DatabaseFactory.dbQueryCoroutine
+import com.origin.database.dbQueryCoroutine
 import com.origin.entity.Character
 import com.origin.entity.EntityObject
 import com.origin.entity.InventoryItemEntity
@@ -69,7 +69,7 @@ class Player(
     /**
      * одежда (во что одет игрок)
      */
-//    private val paperdoll: Paperdoll = Paperdoll(this)
+    private val paperdoll: Paperdoll = Paperdoll(this)
 
     /**
      * инвентарь игрока

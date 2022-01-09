@@ -82,13 +82,14 @@ object DatabaseFactory {
         return HikariDataSource(config)
     }
 
-    suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
-        transaction { block() }
-    }
+}
 
-    fun dbQueryCoroutine(block: () -> Unit) = WorkerScope.launch {
-        transaction {
-            block()
-        }
+fun dbQueryCoroutine(block: () -> Unit) = WorkerScope.launch {
+    transaction {
+        block()
     }
+}
+
+suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
+    transaction { block() }
 }
