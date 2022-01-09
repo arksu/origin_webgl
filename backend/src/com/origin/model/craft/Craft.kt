@@ -7,6 +7,7 @@ import com.origin.model.inventory.ItemWithCount as item
 enum class Craft(
     val produce: List<item>,
     val required: List<item>,
+    @Transient
     val skills: Set<Skill>? = null,
 ) {
     STONE_AXE(

@@ -37,7 +37,7 @@ buildscript {
         kotlin_version = '1.6.10'
         // https://youtrack.jetbrains.com/issue/KTOR-3358 1.6.5+ is broken
         ktor_version = '1.6.4'
-        exposed_version = '0.36.2'
+        exposed_version = '0.37.3'
         slf4j_version = '1.7.30'
     }
 

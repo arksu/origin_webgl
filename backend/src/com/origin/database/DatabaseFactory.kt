@@ -56,7 +56,8 @@ object DatabaseFactory {
                 EntityObjects,
                 InventoryItems,
                 GlobalVariables,
-                ChatHistory
+                ChatHistory,
+                Skills
             )
         }
     }

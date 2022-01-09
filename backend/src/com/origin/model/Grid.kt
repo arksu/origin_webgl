@@ -149,6 +149,9 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
         actor.send(msg)
     }
 
+    /**
+     * отправить всем активным объектам сообщение
+     */
     suspend fun broadcast(msg: BroadcastEvent) {
         actor.send(GridMsg.Broadcast(msg))
     }

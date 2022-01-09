@@ -6,6 +6,7 @@ import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import com.origin.model.*
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
+import com.origin.model.craft.Craft
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
@@ -233,12 +234,21 @@ class TimeUpdate(
     // month
     val mm: Int,
     // night value
-    val nv : Int,
+    val nv: Int,
     // sun value
-    val sv : Int,
+    val sv: Int,
     // moon value
-    val mv : Int
+    val mv: Int
 ) : ServerMessage("tu")
+
+@ObsoleteCoroutinesApi
+class CraftList(p: Player) : ServerMessage("cl") {
+    private val list: List<Craft>
+
+    init {
+        list = ArrayList()
+    }
+}
 
 /**
  * уведомления об изменениях в папке с ассетами

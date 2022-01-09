@@ -12,6 +12,7 @@ import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
 import com.origin.model.move.*
 import com.origin.model.objects.ObjectsFactory
+import com.origin.model.skills.Skill
 import com.origin.net.model.*
 import com.origin.utils.ObjectID
 import com.origin.utils.Rect
@@ -22,6 +23,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -44,6 +46,7 @@ private val PLAYER_RECT = Rect(3)
 /**
  * инстанс персонажа игрока в игровом мире (игрок)
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class Player(
     /**
@@ -79,6 +82,11 @@ class Player(
      */
     var hand: Hand? = null
 
+    /**
+     * скиллы которые изучил игрок
+     */
+    val skills : Set<Skill> = TreeSet()
+
     override val status = PcStatus(this, character)
 
     /**
@@ -94,7 +102,7 @@ class Player(
     /**
      * при создании (логине) игрока запомним какой у него был онлайн
      */
-    private var lastOnlineStore = System.currentTimeMillis()
+    private var lastOnlineStoreTime = System.currentTimeMillis()
 
     /**
      * корутина на периодическое сохранение состояния в базу
@@ -414,14 +422,14 @@ class Player(
         val currentMillis = System.currentTimeMillis()
 
         transaction {
-            character.onlineTime += TimeUnit.MILLISECONDS.toSeconds(currentMillis - lastOnlineStore)
+            character.onlineTime += TimeUnit.MILLISECONDS.toSeconds(currentMillis - lastOnlineStoreTime)
 
             character.SHP = status.currentSoftHp
             character.HHP = status.currentHardHp
             character.stamina = status.currentStamina
             character.energy = status.currentEnergy
         }
-        lastOnlineStore = currentMillis
+        lastOnlineStoreTime = currentMillis
     }
 
     /**
