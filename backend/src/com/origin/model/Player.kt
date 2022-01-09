@@ -338,7 +338,7 @@ class Player(
      * вызывается в самую последнюю очередь при спавне игрока в мир
      * когда уже все прогружено и заспавнено, гриды активированы
      */
-    private fun connected() {
+    private suspend fun connected() {
         World.addPlayer(this)
 
         // auto save task
@@ -362,9 +362,11 @@ class Player(
                         0
                     )
                 )
-                delay(1000L)
+                delay(3000L)
             }
         }
+
+        session.send(CraftList(this))
     }
 
     /**

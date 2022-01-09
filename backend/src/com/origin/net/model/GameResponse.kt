@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName
 import com.origin.model.*
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.GENERAL
 import com.origin.model.craft.Craft
+import com.origin.model.craft.craftList
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
-import com.origin.utils.GRID_SIZE
-import com.origin.utils.GRID_SQUARE
 import com.origin.utils.ObjectID
 import com.origin.utils.StringTypeAdapter
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 class GameResponse {
@@ -241,12 +241,24 @@ class TimeUpdate(
     val mv: Int
 ) : ServerMessage("tu")
 
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class CraftList(p: Player) : ServerMessage("cl") {
     private val list: List<Craft>
 
     init {
-        list = ArrayList()
+        // фильтруем все возможные виды крафта
+        list = craftList.filter { craft ->
+            // проверяем есть ли у крафта требуемые скиллы
+            if (craft.skills != null && craft.skills.isNotEmpty()) {
+                // все требуемые скиллы должны присутствовать у игрока
+                craft.skills.all { skillType ->
+                    p.skills.contains(skillType)
+                }
+            } else {
+                true
+            }
+        }
     }
 }
 
