@@ -11,6 +11,7 @@ import com.origin.model.craft.craftList
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
+import com.origin.model.inventory.ItemWithCount
 import com.origin.utils.ObjectID
 import com.origin.utils.StringTypeAdapter
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -175,6 +176,7 @@ class ContextMenuData(cm: ContextMenu?) : ServerMessage("cm") {
 
 class ActionProgress(val c: Int, val t: Int) : ServerMessage("ap")
 
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class InventoryItemData(item: InventoryItem) {
     private val id = item.id
@@ -183,10 +185,13 @@ class InventoryItemData(item: InventoryItem) {
     private val w = item.width
     private val h = item.height
     private val q = item.q
+
+    // TODO ???
     private val c = "Test"
     private val icon = item.icon
 }
 
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class InventoryUpdate(inventory: Inventory) : ServerMessage("iv") {
     private val id = inventory.inventoryId
@@ -204,6 +209,7 @@ class InventoryUpdate(inventory: Inventory) : ServerMessage("iv") {
 
 class InventoryClose(val id: ObjectID) : ServerMessage("ic")
 
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class HandUpdate : ServerMessage {
     private val icon: String?
@@ -241,10 +247,25 @@ class TimeUpdate(
     val mv: Int
 ) : ServerMessage("tu")
 
+class CraftData(craft: Craft) {
+    private val name = craft.name
+    private val produced = craft.produce.map {
+        CraftItemData(it)
+    }
+    private val required = craft.required.map {
+        CraftItemData(it)
+    }
+
+    class CraftItemData(it: ItemWithCount) {
+        private val icon = it.item.icon
+        private val count = it.count
+    }
+}
+
 @DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class CraftList(p: Player) : ServerMessage("cl") {
-    private val list: List<Craft>
+    private val list: List<CraftData>
 
     init {
         // фильтруем все возможные виды крафта
@@ -258,6 +279,8 @@ class CraftList(p: Player) : ServerMessage("cl") {
             } else {
                 true
             }
+        }.map {
+            CraftData(it)
         }
     }
 }

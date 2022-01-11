@@ -8,7 +8,6 @@ class Craft(
     val name: String,
     val produce: List<item>,
     val required: List<item>,
-    @Transient
     val skills: Set<Skill.Type>? = null,
 )
 
