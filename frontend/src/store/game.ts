@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {HandData, InventoryUpdate, InvItem, TimeUpdate} from "../net/packets";
+import {CraftData, CraftList, HandData, InventoryUpdate, InvItem, TimeUpdate} from "../net/packets";
 import GameClient from "../net/GameClient";
 
 export type ChatItem = {
@@ -46,7 +46,7 @@ export const useGameStore = defineStore('game', {
         craftWindowOpened: false as Boolean,
         craft: {
             isOpened: false as Boolean,
-            list: []
+            list: [] as CraftData[]
         }
     }),
     getters: {

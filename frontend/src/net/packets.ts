@@ -15,6 +15,7 @@ export enum ServerPacket {
     PLAYER_HAND = "ph",
     CREATURE_SAY = "cs",
     TIME_UPDATE = "tu",
+    CRAFT_LIST = "cl",
     FILE_CHANGED = "fc",
 }
 
@@ -162,4 +163,19 @@ export interface TimeUpdate {
     readonly sv: number,
     // moon value
     readonly mv: number,
+}
+
+export interface CraftItemData {
+    readonly icon: string
+    readonly count: number
+}
+
+export interface CraftData {
+    readonly name: string
+    readonly produced: CraftItemData[]
+    readonly required: CraftItemData[]
+}
+
+export interface CraftList {
+    readonly list: CraftData[]
 }

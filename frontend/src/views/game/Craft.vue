@@ -23,21 +23,35 @@
       <div class="main-frame">
         <!--    list-->
         <div class="list">
-          <div class="item">Bucket</div>
-          <div class="item">Stone Axe</div>
-          <div class="item">Stone Axe</div>
-          <div class="item">Stone Axe</div>
-          <div class="item">Stone Axe</div>
-          <div class="item">Stone Axe</div>
-          <div class="item">Chair</div>
-          <div class="item">WaterflaskWaterflaskWaterflask</div>
+          <div class="item"
+               :class="{active: c.name === selected?.name}"
+               v-for="c in store.craft.list"
+               :key="c.name"
+               @click="selectItem(c)">
+            {{ convertCase(c.name) }}
+          </div>
         </div>
 
         <!--    description, title, required, etc-->
         <div class="main-content">
-          lorem ipsum
-          <br>
-          some more else
+          <div v-if="selected !== undefined">
+            {{ convertCase(selected.name) }}
+            <br>
+            required:
+            <div class="required">
+              <div v-for="p in selected.required">
+                <img alt="icon" :src="'/assets/game'+p.icon">
+                {{ p.count }}
+              </div>
+            </div>
+            produced:
+            <div class="produced">
+              <div v-for="p in selected.produced">
+                <img alt="icon" :src="'/assets/game'+p.icon">
+                {{ p.count }}
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -53,7 +67,9 @@
 <script lang="ts">
 import Window from "./Window.vue";
 
-import {defineComponent} from "vue";
+import {defineComponent, ref} from "vue";
+import {useGameStore} from "../../store/game";
+import {CraftData} from "../../net/packets";
 
 export default defineComponent({
   name: "Craft",
@@ -63,7 +79,18 @@ export default defineComponent({
     visible: Boolean
   },
   setup() {
+    const store = useGameStore()
+    const selected = ref<CraftData | undefined>(undefined)
 
+    const selectItem = (i: any) => {
+      selected.value = i
+    }
+
+    const convertCase = (s: string) => {
+      return s.toLowerCase().replace("_", " ")
+    }
+
+    return {store, selectItem, selected, convertCase}
   }
 })
 </script>
@@ -104,7 +131,7 @@ $borderColor: #17241d;
   border-radius: 4px;
   background: transparent;
   padding: 0 0.3em 0 0.3em;
-  color: #7ec7d0;
+  color: #c3e8e8;
 }
 
 .search input::placeholder {
@@ -121,6 +148,7 @@ $borderColor: #17241d;
 }
 
 .list {
+  background-color: rgba(15, 23, 19, 0.18);
   border: $borderColor 1px solid;
   border-radius: 4px;
   width: 100px;
@@ -136,17 +164,29 @@ $borderColor: #17241d;
 }
 
 .item {
+  font-size: 14px;
   text-align: left;
+  color: #7f99a6;
+}
+
+.item.active {
+  background-color: rgb(67, 100, 39);
+  color: #c3e8e8;
 }
 
 .item:hover {
-  background-color: rgba(75, 125, 131, 0.76);
+  background-color: rgb(67, 100, 39);
 }
 
 .main-content {
   text-align: left;
   padding-left: 10px;
   flex-grow: 1;
+}
+
+.required, .produced  {
+  display: flex;
+  flex-direction: row;
 }
 
 .buttons-frame {

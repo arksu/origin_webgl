@@ -18,6 +18,11 @@ val craftList = listOf(
         listOf(item(it.STONE), item(it.BRANCH, 2))
     ),
     Craft(
+        "IRON_AXE",
+        listOf(item(it.STONE_AXE)),
+        listOf(item(it.APPLE, 3), item(it.BRANCH, 2))
+    ),
+    Craft(
         "BUCKET",
         listOf(item(it.BUCKET)),
         listOf(item(it.BOARD, 2)),

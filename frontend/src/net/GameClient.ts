@@ -1,6 +1,6 @@
 import {
     ActionProgressData,
-    ContextMenuData, CreatureSay, HandData, InventoryUpdate,
+    ContextMenuData, CraftList, CreatureSay, HandData, InventoryUpdate,
     MapGridData,
     ObjectDel,
     ObjectMoved,
@@ -450,6 +450,12 @@ export default class GameClient {
                 const timeUpdate = <TimeUpdate>data
                 store.time = timeUpdate
                 console.log('timeUpdate h:', timeUpdate.h, 'm: ', timeUpdate.m, "day", timeUpdate.d, 'month', timeUpdate.mm)
+                break
+            }
+            case ServerPacket.CRAFT_LIST : {
+                const craftList = <CraftList>data
+                store.craft.list = craftList.list
+                break
             }
         }
     }
