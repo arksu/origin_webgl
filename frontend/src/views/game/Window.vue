@@ -186,6 +186,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  font-size: 14px;
 }
 
 .close-btn-back {

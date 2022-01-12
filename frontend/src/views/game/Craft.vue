@@ -10,7 +10,7 @@
     <div class="flex-v">
       <!--    tabs-->
       <div class="tabs">
-        <div class="tab">All</div>
+        <div class="tab active">All</div>
         <div class="tab">Favorites</div>
         <div class="tab">History</div>
       </div>
@@ -28,7 +28,8 @@
                v-for="c in store.craft.list"
                :key="c.name"
                @click="selectItem(c)">
-            {{ convertCase(c.name) }}
+            <img alt="" :src="'/assets/game' + c.produced[0].icon">
+            <span>{{ convertCase(c.name) }}</span>
           </div>
         </div>
 
@@ -37,18 +38,18 @@
           <div v-if="selected !== undefined">
             {{ convertCase(selected.name) }}
             <br>
-            required:
             <div class="required">
-              <div v-for="p in selected.required">
-                <img alt="icon" :src="'/assets/game'+p.icon">
-                {{ p.count }}
+              input:
+              <div class="craft-img" v-for="p in selected.required">
+                <img alt="" :src="'/assets/game'+p.icon">
+                <span>{{ p.count }}</span>
               </div>
             </div>
-            produced:
             <div class="produced">
-              <div v-for="p in selected.produced">
-                <img alt="icon" :src="'/assets/game'+p.icon">
-                {{ p.count }}
+              result:
+              <div class="craft-img" v-for="p in selected.produced">
+                <img alt="" :src="'/assets/game'+p.icon">
+                <span>{{ p.count }}</span>
               </div>
             </div>
           </div>
@@ -58,8 +59,8 @@
     </div>
     <!--    buttons-->
     <div class="buttons-frame">
-      <div class="button">Craft</div>
-      <div class="button">Craft All</div>
+      <div class="button" @click="craft">Craft</div>
+      <div class="button" @click="craftAll">Craft All</div>
     </div>
   </window>
 </template>
@@ -70,6 +71,7 @@ import Window from "./Window.vue";
 import {defineComponent, ref} from "vue";
 import {useGameStore} from "../../store/game";
 import {CraftData} from "../../net/packets";
+import GameClient from "../../net/GameClient";
 
 export default defineComponent({
   name: "Craft",
@@ -87,10 +89,25 @@ export default defineComponent({
     }
 
     const convertCase = (s: string) => {
-      return s.toLowerCase().replace("_", " ")
+      s = s.toLowerCase().replace("_", " ")
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+    const craft = () => {
+      if (selected.value !== undefined) {
+        GameClient.remoteCall("craft", {
+          name: selected.value.name
+        })
+      }
+    }
+    const craftAll = () => {
+      if (selected.value !== undefined) {
+        GameClient.remoteCall("craftall", {
+          name: selected.value.name
+        })
+      }
     }
 
-    return {store, selectItem, selected, convertCase}
+    return {store, selectItem, selected, convertCase, craft, craftAll}
   }
 })
 </script>
@@ -114,6 +131,14 @@ $borderColor: #17241d;
 .tab {
   background-color: #506e42;
   padding: 0.1em;
+  border: #133236 solid 2px;
+  border-bottom: none;
+  border-radius: 4px;
+  margin: 0 1px;
+}
+
+.tab.active {
+  color: #c3e8e8;
 }
 
 .tab:hover {
@@ -138,6 +163,10 @@ $borderColor: #17241d;
   color: #477359;
 }
 
+.search input:focus {
+  outline: none;
+}
+
 .main-frame {
   margin-top: 5px;
   flex-grow: 1;
@@ -151,7 +180,7 @@ $borderColor: #17241d;
   background-color: rgba(15, 23, 19, 0.18);
   border: $borderColor 1px solid;
   border-radius: 4px;
-  width: 100px;
+  width: 140px;
   box-sizing: border-box;
 
   display: flex;
@@ -164,9 +193,14 @@ $borderColor: #17241d;
 }
 
 .item {
-  font-size: 14px;
+  font-size: 13px;
   text-align: left;
   color: #7f99a6;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .item.active {
@@ -178,15 +212,51 @@ $borderColor: #17241d;
   background-color: rgb(67, 100, 39);
 }
 
+.item img {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
+
+.item span {
+  padding: 0 0.2em;
+}
+
 .main-content {
   text-align: left;
   padding-left: 10px;
   flex-grow: 1;
+  color: #7f99a6;
 }
 
-.required, .produced  {
+.required, .produced {
   display: flex;
   flex-direction: row;
+}
+
+.craft-img {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  margin-right: 1px;
+}
+
+.craft-img img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.craft-img span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  line-height: 100%;
+  font-size: 12px;
+  text-shadow: 1px 0 1px #000,
+  0 1px 1px #000,
+  -1px 0 1px #000,
+  0 -1px 1px #000;
 }
 
 .buttons-frame {
@@ -201,7 +271,11 @@ $borderColor: #17241d;
 
 .button {
   background-color: #4b7d83;
-  padding: 0.1em;
+  padding: 0 0.2em;
+  border: #133236 solid 2px;
+  border-radius: 4px;
+  margin-left: 3px;
+  box-sizing: border-box;
 }
 
 .button:hover {
