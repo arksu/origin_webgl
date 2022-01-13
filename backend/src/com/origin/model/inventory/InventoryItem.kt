@@ -33,7 +33,10 @@ class InventoryItem(
 
     var q: Short = entity.quality
 
-    fun putTo(inv: Inventory, x: Int, y: Int) {
+    /**
+     * инвентарь кладет эту вещь в себя
+     */
+    fun inventoryPutTo(inv: Inventory, x: Int, y: Int) {
         this.inventory = inv
         this.x = x
         this.y = y

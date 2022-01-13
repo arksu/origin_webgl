@@ -14,6 +14,7 @@ import com.origin.net.gsonSerializer
 import com.origin.utils.ObjectID
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.and
@@ -33,6 +34,7 @@ data class AuthorizeTokenResponse(
 /**
  * игровая сессия (коннект)
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class GameSession(private val connect: DefaultWebSocketSession) {
     companion object {
@@ -177,6 +179,11 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                             player.grid.broadcast(BroadcastEvent.ChatMessage(player, GENERAL, text))
                         }
                     }
+                }
+                "craft" -> {
+                    val name = r.data["name"] as String? ?: throw BadRequest("no name")
+                    val all = r.data["all"] as Boolean? ?: throw BadRequest("no all field")
+                    player.send(PlayerMsg.Craft(name, all))
                 }
                 else -> {
                     logger.warn("unknown target ${r.target}")

@@ -95,14 +95,16 @@ export default defineComponent({
     const craft = () => {
       if (selected.value !== undefined) {
         GameClient.remoteCall("craft", {
-          name: selected.value.name
+          name: selected.value.name,
+          all: false
         })
       }
     }
     const craftAll = () => {
       if (selected.value !== undefined) {
-        GameClient.remoteCall("craftall", {
-          name: selected.value.name
+        GameClient.remoteCall("craft", {
+          name: selected.value.name,
+          all: true
         })
       }
     }

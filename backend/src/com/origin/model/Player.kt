@@ -7,6 +7,7 @@ import com.origin.entity.EntityObject
 import com.origin.entity.InventoryItemEntity
 import com.origin.idfactory.IdFactory
 import com.origin.model.BroadcastEvent.ChatMessage.Companion.SYSTEM
+import com.origin.model.craft.Craft
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
@@ -38,6 +39,7 @@ sealed class PlayerMsg {
     class ExecuteActionCondition(val resp: CompletableDeferred<Boolean>, val block: (Player) -> Boolean)
     class ItemClick(val id: ObjectID, val inventoryId: ObjectID, val x: Int, val y: Int, val ox: Int, val oy: Int)
     class InventoryClose(val inventoryId: ObjectID)
+    class Craft(val name: String, val all: Boolean)
 }
 
 private val PLAYER_RECT = Rect(3)
@@ -145,8 +147,18 @@ class Player(
                 }
                 msg.resp.complete(success)
             }
+            is PlayerMsg.Craft -> craft(msg)
 
             else -> super.processMessage(msg)
+        }
+    }
+
+    private fun craft(msg: PlayerMsg.Craft) {
+        val craft = Craft.findByName(msg.name)
+        if (craft != null) {
+            craft.required.forEach {
+                it.item
+            }
         }
     }
 

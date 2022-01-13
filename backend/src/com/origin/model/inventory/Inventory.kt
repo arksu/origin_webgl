@@ -82,6 +82,13 @@ class Inventory(private val parent: GameObject) {
         }
     }
 
+    /**
+     * найти вещь указанного типа у себя и в дочерних инвентарях
+     */
+    fun findItem(type : ItemType) {
+        // TODO
+    }
+
     suspend fun takeItem(id: ObjectID): InventoryItem? {
         val removed = items.remove(id)
         if (removed != null) {
@@ -98,7 +105,6 @@ class Inventory(private val parent: GameObject) {
      * @return удалось ли положить
      */
     suspend fun putItem(item: InventoryItem, x: Int, y: Int): Boolean {
-        // TODO проверка можно ли положить вещь в этот инвентарь
         val result = tryPut(item, x, y)
         if (result) {
             notify()
@@ -116,6 +122,9 @@ class Inventory(private val parent: GameObject) {
         return false
     }
 
+    /**
+     * проверка можно ли положить вещь в этот инвентарь
+     */
     private fun tryPut(item: InventoryItem, x: Int, y: Int): Boolean {
         if (x >= 0 && y >= 0 && x + item.width <= getWidth() && y + item.height <= getHeight()) {
             var conflict = false
@@ -128,7 +137,7 @@ class Inventory(private val parent: GameObject) {
             }
             if (!conflict) {
                 items[item.id] = item
-                item.putTo(this, x, y)
+                item.inventoryPutTo(this, x, y)
 
                 return true
             }

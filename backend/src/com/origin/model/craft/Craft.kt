@@ -9,7 +9,13 @@ class Craft(
     val produce: List<item>,
     val required: List<item>,
     val skills: Set<Skill.Type>? = null,
-)
+) {
+    companion object {
+        fun findByName(name: String): Craft? {
+            return craftList.find { it.name == name }
+        }
+    }
+}
 
 val craftList = listOf(
     Craft(
