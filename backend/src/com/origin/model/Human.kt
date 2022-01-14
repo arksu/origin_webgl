@@ -9,6 +9,7 @@ import com.origin.net.model.ObjectStopped
 import com.origin.utils.ObjectID
 import com.origin.utils.TILE_SIZE
 import com.origin.utils.Vec2i
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
@@ -23,6 +24,7 @@ sealed class HumanMSg {
  * гуманоид
  * обладает зрением (видимые объекты о которых "знает")
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) :
     MovingObject(id, x, y, level, region, heading) {

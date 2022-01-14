@@ -9,6 +9,7 @@ import com.origin.model.inventory.ItemType
 import com.origin.net.model.ActionProgress
 import com.origin.utils.Rect
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory
 /**
  * Деревья
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 abstract class Tree(entity: EntityObject) : StaticObject(entity) {
     companion object {

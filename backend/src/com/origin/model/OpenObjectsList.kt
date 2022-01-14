@@ -3,6 +3,7 @@ package com.origin.model
 import com.origin.net.model.InventoryClose
 import com.origin.net.model.InventoryUpdate
 import com.origin.utils.ObjectID
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -12,6 +13,7 @@ const val OPEN_DISTANCE = 3
 /**
  * список "открытых" объектов для взаимодействия с их инвентарями
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class OpenObjectsList(private val me: Human) {
     companion object {

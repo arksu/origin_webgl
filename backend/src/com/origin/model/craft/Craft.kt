@@ -21,7 +21,7 @@ val craftList = listOf(
     Craft(
         "STONE_AXE",
         listOf(item(it.STONE_AXE)),
-        listOf(item(it.STONE), item(it.BRANCH, 2), item(it.BOARD))
+        listOf(item(it.STONE), item(it.BRANCH, 2))
     ),
     Craft(
         "IRON_AXE",

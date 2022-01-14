@@ -153,11 +153,15 @@ class Player(
         }
     }
 
-    private fun craft(msg: PlayerMsg.Craft) {
+    private suspend fun craft(msg: PlayerMsg.Craft) {
         val craft = Craft.findByName(msg.name)
         if (craft != null) {
-            craft.required.forEach {
-                it.item
+            val result = inventory.findAndTakeItem(craft.required)
+            if (result != null) {
+                result.forEach {
+                    it.delete()
+                }
+                println("craft!")
             }
         }
     }

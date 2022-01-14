@@ -37,7 +37,7 @@ class Inventory(private val parent: GameObject) {
         transaction {
             // при загрузке учтем ограничение слотов
             InventoryItemEntity
-                .find { (InventoryItems.inventoryId eq inventoryId) and (InventoryItems.x less 200) and (InventoryItems.y less 200) }
+                .find { (InventoryItems.inventoryId eq inventoryId) and (InventoryItems.x less 200) and (InventoryItems.y less 200) and (InventoryItems.deleted eq false) }
                 .forEach {
                     items[it.id.value] = InventoryItem(it, this@Inventory)
                 }
@@ -84,17 +84,35 @@ class Inventory(private val parent: GameObject) {
 
     /**
      * найти и взять вещи по списку указанного типа и количества у себя и в дочерних инвентарях
+     * вернем либо список взятых вещей из инвентаря при этом они будут удалены
+     * либо null если не нашли все необходимые вещи
      */
-    fun findAndTakeItem(list :  List<ItemWithCount>) : List<InventoryItem>? {
-        // ищем вещь нужного типа
+    suspend fun findAndTakeItem(list: List<ItemWithCount>): List<InventoryItem>? {
+        val result = ArrayList<InventoryItem>(8)
+        val req = RequiredList(list)
+        // идем по всем вещам в инвентаре
         items.forEach {
-            if (it.value.type == ItemType.BRANCH) {
-                // TODO it.key
+            // проверим что такая вещь есть в списке требований
+            if (req.checkAndDecrement(it.value.type)) {
+                // добавим ее в результат
+                result.add(it.value)
             }
         }
-        // TODO
 
-        return null
+        // прошли по всему инвентарю - но вещи в требованиях еще остались.
+        if (!req.isEmpty()) {
+            return null
+        }
+
+        // список требований удовлетворен - удаляем вещи из инвентаря
+        result.forEach {
+            items.remove(it.id)
+        }
+
+        notify()
+
+        // вернем список вещей которые взяли и удалили из инвентаря
+        return result
     }
 
     suspend fun takeItem(id: ObjectID): InventoryItem? {

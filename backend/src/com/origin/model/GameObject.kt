@@ -49,6 +49,7 @@ sealed class GameObjectMsg {
  * базовый игровой объект в игровой механике
  * все игровые сущности наследуются от него
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: Int, heading: Short) {
     companion object {
@@ -80,7 +81,7 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
     protected var spawned = false
 
     /**
-     * инвентарь игрока
+     * инвентарь объекта (обязательно надо уточнить в конечных объектах, что делать с инвентарем: либо есть либо нет - null)
      */
     abstract val inventory: Inventory?
 

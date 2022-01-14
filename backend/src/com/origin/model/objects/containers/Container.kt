@@ -4,14 +4,20 @@ import com.origin.entity.EntityObject
 import com.origin.model.*
 import com.origin.model.inventory.Inventory
 import com.origin.utils.ObjectID
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
  * контейнеры которые могут хранить вещи (ящики, шкафы и тд)
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 abstract class Container(entity: EntityObject) : StaticObject(entity) {
 
+    /**
+     * создаем (а значит и загрузим) инвентарь при первом обращени к нему, этого момента его в объекте не будет
+     * и из базы он загружен не будет
+     */
     override val inventory by lazy { Inventory(this) }
 
     /**
@@ -42,6 +48,7 @@ abstract class Container(entity: EntityObject) : StaticObject(entity) {
     }
 
     override fun getResourcePath(): String {
+        // если есть хоть кто-то в "открывших" инвентарь
         return if (discoverers.size > 0) openResource else normalResource
     }
 

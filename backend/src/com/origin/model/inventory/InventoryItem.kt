@@ -56,6 +56,9 @@ class InventoryItem(
         }
     }
 
+    /**
+     * удалить вещь из базы
+     */
     fun delete() {
         transaction {
             entity.deleted = true
