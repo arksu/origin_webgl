@@ -21,7 +21,7 @@ class InventoryItem(
             return entity.id.value
         }
 
-    private val type: ItemType = ItemType.fromId(entity.type)
+    val type: ItemType = ItemType.fromId(entity.type)
 
     val width get() = type.width
     val height get() = type.height

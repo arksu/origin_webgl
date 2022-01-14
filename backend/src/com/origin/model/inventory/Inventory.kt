@@ -83,10 +83,18 @@ class Inventory(private val parent: GameObject) {
     }
 
     /**
-     * найти вещь указанного типа у себя и в дочерних инвентарях
+     * найти и взять вещи по списку указанного типа и количества у себя и в дочерних инвентарях
      */
-    fun findItem(type : ItemType) {
+    fun findAndTakeItem(list :  List<ItemWithCount>) : List<InventoryItem>? {
+        // ищем вещь нужного типа
+        items.forEach {
+            if (it.value.type == ItemType.BRANCH) {
+                // TODO it.key
+            }
+        }
         // TODO
+
+        return null
     }
 
     suspend fun takeItem(id: ObjectID): InventoryItem? {
