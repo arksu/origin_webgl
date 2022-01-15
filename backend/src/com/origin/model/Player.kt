@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 sealed class PlayerMsg {
     class Connected
@@ -156,6 +157,7 @@ class Player(
     private suspend fun craft(msg: PlayerMsg.Craft) {
         val craft = Craft.findByName(msg.name)
         if (craft != null) {
+            // TODO запускаем action, затем спавним результат
             val result = inventory.findAndTakeItem(craft.required)
             if (result != null) {
                 result.forEach {
@@ -441,10 +443,7 @@ class Player(
         transaction {
             character.onlineTime += TimeUnit.MILLISECONDS.toSeconds(currentMillis - lastOnlineStoreTime)
 
-            character.SHP = status.currentSoftHp
-            character.HHP = status.currentHardHp
-            character.stamina = status.currentStamina
-            character.energy = status.currentEnergy
+            status.storeToCharacter(character)
         }
         lastOnlineStoreTime = currentMillis
     }

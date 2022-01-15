@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 @ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 sealed class GameObjectMsg {
     class Spawn(val resp: CompletableDeferred<Boolean>)
     class SpawnNear(val resp: CompletableDeferred<Boolean>)

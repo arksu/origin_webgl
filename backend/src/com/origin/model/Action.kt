@@ -2,11 +2,9 @@ package com.origin.model
 
 import com.origin.TimeController.GAME_ACTION_PERIOD
 import com.origin.net.model.ActionProgress
-import com.origin.net.model.ServerMessage
 import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.math.abs
 
 /**
  * выполнение игровых действий
@@ -22,6 +20,7 @@ import kotlin.math.abs
  * затем выполняем maxProgress повторений цикла ticks тиков
  * между каждым циклом шлем sendCurrentProgress
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class Action(
     private val me: Human,
@@ -30,10 +29,14 @@ class Action(
      * сколько тиков между действиями (берем по модулю, не зависимо от знака)
      */
     private val ticks: Int,
+    /**
+     * действие циклично? выполняем до тех пор пока actionResultBlock не вернет true
+     */
+    private val isCyclic: Boolean,
     private val startProgress: Int,
     val maxProgress: Int,
-    private val playerCondition: ((Player) -> Boolean)?,
-    private val actionBlock: suspend (Action) -> Boolean,
+    private val playerCondition: ((Human) -> Boolean)?,
+    private val actionResultBlock: suspend (Action) -> Boolean,
 ) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(Action::class.java)
@@ -43,29 +46,18 @@ class Action(
      * текущий прогресс. увеличиваем с каждым выполненным периодом
      * служит только для служебных целей, для действий которые не цикличны
      */
-    var currentProgress = startProgress
-        private set
+    private var currentProgress = startProgress
 
     /**
      * при создании действия запускается корутина
      */
     private val job: Job = WorkerScope.launch {
-        sendPkt(ActionProgress(startProgress, maxProgress))
+        sendPacket(ActionProgress(startProgress, maxProgress))
         logger.warn("start new action")
-
-        if (ticks < 0) {
-            if (playerCondition != null) {
-                // ДО каждого тика проверяем выполнение условий на игроке (стамина, голод и тд)
-                val playerResult = CompletableDeferred<Boolean>()
-                me.send(PlayerMsg.ExecuteActionCondition(playerResult, playerCondition))
-                // условие на игроке вернуло ложь. значит не выполнилось условие для следующего тика действия
-                playerResult.await()
-            }
-        }
 
         // повтоярем циклы задержки и выполнения блока
         while (true) {
-            if (ticks > 0 && playerCondition != null) {
+            if (playerCondition != null) {
                 // ДО каждого тика проверяем выполнение условий на игроке (стамина, голод и тд)
                 val playerResult = CompletableDeferred<Boolean>()
                 me.send(PlayerMsg.ExecuteActionCondition(playerResult, playerCondition))
@@ -75,29 +67,30 @@ class Action(
                 }
             }
 
-            // ждем нужное количество тиков чтобы выполнить очередное действие над объектом
-            repeat(abs(ticks)) { i ->
-                logger.debug("before tick $i")
+            // ждем нужное количество тиков чтобы выполнить очередное действие/цикл над объектом
+            repeat(ticks) { i ->
+                logger.debug("delay tick $i...")
                 delay(GAME_ACTION_PERIOD)
-                logger.debug("after tick $i currentProgress=$currentProgress")
             }
-            currentProgress++
-            if (ticks < 0) {
+            if (!isCyclic) {
+                currentProgress++
+                logger.debug("after delay currentProgress=$currentProgress")
                 sendCurrentProgress()
-                if (currentProgress >= maxProgress && runAction()) {
+                // действие завершено полностью?
+                if (currentProgress >= maxProgress && executeResultAction()) {
                     break
                 }
             } else {
-                if (runAction()) break
+                if (executeResultAction()) break
             }
         }
     }
 
-    private suspend fun runAction(): Boolean {
+    private suspend fun executeResultAction(): Boolean {
         logger.debug("run action")
         // отправим на исполнение кусок кода который должен выполнить объект
         val targetResult = CompletableDeferred<Boolean>()
-        target.send(GameObjectMsg.ExecuteActionTick(this@Action, targetResult, actionBlock))
+        target.send(GameObjectMsg.ExecuteActionTick(this@Action, targetResult, actionResultBlock))
         // если объект говорит что действие завершилось
         // заканчиваем цикл повтора действий
         if (targetResult.await()) {
@@ -108,18 +101,18 @@ class Action(
     }
 
     suspend fun stop() {
-        logger.debug("stop action")
+        logger.debug("stop action...")
         job.cancelAndJoin()
         logger.debug("action was stopped")
 
-        sendPkt(ActionProgress(-1, -1))
+        sendPacket(ActionProgress(-1, -1))
     }
 
-    suspend fun sendPkt(m: ServerMessage) {
+    suspend fun sendPacket(m: ActionProgress) {
         if (me is Player) me.session.send(m)
     }
 
-    suspend fun sendCurrentProgress() {
-        sendPkt(ActionProgress(currentProgress, maxProgress))
+    private suspend fun sendCurrentProgress() {
+        sendPacket(ActionProgress(currentProgress, maxProgress))
     }
 }

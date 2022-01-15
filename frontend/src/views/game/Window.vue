@@ -185,7 +185,6 @@ export default defineComponent({
   padding: 22px 16px 16px 16px;
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
   font-size: 14px;
 }
 

@@ -46,7 +46,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
         logger.debug("processContextItem $player $item")
         when (item) {
             "Chop" -> {
-                player.startAction(
+                player.startCyclicAction(
                     this, 3, getMaxHP() - this.entity.hp, getMaxHP(),
                     {
                         // возьмем у игрока часть стамины и голода
@@ -61,7 +61,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                             logger.warn("TREE CHOPPED!")
                             // make tree -> stump
                             transaction {
-                                // меняем тип на "пень"
+                                // меняем тип на "пень" (стадия)
                                 it.target.entity.data = "10"
                                 // дадим ему сколько то хп
                                 it.target.entity.hp = 120
@@ -73,23 +73,20 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                             // TODO а тут надо заспавнить 2 бревна
                             done = true
                         } else {
-                            it.sendPkt(ActionProgress(it.maxProgress - it.target.entity.hp, it.maxProgress))
+                            it.sendPacket(ActionProgress(it.maxProgress - it.target.entity.hp, it.maxProgress))
                         }
                     }
                     done
                 }
             }
             "Take branch" -> {
-                player.startAction(
-                    this, -2, 0, 21,
+                player.startOnceAction(
+                    this, 2, 21,
                     {
                         // возьмем у игрока часть стамины
                         it.status.checkAndReduceStamina(1.0)
                     }
                 ) {
-                    // TODO generate branch to players inventory
-                    logger.warn("GEN BRANCH")
-
                     val newItem = transaction {
                         val e = InventoryItemEntity.makeNew(ItemType.BRANCH)
                         InventoryItem(e, null)
@@ -101,15 +98,13 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                 }
             }
             "Take bark" -> {
-                player.startAction(
-                    this, -2, 0, 3,
+                player.startOnceAction(
+                    this, 2, 2,
                     {
                         // возьмем у игрока часть стамины
                         it.status.checkAndReduceStamina(1.0)
                     }
                 ) {
-                    // TODO generate bark to players inventory
-
                     val newItem = transaction {
                         val e = InventoryItemEntity.makeNew(ItemType.BARK)
                         InventoryItem(e, null)

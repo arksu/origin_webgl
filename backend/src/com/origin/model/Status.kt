@@ -1,9 +1,9 @@
 package com.origin.model
 
+import com.origin.entity.Character
 import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.math.max
 
 /**
  * основной статус живых объектов в игре (игрок, животные, NPC и прочее)
@@ -32,10 +32,10 @@ open class Status(val me: Human) {
     open fun reduceSoftHp(value: Double, attacker: Human, isHPConsumption: Boolean): Double {
         val old = currentSoftHp
         if (value > 0) {
-            setCurrentSoftHp(max(currentSoftHp - value, 0.0))
+            setCurrentSoftHp(currentSoftHp - value)
         }
 
-        if (currentSoftHp < 0.5) {
+        if (!isHPConsumption && currentSoftHp < 0.5) {
             me.doDie()
         }
         return old - currentSoftHp
@@ -47,10 +47,12 @@ open class Status(val me: Human) {
         val old = currentSoftHp
         val maxHp = me.getMaxSoftHp()
 
-        if (value > maxHp) {
-            currentSoftHp = maxHp
+        currentSoftHp = if (value > maxHp) {
+            maxHp
+        } else if (value < 0) {
+            0.0
         } else {
-            currentSoftHp = value
+            value
         }
         val wasChanged = currentSoftHp != old
         if (wasChanged) {
@@ -68,9 +70,13 @@ open class Status(val me: Human) {
         return false
     }
 
+    /**
+     * уменьшить стамину
+     * @return на сколько фактически уменьшилась стамина
+     */
     private fun reduceStamina(value: Double): Double {
         val old = currentStamina
-        setCurrentStamina(max(currentStamina - value, 0.0))
+        setCurrentStamina(currentStamina - value)
         return old - currentStamina
     }
 
@@ -80,10 +86,12 @@ open class Status(val me: Human) {
         val old = currentStamina
         val maxStamina = me.getMaxStamina()
 
-        if (value > maxStamina) {
-            currentStamina = maxStamina
+        currentStamina = if (value > maxStamina) {
+            maxStamina
+        } else if (value < 0) {
+            0.0
         } else {
-            currentStamina = value
+            value
         }
         val wasChanged = currentStamina != old
         if (wasChanged) {
@@ -124,5 +132,10 @@ open class Status(val me: Human) {
 
     fun TEST_restore() {
         setCurrentStamina(100.0)
+    }
+
+    open fun storeToCharacter(character: Character) {
+        character.SHP = currentSoftHp
+        character.stamina = currentStamina
     }
 }

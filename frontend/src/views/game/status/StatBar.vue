@@ -35,6 +35,7 @@ export default defineComponent({
 <style scoped lang="scss">
 
 .frame {
+  box-sizing: content-box;
   position: relative;
   margin-top: 8px;
   height: 5px;

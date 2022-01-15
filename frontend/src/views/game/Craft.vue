@@ -183,7 +183,6 @@ $borderColor: #17241d;
   border: $borderColor 1px solid;
   border-radius: 4px;
   width: 140px;
-  box-sizing: border-box;
 
   display: flex;
   align-items: stretch;
@@ -277,7 +276,6 @@ $borderColor: #17241d;
   border: #133236 solid 2px;
   border-radius: 4px;
   margin-left: 3px;
-  box-sizing: border-box;
 }
 
 .button:hover {

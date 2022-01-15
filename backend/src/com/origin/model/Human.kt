@@ -179,10 +179,10 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      */
     suspend fun updateVisibleObjects(force: Boolean) {
         if (force || (
-            lastPosUpdateVisible != null &&
-                pos.point != lastPosUpdateVisible &&
-                pos.point.dist(lastPosUpdateVisible!!) > ServerConfig.VISIBLE_UPDATE_DISTANCE
-            )
+                    lastPosUpdateVisible != null &&
+                            pos.point != lastPosUpdateVisible &&
+                            pos.point.dist(lastPosUpdateVisible!!) > ServerConfig.VISIBLE_UPDATE_DISTANCE
+                    )
         ) {
             var newCounter = 0
             var delCounter = 0
@@ -227,15 +227,34 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
         grid.sendJob(GridMsg.Deactivate(this, Job())).join()
     }
 
-    fun startAction(
+    /**
+     * запустить однократное действие
+     * каждый шаг (step) будет выполняться условие на игроке playerCondition
+     */
+    fun startOnceAction(
         target: GameObject,
-        ticks: Int,
-        startProgress: Int,
-        totalProgress: Int,
-        playerCondition: ((Player) -> Boolean)? = null,
+        ticksPerStep: Int,
+        stepsCount: Int,
+        playerCondition: ((Human) -> Boolean)? = null,
         block: suspend (Action) -> Boolean,
     ) {
-        action = Action(this, target, ticks, startProgress, totalProgress, playerCondition, block)
+        action = Action(this, target, ticksPerStep, false, 0, stepsCount, playerCondition, block)
+    }
+
+    /**
+     * запустить цикличное действие
+     * перед каждым циклом выполнится playerCondition (снять стамину, хп и тд)
+     * после завершения тиков на цикл (cycleLengthTicks) выполняется блок до тех пор, пока не вернет true
+     */
+    fun startCyclicAction(
+        target: GameObject,
+        ticksPerCycle: Int,
+        startProgress: Int,
+        totalProgress: Int,
+        playerCondition: ((Human) -> Boolean)? = null,
+        block: suspend (Action) -> Boolean
+    ) {
+        action = Action(this, target, ticksPerCycle, true, startProgress, totalProgress, playerCondition, block)
     }
 
     suspend fun stopAction() {

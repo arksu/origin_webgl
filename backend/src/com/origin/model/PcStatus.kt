@@ -1,12 +1,14 @@
 package com.origin.model
 
 import com.origin.entity.Character
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlin.math.max
 
 /**
  * статус жизни, стамины, энергии игрока
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class PcStatus(me: Human, character: Character) : Status(me) {
     var currentHardHp: Double = character.HHP
@@ -57,5 +59,11 @@ class PcStatus(me: Human, character: Character) : Status(me) {
         }
         logger.debug("hhp $me $old -> $currentHardHp")
         return wasChanged
+    }
+
+    override fun storeToCharacter(character: Character) {
+        super.storeToCharacter(character)
+        character.HHP = currentHardHp
+        character.energy = currentEnergy
     }
 }

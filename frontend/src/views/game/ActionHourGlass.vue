@@ -62,6 +62,7 @@ export default defineComponent({
   position: absolute;
 }
 .frame {
+  box-sizing: content-box;
   position: absolute;
   height: 5px;
   width: 120px;

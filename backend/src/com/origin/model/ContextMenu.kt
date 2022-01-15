@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.model.move.Move2Object
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
@@ -8,6 +9,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
  * создается при вызове меню. и сохраняется в объекте игрока пока не будет выбран пункт меню
  * или отмена меню
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class ContextMenu(val obj: GameObject, vararg i: String) {
     val items: List<String> = i.asList()
