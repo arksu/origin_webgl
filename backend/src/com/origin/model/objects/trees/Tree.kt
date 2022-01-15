@@ -46,7 +46,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                 player.startActionCyclic(
                     this, 3, getMaxHP() - this.entity.hp, getMaxHP(),
                     Status.reduceStamina(4.0)
-                ) {
+                ) { it, _ ->
                     var done = false
                     if (it.target is Tree) {
                         // не удалось снять очередные хп с дерева
@@ -78,7 +78,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                     this, 2, 21,
                     // возьмем у игрока часть стамины
                     Status.reduceStamina(1.0),
-                    Action.generateOneItem(player, ItemType.BRANCH)
+                    Action.generateItems(ItemType.BRANCH)
                 )
             }
             "Take bark" -> {
@@ -86,7 +86,7 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                     this, 2, 2,
                     // возьмем у игрока часть стамины
                     Status.reduceStamina(1.0),
-                    Action.generateOneItem(player, ItemType.BARK)
+                    Action.generateItems(ItemType.BARK)
                 )
             }
         }

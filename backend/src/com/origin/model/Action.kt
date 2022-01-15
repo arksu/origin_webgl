@@ -40,20 +40,22 @@ class Action(
     private val startProgress: Int,
     val maxProgress: Int,
     private val playerCondition: ((Human) -> Boolean)?,
-    private val actionResultBlock: suspend (Action) -> Boolean,
+    private val actionResultBlock: suspend (Action, GameObject) -> Boolean,
 ) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(Action::class.java)
 
-        fun generateOneItem(player: Player, type: ItemType): suspend (Action) -> Boolean {
-            return {
-                val newItem = transaction {
-                    val e = InventoryItemEntity.makeNew(type)
-                    InventoryItem(e, null)
+        fun generateItems(vararg type: ItemType): suspend (Action, GameObject) -> Boolean {
+            return { _, gameObject ->
+                type.forEach { itemType ->
+                    val newItem = transaction {
+                        val e = InventoryItemEntity.makeNew(itemType)
+                        InventoryItem(e, null)
+                    }
+                    val result = CompletableDeferred<Boolean>()
+                    gameObject.send(GameObjectMsg.PutItem(newItem, -1, -1, result))
+                    result.await()
                 }
-                val result = CompletableDeferred<Boolean>()
-                player.send(GameObjectMsg.PutItem(newItem, -1, -1, result))
-                result.await()
                 true
             }
         }

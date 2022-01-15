@@ -28,7 +28,7 @@ sealed class GameObjectMsg {
     class ExecuteActionTick(
         val action: Action,
         val resp: CompletableDeferred<Boolean>,
-        val block: suspend (Action) -> Boolean,
+        val block: suspend (Action, GameObject) -> Boolean,
     )
 
     class TakeItem(val who: Human, val id: ObjectID, val resp: CompletableDeferred<InventoryItem?>)
@@ -154,7 +154,7 @@ abstract class GameObject(val id: ObjectID, x: Int, y: Int, level: Int, region: 
             is GameObjectMsg.OnRemoved -> onRemoved()
             is GameObjectMsg.OnObjectRemoved -> onObjectRemoved(msg.obj)
             is GameObjectMsg.OnObjectAdded -> onObjectAdded(msg.obj)
-            is GameObjectMsg.ExecuteActionTick -> msg.resp.complete(msg.block(msg.action))
+            is GameObjectMsg.ExecuteActionTick -> msg.resp.complete(msg.block(msg.action, this))
             is GameObjectMsg.OpenBy -> openBy(msg.who)
             is GameObjectMsg.CloseBy -> closeBy(msg.who)
 

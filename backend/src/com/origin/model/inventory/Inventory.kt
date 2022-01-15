@@ -86,8 +86,9 @@ class Inventory(private val parent: GameObject) {
      * найти и взять вещи по списку указанного типа и количества у себя и в дочерних инвентарях
      * вернем либо список взятых вещей из инвентаря при этом они будут удалены
      * либо null если не нашли все необходимые вещи
+     * @param isTake надо ли забирать из инвентаря вещи
      */
-    suspend fun findAndTakeItem(list: List<ItemWithCount>): List<InventoryItem>? {
+    suspend fun findAndTakeItem(list: List<ItemWithCount>, isTake: Boolean = true): List<InventoryItem>? {
         val result = ArrayList<InventoryItem>(8)
         val req = RequiredList(list)
         // идем по всем вещам в инвентаре
@@ -105,11 +106,13 @@ class Inventory(private val parent: GameObject) {
         }
 
         // список требований удовлетворен - удаляем вещи из инвентаря
-        result.forEach {
-            items.remove(it.id)
-        }
+        if (isTake) {
+            result.forEach {
+                items.remove(it.id)
+            }
 
-        notify()
+            notify()
+        }
 
         // вернем список вещей которые взяли и удалили из инвентаря
         return result

@@ -236,7 +236,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
         ticksPerStep: Int,
         stepsCount: Int,
         playerCondition: ((Human) -> Boolean)? = null,
-        block: suspend (Action) -> Boolean,
+        block: suspend (Action, GameObject) -> Boolean,
     ) {
         action = Action(this, target, ticksPerStep, false, 0, stepsCount, playerCondition, block)
     }
@@ -252,7 +252,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
         startProgress: Int,
         totalProgress: Int,
         playerCondition: ((Human) -> Boolean)? = null,
-        block: suspend (Action) -> Boolean
+        block: suspend (Action, GameObject) -> Boolean
     ) {
         action = Action(this, target, ticksPerCycle, true, startProgress, totalProgress, playerCondition, block)
     }

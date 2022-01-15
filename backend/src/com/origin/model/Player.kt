@@ -142,10 +142,7 @@ class Player(
             }
             is GameObjectMsg.PutItem -> {
                 // кто-то извне мне кладет вещь в инвентарь (генерация объектов)
-                val success = inventory.putItem(msg.item)
-                if (!success) {
-                    // TODO new item drop to ground
-                }
+                val success = putItem(msg.item)
                 msg.resp.complete(success)
             }
             is PlayerMsg.Craft -> craft(msg)
@@ -157,15 +154,51 @@ class Player(
     private suspend fun craft(msg: PlayerMsg.Craft) {
         val craft = Craft.findByName(msg.name)
         if (craft != null) {
-            // TODO запускаем action, затем спавним результат
-            val result = inventory.findAndTakeItem(craft.required)
-            if (result != null) {
-                result.forEach {
-                    it.delete()
+            // проверим что есть все необходимые ингридиенты в инвентаре
+            if (inventory.findAndTakeItem(craft.required, false) == null) return
+
+            // запускаем action, затем спавним результат
+            startActionOnce(
+                this,
+                craft.ticksPerStep,
+                craft.steps,
+                Status.reduceStamina(craft.staminaCost)
+            ) { _, _ ->
+                // ищем и берем вещи из инвентаря. вернет список только если все требуемые вещи есть в полном объеме в инвентаре
+                val result = inventory.findAndTakeItem(craft.required)
+
+                // вернулся список - вещи нашлись
+                if (result != null) {
+                    // удалим их навсегда из игры
+                    result.forEach {
+                        it.delete()
+                    }
+                    // создаем вещи по рецепту из крафта в нужном количестве
+                    craft.produce.forEach {
+                        var left = it.count
+                        val type = it.item
+                        while (left > 0) {
+                            left--
+                            val newItem = transaction {
+                                val e = InventoryItemEntity.makeNew(type)
+                                InventoryItem(e, null)
+                            }
+                            // пытаемся положить вещь в наш инвентарь, если не удается - прекращаем спавн вещей
+                            if (!putItem(newItem)) return@forEach
+                        }
+                    }
                 }
-                println("craft!")
+                true
             }
         }
+    }
+
+    private suspend fun putItem(item: InventoryItem): Boolean {
+        val success = inventory.putItem(item)
+        if (!success) {
+            // TODO new item drop to ground
+        }
+        return success
     }
 
     private suspend fun itemClick(msg: PlayerMsg.ItemClick) {
