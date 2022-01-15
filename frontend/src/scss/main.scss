@@ -9,23 +9,20 @@
 * {
   margin: 0;
 }
-body {
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
 img, picture, video, svg {
   display: block;
   max-width: 100%;
-}
-body {
-  padding: 0;
-  font-family: $mainFontName, $secondFont, sans-serif;
 }
 input, button, textarea, select {
   font: inherit;
 }
 
 body {
+  padding: 0;
+  font-family: $mainFontName, $secondFont, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+
   background-image: url("/assets/img/background.jpg");
   background-position: 17% 70%;
   background-repeat: no-repeat;

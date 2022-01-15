@@ -1,8 +1,12 @@
 package com.origin.model
 
 import com.origin.TimeController.GAME_ACTION_PERIOD
+import com.origin.entity.InventoryItemEntity
+import com.origin.model.inventory.InventoryItem
+import com.origin.model.inventory.ItemType
 import com.origin.net.model.ActionProgress
 import kotlinx.coroutines.*
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -40,6 +44,19 @@ class Action(
 ) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(Action::class.java)
+
+        fun generateOneItem(player: Player, type: ItemType): suspend (Action) -> Boolean {
+            return {
+                val newItem = transaction {
+                    val e = InventoryItemEntity.makeNew(type)
+                    InventoryItem(e, null)
+                }
+                val result = CompletableDeferred<Boolean>()
+                player.send(GameObjectMsg.PutItem(newItem, -1, -1, result))
+                result.await()
+                true
+            }
+        }
     }
 
     /**

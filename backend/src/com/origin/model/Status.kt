@@ -14,6 +14,15 @@ import org.slf4j.LoggerFactory
 open class Status(val me: Human) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(Status::class.java)
+
+        /**
+         * хелпер для действий: расход стамины
+         */
+        fun reduceStamina(value: Double): (Human) -> Boolean {
+            return {
+                it.status.checkAndReduceStamina(value)
+            }
+        }
     }
 
     var currentSoftHp: Double = 0.0

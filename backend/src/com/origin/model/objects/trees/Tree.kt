@@ -1,14 +1,11 @@
 package com.origin.model.objects.trees
 
 import com.origin.entity.EntityObject
-import com.origin.entity.InventoryItemEntity
 import com.origin.model.*
 import com.origin.model.inventory.Inventory
-import com.origin.model.inventory.InventoryItem
 import com.origin.model.inventory.ItemType
 import com.origin.net.model.ActionProgress
 import com.origin.utils.Rect
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -46,12 +43,9 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
         logger.debug("processContextItem $player $item")
         when (item) {
             "Chop" -> {
-                player.startCyclicAction(
+                player.startActionCyclic(
                     this, 3, getMaxHP() - this.entity.hp, getMaxHP(),
-                    {
-                        // возьмем у игрока часть стамины и голода
-                        it.status.checkAndReduceStamina(4.0)
-                    }
+                    Status.reduceStamina(4.0)
                 ) {
                     var done = false
                     if (it.target is Tree) {
@@ -80,41 +74,20 @@ abstract class Tree(entity: EntityObject) : StaticObject(entity) {
                 }
             }
             "Take branch" -> {
-                player.startOnceAction(
+                player.startActionOnce(
                     this, 2, 21,
-                    {
-                        // возьмем у игрока часть стамины
-                        it.status.checkAndReduceStamina(1.0)
-                    }
-                ) {
-                    val newItem = transaction {
-                        val e = InventoryItemEntity.makeNew(ItemType.BRANCH)
-                        InventoryItem(e, null)
-                    }
-                    val result = CompletableDeferred<Boolean>()
-                    player.send(GameObjectMsg.PutItem(newItem, -1, -1, result))
-                    result.await()
-                    true
-                }
+                    // возьмем у игрока часть стамины
+                    Status.reduceStamina(1.0),
+                    Action.generateOneItem(player, ItemType.BRANCH)
+                )
             }
             "Take bark" -> {
-                player.startOnceAction(
+                player.startActionOnce(
                     this, 2, 2,
-                    {
-                        // возьмем у игрока часть стамины
-                        it.status.checkAndReduceStamina(1.0)
-                    }
-                ) {
-                    val newItem = transaction {
-                        val e = InventoryItemEntity.makeNew(ItemType.BARK)
-                        InventoryItem(e, null)
-                    }
-
-                    val result = CompletableDeferred<Boolean>()
-                    player.send(GameObjectMsg.PutItem(newItem, -1, -1, result))
-                    result.await()
-                    true
-                }
+                    // возьмем у игрока часть стамины
+                    Status.reduceStamina(1.0),
+                    Action.generateOneItem(player, ItemType.BARK)
+                )
             }
         }
     }

@@ -231,7 +231,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * запустить однократное действие
      * каждый шаг (step) будет выполняться условие на игроке playerCondition
      */
-    fun startOnceAction(
+    fun startActionOnce(
         target: GameObject,
         ticksPerStep: Int,
         stepsCount: Int,
@@ -246,7 +246,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
      * перед каждым циклом выполнится playerCondition (снять стамину, хп и тд)
      * после завершения тиков на цикл (cycleLengthTicks) выполняется блок до тех пор, пока не вернет true
      */
-    fun startCyclicAction(
+    fun startActionCyclic(
         target: GameObject,
         ticksPerCycle: Int,
         startProgress: Int,
