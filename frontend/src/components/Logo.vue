@@ -20,6 +20,7 @@ export default defineComponent({
 }
 
 img {
+  display: inline;
   max-width: 100%;
   max-height: 100%;
   vertical-align: middle;
