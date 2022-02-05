@@ -3,14 +3,16 @@ package com.origin.model
 import com.origin.net.model.ObjectAdd
 import com.origin.net.model.ObjectDel
 import com.origin.utils.ObjectID
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * список игровых объектов о которых знает другой объект
+ * список игровых объектов о которых знает другой объект,
  * то есть эти объекты проецируются на клиент, список всех видимых объектов с точки зрения клиента
  */
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class KnownList(private val me: GameObject) {
     companion object {

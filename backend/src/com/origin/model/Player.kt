@@ -80,7 +80,7 @@ class Player(
     override val inventory = Inventory(this)
 
     /**
-     * вещь которую держим в данный момент в руке
+     * вещь, которую держим в данный момент в руке
      */
     var hand: Hand? = null
 
