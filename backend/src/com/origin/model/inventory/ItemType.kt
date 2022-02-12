@@ -12,7 +12,12 @@ enum class ItemType(val id: Int, val icon: String, val width: Int = 1, val heigh
 
     companion object {
         private val map = values().associateBy(ItemType::id)
+        private val mapNames = values().associateBy(ItemType::name).mapKeys {
+            it.key.lowercase()
+        }
+
         fun fromId(id: Int) = map[id] ?: throw IllegalArgumentException("item type not found $id")
+        fun fromName(name: String) = mapNames[name] ?: throw IllegalArgumentException("item type not found $name")
     }
 }
 

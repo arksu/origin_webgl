@@ -11,6 +11,7 @@ import com.origin.model.craft.Craft
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
+import com.origin.model.inventory.ItemType
 import com.origin.model.move.*
 import com.origin.model.objects.ObjectsFactory
 import com.origin.model.skills.SkillsList
@@ -155,7 +156,10 @@ class Player(
         val craft = Craft.findByName(msg.name)
         if (craft != null) {
             // проверим что есть все необходимые ингридиенты в инвентаре
-            if (inventory.findAndTakeItem(craft.required, false) == null) return
+            if (inventory.findAndTakeItem(craft.required, false) == null) {
+                saySystem("not enough items for craft ${craft.getHumanReadableName()}")
+                return
+            }
 
             // запускаем action, затем спавним результат
             startActionOnce(
@@ -169,7 +173,7 @@ class Player(
 
                 // вернулся список - вещи нашлись
                 if (result != null) {
-                    // удалим их навсегда из игры
+                    // удалим их навсегда из игры, поскольку они используются для крафта вещи
                     result.forEach {
                         it.delete()
                     }
@@ -179,14 +183,19 @@ class Player(
                         val type = it.item
                         while (left > 0) {
                             left--
+                            // TODO: рассчитаем качество создаваемой вещи
+                            val q: Short = 10
+                            // создаем новую вещь из списка produced крафта
                             val newItem = transaction {
-                                val e = InventoryItemEntity.makeNew(type)
+                                val e = InventoryItemEntity.makeNew(type, q)
                                 InventoryItem(e, null)
                             }
                             // пытаемся положить вещь в наш инвентарь, если не удается - прекращаем спавн вещей
                             if (!putItem(newItem)) return@forEach
                         }
                     }
+                } else {
+                    saySystem("not enough items for craft ${craft.getHumanReadableName()}")
                 }
                 true
             }
@@ -194,11 +203,18 @@ class Player(
     }
 
     private suspend fun putItem(item: InventoryItem): Boolean {
+        // пробуем положить вещь в инвентарь
         val success = inventory.putItem(item)
         if (!success) {
-            // TODO new item drop to ground
+            // если не удалось пробуем ее заспавнить на землю
+            dropItem(item)
         }
         return success
+    }
+
+    private suspend fun dropItem(item: InventoryItem): Boolean {
+        // TODO new item drop to ground
+        return true
     }
 
     private suspend fun itemClick(msg: PlayerMsg.ItemClick) {
@@ -481,6 +497,10 @@ class Player(
         lastOnlineStoreTime = currentMillis
     }
 
+    private suspend fun saySystem(text: String) {
+        session.send(CreatureSay(0, text, SYSTEM))
+    }
+
     /**
      * обработка команд в консоли
      */
@@ -489,18 +509,18 @@ class Player(
         val params = cmd.split(" ")
         when (params[0]) {
             "online" -> {
-                session.send(CreatureSay(0, "online: ${World.getPlayersCount()}", SYSTEM))
+                saySystem("online: ${World.getPlayersCount()}")
             }
             "quit" -> {
                 session.logout()
             }
             "give" -> {
-                // param 1 - type id
-                val t: Int = params[1].toInt()
+                // param 1 - type id || name type
+                val typeId: Int = params[1].toIntOrNull() ?: ItemType.fromName(params[1].lowercase()).id
 
                 val newItem = transaction {
                     val e = InventoryItemEntity.new(IdFactory.getNext()) {
-                        type = t
+                        type = typeId
                         inventoryId = 0
                         this.x = 0
                         this.y = 0

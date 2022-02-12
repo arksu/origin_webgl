@@ -25,6 +25,7 @@ sealed class GameObjectMsg {
     class OnObjectAdded(val obj: GameObject)
 
     // выполнить часть длительного действия над объектом
+    // шлем объекту чтобы он выполнил block в своем контексте
     class ExecuteActionTick(
         val action: Action,
         val resp: CompletableDeferred<Boolean>,

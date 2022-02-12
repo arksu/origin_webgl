@@ -18,6 +18,10 @@ class Craft(
             return craftList.find { it.name == name }
         }
     }
+
+    fun getHumanReadableName(): String {
+        return name.replace("_", " ").lowercase()
+    }
 }
 
 val craftList = listOf(
