@@ -33,7 +33,7 @@ repositories {
 
 buildscript {
     ext {
-        kotlin_version = '1.6.10'
+        kotlin_version = '1.6.20'
         ktor_version = '1.6.7'
         exposed_version = '0.37.3'
         slf4j_version = '1.7.36'
@@ -46,7 +46,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20"
     }
 }
 
