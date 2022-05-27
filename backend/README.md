@@ -25,10 +25,6 @@ for Origin MMO game
 ### Run database via docker
 You can use MariaDB from docker image:
 ```shell
-docker pull mariadb:latest
-```
-
-```shell
 docker run --name mariadb-origin -e MYSQL_ROOT_PASSWORD=1 -e MYSQL_DATABASE=origin -e MYSQL_USER=origin -e MYSQL_PASSWORD=origin -d -p 3406:3306 mariadb:latest
 ```
 This will run MariaDB in docker container, create a database 'origin', user 'origin' and set password 'origin'
@@ -77,6 +73,17 @@ This will import image file `map.png` (placed into root `backend` dir) into data
 gradle run
 ```
 After start server will be listened 8020 port for incoming connections
+
+### Build the server
+```shell
+./gradlew clean build
+docker build --rm -t origin:latest .
+```
+
+### Run docker container (example)
+```shell
+docker-compose -f compose.prod.yaml up -d
+```
 
 # Configure
 config file `./config/server.conf` with HOCON format

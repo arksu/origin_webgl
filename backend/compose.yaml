@@ -1,0 +1,27 @@
+services:
+  db:
+    image: mariadb:10.7
+    ports:
+      - 3406:3306
+    restart: always
+    volumes:
+      - mariadb_origin:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=origin
+      - MYSQL_USER=origin
+      - MYSQL_PASSWORD=origin
+      - MYSQL_ROOT_PASSWORD=origin
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - 8030:80
+    depends_on:
+      - db
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=origin
+      - PMA_PASSWORD=origin
+
+volumes:
+  mariadb_origin:

@@ -4,8 +4,8 @@ import com.google.gson.Gson
 import com.origin.net.model.GameRequest
 import com.origin.net.model.GameSession
 import com.origin.utils.MapDeserializerDoubleAsIntFix.gsonDeserializer
-import io.ktor.http.cio.websocket.*
-import io.ktor.routing.*
+import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.time.Duration

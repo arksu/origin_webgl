@@ -1,7 +1,7 @@
 package com.origin.net
 
 import com.origin.net.api.*
-import io.ktor.routing.*
+import io.ktor.server.routing.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**

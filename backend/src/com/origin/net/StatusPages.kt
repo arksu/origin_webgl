@@ -1,31 +1,30 @@
 package com.origin.net
 
 import com.origin.net.api.*
-import io.ktor.application.*
-import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.response.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 @ObsoleteCoroutinesApi
-fun StatusPages.Configuration.statusPages() {
-    exception<UserNotFound> {
+fun StatusPagesConfig.statusPages() {
+    exception<UserNotFound> { call, _ ->
         call.respond(HttpStatusCode.Forbidden, "User not found")
     }
-    exception<AuthorizationException> { e ->
+    exception<AuthorizationException> { call, e ->
         call.respond(HttpStatusCode.Unauthorized, e.message ?: "Not authorized")
     }
-    exception<WrongPassword> {
+    exception<WrongPassword> { call, _ ->
         call.respond(HttpStatusCode.Forbidden, "Wrong password")
     }
-    exception<UserExists> {
+    exception<UserExists> { call, _ ->
         call.respond(HttpStatusCode.Forbidden, "User exists")
     }
-    exception<BadRequest> { e ->
+    exception<BadRequest> { call, e ->
         call.respond(HttpStatusCode.BadRequest, e.message!!)
     }
-    exception<Throwable> { cause ->
-        logger.error("error ${cause.javaClass.simpleName} - ${cause.message} ", cause)
-        call.respond(HttpStatusCode.InternalServerError, cause.message ?: cause.javaClass.simpleName)
+    exception<Throwable> { call, e ->
+        logger.error("error ${e.javaClass.simpleName} - ${e.message} ", e)
+        call.respond(HttpStatusCode.InternalServerError, e.message ?: e.javaClass.simpleName)
     }
 }

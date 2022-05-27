@@ -4,10 +4,10 @@ import com.origin.entity.Account
 import com.origin.entity.Accounts
 import com.origin.net.GameServer
 import com.origin.utils.scrypt.SCryptUtil
-import io.ktor.application.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.or

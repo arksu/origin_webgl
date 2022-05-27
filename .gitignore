@@ -5,7 +5,6 @@
 **/dist
 **/node_modules
 *lock*
-**gradle*
 
 *.iml
 

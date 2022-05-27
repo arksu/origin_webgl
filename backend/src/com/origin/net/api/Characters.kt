@@ -8,11 +8,11 @@ import com.origin.net.GameServer
 import com.origin.net.GameServer.SSID_HEADER
 import com.origin.utils.ObjectID
 import com.origin.utils.toObjectID
-import io.ktor.application.*
 import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.jetbrains.exposed.sql.and

@@ -1,13 +1,13 @@
 package com.origin.net
 
-import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.server.plugins.cors.*
 
-fun CORS.Configuration.cors() {
-    method(HttpMethod.Post)
-    method(HttpMethod.Delete)
-    method(HttpMethod.Put)
-    header(HttpHeaders.ContentType)
-    header(HttpHeaders.Authorization)
+fun CORSConfig.cors() {
+    allowMethod(HttpMethod.Post)
+    allowMethod(HttpMethod.Delete)
+    allowMethod(HttpMethod.Put)
+    allowHeader(HttpHeaders.ContentType)
+    allowHeader(HttpHeaders.Authorization)
     anyHost()
 }

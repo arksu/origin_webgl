@@ -12,7 +12,7 @@ import com.origin.net.api.BadRequest
 import com.origin.net.gameSessions
 import com.origin.net.gsonSerializer
 import com.origin.utils.ObjectID
-import io.ktor.http.cio.websocket.*
+import io.ktor.websocket.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
