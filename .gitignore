@@ -8,6 +8,7 @@
 
 *.iml
 
+backend/.gradle
 backend/out
 backend/build
 backend/logs
