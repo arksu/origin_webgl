@@ -5,7 +5,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
 
 /**
- * поток для полной остановки сервера и корректного сохранения всех данных
+ * Поток для полной остановки сервера и корректного сохранения всех данных
  */
 @ObsoleteCoroutinesApi
 class Shutdown : Thread() {
