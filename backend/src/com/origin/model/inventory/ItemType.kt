@@ -12,7 +12,7 @@ enum class ItemType(val id: Int, val icon: String, val width: Int = 1, val heigh
 
     companion object {
         private val map = values().associateBy(ItemType::id)
-        private val mapNames = values().associateBy(ItemType::name).mapKeys {
+        val mapNames = values().associateBy(ItemType::name).mapKeys {
             it.key.lowercase()
         }
 

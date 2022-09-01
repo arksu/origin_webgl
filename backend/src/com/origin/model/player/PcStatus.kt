@@ -1,6 +1,8 @@
-package com.origin.model
+package com.origin.model.player
 
 import com.origin.entity.Character
+import com.origin.model.Human
+import com.origin.model.Status
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlin.math.max

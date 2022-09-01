@@ -173,7 +173,7 @@ class GameSession(private val connect: DefaultWebSocketSession) {
                             }
                         }
                         if (text.startsWith("/")) {
-                            // удаляем слеш в начале строки
+                            // удаляем слеш в начале строки и заускаем на выполнение
                             player.consoleCommand(text.substring(1))
                         } else {
                             player.grid.broadcast(BroadcastEvent.ChatMessage(player, GENERAL, text))

@@ -14,6 +14,7 @@ import com.origin.model.inventory.InventoryItem
 import com.origin.model.inventory.ItemType
 import com.origin.model.move.*
 import com.origin.model.objects.ObjectsFactory
+import com.origin.model.player.PcStatus
 import com.origin.model.skills.SkillsList
 import com.origin.net.model.*
 import com.origin.utils.ObjectID
@@ -557,6 +558,28 @@ class Player(
             }
             "off" -> {
                 commandToExecute = null
+            }
+            "iditems" -> {
+                ItemType.mapNames.forEach {
+                    saySystem("item ${it.key} id=${it.value.id}")
+                }
+            }
+            "help" -> {
+                saySystem("List of console commands:")
+                saySystem("/online - show count of current online players")
+//                saySystem("/quit - logout from server")
+                saySystem("/give {id} - spawn inventory item to player's inventory")
+                saySystem("/iditems - print available items for /give command")
+//                saySystem("/run - change move mode to run")
+//                saySystem("/walk - change mode mode to walk")
+                saySystem("/addtick {number} - add server's time")
+                saySystem("This commands run into \"continuous\" mode:")
+                saySystem("/spawn {id} - spawn object my mouse click")
+                saySystem("/tile {id} - change tile by mouse click")
+                saySystem("/off - disable \"continuous\" console command")
+            }
+            else ->  {
+                saySystem("Unknown command: $cmd")
             }
         }
     }
