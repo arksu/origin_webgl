@@ -3,7 +3,6 @@ services:
     image: mariadb:10.7
     ports:
       - 3406:3306
-    restart: always
     volumes:
       - mariadb_origin:/var/lib/mysql
     environment:
