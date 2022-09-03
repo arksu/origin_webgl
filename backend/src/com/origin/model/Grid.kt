@@ -130,7 +130,7 @@ class Grid(r: ResultRow, l: LandLayer) : GridEntity(r, l) {
     /**
      * актор для обработки сообщений
      */
-    private val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
+    private val actor = CoroutineScope(ACTOR_DISPATCHER).actor(capacity = ACTOR_BUFFER_CAPACITY) {
         channel.consumeEach {
             try {
                 processMessage(it)

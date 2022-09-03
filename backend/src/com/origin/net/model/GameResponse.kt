@@ -1,4 +1,5 @@
 @file:Suppress("unused", "SpellCheckingInspection")
+@file:OptIn(DelicateCoroutinesApi::class)
 
 package com.origin.net.model
 

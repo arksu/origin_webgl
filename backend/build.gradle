@@ -94,7 +94,7 @@ jar {
                 configurations.compileClasspath.collect { it.name }.join(' ')
 
         attributes 'Implementation-Title': 'origin',
-                'Main-Class': 'com.origin.Launcher',
+                'Main-Class': 'com.origin.ServerLauncher',
                 'Class-Path': manifestClasspath
     }
 
