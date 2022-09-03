@@ -16,8 +16,7 @@ import javax.imageio.ImageIO
 object MapImporter {
     val logger: Logger = LoggerFactory.getLogger(MapImporter::class.java)
 
-    @JvmStatic
-    fun main(args: Array<String>) {
+    fun run() {
         ServerConfig.load()
         DatabaseFactory.init()
 
@@ -41,7 +40,7 @@ object MapImporter {
         // добавляем к координатам грида
         val gridOffsetX = 0
         val gridOffsetY = 0
-        // контитент в который импортируем мапу
+        // континент в который импортируем карту
         val region = 0
 
         // идем по гридам
@@ -99,5 +98,10 @@ object MapImporter {
         }
 
         logger.info("map import done")
+    }
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        run()
     }
 }

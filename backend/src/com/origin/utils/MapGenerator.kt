@@ -55,6 +55,10 @@ object MapGenerator {
 
     @JvmStatic
     fun main(args: Array<String>) {
+        run()
+    }
+
+    fun run() {
         println("map generator start...")
 
         val points: ArrayList<Point> = ArrayList<Point>()
