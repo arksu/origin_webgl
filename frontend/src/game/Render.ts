@@ -17,7 +17,7 @@ export default class Render {
 
     public static instance?: Render = undefined;
 
-    private canvas: HTMLCanvasElement;
+    private readonly canvas: HTMLCanvasElement;
 
     /**
      * игра запущена на мобилке?
@@ -115,6 +115,10 @@ export default class Render {
 
     private readonly store = useGameStore();
 
+    private resizeHandler?: () => void;
+    private orientationchangeHandler?: () => void;
+    private keydownHandler?: (event: Event) => void;
+
     public static start(): Promise<undefined> {
         console.warn("pixi start");
         this.instance = new Render()
@@ -138,7 +142,6 @@ export default class Render {
         document.body.appendChild(this.canvas);
         this.initCanvasHandlers()
 
-
         // сглаживание пикселей при масштабировании
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 
@@ -156,7 +159,8 @@ export default class Render {
         this.app.ticker.maxFPS = 15
         this.app.ticker.minFPS = 10
 
-        PIXI.Ticker.shared.add(this.update.bind(this))
+        let td = this.update.bind(this)
+        PIXI.Ticker.shared.add(td)
 
         this.mapGrids = new PIXI.Container();
         this.app.stage.addChild(this.mapGrids);
@@ -185,9 +189,6 @@ export default class Render {
 
         this.screenSprite.on('mousemove', this.onMouseMove.bind(this));
         this.screenSprite.on('touchmove', this.onMouseMove.bind(this));
-
-        // TODO удалить. onMouseWheel биндим в initCanvasHandlers
-        // this.screenSprite.on('mousewheel', this.onMouseWheel.bind(this));
     }
 
     /**
@@ -232,6 +233,10 @@ export default class Render {
 
         // грохнем ранее созданный канвас
         document.body.removeChild(canvas)
+
+        window.removeEventListener('resize', this.resizeHandler!!)
+        window.removeEventListener('orientationchange', this.orientationchangeHandler!!)
+        document.removeEventListener('keydown', this.keydownHandler!!)
     }
 
     private setup() {
@@ -673,25 +678,27 @@ export default class Render {
 
         // обработчик resize
         let resizeTimeout: any = undefined;
-        window.addEventListener('resize', () => {
+        this.resizeHandler = () => {
             if (resizeTimeout == undefined) {
                 resizeTimeout = setTimeout(() => {
                     resizeTimeout = undefined;
-                    console.log("resize");
                     this.onResize();
                 }, 333);
             }
-        });
+        }
+        window.addEventListener('resize', this.resizeHandler);
 
         // переворот экрана
-        window.addEventListener("orientationchange", () => {
+        this.orientationchangeHandler = () => {
             this.onResize();
-        });
+        }
+        window.addEventListener("orientationchange", this.orientationchangeHandler);
 
-        document.addEventListener('keydown', (e: Event) => {
+        this.keydownHandler = (e: Event) => {
             if (e.target == document.body && e instanceof KeyboardEvent) {
                 this.onKeyDown(e)
             }
-        })
+        }
+        document.addEventListener('keydown', this.keydownHandler)
     }
 }

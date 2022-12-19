@@ -31,9 +31,9 @@ repositories {
 
 buildscript {
     ext {
-        kotlin_version = '1.7.10'
-        ktor_version = '2.1.0'
-        exposed_version = '0.39.2'
+        kotlin_version = '1.7.21'
+        ktor_version = '2.2.1'
+        exposed_version = '0.41.1'
         slf4j_version = '1.7.36'
     }
 
@@ -44,7 +44,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.21"
     }
 }
 
@@ -70,10 +70,10 @@ dependencies {
     implementation "org.slf4j:slf4j-api:$slf4j_version"
     implementation "org.slf4j:slf4j-log4j12:$slf4j_version"
 
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.9.1'
 
     implementation 'com.zaxxer:HikariCP:5.0.1'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.6'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.9'
     implementation 'com.typesafe:config:1.4.2'
 }
 
