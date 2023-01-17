@@ -82,7 +82,7 @@ docker build --rm -t origin:latest .
 
 ### Run docker container (example)
 ```shell
-docker-compose -f compose.prod.yaml up -d
+docker-compose -f docker-compose.prod.yaml up -d
 ```
 
 # Configure
