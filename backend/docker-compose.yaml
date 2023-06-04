@@ -1,6 +1,7 @@
 services:
   db:
     image: mariadb:10.7
+    container_name: origin_db
     ports:
       - 3406:3306
     volumes:
@@ -13,6 +14,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin
+    container_name: origin_phpmyadmin
     ports:
       - 8030:80
     depends_on:
@@ -24,3 +26,4 @@ services:
 
 volumes:
   mariadb_origin:
+    name: origin_db

@@ -31,10 +31,10 @@ repositories {
 
 buildscript {
     ext {
-        kotlin_version = '1.7.21'
-        ktor_version = '2.2.1'
-        exposed_version = '0.41.1'
-        slf4j_version = '1.7.36'
+        kotlin_version = '1.8.21'
+        ktor_version = '2.3.1' // https://ktor.io/
+        exposed_version = '0.41.1' // https://github.com/JetBrains/Exposed
+        slf4j_version = '1.7.36' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     }
 
     repositories {
@@ -44,7 +44,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.21"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 

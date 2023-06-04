@@ -51,7 +51,7 @@ object GameServer {
 
             routing {
                 get("/") {
-                    call.respondText("Hello, origin-world!", ContentType.Text.Plain)
+                    call.respondText("Hello from world of <Origin>!", ContentType.Text.Plain)
                 }
                 api()
                 websockets()
