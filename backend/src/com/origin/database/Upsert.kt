@@ -39,8 +39,9 @@ class UpsertStatement<Key : Any>(
     isIgnore: Boolean = false,
     private vararg val keys: Column<*>,
 ) : InsertStatement<Key>(table, isIgnore) {
-    override fun prepareSQL(transaction: Transaction) = buildString {
-        append(super.prepareSQL(transaction))
+
+    override fun prepareSQL(transaction: Transaction, prepared: Boolean) = buildString {
+        append(super.prepareSQL(transaction, prepared))
         append(transaction.onUpdateSql(values.keys, *keys))
     }
 }
@@ -50,8 +51,8 @@ class BatchUpsertStatement(
     isIgnore: Boolean = false,
     private vararg val keys: Column<*>,
 ) : BatchInsertStatement(table, isIgnore) {
-    override fun prepareSQL(transaction: Transaction) = buildString {
-        append(super.prepareSQL(transaction))
+    override fun prepareSQL(transaction: Transaction, prepared: Boolean) = buildString {
+        append(super.prepareSQL(transaction, prepared))
         append(transaction.onUpdateSql(values.keys, *keys))
     }
 }

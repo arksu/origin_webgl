@@ -31,9 +31,9 @@ repositories {
 
 buildscript {
     ext {
-        kotlin_version = '1.8.22'
-        ktor_version = '2.3.3' // https://ktor.io/
-        exposed_version = '0.42.0' // https://github.com/JetBrains/Exposed
+        kotlin_version = '1.9.10'
+        ktor_version = '2.3.5' // https://ktor.io/
+        exposed_version = '0.44.0' // https://github.com/JetBrains/Exposed
         slf4j_version = '1.7.36' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     }
 
