@@ -13,9 +13,9 @@ module.exports = merge(common, {
         host: '0.0.0.0',
         port: 3070,
         proxy: {
-            '/api': 'http://0.0.0.0:8010',
+            '/api': 'http://0.0.0.0:8110',
             '/api/game': {
-                target: 'ws://0.0.0.0:8010',
+                target: 'ws://0.0.0.0:8110',
                 ws: true
             }
         }

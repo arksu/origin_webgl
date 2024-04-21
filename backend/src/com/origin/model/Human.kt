@@ -82,6 +82,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
                     if (this is Player) session.send(ObjectStartMove(msg))
                 }
             }
+
             is BroadcastEvent.Moved -> {
                 // если мы знаем объект
                 if (knownList.isKnownObject(msg.obj)) {
@@ -100,6 +101,7 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
                     }
                 }
             }
+
             is BroadcastEvent.Stopped -> {
                 // если мы знаем объект
                 if (knownList.isKnownObject(msg.obj)) {
@@ -118,11 +120,13 @@ abstract class Human(id: ObjectID, x: Int, y: Int, level: Int, region: Int, head
                     }
                 }
             }
+
             is BroadcastEvent.Changed -> {
                 if (knownList.isKnownObject(msg.obj)) {
                     if (this is Player) session.send(ObjectAdd(msg.obj))
                 }
             }
+
             is HumanMSg.StopAction -> stopAction()
             is HumanMSg.StatusRegeneration -> status.regeneration()
 
