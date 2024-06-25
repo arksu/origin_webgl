@@ -113,8 +113,8 @@ flyway {
     url = "jdbc:mariadb://localhost:3406/origin"
     user = "origin"
     password = "origin"
-    cleanDisabled = false
     schemas = arrayOf("origin")
+    cleanDisabled = false
     outOfOrder = true
     locations = arrayOf("filesystem:res/db/migration")
 }
@@ -124,11 +124,11 @@ jooq {
     edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
 
     configurations {
-        create("main") {  // name of the jOOQ configuration
-            generateSchemaSourceOnCompilation.set(true)  // default (can be omitted)
+        create("main") {
+            generateSchemaSourceOnCompilation.set(true)
 
             jooqConfiguration.apply {
-                logging = org.jooq.meta.jaxb.Logging.WARN
+//                logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc.apply {
                     driver = "org.mariadb.jdbc.Driver"
                     url = "jdbc:mariadb://localhost:3406/origin"
@@ -152,8 +152,8 @@ jooq {
                         isFluentSetters = true
                     }
                     target.apply {
-                        packageName = "com.origin.generated"
-                        directory = "src"
+                        packageName = "com.origin.jooq"
+                        directory = "build/generated/jooq/src"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }

@@ -1,5 +1,6 @@
 package com.origin.controller
 
+import com.origin.jooq.tables.pojos.Account
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
@@ -16,6 +17,7 @@ fun Route.auth() {
 
     post("/login") {
         val userLogin = call.receive<UserLoginRequestDTO>()
+
 
 //        val account = transaction {
 //            val acc =
@@ -36,11 +38,14 @@ fun Route.auth() {
 
     post("/signup") {
         val userSignup = call.receive<UserSignupRequestDTO>()
-        val email =  if (userSignup.email != null && userSignup.email.isEmpty()) {
-             null
+        val email = if (userSignup.email.isNullOrBlank()) {
+            null
         } else {
             userSignup.email
         }
+
+        val new = Account(name = "123")
+
 
 //        val account = transaction {
 //            val accountInDatabase =
