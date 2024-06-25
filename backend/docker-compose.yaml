@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:10.7
+    image: mariadb:11.4
     container_name: origin_db
     ports:
       - 3406:3306

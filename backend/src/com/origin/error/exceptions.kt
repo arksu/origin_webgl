@@ -1,4 +1,4 @@
-package com.origin.net.api
+package com.origin.error
 
 class UserNotFound : RuntimeException()
 class WrongPassword : RuntimeException()

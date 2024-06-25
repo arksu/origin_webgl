@@ -1,6 +1,5 @@
 package com.origin
 
-import com.origin.model.World
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.runBlocking
 
@@ -19,8 +18,8 @@ class Shutdown : Thread() {
 
     override fun run() {
         runBlocking {
-            World.disconnectAllCharacters()
+//            World.disconnectAllCharacters()
         }
-        TimeController.shutdown()
+//        TimeController.shutdown()
     }
 }
