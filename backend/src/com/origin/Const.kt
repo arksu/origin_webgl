@@ -1,5 +1,11 @@
 package com.origin
 
+typealias ObjectID = Long
+
+fun String?.toObjectID(): ObjectID {
+    return this?.toLong() ?: throw RuntimeException("no string value for ObjectID")
+}
+
 /**
  * размер одного тайла в игровых единицах длины
  */

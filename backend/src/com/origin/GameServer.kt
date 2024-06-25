@@ -1,5 +1,6 @@
 package com.origin
 
+import com.origin.controller.api
 import com.origin.error.*
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
@@ -52,7 +53,7 @@ object GameServer {
                 get("/") {
                     call.respondText("Hello from world of <Origin>!", ContentType.Text.Plain)
                 }
-//                api()
+                api()
 //                websockets()
             }
         }
@@ -79,7 +80,7 @@ fun StatusPagesConfig.statusPages() {
     exception<WrongPassword> { call, _ ->
         call.respond(HttpStatusCode.Forbidden, "Wrong password")
     }
-    exception<UserExists> { call, _ ->
+    exception<UserAlreadyExists> { call, _ ->
         call.respond(HttpStatusCode.Forbidden, "User exists")
     }
     exception<BadRequest> { call, e ->

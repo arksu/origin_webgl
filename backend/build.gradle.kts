@@ -1,13 +1,18 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+val ktorVersion = "2.3.12" // https://kotlinlang.org/
+val slf4jVersion = "2.0.13" // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+
 plugins {
     val kotlinVersion = "1.9.24" // https://github.com/JetBrains/kotlin/releases
 
     java
     idea
+    application
     kotlin("jvm") version kotlinVersion
+    id("org.flywaydb.flyway") version "10.15.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
+    id("nu.studer.jooq") version "9.0" // https://plugins.gradle.org/plugin/nu.studer.jooq
 }
-
-val ktorVersion = "2.3.12" // https://kotlinlang.org/
-val slf4jVersion = "2.0.13" // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 
 idea {
     module.excludeDirs.add(file("out"))
@@ -29,14 +34,11 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEa
     jvmTargetValidationMode.set(org.jetbrains.kotlin.gradle.dsl.jvm.JvmTargetValidationMode.ERROR)
 }
 
-//tasks.withType<KotlinCompile> {
-//    kotlinOptions.jvmTarget = "17"
-//}
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "17"
+}
 
 
-//compileKotlin {
-//    kotlinOptions.jvmTarget = "17"
-//}
 //compileTestKotlin {
 //    kotlinOptions.jvmTarget = "17"
 //}
@@ -44,29 +46,9 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEa
 repositories {
     mavenCentral()
 }
-//
-//buildscript {
-//    ext {
-//        kotlin_version = '1.9.23'
-//        ktor_version = '2.3.12' // https://ktor.io/
-//        exposed_version = '0.49.0' // https://github.com/JetBrains/Exposed
-//        slf4j_version = '2.0.13' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-//    }
-//
-//    repositories {
-//        mavenCentral()
-//        maven {
-//            url "https://plugins.gradle.org/m2/"
-//        }
-//    }
-//    dependencies {
-//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-//    }
-//}
-//
-
 
 dependencies {
+    implementation(kotlin("stdlib"))
 //    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 //
     implementation("io.ktor:ktor-server-core:$ktorVersion")
@@ -79,19 +61,18 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-websockets:$ktorVersion")
     implementation("io.ktor:ktor-serialization-gson:$ktorVersion")
-//
-//    implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
-//    implementation "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
-//    implementation "org.jetbrains.exposed:exposed-dao:$exposed_version"
-//    implementation "org.jetbrains.exposed:exposed-jodatime:$exposed_version"
-//
+
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     implementation("org.slf4j:slf4j-log4j12:$slf4jVersion")
 //
     implementation("com.google.code.gson:gson:2.11.0") // https://mvnrepository.com/artifact/com.google.code.gson/gson
 //
 //    implementation 'com.zaxxer:HikariCP:5.1.0' // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
-//    implementation 'org.mariadb.jdbc:mariadb-java-client:3.0.9'
+    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.4.0") // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+//    implementation("org.flywaydb:flyway-mysql:10.15.0")
+    jooqGenerator("org.mariadb.jdbc:mariadb-java-client:3.4.0")
+
+    implementation("org.flywaydb:flyway-core:10.15.0")
 //    implementation 'com.typesafe:config:1.4.2'
 }
 //
@@ -120,3 +101,63 @@ dependencies {
 //        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
 //    }
 //}
+
+buildscript {
+    dependencies {
+        classpath("org.flywaydb:flyway-mysql:10.15.0")
+        classpath("org.mariadb.jdbc:mariadb-java-client:3.4.0")
+    }
+}
+
+flyway {
+    url = "jdbc:mariadb://localhost:3406/origin"
+    user = "origin"
+    password = "origin"
+    cleanDisabled = false
+    schemas = arrayOf("origin")
+    outOfOrder = true
+    locations = arrayOf("filesystem:res/db/migration")
+}
+
+jooq {
+    version.set("3.19.10")
+    edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
+
+    configurations {
+        create("main") {  // name of the jOOQ configuration
+            generateSchemaSourceOnCompilation.set(true)  // default (can be omitted)
+
+            jooqConfiguration.apply {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc.apply {
+                    driver = "org.mariadb.jdbc.Driver"
+                    url = "jdbc:mariadb://localhost:3406/origin"
+                    user = "origin"
+                    password = "origin"
+//                    properties.add(Property().apply {
+//                        key = "ssl"
+//                        value = "true"
+//                    })
+                }
+                generator.apply {
+                    name = "org.jooq.codegen.KotlinGenerator"
+                    database.apply {
+                        name = "org.jooq.meta.mariadb.MariaDBDatabase"
+                        inputSchema = "origin"
+                    }
+                    generate.apply {
+                        isDeprecated = false
+                        isRecords = true
+                        isImmutablePojos = true
+                        isFluentSetters = true
+                    }
+                    target.apply {
+                        packageName = "com.origin.generated"
+                        directory = "src"
+                    }
+                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                }
+            }
+        }
+    }
+}
