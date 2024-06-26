@@ -68,11 +68,12 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0") // https://mvnrepository.com/artifact/com.google.code.gson/gson
 //
 //    implementation 'com.zaxxer:HikariCP:5.1.0' // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation("org.flywaydb:flyway-core:10.15.0")
+    runtimeOnly("org.flywaydb:flyway-mysql:10.15.0")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.4.0") // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
-//    implementation("org.flywaydb:flyway-mysql:10.15.0")
+
     jooqGenerator("org.mariadb.jdbc:mariadb-java-client:3.4.0")
 
-    implementation("org.flywaydb:flyway-core:10.15.0")
 //    implementation 'com.typesafe:config:1.4.2'
 }
 //
@@ -115,7 +116,6 @@ flyway {
     password = "origin"
     schemas = arrayOf("origin")
     cleanDisabled = false
-    outOfOrder = true
     locations = arrayOf("filesystem:res/db/migration")
 }
 
@@ -128,16 +128,12 @@ jooq {
             generateSchemaSourceOnCompilation.set(true)
 
             jooqConfiguration.apply {
-//                logging = org.jooq.meta.jaxb.Logging.WARN
+                logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc.apply {
                     driver = "org.mariadb.jdbc.Driver"
                     url = "jdbc:mariadb://localhost:3406/origin"
                     user = "origin"
                     password = "origin"
-//                    properties.add(Property().apply {
-//                        key = "ssl"
-//                        value = "true"
-//                    })
                 }
                 generator.apply {
                     name = "org.jooq.codegen.KotlinGenerator"

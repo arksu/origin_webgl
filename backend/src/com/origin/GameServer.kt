@@ -30,7 +30,7 @@ object GameServer {
     fun start() {
         logger.info("start game server...")
 
-        val server = embeddedServer(CIO, port = ServerConfig.PORT) {
+        val server = embeddedServer(CIO, port = ServerConfig.SERVER_PORT) {
             install(DefaultHeaders)
             install(CallLogging)
             install(StatusPages) {

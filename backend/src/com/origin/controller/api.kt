@@ -1,5 +1,6 @@
 package com.origin.controller
 
+import com.origin.config.DatabaseConfig
 import io.ktor.server.routing.*
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
@@ -10,7 +11,7 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 @ObsoleteCoroutinesApi
 fun Route.api() {
     route("/api") {
-        auth()
-        characters()
+        auth(DatabaseConfig.dsl)
+        characters(DatabaseConfig.dsl)
     }
 }

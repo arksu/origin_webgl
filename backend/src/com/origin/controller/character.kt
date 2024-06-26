@@ -7,6 +7,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
+import org.jooq.DSLContext
 
 //fun PipelineContext<Unit, ApplicationCall>.getAccountBySsid(): Account {
 //    return GameServer.accountCache.get(call.request.headers[SSID_HEADER]) ?: throw AuthorizationException()
@@ -23,13 +24,13 @@ data class CharacterCreateRequestDTO(val name: String) {
     }
 }
 
-fun Route.characters() {
+fun Route.characters(dsl: DSLContext) {
     route("/character") {
 
         /**
          * get all player's characters
          */
-        get() {
+        get {
 //            val account = getAccountBySsid()
 //            val list = transaction {
 //                Character.find { (Characters.account eq account.id) and (Characters.deleted eq false) }.limit(5)

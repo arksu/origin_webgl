@@ -4,6 +4,7 @@ import com.origin.jooq.tables.pojos.Account
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
+import org.jooq.DSLContext
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -12,7 +13,7 @@ data class UserLoginRequestDTO(val login: String, val hash: String)
 data class UserSignupRequestDTO(val login: String, val email: String?, val password: String)
 data class LoginResponseDTO(val ssid: String)
 
-fun Route.auth() {
+fun Route.auth(dsl: DSLContext) {
     val logger: Logger = LoggerFactory.getLogger("Auth")
 
     post("/login") {
