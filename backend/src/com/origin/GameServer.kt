@@ -23,9 +23,7 @@ import java.time.Duration
 object GameServer {
     val logger: Logger = LoggerFactory.getLogger(GameServer::class.java)
 
-//    val accountCache = AccountCache()
-
-    val SSID_HEADER = HttpHeaders.Authorization
+    val accountCache = AccountCache()
 
     fun start() {
         logger.info("start game server...")

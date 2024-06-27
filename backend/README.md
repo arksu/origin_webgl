@@ -60,7 +60,7 @@ gradle mapgen
 ``` 
 This will generate image file `map.png` into **backend** dir
 
-By default this command will generate 1 supergrid, please see [MapGenerator.kt](/src/com/origin/utils/MapGenerator.kt) file for details
+By default this command will generate 1 supergrid, please see [MapGenerator.kt](/src/com/origin/util/MapGenerator.kt) file for details
 
 ### Import generated map into database
 ```shell

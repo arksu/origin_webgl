@@ -1,6 +1,7 @@
 package com.origin.controller
 
 import com.origin.ObjectID
+import com.origin.jooq.tables.records.AccountRecord
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -31,6 +32,9 @@ fun Route.characters(dsl: DSLContext) {
          * get all player's characters
          */
         get {
+            withAccount { account->
+                account
+            }
 //            val account = getAccountBySsid()
 //            val list = transaction {
 //                Character.find { (Characters.account eq account.id) and (Characters.deleted eq false) }.limit(5)

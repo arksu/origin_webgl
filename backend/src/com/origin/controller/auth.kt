@@ -1,8 +1,13 @@
 package com.origin.controller
 
-import com.origin.jooq.tables.pojos.Account
+import com.origin.GameServer
+import com.origin.error.UserAlreadyExists
+import com.origin.jooq.tables.records.AccountRecord
+import com.origin.jooq.tables.references.ACCOUNT
+import com.origin.util.generateString
 import io.ktor.server.application.*
 import io.ktor.server.request.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jooq.DSLContext
 import org.slf4j.Logger
@@ -17,7 +22,7 @@ fun Route.auth(dsl: DSLContext) {
     val logger: Logger = LoggerFactory.getLogger("Auth")
 
     post("/login") {
-        val userLogin = call.receive<UserLoginRequestDTO>()
+        val request = call.receive<UserLoginRequestDTO>()
 
 
 //        val account = transaction {
@@ -38,33 +43,41 @@ fun Route.auth(dsl: DSLContext) {
     }
 
     post("/signup") {
-        val userSignup = call.receive<UserSignupRequestDTO>()
-        val email = if (userSignup.email.isNullOrBlank()) {
+        val request = call.receive<UserSignupRequestDTO>()
+
+        val email = if (request.email.isNullOrBlank()) {
             null
         } else {
-            userSignup.email
+            request.email.trim().lowercase()
         }
 
-        val new = Account(name = "123")
+        val account = dsl.transactionResult { trx ->
+            val account = trx.dsl()
+                .selectFrom(ACCOUNT)
+                .where(
+                    ACCOUNT.LOGIN.eq(request.login.lowercase())
+                        .or(ACCOUNT.EMAIL.isNotNull.and(ACCOUNT.EMAIL.eq(email)))
+                )
+                .forUpdate()
+                .fetchOne()
+            if (account != null) throw UserAlreadyExists()
 
+            val newAccount = AccountRecord()
+            newAccount.login = request.login.lowercase()
+            newAccount.email = email
+            newAccount.password = request.password
+            newAccount.ssid = generateString(32)
 
-//        val account = transaction {
-//            val accountInDatabase =
-//                Account.find {
-//                    (Accounts.login eq userSignup.login) or ((Accounts.email.neq(null) and (Accounts.email eq email)))
-//                }.firstOrNull()
-//            if (accountInDatabase != null) throw UserExists()
-//
-//            val acc = Account.new {
-//                login = userSignup.login
-//                password = userSignup.password
-//                this.email = userSignup.email
-//            }
-//            GameServer.accountCache.addWithAuth(acc)
-//            acc
-//        }
-//
-//        logger.debug("user register successful ${account.login}")
-//        call.respond(LoginResponse(account.ssid!!))
+            val saved = trx.dsl().insertInto(ACCOUNT)
+                .set(newAccount)
+                .returning()
+                .fetchSingle()
+
+            logger.debug("user register successful ${saved.login}")
+            GameServer.accountCache.addWithAuth(saved)
+            saved
+        }
+
+        call.respond(LoginResponseDTO(account.ssid!!))
     }
 }

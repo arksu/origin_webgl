@@ -24,6 +24,9 @@ object ServerConfig {
     @JvmField
     var DATABASE_PASSWORD: String? = null
 
+    @JvmField
+    var DATABASE_MAX_POOL_SIZE: Int = 10
+
     /**
      * расстояние через которое будет обновлятся позиция в базе данных при передвижении
      */
@@ -58,6 +61,7 @@ object ServerConfig {
         DATABASE_URL = config.getString("origin.database.url")
         DATABASE_USER = config.getString("origin.database.user")
         DATABASE_PASSWORD = config.getString("origin.database.password")
+        DATABASE_MAX_POOL_SIZE = config.getInt("origin.database.max_pool_size")
 
         SERVER_PORT = config.getInt("origin.net.port")
 

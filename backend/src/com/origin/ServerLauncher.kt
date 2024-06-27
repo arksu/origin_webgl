@@ -33,6 +33,7 @@ object ServerLauncher {
         ServerConfig.load()
 
         val flyway = Flyway.configure()
+            .executeInTransaction(true)
             .dataSource(ServerConfig.DATABASE_URL, ServerConfig.DATABASE_USER, ServerConfig.DATABASE_PASSWORD)
             .load()
         flyway.migrate()

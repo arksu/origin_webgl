@@ -1,15 +1,18 @@
-use origin;
-
 create table if not exists account
 (
-    id   int auto_increment primary key,
-    name varchar(128) not null
+    id       bigint auto_increment primary key,
+    login    varchar(128) unique not null,
+    password varchar(128)        not null,
+    email    varchar(128)        null default null,
+    ssid     char(32) unique     not null,
+    created  datetime                 default current_timestamp
 );
 
 create table if not exists `character`
 (
-    id         int auto_increment primary key ,
-    account_id int not null,
+    id         bigint auto_increment primary key,
+    account_id bigint not null,
     name       varchar(128),
-    foreign key (account_id) references account(id)
+    created    datetime default current_timestamp,
+    foreign key (account_id) references account (id)
 );

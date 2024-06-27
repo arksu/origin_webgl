@@ -67,7 +67,7 @@ dependencies {
 //
     implementation("com.google.code.gson:gson:2.11.0") // https://mvnrepository.com/artifact/com.google.code.gson/gson
 //
-//    implementation 'com.zaxxer:HikariCP:5.1.0' // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation("com.zaxxer:HikariCP:5.1.0") // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
     implementation("org.flywaydb:flyway-core:10.15.0")
     runtimeOnly("org.flywaydb:flyway-mysql:10.15.0")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.4.0") // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
@@ -117,6 +117,7 @@ flyway {
     schemas = arrayOf("origin")
     cleanDisabled = false
     locations = arrayOf("filesystem:res/db/migration")
+//    executeInTransaction = true
 }
 
 jooq {
@@ -140,11 +141,11 @@ jooq {
                     database.apply {
                         name = "org.jooq.meta.mariadb.MariaDBDatabase"
                         inputSchema = "origin"
+                        excludes = "flyway_schema_history"
                     }
                     generate.apply {
                         isDeprecated = false
                         isRecords = true
-                        isImmutablePojos = true
                         isFluentSetters = true
                     }
                     target.apply {
