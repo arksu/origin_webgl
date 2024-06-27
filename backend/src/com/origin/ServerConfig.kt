@@ -1,35 +1,31 @@
 package com.origin
 
-import com.origin.utils.TILE_SIZE
 import com.typesafe.config.ConfigFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
 object ServerConfig {
-    val logger: Logger = LoggerFactory.getLogger(ServerConfig::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(ServerConfig::class.java)
 
     private const val WORK_DIR = "./"
 
     const val PROTO_VERSION = "0.0.2"
 
     @JvmField
-    var PORT = 0
+    var SERVER_PORT = 0
 
     @JvmField
-    var DB_HOST: String? = null
+    var DATABASE_URL: String? = null
 
     @JvmField
-    var DB_USER: String? = null
+    var DATABASE_USER: String? = null
 
     @JvmField
-    var DB_PASSWORD: String? = null
+    var DATABASE_PASSWORD: String? = null
 
     @JvmField
-    var DB_NAME: String? = null
-
-    @JvmField
-    var DB_PORT: String? = null
+    var DATABASE_MAX_POOL_SIZE: Int = 10
 
     /**
      * расстояние через которое будет обновлятся позиция в базе данных при передвижении
@@ -58,17 +54,18 @@ object ServerConfig {
         if (!configFile.exists()) {
             configFile = File(WORK_DIR + "server.conf")
         }
-        val conf = ConfigFactory
+        val config = ConfigFactory
             .parseFile(configFile)
             .withFallback(ConfigFactory.load("server.defaults.conf"))
 
-        DB_HOST = conf.getString("origin.db.host")
-        DB_USER = conf.getString("origin.db.user")
-        DB_PASSWORD = conf.getString("origin.db.password")
-        DB_NAME = conf.getString("origin.db.name")
-        DB_PORT = conf.getString("origin.db.port")
-        PORT = conf.getInt("origin.net.port")
-        IS_DEV = conf.getBoolean("origin.dev.mode")
-        ASSETS_DIR = conf.getString("origin.dev.assets_dir")
+        DATABASE_URL = config.getString("origin.database.url")
+        DATABASE_USER = config.getString("origin.database.user")
+        DATABASE_PASSWORD = config.getString("origin.database.password")
+        DATABASE_MAX_POOL_SIZE = config.getInt("origin.database.max_pool_size")
+
+        SERVER_PORT = config.getInt("origin.net.port")
+
+        IS_DEV = config.getBoolean("origin.dev.mode")
+        ASSETS_DIR = config.getString("origin.dev.assets_dir")
     }
 }
