@@ -34,7 +34,7 @@ class AccountCache {
      *
      * @return true если успешно добавили и в кэше НЕ было такого ssid, false в случае если коллизия ssid
      */
-    fun addWithAuth(account: AccountRecord) {
+    fun add(account: AccountRecord) {
         val accountId = account.id ?: throw RuntimeException("no account id")
         // РЕАЛИЗАЦИЯ варианта 1 (описание выше)
         // заблокируем по ид аккаунта, дабы нельзя было одному акканту одновременно делать НЕ атомарные операции ниже
@@ -49,6 +49,7 @@ class AccountCache {
                 accountBySsid.remove(oldSsid)
             }
             // запомним новую сессию
+            accountBySsid[account.ssid!!] = account
             accountSsidById[accountId] = account.ssid!!
         } finally {
             lock.unlock()

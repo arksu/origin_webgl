@@ -2,14 +2,18 @@ package com.origin.controller
 
 import com.origin.GameServer
 import com.origin.error.UserAlreadyExists
+import com.origin.error.UserNotFound
+import com.origin.error.WrongPassword
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.references.ACCOUNT
 import com.origin.util.generateString
+import com.origin.util.scrypt.SCryptUtil
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -24,22 +28,29 @@ fun Route.auth(dsl: DSLContext) {
     post("/login") {
         val request = call.receive<UserLoginRequestDTO>()
 
+        val account = dsl.transactionResult { trx ->
+            val acc = trx.dsl()
+                .selectFrom(ACCOUNT)
+                .where(ACCOUNT.LOGIN.eq(request.login))
+                .forUpdate()
+                .fetchOne() ?: throw UserNotFound()
 
-//        val account = transaction {
-//            val acc =
-//                Account.find { Accounts.login eq userLogin.login }.forUpdate().firstOrNull() ?: throw UserNotFound()
-//
-//            if (SCryptUtil.check(acc.password, userLogin.hash)) {
-////                acc.lastLogged = Timestamp(Date().time)
-//                GameServer.accountCache.addWithAuth(acc)
-//                acc
-//            } else {
-//                throw WrongPassword()
-//            }
-//        }
-
-//        logger.debug("user auth successful ${account.login}")
-//        call.respond(LoginResponse(account.ssid!!))
+            if (SCryptUtil.check(acc.password, request.hash)) {
+                acc.ssid = generateString(32)
+                trx.dsl()
+                    .update(ACCOUNT)
+                    .set(ACCOUNT.SSID, acc.ssid)
+                    .set(ACCOUNT.LAST_LOGGED, DSL.currentLocalDateTime())
+                    .where(ACCOUNT.ID.eq(acc.id))
+                    .execute()
+                GameServer.accountCache.add(acc)
+                acc
+            } else {
+                throw WrongPassword()
+            }
+        }
+        logger.debug("user auth successful ${account.login}")
+        call.respond(LoginResponseDTO(account.ssid!!))
     }
 
     post("/signup") {
@@ -70,11 +81,12 @@ fun Route.auth(dsl: DSLContext) {
 
             val saved = trx.dsl().insertInto(ACCOUNT)
                 .set(newAccount)
+                .set(ACCOUNT.LAST_LOGGED, DSL.currentLocalDateTime())
                 .returning()
                 .fetchSingle()
 
             logger.debug("user register successful ${saved.login}")
-            GameServer.accountCache.addWithAuth(saved)
+            GameServer.accountCache.add(saved)
             saved
         }
 
