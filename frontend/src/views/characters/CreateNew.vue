@@ -33,8 +33,8 @@ export default defineComponent({
       name: '',
     }
 
-    const {isLoading, data, isSuccess, fetch} = useApi("characters", {
-      method: "PUT",
+    const {isLoading, data, isSuccess, fetch} = useApi("character", {
+      method: "POST",
       data: request
     })
 

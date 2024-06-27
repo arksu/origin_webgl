@@ -51,7 +51,7 @@ export default defineComponent({
       method: 'DELETE',
     })
 
-    const {isLoading: selectInProcess, data, isSuccess, fetch: fetchSelect} = useApi("characters/select/" + props.id, {
+    const {isLoading: selectInProcess, data, isSuccess, fetch: fetchSelect} = useApi("character/"+props.id+"/select", {
       method: 'POST',
     })
 
