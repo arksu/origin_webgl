@@ -43,7 +43,7 @@ export default defineComponent({
       busy.value = false
     }
 
-    const {isLoading, data, fetch} = useApi("characters", {
+    const {isLoading, data, fetch} = useApi("character", {
       method: "GET",
     })
 

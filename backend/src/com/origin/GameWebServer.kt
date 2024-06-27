@@ -1,7 +1,11 @@
 package com.origin
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.origin.controller.api
 import com.origin.error.*
+import com.origin.util.MapDeserializerDoubleAsIntFix
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -20,10 +24,16 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
 
-object GameServer {
-    val logger: Logger = LoggerFactory.getLogger(GameServer::class.java)
+object GameWebServer {
+    val logger: Logger = LoggerFactory.getLogger(GameWebServer::class.java)
 
     val accountCache = AccountCache()
+
+    val gsonDeserializer: Gson = GsonBuilder()
+        .registerTypeAdapter(
+            object : TypeToken<Map<String, Any>>() {}.type, MapDeserializerDoubleAsIntFix()
+        )
+        .create()
 
     fun start() {
         logger.info("start game server...")
@@ -69,23 +79,23 @@ fun CORSConfig.cors() {
 }
 
 fun StatusPagesConfig.statusPages() {
-    exception<UserNotFound> { call, _ ->
+    exception<UserNotFoundException> { call, _ ->
         call.respond(HttpStatusCode.Forbidden, "User not found")
     }
     exception<AuthorizationException> { call, e ->
-        call.respond(HttpStatusCode.Unauthorized, e.message ?: "Not authorized")
+        call.respond(HttpStatusCode.Unauthorized, e.message ?: "Unauthorized")
     }
-    exception<WrongPassword> { call, _ ->
+    exception<WrongPasswordException> { call, _ ->
         call.respond(HttpStatusCode.Forbidden, "Wrong password")
     }
-    exception<UserAlreadyExists> { call, _ ->
+    exception<UserAlreadyExistsException> { call, _ ->
         call.respond(HttpStatusCode.Forbidden, "User exists")
     }
-    exception<BadRequest> { call, e ->
+    exception<BadRequestException> { call, e ->
         call.respond(HttpStatusCode.BadRequest, e.message!!)
     }
     exception<Throwable> { call, e ->
-        GameServer.logger.error("error ${e.javaClass.simpleName} - ${e.message} ", e)
+        GameWebServer.logger.error("error ${e.javaClass.simpleName} - ${e.message} ", e)
         call.respond(HttpStatusCode.InternalServerError, e.message ?: e.javaClass.simpleName)
     }
 }

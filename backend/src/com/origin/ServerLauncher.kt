@@ -42,6 +42,6 @@ object ServerLauncher {
         EventBus.init()
 //        DatabaseFactory.init()
 //        TimeController.start()
-        GameServer.start()
+        GameWebServer.start()
     }
 }

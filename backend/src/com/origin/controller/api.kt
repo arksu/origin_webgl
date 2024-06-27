@@ -1,6 +1,6 @@
 package com.origin.controller
 
-import com.origin.GameServer
+import com.origin.GameWebServer
 import com.origin.config.DatabaseConfig
 import com.origin.error.AuthorizationException
 import com.origin.jooq.tables.records.AccountRecord
@@ -19,6 +19,7 @@ fun Route.api() {
     route("/api") {
         auth(DatabaseConfig.dsl)
         characters(DatabaseConfig.dsl)
+        websockets()
     }
 }
 
@@ -28,6 +29,6 @@ fun ApplicationCall.getAccountSsid(): String {
 
 inline fun PipelineContext<Unit, ApplicationCall>.withAccount(block: (account: AccountRecord) -> Unit) {
     val accountSsid = call.getAccountSsid()
-    val account = GameServer.accountCache.get(accountSsid) ?: throw AuthorizationException()
+    val account = GameWebServer.accountCache.get(accountSsid) ?: throw AuthorizationException()
     block(account)
 }

@@ -1,18 +1,14 @@
 package com.origin.controller
 
 import com.origin.ObjectID
-import com.origin.jooq.tables.records.AccountRecord
-import io.ktor.http.*
+import com.origin.error.BadRequestException
+import com.origin.jooq.tables.references.CHARACTER
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.pipeline.*
 import org.jooq.DSLContext
-
-//fun PipelineContext<Unit, ApplicationCall>.getAccountBySsid(): Account {
-//    return GameServer.accountCache.get(call.request.headers[SSID_HEADER]) ?: throw AuthorizationException()
-//}
+import org.jooq.Record1
 
 data class CharacterResponseDTO(val id: ObjectID, val name: String)
 
@@ -32,23 +28,24 @@ fun Route.characters(dsl: DSLContext) {
          * get all player's characters
          */
         get {
-            withAccount { account->
-                account
+            withAccount { account ->
+                val list = dsl.selectFrom(CHARACTER)
+                    .where(CHARACTER.ACCOUNT_ID.eq(account.id))
+                    .and(CHARACTER.DELETED.isFalse)
+                    .limit(5)
+                    .fetch()
+
+                call.respond(mapOf("list" to list.map {
+                    CharacterResponseDTO(it.id!!, it.name!!)
+                }))
             }
-//            val account = getAccountBySsid()
-//            val list = transaction {
-//                Character.find { (Characters.account eq account.id) and (Characters.deleted eq false) }.limit(5)
-//                    .map { c ->
-//                        CharacterResponseDTO(c.id.value, c.name)
-//                    }
-//            }
-//            call.respond(mapOf("list" to list))
         }
 
         /**
          * select character for enter world
          */
-        post("{id}/select") {
+        post("/{id}/select") {
+            println(call.parameters["id"])
 //            val account = getAccountBySsid()
 //            val selected = call.parameters["id"].toObjectID()
 //            transaction {
@@ -62,38 +59,32 @@ fun Route.characters(dsl: DSLContext) {
          * create new character
          */
         post {
-//            val acc = getAccountBySsid()
-//            val data = call.receive<CharacterCreateRequestDTO>()
-//            if (!data.validate()) {
-//                throw BadRequest("Wrong name")
-//            }
-//
-//            val newChar = transaction {
-//                val c = Character.find { (Characters.account eq acc.id) and (Characters.deleted eq false) }.count()
-//                if (c >= 5) {
-//                    throw BadRequest("Characters limit exceed")
-//                }
-//
-//                // get new id from id factory
-//                Character.new(IdFactory.getNext()) {
-//                    account = acc
-//                    name = data.name
-//                    // TODO: new character spawn coordinates
-//                    region = 0
-//                    x = 0
-//                    y = 0
-//                    level = 0
-//                    heading = 0
-//
-//                    SHP = 100.0
-//                    HHP = 100.0
-//                    stamina = 100.0
-//                    energy = 6000.0
-//                    hunger = 10.0
-//                }
-//            }
-//
-//            call.respond(CreateCharacterResponseDTO(newChar.name, newChar.id.value))
+            withAccount { account ->
+                val request = call.receive<CharacterCreateRequestDTO>()
+                if (!request.validate()) {
+                    throw BadRequestException("Wrong name")
+                }
+                val count = dsl.selectCount()
+                    .from(CHARACTER)
+                    .where(CHARACTER.ACCOUNT_ID.eq(account.id))
+                    .and(CHARACTER.DELETED.isFalse)
+                    .fetchSingle()
+                    .let(Record1<Int>::value1)
+
+                if (count >= 5) {
+                    throw BadRequestException("Characters limit exceed")
+                }
+
+                // TODO: new character spawn coordinates
+
+                val saved = dsl.insertInto(CHARACTER)
+                    .set(CHARACTER.ACCOUNT_ID, account.id)
+                    .set(CHARACTER.NAME, request.name)
+                    .returning()
+                    .fetchSingle()
+
+                call.respond(CharacterResponseDTO(saved.id!!, saved.name!!))
+            }
         }
 
         /**

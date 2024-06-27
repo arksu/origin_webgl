@@ -1,9 +1,9 @@
 package com.origin.controller
 
-import com.origin.GameServer
-import com.origin.error.UserAlreadyExists
-import com.origin.error.UserNotFound
-import com.origin.error.WrongPassword
+import com.origin.GameWebServer
+import com.origin.error.UserAlreadyExistsException
+import com.origin.error.UserNotFoundException
+import com.origin.error.WrongPasswordException
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.references.ACCOUNT
 import com.origin.util.generateString
@@ -33,7 +33,7 @@ fun Route.auth(dsl: DSLContext) {
                 .selectFrom(ACCOUNT)
                 .where(ACCOUNT.LOGIN.eq(request.login))
                 .forUpdate()
-                .fetchOne() ?: throw UserNotFound()
+                .fetchOne() ?: throw UserNotFoundException()
 
             if (SCryptUtil.check(acc.password, request.hash)) {
                 acc.ssid = generateString(32)
@@ -43,10 +43,10 @@ fun Route.auth(dsl: DSLContext) {
                     .set(ACCOUNT.LAST_LOGGED, DSL.currentLocalDateTime())
                     .where(ACCOUNT.ID.eq(acc.id))
                     .execute()
-                GameServer.accountCache.add(acc)
+                GameWebServer.accountCache.add(acc)
                 acc
             } else {
-                throw WrongPassword()
+                throw WrongPasswordException()
             }
         }
         logger.debug("user auth successful ${account.login}")
@@ -71,7 +71,7 @@ fun Route.auth(dsl: DSLContext) {
                 )
                 .forUpdate()
                 .fetchOne()
-            if (account != null) throw UserAlreadyExists()
+            if (account != null) throw UserAlreadyExistsException()
 
             val newAccount = AccountRecord()
             newAccount.login = request.login.lowercase()
@@ -86,7 +86,7 @@ fun Route.auth(dsl: DSLContext) {
                 .fetchSingle()
 
             logger.debug("user register successful ${saved.login}")
-            GameServer.accountCache.add(saved)
+            GameWebServer.accountCache.add(saved)
             saved
         }
 

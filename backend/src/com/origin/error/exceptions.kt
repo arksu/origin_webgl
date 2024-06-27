@@ -1,7 +1,7 @@
 package com.origin.error
 
-class UserNotFound : RuntimeException()
-class WrongPassword : RuntimeException()
-class UserAlreadyExists : RuntimeException()
+class UserNotFoundException : RuntimeException()
+class WrongPasswordException : RuntimeException()
+class UserAlreadyExistsException : RuntimeException()
 class AuthorizationException(msg: String? = null) : RuntimeException(msg)
-class BadRequest(msg: String) : RuntimeException(msg)
+class BadRequestException(msg: String) : RuntimeException(msg)
