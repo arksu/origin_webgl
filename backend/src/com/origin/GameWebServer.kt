@@ -36,7 +36,7 @@ object GameWebServer {
         .create()
 
     fun start() {
-        logger.info("start game server...")
+        logger.info("start game server [${ServerConfig.SERVER_PORT}]...")
 
         val server = embeddedServer(CIO, port = ServerConfig.SERVER_PORT) {
             install(DefaultHeaders)
@@ -62,7 +62,6 @@ object GameWebServer {
                     call.respondText("Hello from world of <Origin>!", ContentType.Text.Plain)
                 }
                 api()
-//                websockets()
             }
         }
         server.start(wait = true)

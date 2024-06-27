@@ -2,13 +2,18 @@ package com.origin.controller
 
 import com.origin.ObjectID
 import com.origin.error.BadRequestException
+import com.origin.jooq.tables.references.ACCOUNT
 import com.origin.jooq.tables.references.CHARACTER
+import com.origin.toObjectID
+import com.origin.util.generateString
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jooq.DSLContext
 import org.jooq.Record1
+import kotlin.random.Random
 
 data class CharacterResponseDTO(val id: ObjectID, val name: String)
 
@@ -45,14 +50,23 @@ fun Route.characters(dsl: DSLContext) {
          * select character for enter world
          */
         post("/{id}/select") {
-            println(call.parameters["id"])
-//            val account = getAccountBySsid()
-//            val selected = call.parameters["id"].toObjectID()
-//            transaction {
-//                account.selectedCharacter = selected
-//                account.generateWsToken()
-//            }
-//            call.respond(CharacterSelectResponseDTO(account.wsToken!!))
+            withAccount { account ->
+                val selected = call.parameters["id"].toObjectID()
+                dsl.selectFrom(CHARACTER)
+                    .where(CHARACTER.ACCOUNT_ID.eq(account.id))
+                    .and(CHARACTER.ID.eq(selected))
+                    .and(CHARACTER.DELETED.isFalse)
+                    .fetchOne() ?: throw BadRequestException("Character not found")
+
+                val token = generateString(32)
+                dsl.update(ACCOUNT)
+                    .set(ACCOUNT.SELECTED_CHARACTER, selected)
+                    .set(ACCOUNT.WS_TOKEN, token)
+                    .where(ACCOUNT.ID.eq(account.id))
+                    .execute()
+
+                call.respond(CharacterSelectResponseDTO(token))
+            }
         }
 
         /**
@@ -78,6 +92,7 @@ fun Route.characters(dsl: DSLContext) {
                 // TODO: new character spawn coordinates
 
                 val saved = dsl.insertInto(CHARACTER)
+                    .set(CHARACTER.ID, Random.nextLong())
                     .set(CHARACTER.ACCOUNT_ID, account.id)
                     .set(CHARACTER.NAME, request.name)
                     .returning()
@@ -91,18 +106,19 @@ fun Route.characters(dsl: DSLContext) {
          * delete character
          */
         delete("{id}") {
-//            val account = getAccountBySsid()
-//            val id: ObjectID = call.parameters["id"].toObjectID()
-//            transaction {
-//                val char = Character.find { Characters.id eq id }.forUpdate().firstOrNull()
-//                if (char == null || char.account.id.value != account.id.value) {
-//                    throw BadRequest("Wrong character")
-//                } else {
-//                    char.deleted = true
-//                    char.flush()
-//                }
-//            }
-//            call.respond(HttpStatusCode.NoContent)
+            withAccount { account ->
+                val id = call.parameters["id"].toObjectID()
+                val affectedRows = dsl.update(CHARACTER)
+                    .set(CHARACTER.DELETED, 1)
+                    .where(CHARACTER.ID.eq(id))
+                    .and(CHARACTER.ACCOUNT_ID.eq(account.id))
+                    .execute()
+
+                if (affectedRows != 1) {
+                    throw BadRequestException("Wrong character")
+                }
+                call.respond(HttpStatusCode.NoContent)
+            }
         }
     }
 }

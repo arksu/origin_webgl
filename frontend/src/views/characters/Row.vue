@@ -47,7 +47,7 @@ export default defineComponent({
   setup: function (props, {emit}) {
     const store = useMainStore()
 
-    const {isLoading: deleteInProcess, fetch: fetchDelete} = useApi("characters/" + props.id, {
+    const {isLoading: deleteInProcess, fetch: fetchDelete} = useApi("character/" + props.id, {
       method: 'DELETE',
     })
 

@@ -7,6 +7,7 @@ import com.origin.GameWebServer.logger
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import org.jooq.DSLContext
 import java.util.*
 
 /**
@@ -30,7 +31,7 @@ data class GameRequestDTO(
  */
 val gameSessions: MutableSet<GameSession> = Collections.synchronizedSet(LinkedHashSet())
 
-fun Route.websockets() {
+fun Route.websockets(dsl: DSLContext) {
 
     webSocket("game") {
         for (frame in incoming) {
