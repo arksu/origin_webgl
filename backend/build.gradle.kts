@@ -7,7 +7,7 @@ val mariadbJavaClientVersion = "3.4.0" // https://mvnrepository.com/artifact/org
 val jooqVersion = "3.19.10" // https://mvnrepository.com/artifact/org.jooq/jooq
 
 plugins {
-    val kotlinVersion = "1.9.24" // https://github.com/JetBrains/kotlin/releases
+    val kotlinVersion = "2.0.0" // https://github.com/JetBrains/kotlin/releases
 
     java
     idea
@@ -37,8 +37,11 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile>().configureEa
     jvmTargetValidationMode.set(org.jetbrains.kotlin.gradle.dsl.jvm.JvmTargetValidationMode.ERROR)
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+kotlin {
+    jvmToolchain(17)
+    compilerOptions {
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+    }
 }
 
 repositories {
