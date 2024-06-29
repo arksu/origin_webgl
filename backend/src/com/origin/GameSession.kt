@@ -1,8 +1,12 @@
 package com.origin
 
+import com.google.gson.Gson
 import com.origin.controller.GameRequestDTO
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
+import com.origin.net.AuthorizeTokenResponse
+import com.origin.net.GameResponseDTO
+import com.origin.net.ServerMessage
 import io.ktor.websocket.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -15,6 +19,11 @@ class GameSession(
 ) {
     companion object {
         val logger: Logger = LoggerFactory.getLogger(GameSession::class.java)
+
+        /**
+         * для сериализации пакетов (отправка клиенту)
+         */
+        private val gsonSerializer = Gson()
     }
 
     private var isDisconnected = false
@@ -24,8 +33,27 @@ class GameSession(
         TODO("Not yet implemented")
     }
 
+    suspend fun connected(request: GameRequestDTO) {
+        ack(request, AuthorizeTokenResponse(character.id!!, ServerConfig.PROTO_VERSION))
+    }
+
     fun disconnected() {
 
+    }
+
+    /**
+     * ответ на запрос клиента
+     */
+    private suspend inline fun ack(request: GameRequestDTO, d: Any? = null) {
+        send(GameResponseDTO(request.id, d))
+    }
+
+    private suspend fun send(response: GameResponseDTO) {
+        if (!isDisconnected) connect.outgoing.send(Frame.Text(gsonSerializer.toJson(response)))
+    }
+
+    suspend fun send(message: ServerMessage) {
+        send(GameResponseDTO(message.channel, message))
     }
 
     suspend fun kick() {

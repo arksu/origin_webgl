@@ -84,6 +84,7 @@ fun Route.websockets(dsl: DSLContext) {
                                     gameSessions += localSession
                                 }
                             }
+                            session!!.connected(request)
                         } else if (session != null) {
                             try {
                                 session!!.process(request)
