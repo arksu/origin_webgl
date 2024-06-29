@@ -34,7 +34,7 @@ class GameSession(
     }
 
     suspend fun connected(request: GameRequestDTO) {
-        ack(request, AuthorizeTokenResponse(character.id!!, ServerConfig.PROTO_VERSION))
+        ack(request, AuthorizeTokenResponse(character.id, ServerConfig.PROTO_VERSION))
     }
 
     fun disconnected() {

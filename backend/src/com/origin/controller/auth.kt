@@ -17,6 +17,7 @@ import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
 
 
 data class UserLoginRequestDTO(val login: String, val hash: String)
@@ -49,7 +50,7 @@ fun Route.auth(dsl: DSLContext) {
             }
         }
         logger.debug("user auth successful ${account.login}")
-        call.respond(LoginResponseDTO(account.ssid!!))
+        call.respond(LoginResponseDTO(account.ssid))
     }
 
     post("/signup") {
@@ -71,11 +72,13 @@ fun Route.auth(dsl: DSLContext) {
                 .fetchOne()
             if (account != null) throw UserAlreadyExistsException()
 
-            val newAccount = AccountRecord()
-            newAccount.login = request.login.lowercase()
-            newAccount.email = email
-            newAccount.password = request.password
-            newAccount.ssid = generateString(32)
+            val newAccount = AccountRecord(
+                login = request.login.lowercase(),
+                email = email,
+                password = request.password,
+                ssid = generateString(32),
+                lastLogged = LocalDateTime.now()
+            )
 
             val saved = trx.insertInto(ACCOUNT)
                 .set(newAccount)
@@ -88,6 +91,6 @@ fun Route.auth(dsl: DSLContext) {
             saved
         }
 
-        call.respond(LoginResponseDTO(account.ssid!!))
+        call.respond(LoginResponseDTO(account.ssid))
     }
 }

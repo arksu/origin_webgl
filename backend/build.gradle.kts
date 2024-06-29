@@ -142,6 +142,11 @@ jooq {
                         excludes = "flyway_schema_history"
                     }
                     generate.apply {
+                        isPojos = true
+                        isImmutablePojos = true
+                        isPojosAsKotlinDataClasses = true
+                        isKotlinNotNullPojoAttributes = true
+                        isKotlinNotNullRecordAttributes = true
                         isDeprecated = false
                         isRecords = true
                         isFluentSetters = true

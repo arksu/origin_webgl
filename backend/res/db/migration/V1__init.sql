@@ -14,11 +14,11 @@ create table if not exists account
 create table if not exists `character`
 (
     id          bigint primary key,
-    account_id  bigint not null,
-    name        varchar(128),
-    deleted     bool     default false,
-    online_time bigint   default 0,
-    created     datetime default current_timestamp,
+    account_id  bigint       not null,
+    name        varchar(128) not null,
+    deleted     bool         not null default false,
+    online_time bigint       not null default 0,
+    created     datetime     not null default current_timestamp,
 
     foreign key (account_id) references account (id)
 );

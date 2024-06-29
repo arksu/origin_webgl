@@ -36,7 +36,7 @@ fun Route.websockets(dsl: DSLContext) {
                         logger.debug(request.toString())
 
                         if (request.target == "token") {
-                            val token = request.data!!["token"] as String
+                            val token = request.data["token"] as String
                             dsl.transactionResultWrapper { trx ->
                                 // ищем аккаунт по токену
                                 val account = trx.selectFrom(ACCOUNT)

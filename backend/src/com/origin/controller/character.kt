@@ -41,7 +41,7 @@ fun Route.characters(dsl: DSLContext) {
                     .fetch()
 
                 call.respond(mapOf("list" to list.map {
-                    CharacterResponseDTO(it.id!!, it.name!!)
+                    CharacterResponseDTO(it.id, it.name)
                 }))
             }
         }
@@ -98,7 +98,7 @@ fun Route.characters(dsl: DSLContext) {
                     .returning()
                     .fetchSingle()
 
-                call.respond(CharacterResponseDTO(saved.id!!, saved.name!!))
+                call.respond(CharacterResponseDTO(saved.id, saved.name))
             }
         }
 

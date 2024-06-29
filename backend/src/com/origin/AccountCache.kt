@@ -49,8 +49,8 @@ class AccountCache {
                 accountBySsid.remove(oldSsid)
             }
             // запомним новую сессию
-            accountBySsid[account.ssid!!] = account
-            accountSsidById[accountId] = account.ssid!!
+            accountBySsid[account.ssid] = account
+            accountSsidById[accountId] = account.ssid
         } finally {
             lock.unlock()
         }
