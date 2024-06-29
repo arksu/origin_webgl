@@ -8,6 +8,7 @@ import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.references.ACCOUNT
 import com.origin.util.generateString
 import com.origin.util.scrypt.SCryptUtil
+import com.origin.util.transactionResultWrapper
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -28,17 +29,15 @@ fun Route.auth(dsl: DSLContext) {
     post("/login") {
         val request = call.receive<UserLoginRequestDTO>()
 
-        val account = dsl.transactionResult { trx ->
-            val acc = trx.dsl()
-                .selectFrom(ACCOUNT)
+        val account = dsl.transactionResultWrapper { trx ->
+            val acc = trx.selectFrom(ACCOUNT)
                 .where(ACCOUNT.LOGIN.eq(request.login))
                 .forUpdate()
                 .fetchOne() ?: throw UserNotFoundException()
 
             if (SCryptUtil.check(acc.password, request.hash)) {
                 acc.ssid = generateString(32)
-                trx.dsl()
-                    .update(ACCOUNT)
+                trx.update(ACCOUNT)
                     .set(ACCOUNT.SSID, acc.ssid)
                     .set(ACCOUNT.LAST_LOGGED, DSL.currentLocalDateTime())
                     .where(ACCOUNT.ID.eq(acc.id))
@@ -62,9 +61,8 @@ fun Route.auth(dsl: DSLContext) {
             request.email.trim().lowercase()
         }
 
-        val account = dsl.transactionResult { trx ->
-            val account = trx.dsl()
-                .selectFrom(ACCOUNT)
+        val account = dsl.transactionResultWrapper { trx ->
+            val account = trx.selectFrom(ACCOUNT)
                 .where(
                     ACCOUNT.LOGIN.eq(request.login.lowercase())
                         .or(ACCOUNT.EMAIL.isNotNull.and(ACCOUNT.EMAIL.eq(email)))
@@ -79,7 +77,7 @@ fun Route.auth(dsl: DSLContext) {
             newAccount.password = request.password
             newAccount.ssid = generateString(32)
 
-            val saved = trx.dsl().insertInto(ACCOUNT)
+            val saved = trx.insertInto(ACCOUNT)
                 .set(newAccount)
                 .set(ACCOUNT.LAST_LOGGED, DSL.currentLocalDateTime())
                 .returning()

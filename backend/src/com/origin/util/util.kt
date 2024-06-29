@@ -1,5 +1,6 @@
 package com.origin.util
 
+import org.jooq.DSLContext
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
@@ -19,4 +20,10 @@ private fun generateString(len: Int, symbols: CharArray): String {
         sb.append(symbols[random.nextInt(symbols.size)])
     }
     return sb.toString()
+}
+
+fun <T> DSLContext.transactionResultWrapper(block: (dsl: DSLContext) -> T): T {
+    return this.transactionResult { configuration ->
+        block(configuration.dsl())
+    }
 }

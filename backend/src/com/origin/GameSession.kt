@@ -1,10 +1,10 @@
 package com.origin
 
 import com.google.gson.Gson
-import com.origin.controller.GameRequestDTO
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.net.AuthorizeTokenResponse
+import com.origin.net.GameRequestDTO
 import com.origin.net.GameResponseDTO
 import com.origin.net.ServerMessage
 import io.ktor.websocket.*
