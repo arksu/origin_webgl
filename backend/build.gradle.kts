@@ -2,6 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val ktorVersion = "2.3.12" // https://kotlinlang.org/
 val slf4jVersion = "2.0.13" // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+val flywayVersion = "10.15.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
+val mariadbJavaClientVersion = "3.4.0" // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+val jooqVersion = "3.19.10" // https://mvnrepository.com/artifact/org.jooq/jooq
 
 plugins {
     val kotlinVersion = "1.9.24" // https://github.com/JetBrains/kotlin/releases
@@ -38,19 +41,13 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "17"
 }
 
-
-//compileTestKotlin {
-//    kotlinOptions.jvmTarget = "17"
-//}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
     implementation(kotlin("stdlib"))
-//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-//
+
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-cors:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
@@ -64,15 +61,15 @@ dependencies {
 
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     implementation("org.slf4j:slf4j-log4j12:$slf4jVersion")
-//
-    implementation("com.google.code.gson:gson:2.11.0") // https://mvnrepository.com/artifact/com.google.code.gson/gson
-//
-    implementation("com.zaxxer:HikariCP:5.1.0") // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
-    implementation("org.flywaydb:flyway-core:10.15.0")
-    runtimeOnly("org.flywaydb:flyway-mysql:10.15.0")
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:3.4.0") // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
 
-    jooqGenerator("org.mariadb.jdbc:mariadb-java-client:3.4.0")
+    implementation("com.google.code.gson:gson:2.11.0") // https://mvnrepository.com/artifact/com.google.code.gson/gson
+
+    implementation("com.zaxxer:HikariCP:5.1.0") // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
+    runtimeOnly("org.flywaydb:flyway-mysql:$flywayVersion")
+
+    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:$mariadbJavaClientVersion")
+    jooqGenerator("org.mariadb.jdbc:mariadb-java-client:$mariadbJavaClientVersion")
 
 //    implementation 'com.typesafe:config:1.4.2'
 }
@@ -117,12 +114,10 @@ flyway {
     schemas = arrayOf("origin")
     cleanDisabled = false
     locations = arrayOf("filesystem:res/db/migration")
-//    executeInTransaction = true
 }
 
 jooq {
-    version.set("3.19.10")
-    edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
+    version.set(jooqVersion)
 
     configurations {
         create("main") {
