@@ -35,5 +35,6 @@ fun ApplicationCall.getAccountSsid(): String {
 inline fun PipelineContext<Unit, ApplicationCall>.withAccount(block: (account: AccountRecord) -> Unit) {
     val accountSsid = call.getAccountSsid()
     val account = GameWebServer.accountCache.get(accountSsid) ?: throw AuthorizationException()
+    // TODO: если не нашли аккаунт в кэше надо поискать еще в базе по ssid
     block(account)
 }

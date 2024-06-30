@@ -5,6 +5,8 @@ import guards from '@/router/guard'
 import Login from '@/views/Login.vue'
 import Characters from '@/views/characters/index.vue'
 import SignUp from '@/views/SignUp.vue'
+import CreateNew from '@/views/characters/CreateNew.vue'
+import GameView from '@/views/game/GameView.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -27,6 +29,22 @@ const routes: Array<RouteRecordRaw> = [
     path: '/characters',
     name: RouteNames.CHARACTERS,
     component: Characters,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/new-character',
+    name: RouteNames.NEW_CHARACTER,
+    component: CreateNew,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/game',
+    name: RouteNames.GAME,
+    component: GameView,
     meta: {
       requiresAuth: true
     }

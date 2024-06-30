@@ -4,11 +4,15 @@ import axios, {
 } from 'axios'
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
+import router from '@/router'
+import { RouteNames } from '@/router/routeNames'
 
 export const apiUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api/'
 
 const apiClient = axios.create({
   baseURL: apiUrl,
+  timeout: 3000,
+  timeoutErrorMessage: 'Timeout exceeded'
 })
 
 apiClient.interceptors.request.use((config) => {
@@ -20,7 +24,8 @@ apiClient.interceptors.request.use((config) => {
 })
 
 export const useApi = (path: string, config: AxiosRequestConfig & {
-  excludeErrorStatuses?: Array<number>
+  excludeErrorStatuses?: Array<number>,
+  onErrorRouteName?: string
 }) => {
   const authStore = useAuthStore()
 
@@ -38,19 +43,21 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
     console.info('api request ' + config.method + ' [' + path + ']:', config.data)
 
     try {
-      const result = await axios.request({ url, timeout: 3000, timeoutErrorMessage: 'Timeout exceeded', ...config })
+      const result = await apiClient.request({ url, ...config })
       console.info('api response:', result.data)
       response.value = result.data
       isSuccess.value = true
       return response
     } catch (ex: any) {
-      console.error(ex)
       isSuccess.value = false
       if (ex instanceof AxiosError) {
         // если есть ответ от сервера
         if (ex.response) {
-          if (config.excludeErrorStatuses && ex.response.status in config.excludeErrorStatuses) {
-            return ex.response.data
+          if (config.excludeErrorStatuses && config.excludeErrorStatuses.includes(ex.response.status)) {
+            const response = `[${ex.response.status}] ${ex.response.data}`
+            console.error(response)
+            authStore.lastError = response
+            return response as any
           }
           error.value = ex.response.data ? `[${ex.response.status}] ${ex.response.data}` : `[${ex.response.status}] ${ex.response.statusText}`
         } else {
@@ -59,11 +66,15 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
       } else {
         error.value = ex.toString()
       }
+      console.error(error.value)
+
       authStore.lastError = error.value
+      authStore.clearToken()
+      router.push({ name: config.onErrorRouteName || RouteNames.LOGIN })
     } finally {
       isLoading.value = false
     }
   }
 
-  return { isLoading, fetch, response, error }
+  return { isLoading, isSuccess, fetch, response, error }
 }

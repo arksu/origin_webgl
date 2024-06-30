@@ -33,6 +33,7 @@ export default defineComponent({
 
     const { isLoading, fetch } = useApi('signup', {
       method: 'POST',
+      onErrorRouteName: RouteNames.SIGN_UP,
       data: request
     })
 

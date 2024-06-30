@@ -92,7 +92,7 @@ fun Route.characters(dsl: DSLContext) {
                 // TODO: new character spawn coordinates
 
                 val saved = dsl.insertInto(CHARACTER)
-                    .set(CHARACTER.ID, Random.nextLong())
+                    .set(CHARACTER.ID, Random.nextLong(1000))
                     .set(CHARACTER.ACCOUNT_ID, account.id)
                     .set(CHARACTER.NAME, request.name)
                     .returning()
