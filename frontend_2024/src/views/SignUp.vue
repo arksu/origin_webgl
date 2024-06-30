@@ -8,9 +8,15 @@ import EmailField from '@/components/EmailField.vue'
 import SubmitButton from '@/components/SubmitButton.vue'
 import { useApi } from '@/composition/useApi'
 import { useAuthStore } from '@/stores/authStore'
+import { RouteNames } from '@/router/routeNames'
 
 export default defineComponent({
   name: 'SignUp',
+  computed: {
+    RouteNames() {
+      return RouteNames
+    }
+  },
   components: { Logo, ErrorMessage, LoginField, PasswordField, EmailField, SubmitButton },
   setup() {
     const authStore = useAuthStore()
@@ -65,7 +71,7 @@ export default defineComponent({
 
           <div class="signup-link">
             Already have an account?
-            <router-link :to="{ name: 'LOGIN'}">Log in</router-link>
+            <router-link :to="{ name: RouteNames.LOGIN}">Log in</router-link>
           </div>
         </form>
       </div>

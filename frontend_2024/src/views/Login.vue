@@ -14,6 +14,11 @@ import { RouteNames } from '@/router/routeNames'
 
 export default defineComponent({
   name: 'Login',
+  computed: {
+    RouteNames() {
+      return RouteNames
+    }
+  },
   components: { Logo, ErrorMessage, LoginField, PasswordField, SubmitButton },
   setup() {
     const authStore = useAuthStore()
@@ -68,7 +73,7 @@ export default defineComponent({
 
           <div class="signup-link">
             Not a member?
-            <router-link :to="{ name: 'SIGN_UP'}">Signup now</router-link>
+            <router-link :to="{ name: RouteNames.SIGN_UP}">Signup now</router-link>
           </div>
         </form>
       </div>

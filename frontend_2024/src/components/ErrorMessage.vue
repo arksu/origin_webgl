@@ -1,22 +1,23 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 // import {useMainStore} from "../store/main";
 
 export default defineComponent({
   setup() {
+    const authStore = useAuthStore()
     // const store = useMainStore();
 
     // return {error: computed(() => store.lastError)};
-    const error = ref('111')
 
-    return {error}
-  },
-});
+    return { authStore }
+  }
+})
 </script>
 
 <template>
-  <div class="error-message" v-if="error != null">
-    {{ error }}
+  <div class="error-message" v-if="authStore.lastError">
+    {{ authStore.lastError }}
   </div>
 </template>
 
