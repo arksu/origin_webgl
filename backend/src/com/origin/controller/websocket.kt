@@ -25,6 +25,8 @@ fun Route.websockets(dsl: DSLContext) {
     webSocket("game") {
         var session: GameSession? = null
 
+        logger.debug("ws connected")
+
         try {
             for (frame in incoming) {
                 // этап авторизации в только что открытом ws коннекте

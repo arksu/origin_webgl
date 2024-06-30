@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { RouteNames } from '@/router/routeNames'
+import router from '@/router'
 
 export const useGameStore = defineStore('game', {
   state: () => ({
@@ -6,7 +8,7 @@ export const useGameStore = defineStore('game', {
   }),
   actions: {
     logout() {
-
+      router.push({ name: RouteNames.CHARACTERS });
     }
   }
 })

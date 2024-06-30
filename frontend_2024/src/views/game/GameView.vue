@@ -54,7 +54,13 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
-
+      if (GameClient.instance != undefined) {
+        GameClient.instance.onDisconnect = undefined;
+        GameClient.instance.disconnect();
+      }
+      gameStore.$reset();
+      window.removeEventListener("mousemove", onMouseMove);
+      // Render.stop();
     })
 
     const toggleCraftWindow = () => {

@@ -71,9 +71,8 @@ export default class GameClient {
 
   /**
    * обработка открытия сокета
-   * @param {Event} _ev
    */
-  private onopen(_ev: Event) {
+  private onopen(_: Event) {
     console.warn('ws connected')
 
     if (this.state !== State.Connecting) {
