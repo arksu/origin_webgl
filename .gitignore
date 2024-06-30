@@ -4,8 +4,7 @@
 **/.awcache
 **/dist
 **/node_modules
-*lock*
-
+*lock
 *.iml
 
 backend/.gradle

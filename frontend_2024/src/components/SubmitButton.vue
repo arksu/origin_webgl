@@ -16,14 +16,13 @@ export default defineComponent({
   },
   emits: ['onClick'],
   setup() {
-
   }
 })
 </script>
 
 <template>
   <button type="submit" class="login-button" v-bind:class="{'login-button-loading': loading}" v-bind:disabled="loading"
-          :onclick="$emit('onClick')">
+          @click="$emit('onClick')">
     <span class="button__text">{{ caption }}</span>
   </button>
 </template>

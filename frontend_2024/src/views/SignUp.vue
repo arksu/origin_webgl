@@ -1,39 +1,39 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-
+import { defineComponent, ref } from 'vue'
+import Logo from '@/components/Logo.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
 import LoginField from '@/components/LoginField.vue'
 import PasswordField from '@/components/PasswordField.vue'
+import EmailField from '@/components/EmailField.vue'
 import SubmitButton from '@/components/SubmitButton.vue'
-import ErrorMessage from '@/components/ErrorMessage.vue'
-import Logo from '@/components/Logo.vue'
-import { makeHash } from '@/util/passwordHash'
 import { useApi } from '@/composition/useApi'
 import { useAuthStore } from '@/stores/authStore'
-import router from '@/router'
-import { RouteNames } from '@/router/routeNames'
 
 export default defineComponent({
-  name: 'Login',
-  components: { Logo, ErrorMessage, LoginField, PasswordField, SubmitButton },
+  name: 'SignUp',
+  components: { Logo, ErrorMessage, LoginField, PasswordField, EmailField, SubmitButton },
   setup() {
     const authStore = useAuthStore()
 
-    const login = ref(localStorage.getItem('login') || '')
+    const login = ref('')
     const password = ref('')
+    const email = ref('')
 
     const request = {
       login: '',
-      hash: ''
+      email: '',
+      password: ''
     }
 
-    const { isLoading, fetch } = useApi('login', {
+    const { isLoading, fetch } = useApi('signup', {
       method: 'POST',
       data: request
     })
 
     const submit = async () => {
       request.login = login.value
-      request.hash = makeHash(password.value)
+      request.email = email.value
+      request.password = password.value
 
       const response = await fetch()
 
@@ -41,13 +41,9 @@ export default defineComponent({
       authStore.setToken(response.value.ssid)
     }
 
-    onMounted(() => {
-      if (authStore.token) {
-        router.push({ name: RouteNames.CHARACTERS })
-      }
-    })
-
-    return { login, password, submit, isLoading }
+    return {
+      login, password, email, submit, isLoading
+    }
   }
 })
 </script>
@@ -63,12 +59,13 @@ export default defineComponent({
           <error-message />
 
           <login-field v-model="login" />
+          <email-field v-model="email" />
           <password-field v-model="password" />
-          <submit-button :loading="isLoading" caption="login" />
+          <submit-button :loading="isLoading" caption="create account" />
 
           <div class="signup-link">
-            Not a member?
-            <router-link :to="{ name: 'SIGN_UP'}">Signup now</router-link>
+            Already have an account?
+            <router-link :to="{ name: 'LOGIN'}">Log in</router-link>
           </div>
         </form>
       </div>
