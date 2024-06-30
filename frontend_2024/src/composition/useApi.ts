@@ -12,7 +12,7 @@ export const apiUrl = window.location.protocol + '//' + window.location.hostname
 
 const apiClient = axios.create({
   baseURL: apiUrl,
-  timeout: 1000
+  timeout: 3000
 })
 
 apiClient.interceptors.request.use((config) => {
@@ -39,8 +39,10 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
 
     try {
       const result = await axios.request({ url, ...config })
-      response.value = result.data
+        .then()
       console.info('api response:', result.data)
+      if (result.status)
+      response.value = result.data
       isSuccess.value = true
       return response
     } finally {

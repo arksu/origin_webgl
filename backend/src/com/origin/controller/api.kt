@@ -8,7 +8,6 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 /**
  * REST Api для авторизации и операций с персонажами (до игровое состояние)
@@ -23,7 +22,14 @@ fun Route.api() {
 }
 
 fun ApplicationCall.getAccountSsid(): String {
-    return this.request.headers[HttpHeaders.Authorization] ?: throw AuthorizationException()
+    val bearerPrefix = "Bearer "
+
+    val authorizationHeader = this.request.headers[HttpHeaders.Authorization] ?: throw AuthorizationException()
+    return if (authorizationHeader.startsWith(bearerPrefix, ignoreCase = true)) {
+        authorizationHeader.substring(bearerPrefix.length).trim()
+    } else {
+        authorizationHeader.trim()
+    }
 }
 
 inline fun PipelineContext<Unit, ApplicationCall>.withAccount(block: (account: AccountRecord) -> Unit) {
