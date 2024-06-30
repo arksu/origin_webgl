@@ -2,7 +2,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import SubmitButton from '@/components/SubmitButton.vue'
 import Spinner from '@/components/Spinner.vue'
-import { useApi } from '@/composition/useApi'
+import { useApi } from '@/net/useApi'
 import { useAuthStore } from '@/stores/authStore'
 import Row from '@/views/characters/Row.vue'
 

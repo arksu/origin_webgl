@@ -1,19 +1,19 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import router from '@/router'
 import { RouteNames } from '@/router/routeNames'
 import { useAuthStore } from '@/stores/authStore'
 import { useGameStore } from '@/stores/gameStore'
+import GameClient from '@/net/GameClient'
+import GameButton from '@/components/GameButton.vue'
 
 /**
  * игровой вид, рендер и весь UI для игры
  */
 export default defineComponent({
   name: 'GameView',
-  components: {},
+  components: { GameButton },
   setup() {
-    const route = useRoute()
     const isActive = ref(false)
     const authStore = useAuthStore()
     const gameStore = useGameStore()
@@ -28,7 +28,26 @@ export default defineComponent({
     onMounted(() => {
       console.log('ws token', authStore.websocketToken)
       if (authStore.websocketToken) {
+        // подключаемся к вебсокету на игровом сервере
+        const client = GameClient.createNew()
 
+        client.onConnect = () => {
+          isActive.value = true
+        }
+
+        client.onError = (errorMessage) => {
+          isActive.value = false
+          console.error(errorMessage)
+          // Render.stop();
+          authStore.setError(errorMessage)
+          router.push({ name: RouteNames.LOGIN })
+        }
+
+        client.onDisconnect = () => {
+          isActive.value = false
+          // Render.stop();
+          router.push({ name: RouteNames.LOGIN })
+        }
       } else {
         router.replace({ name: RouteNames.CHARACTERS })
       }
@@ -44,7 +63,7 @@ export default defineComponent({
     }
 
     return {
-      active: isActive,
+      isActive,
       mouseX,
       mouseY,
       gameStore,
@@ -55,14 +74,24 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="!active" class="padding-all">
+  <div v-if="!isActive" class="padding-all">
     <div class="login-panel">
       <div>LOADING...</div>
     </div>
   </div>
 
-  <div class="game-ui" v-if="active">
-
+  <div class="game-ui" v-if="isActive">
+    <div style="right: 0; bottom: 0; position: absolute">
+      <game-button
+        tooltip="Logout"
+        @click="gameStore.logout()"
+        font-color="#301717"
+        border-color="#59322C"
+        back-color="#683E36"
+      >
+        <i class="fas fa-sign-out-alt"></i>
+      </game-button>
+    </div>
   </div>
 </template>
 

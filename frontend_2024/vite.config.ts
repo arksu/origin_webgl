@@ -8,9 +8,18 @@ export default defineConfig({
   plugins: [
     vue()
   ],
+  // publicDir: 'assets',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  build: {
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: {}
+      }
     }
   },
   server: {
@@ -21,6 +30,6 @@ export default defineConfig({
         target: 'ws://0.0.0.0:8110',
         ws: true
       }
-    }
+    },
   }
 })

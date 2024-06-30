@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import SubmitButton from '@/components/SubmitButton.vue'
-import { useApi } from '@/composition/useApi'
+import { useApi } from '@/net/useApi'
 import router from '@/router'
 import { RouteNames } from '@/router/routeNames'
 import ErrorMessage from '@/components/ErrorMessage.vue'

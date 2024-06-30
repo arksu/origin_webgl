@@ -6,6 +6,7 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import router from '@/router'
 import { RouteNames } from '@/router/routeNames'
+import sleep from '@/util/sleep'
 
 export const apiUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api/'
 
@@ -43,6 +44,7 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
     console.info('api request ' + config.method + ' [' + path + ']:', config.data)
 
     try {
+      // await sleep(2000)
       const result = await apiClient.request({ url, ...config })
       console.info('api response:', result.data)
       response.value = result.data
@@ -68,8 +70,7 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
       }
       console.error(error.value)
 
-      authStore.lastError = error.value
-      authStore.clearToken()
+      authStore.setError(error.value)
       router.push({ name: config.onErrorRouteName || RouteNames.LOGIN })
     } finally {
       isLoading.value = false
