@@ -31,7 +31,7 @@ export default defineComponent({
       hash: ''
     }
 
-    const { isLoading, fetch } = useApi('login', {
+    const { isLoading, isSuccess, fetch } = useApi('login', {
       method: 'POST',
       data: request
     })
@@ -42,8 +42,10 @@ export default defineComponent({
 
       const response = await fetch()
 
-      localStorage.setItem('login', request.login)
-      authStore.setToken(response.value.ssid)
+      if (isSuccess.value) {
+        localStorage.setItem('login', request.login)
+        authStore.setToken(response.value.ssid)
+      }
     }
 
     onMounted(() => {

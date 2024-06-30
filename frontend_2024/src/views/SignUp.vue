@@ -31,7 +31,7 @@ export default defineComponent({
       password: ''
     }
 
-    const { isLoading, fetch } = useApi('signup', {
+    const { isLoading, isSuccess, fetch } = useApi('signup', {
       method: 'POST',
       onErrorRouteName: RouteNames.SIGN_UP,
       data: request
@@ -44,8 +44,10 @@ export default defineComponent({
 
       const response = await fetch()
 
-      localStorage.setItem('login', request.login)
-      authStore.setToken(response.value.ssid)
+      if (isSuccess.value) {
+        localStorage.setItem('login', request.login)
+        authStore.setToken(response.value.ssid)
+      }
     }
 
     return {

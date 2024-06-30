@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 import { useApi } from '@/net/useApi'
 import router from '@/router'
 import { RouteNames } from '@/router/routeNames'

@@ -6,7 +6,6 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import router from '@/router'
 import { RouteNames } from '@/router/routeNames'
-import sleep from '@/util/sleep'
 
 export const apiUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/api/'
 
@@ -71,7 +70,7 @@ export const useApi = (path: string, config: AxiosRequestConfig & {
       console.error(error.value)
 
       authStore.setError(error.value)
-      router.push({ name: config.onErrorRouteName || RouteNames.LOGIN })
+      await router.push({ name: config.onErrorRouteName || RouteNames.LOGIN })
     } finally {
       isLoading.value = false
     }
