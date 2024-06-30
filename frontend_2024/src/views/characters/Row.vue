@@ -44,8 +44,7 @@ export default defineComponent({
         if (isSuccess.value && response.value.token) {
           const token = response.value.token
           localStorage.setItem('lastSelectedChar', '' + props.id)
-          authStore.websocketToken = token
-          console.log('token for game', token)
+          authStore.setWebsocketToken(token)
           await router.push({
             name: RouteNames.GAME
           })

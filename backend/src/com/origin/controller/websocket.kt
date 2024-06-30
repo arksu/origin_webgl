@@ -13,7 +13,6 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
 import org.jooq.DSLContext
-import org.jooq.impl.DSL
 import java.util.*
 
 /**
@@ -53,11 +52,6 @@ fun Route.websockets(dsl: DSLContext) {
                                 // создаем игровую сессию
                                 val localSession = GameSession(this, token, account, character)
                                 session = localSession
-
-                                trx.update(ACCOUNT)
-                                    .set(ACCOUNT.WS_TOKEN, DSL.inline(null, ACCOUNT.WS_TOKEN))
-                                    .where(ACCOUNT.ID.eq(account.id))
-                                    .execute()
 
                                 // кикнуть таких же персонажей этого юзера
                                 // (можно заходить в игру своими разными персонажами одновременно)

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import router from '../../router'
+import router from '@/router'
 import { RouteNames } from '@/router/routeNames'
 import { useAuthStore } from '@/stores/authStore'
 import { useGameStore } from '@/stores/gameStore'
@@ -14,7 +14,7 @@ export default defineComponent({
   components: {},
   setup() {
     const route = useRoute()
-    const active = ref(false)
+    const isActive = ref(false)
     const authStore = useAuthStore()
     const gameStore = useGameStore()
 
@@ -26,7 +26,12 @@ export default defineComponent({
       mouseY.value = e.clientY
     }
     onMounted(() => {
+      console.log('ws token', authStore.websocketToken)
+      if (authStore.websocketToken) {
 
+      } else {
+        router.replace({ name: RouteNames.CHARACTERS })
+      }
     })
 
     onUnmounted(() => {
@@ -39,7 +44,7 @@ export default defineComponent({
     }
 
     return {
-      active,
+      active: isActive,
       mouseX,
       mouseY,
       gameStore,

@@ -5,7 +5,7 @@ import { RouteNames } from '@/router/routeNames'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || undefined)
-  const websocketToken = ref<string | undefined>(undefined)
+  const websocketToken = ref<string | undefined>(localStorage.getItem('websocketToken') || undefined)
   const lastError = ref<string | undefined>(undefined)
 
   const setToken = (newToken: string) => {
@@ -25,5 +25,21 @@ export const useAuthStore = defineStore('auth', () => {
     router.push({ name: RouteNames.LOGIN })
   }
 
-  return { lastError, token: readonly(token), setToken, clearToken, websocketToken, logout }
+  const setWebsocketToken = (newToken: string) => {
+    console.log('set ws token', newToken)
+    websocketToken.value = newToken
+    localStorage.setItem('websocketToken', newToken)
+  }
+
+  const clearWebsocketToken = () => {
+    websocketToken.value = undefined
+    localStorage.removeItem('websocketToken')
+  }
+
+  return {
+    lastError,
+    logout,
+    token: readonly(token), setToken, clearToken,
+    websocketToken: readonly(websocketToken), setWebsocketToken, clearWebsocketToken
+  }
 })

@@ -8,7 +8,7 @@ export default defineComponent({
 
 <template>
   <div class="logo-container">
-    <img src="../../assets/img/logo.png" alt="logo">
+    <img src="/assets/img/logo.png" alt="logo">
   </div>
 </template>
 
