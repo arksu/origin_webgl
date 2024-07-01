@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { readonly, ref } from 'vue'
 import router from '@/router'
 import { RouteNames } from '@/router/routeNames'
-import errorMessage from '@/components/ErrorMessage.vue'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token') || undefined)

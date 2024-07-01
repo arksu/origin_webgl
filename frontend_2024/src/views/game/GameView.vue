@@ -25,8 +25,10 @@ export default defineComponent({
       mouseX.value = e.clientX
       mouseY.value = e.clientY
     }
+
     onMounted(() => {
       console.log('ws token', authStore.websocketToken)
+
       if (authStore.websocketToken) {
         // подключаемся к вебсокету на игровом сервере
         const client = GameClient.createNew()
@@ -55,11 +57,11 @@ export default defineComponent({
 
     onUnmounted(() => {
       if (GameClient.instance != undefined) {
-        GameClient.instance.onDisconnect = undefined;
-        GameClient.instance.disconnect();
+        GameClient.instance.onDisconnect = undefined
+        GameClient.instance.disconnect()
       }
-      gameStore.$reset();
-      window.removeEventListener("mousemove", onMouseMove);
+      gameStore.$reset()
+      window.removeEventListener('mousemove', onMouseMove)
       // Render.stop();
     })
 
