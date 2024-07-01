@@ -4,7 +4,7 @@ export default interface GameResponseDTO {
   /**
    * error if request is not success
    */
-  e?: any;
+  e?: string;
 
   /**
    * channel

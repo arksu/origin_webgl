@@ -21,6 +21,8 @@ export default defineComponent({
     const mouseX = ref(0)
     const mouseY = ref(0)
 
+    let client: GameClient | undefined = undefined
+
     const onMouseMove = (e: MouseEvent) => {
       mouseX.value = e.clientX
       mouseY.value = e.clientY
@@ -29,12 +31,16 @@ export default defineComponent({
     onMounted(() => {
       console.log('ws token', authStore.websocketToken)
 
-      if (authStore.websocketToken) {
+      const token = authStore.websocketToken
+      if (token) {
         // подключаемся к вебсокету на игровом сервере
-        const client = GameClient.createNew()
+        client = new GameClient()
 
         client.onConnect = () => {
-          isActive.value = true
+          client!.send('token', { token })
+            .then((r) => {
+              isActive.value = true
+            })
         }
 
         client.onError = (errorMessage) => {
@@ -56,9 +62,10 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
-      if (GameClient.instance != undefined) {
-        GameClient.instance.onDisconnect = undefined
-        GameClient.instance.disconnect()
+      if (client != undefined) {
+        client.onDisconnect = undefined
+        client.disconnect()
+        client = undefined
       }
       gameStore.$reset()
       window.removeEventListener('mousemove', onMouseMove)

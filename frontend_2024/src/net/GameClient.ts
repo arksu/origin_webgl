@@ -1,4 +1,6 @@
 import type GameResponseDTO from '@/net/GameResponseDTO'
+import type GameRequestDTO from '@/net/GameRequestDTO'
+import GameProto from '@/net/GameProto'
 
 enum State {
   Disconnected,
@@ -6,8 +8,12 @@ enum State {
   Connected,
 }
 
+interface Request {
+  resolve: (value?: any) => void;
+  reject: (reason?: string) => void;
+}
+
 export default class GameClient {
-  public static instance?: GameClient
 
   /**
    * состояние клиента сети
@@ -18,12 +24,23 @@ export default class GameClient {
   /**
    * сокет
    */
-  private socket?: WebSocket = undefined
+  private socket: WebSocket
+
+  /**
+   * реализация игрового протокола
+   */
+  private gameProto: GameProto
 
   /**
    * каждый запрос имеет свой id, увеличиваем его на 1 при каждом запросе
    */
   private lastId: number = 0
+
+  /**
+   * очередь запросов, запоминаем каждый запрос с его ид,
+   * при получении ответа удаляем из этого списка по его ид
+   */
+  private requests: { [id: number]: Request } = {}
 
   public onDisconnect?: () => void
   public onError?: (m: string) => void
@@ -38,21 +55,7 @@ export default class GameClient {
     + window.location.port
     + '/api/game'
 
-  public static createNew(): GameClient {
-    if (GameClient.instance !== undefined) {
-      GameClient.instance.disconnect()
-    }
-    GameClient.instance = new GameClient()
-    return GameClient.instance
-  }
-
-  private constructor() {
-    // сеть должна быть не активна для старта
-    if (this.state !== State.Disconnected) {
-      console.error('ws connect [' + this.state + '] wrong state')
-      return
-    }
-
+  constructor() {
     console.warn('ws connecting...')
     this.state = State.Connecting
     this.socket = new WebSocket(GameClient.url)
@@ -60,13 +63,13 @@ export default class GameClient {
     this.socket.onopen = this.onopen.bind(this)
     this.socket.onclose = this.onclose.bind(this)
     this.socket.onmessage = this.onmessage.bind(this)
+
+    this.gameProto = new GameProto(this)
   }
 
   public disconnect() {
     this.state = State.Disconnected
-    this.socket?.close()
-    this.socket = undefined
-    GameClient.instance = undefined
+    this.socket.close()
   }
 
   /**
@@ -76,7 +79,7 @@ export default class GameClient {
     console.warn('ws connected')
 
     if (this.state !== State.Connecting) {
-      throw Error('wrong state websocket on open')
+      throw Error('wrong state [' + this.state + '] websocket on open')
     }
 
     this.state = State.Connected
@@ -94,7 +97,6 @@ export default class GameClient {
     console.warn('ws closed [' + ev.code + '] ' + ev.reason)
 
     this.state = State.Disconnected
-    this.socket = undefined
 
     if (ev.code == 1011 && this.onError !== undefined) {
       this.onError(ev.reason)
@@ -112,29 +114,68 @@ export default class GameClient {
       const response: GameResponseDTO = JSON.parse(ev.data)
       console.log('%cRECV', 'color: #1BAC19', response)
 
-      // пришло сообщение в общий канал (не ответ на запрос серверу)
       if (response.id === 0 && response.c !== undefined) {
-        // this.onChannelMessage(response.c, response.d)
+        this.gameProto.processMessage(response)
       } else {
-        // // ищем в мапе по ид запроса
-        // let request: Request = this.requests[response.id]
-        // if (request !== undefined) {
-        //   // удалим из мапы
-        //   delete this.requests[response.id]
-        //
-        //   // ответ успешен?
-        //   if (response.e === undefined) {
-        //     request.resolve(response.d)
-        //   } else {
-        //     console.error(response.e)
-        //     // иначе была ошибка, прокинем ее
-        //     request.reject(response.e)
-        //   }
-        // }
+        // ищем в мапе по ид запроса
+        const request: Request = this.requests[response.id]
+        if (request !== undefined) {
+          // удалим из мапы
+          delete this.requests[response.id]
+
+          console.debug('requests size: ', Object.keys(this.requests).length)
+
+          // ответ успешен?
+          if (response.e === undefined) {
+            request.resolve(response.d)
+          } else {
+            console.error(response.e)
+            // иначе была ошибка, прокинем ее
+            request.reject(response.e)
+          }
+        }
       }
     } else {
       console.warn('unknown data type: ' + (typeof ev.data))
       console.warn('RECV', ev.data)
+    }
+  }
+
+  /**
+   * отправки пакет на игровой сервер
+   * @param target
+   * @param data
+   */
+  public send(target: string, data: any = undefined) {
+    const request: GameRequestDTO = {
+      id: ++this.lastId,
+      t: target,
+      d: data
+    }
+    return new Promise((resolve, reject) => {
+      // отправляем данные в сокет
+      this.socketSend(request)
+
+      // запишем запрос в мапу запросов
+      // промис завершится, когда придет ответ
+      this.requests[request.id] = {
+        resolve,
+        reject
+      }
+    })
+
+  }
+
+  /**
+   * прямая отправка данных в сокет
+   * @param request
+   * @private
+   */
+  private socketSend(request: GameRequestDTO): void {
+    if (this.state === State.Connected) {
+      const rawData = JSON.stringify(request)
+      console.log('%cSEND', 'color: red', request)
+      this.socket.send(rawData)
     }
   }
 }
