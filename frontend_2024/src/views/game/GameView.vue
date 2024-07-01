@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useGameStore } from '@/stores/gameStore'
 import GameClient from '@/net/GameClient'
 import GameButton from '@/components/GameButton.vue'
+import Render from '@/game/Render'
 
 /**
  * игровой вид, рендер и весь UI для игры
@@ -37,6 +38,7 @@ export default defineComponent({
         client = new GameClient()
 
         client.onConnect = () => {
+          const render = new Render()
           client!.send('token', { token })
             .then((r) => {
               isActive.value = true

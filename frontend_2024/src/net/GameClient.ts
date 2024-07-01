@@ -24,12 +24,12 @@ export default class GameClient {
   /**
    * сокет
    */
-  private socket: WebSocket
+  private readonly socket: WebSocket
 
   /**
    * реализация игрового протокола
    */
-  private gameProto: GameProto
+  private readonly gameProto: GameProto
 
   /**
    * каждый запрос имеет свой id, увеличиваем его на 1 при каждом запросе
@@ -40,7 +40,7 @@ export default class GameClient {
    * очередь запросов, запоминаем каждый запрос с его ид,
    * при получении ответа удаляем из этого списка по его ид
    */
-  private requests: { [id: number]: Request } = {}
+  private readonly requests: { [id: number]: Request } = {}
 
   public onDisconnect?: () => void
   public onError?: (m: string) => void
@@ -163,7 +163,6 @@ export default class GameClient {
         reject
       }
     })
-
   }
 
   /**
