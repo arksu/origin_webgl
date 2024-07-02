@@ -1,6 +1,7 @@
 import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameRequestDTO from '@/net/GameRequestDTO'
 import GameProto from '@/net/GameProto'
+import type Render from '@/game/Render'
 
 enum State {
   Disconnected,
@@ -55,7 +56,7 @@ export default class GameClient {
     + window.location.port
     + '/api/game'
 
-  constructor() {
+  constructor(render : Render) {
     console.warn('ws connecting...')
     this.state = State.Connecting
     this.socket = new WebSocket(GameClient.url)
@@ -64,7 +65,7 @@ export default class GameClient {
     this.socket.onclose = this.onclose.bind(this)
     this.socket.onmessage = this.onmessage.bind(this)
 
-    this.gameProto = new GameProto(this)
+    this.gameProto = new GameProto(this, render)
   }
 
   public disconnect() {

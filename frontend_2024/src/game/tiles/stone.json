@@ -1,0 +1,20 @@
+{
+  "ground": [
+    {
+      "img": "tiles/stone/stone1.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/stone/stone2.png",
+      "w": 1
+    },
+    {
+      "img": "tiles/stone/stone3.png",
+      "w": 1
+    }
+  ],
+  "borders": [
+  ],
+  "corners": [
+  ]
+}

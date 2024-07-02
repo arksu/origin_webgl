@@ -31,6 +31,9 @@ export default class Render {
     PIXI.isMobile.any
 
     this.app = new PIXI.Application()
+  }
+
+  init() {
     this.app.init({
       width: window.innerWidth,
       height: window.innerHeight,
@@ -47,7 +50,6 @@ export default class Render {
 
       this.app.ticker.add(this.update.bind(this))
     })
-
   }
 
   /**
@@ -93,5 +95,60 @@ export default class Render {
   private update(_ticker: PIXI.Ticker): void {
     // console.log('update', ticker)
     // console.log(this.app)
+  }
+
+  /**
+   * добавить ранее полученный от сервера грид в игру
+   */
+  public addGrid(x: number, y: number) {
+    const gameData = this.data;
+    const k = x + "_" + y
+    // // такой грид уже есть и создан
+    // if (this.grids[k] !== undefined) {
+    //   let g = this.grids[k]
+    //   // сделаем его видимым
+    //   if (!g.visible) {
+    //     g.visible = true
+    //   }
+    //   // а если еще и изменился - перестроим его
+    //   if (gameData.map[k].isChanged) {
+    //     // TODO если изменился тайл в нашем гриде и он на границе.
+    //     //  надо обновить и соседние гриды. т.к. там возможно перекрытие тайлов
+    //     g.rebuild()
+    //   }
+    // } else {
+    //   // такого грида еще нет - надо создать
+    //   this.grids[k] = new Grid(this.mapGrids, x, y)
+    //
+    //   // зачистим старые гриды, которые давно уже не видели
+    //   for (let gridsKey in this.grids) {
+    //     const grid = this.grids[gridsKey];
+    //     const playerObject = gameData.playerObject;
+    //     if (playerObject !== undefined) {
+    //       const dist = Math.sqrt(Math.pow(playerObject.x - grid.absoluteX, 2) + Math.pow(playerObject.y - grid.absoluteY, 2))
+    //       // дистанция от игрока на которой начнем удалять гриды иэ кэша
+    //       const limit = 5 * Tile.FULL_GRID_SIZE
+    //       if (!grid.visible && dist > limit) {
+    //         grid.destroy()
+    //         delete this.grids[gridsKey]
+    //         console.warn("old grid delete ", gridsKey)
+    //       }
+    //     }
+    //   }
+    // }
+    // gameData.map[k].isChanged = false
+  }
+
+  /**
+   * удалить грид из игры (скрыть его до поры до времени)
+   */
+  public deleteGrid(x: number, y: number) {
+    // for (let gridsKey in this.grids) {
+    //   if (this.grids[gridsKey].x == x && this.grids[gridsKey].y == y) {
+    //     console.log("delete grid", gridsKey)
+    //     this.grids[gridsKey].visible = false
+    //     break
+    //   }
+    // }
   }
 }

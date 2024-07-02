@@ -1,5 +1,6 @@
 package com.origin
 
+import com.origin.config.DatabaseConfig
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.flywaydb.core.Flyway
 import java.util.*
@@ -31,12 +32,7 @@ object ServerLauncher {
     private fun run() {
         Locale.setDefault(Locale.ROOT)
         ServerConfig.load()
-
-        val flyway = Flyway.configure()
-            .executeInTransaction(true)
-            .dataSource(ServerConfig.DATABASE_URL, ServerConfig.DATABASE_USER, ServerConfig.DATABASE_PASSWORD)
-            .load()
-        flyway.migrate()
+        DatabaseConfig.flywayMigrate()
 
 //        FileWatcher.start()
         EventBus.init()

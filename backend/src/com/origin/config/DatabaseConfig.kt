@@ -3,6 +3,7 @@ package com.origin.config
 import com.origin.ServerConfig
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import org.flywaydb.core.Flyway
 import org.jooq.impl.DSL
 
 object DatabaseConfig {
@@ -18,5 +19,13 @@ object DatabaseConfig {
         val dataSource = HikariDataSource(hikariConfig)
 
         DSL.using(dataSource, org.jooq.SQLDialect.MARIADB)
+    }
+
+    fun flywayMigrate() {
+        val flyway = Flyway.configure()
+            .executeInTransaction(true)
+            .dataSource(ServerConfig.DATABASE_URL, ServerConfig.DATABASE_USER, ServerConfig.DATABASE_PASSWORD)
+            .load()
+        flyway.migrate()
     }
 }

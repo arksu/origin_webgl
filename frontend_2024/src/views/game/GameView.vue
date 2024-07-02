@@ -36,12 +36,13 @@ export default defineComponent({
       const token = authStore.websocketToken
       if (token) {
         // подключаемся к вебсокету на игровом сервере
-        client = new GameClient()
+        render = new Render()
+        client = new GameClient(render)
 
         client.onConnect = () => {
-          render = new Render()
+          render?.init()
           // загружаем атласы
-          render.load()
+          render?.load()
             // как только атласы загружены
             .then(() => {
               console.log('assets loaded')
