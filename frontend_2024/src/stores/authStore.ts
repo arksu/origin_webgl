@@ -36,7 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('websocketToken')
   }
 
-  const setError = (errorMessage: string | undefined) => {
+  const setError = (errorMessage: string | undefined, needClearToken: boolean = true) => {
     lastError.value = errorMessage
     clearToken()
   }

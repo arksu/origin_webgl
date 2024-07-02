@@ -23,6 +23,7 @@ export default defineComponent({
     const mouseY = ref(0)
 
     let client: GameClient | undefined = undefined
+    let render: Render | undefined = undefined
 
     const onMouseMove = (e: MouseEvent) => {
       mouseX.value = e.clientX
@@ -38,25 +39,39 @@ export default defineComponent({
         client = new GameClient()
 
         client.onConnect = () => {
-          const render = new Render()
-          client!.send('token', { token })
-            .then((r) => {
-              isActive.value = true
+          render = new Render()
+          // загружаем атласы
+          render.load()
+            // как только атласы загружены
+            .then(() => {
+              console.log('assets loaded')
+              // шлем запрос с токеном на сервер для первичной авторизации и активации токена
+              client?.send('token', { token })
+                .then((r) => {
+                  render?.setup()
+                  isActive.value = true
+                })
+                .catch((e) => {
+                  isActive.value = false
+                  render!.stop()
+                  authStore.setError(e.toString(), false)
+                  router.push({ name: RouteNames.CHARACTERS })
+                })
             })
         }
 
         client.onError = (errorMessage) => {
           isActive.value = false
           console.error(errorMessage)
-          // Render.stop();
+          render?.stop()
           authStore.setError(errorMessage)
-          router.push({ name: RouteNames.LOGIN })
+          router.push({ name: RouteNames.CHARACTERS })
         }
 
         client.onDisconnect = () => {
           isActive.value = false
-          // Render.stop();
-          router.push({ name: RouteNames.LOGIN })
+          render?.stop()
+          router.push({ name: RouteNames.CHARACTERS })
         }
       } else {
         router.replace({ name: RouteNames.CHARACTERS })
@@ -64,10 +79,14 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
-      if (client != undefined) {
+      if (client !== undefined) {
         client.onDisconnect = undefined
         client.disconnect()
         client = undefined
+      }
+      if (render !== undefined) {
+        render.stop()
+        render = undefined
       }
       gameStore.$reset()
       window.removeEventListener('mousemove', onMouseMove)
@@ -98,6 +117,7 @@ export default defineComponent({
   </div>
 
   <div class="game-ui" v-if="isActive">
+    <!--  Logout  -->
     <div style="right: 0; bottom: 0; position: absolute">
       <game-button
         tooltip="Logout"
