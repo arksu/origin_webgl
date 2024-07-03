@@ -1,6 +1,9 @@
+@file:OptIn(DelicateCoroutinesApi::class)
+
 package com.origin.util
 
 import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 
