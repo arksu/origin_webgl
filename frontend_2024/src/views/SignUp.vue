@@ -68,7 +68,7 @@ export default defineComponent({
           <error-message />
 
           <login-field v-model="login" />
-          <email-field v-model="email" />
+<!--          <email-field v-model="email" />-->
           <password-field v-model="password" />
           <submit-button :loading="isLoading" caption="create account" />
 

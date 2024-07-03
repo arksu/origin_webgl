@@ -95,6 +95,11 @@ fun Route.characters(dsl: DSLContext) {
                     .set(CHARACTER.ID, Random.nextLong(1000))
                     .set(CHARACTER.ACCOUNT_ID, account.id)
                     .set(CHARACTER.NAME, request.name)
+                    .set(CHARACTER.X, Random.nextInt(1000))
+                    .set(CHARACTER.Y, Random.nextInt(1000))
+                    .set(CHARACTER.REGION, 0)
+                    .set(CHARACTER.LEVEL, 0)
+                    .set(CHARACTER.HEADING, 0)
                     .returning()
                     .fetchSingle()
 

@@ -3,6 +3,7 @@ package com.origin
 import com.google.gson.Gson
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
+import com.origin.model.Player
 import com.origin.net.AuthorizeTokenResponse
 import com.origin.net.GameRequestDTO
 import com.origin.net.GameResponseDTO
@@ -26,6 +27,8 @@ class GameSession(
         private val gsonSerializer = Gson()
     }
 
+    private lateinit var player: Player
+
     private var isDisconnected = false
 
 
@@ -35,6 +38,8 @@ class GameSession(
 
     suspend fun connected(request: GameRequestDTO) {
         ack(request, AuthorizeTokenResponse(character.id, ServerConfig.PROTO_VERSION))
+
+        player = Player(character, this)
     }
 
     fun disconnected() {

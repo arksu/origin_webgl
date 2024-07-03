@@ -16,6 +16,13 @@ create table if not exists `character`
     id          bigint primary key,
     account_id  bigint       not null,
     name        varchar(128) not null,
+
+    region      int          not null comment 'на каком континенте находится объект, либо ид дома (инстанса, локации)',
+    x           int          not null comment 'координаты в игровых еденицах внутри континента (из этого расчитываем супергрид и грид)',
+    y           int          not null,
+    level       int          not null comment 'уровень (слой) глубины где находится объект',
+    heading     tinyint      not null comment 'угол поворота, то куда смотрит объект',
+
     deleted     bool         not null default false,
     online_time bigint       not null default 0,
     created     datetime     not null default current_timestamp,

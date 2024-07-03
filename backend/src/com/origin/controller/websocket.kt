@@ -38,11 +38,10 @@ fun Route.websockets(dsl: DSLContext) {
 
                         if (request.target == "token") {
                             val token = request.data["token"] as String
-                            dsl.transactionResultWrapper { trx ->
+                            val localSession = dsl.transactionResultWrapper { trx ->
                                 // ищем аккаунт по токену
                                 val account = trx.selectFrom(ACCOUNT)
                                     .where(ACCOUNT.WS_TOKEN.eq(token))
-                                    .forUpdate()
                                     .fetchOne() ?: throw BadRequestException("Invalid token")
 
                                 // ищем выбранного персонажа
@@ -52,24 +51,26 @@ fun Route.websockets(dsl: DSLContext) {
                                     .fetchOne() ?: throw BadRequestException("Character not found")
 
                                 // создаем игровую сессию
-                                val localSession = GameSession(this, token, account, character)
-                                session = localSession
+                                GameSession(this, token, account, character)
+                            }
+                            session = localSession
 
-                                // кикнуть таких же персонажей этого юзера
-                                // (можно заходить в игру своими разными персонажами одновременно)
-                                gameSessions.forEach { s ->
-                                    if (s.character.id == character.id) {
-                                        runBlocking {
-                                            s.kick()
-                                        }
+                            // кикнуть таких же персонажей этого юзера
+                            // (можно заходить в игру своими разными персонажами одновременно)
+                            gameSessions.forEach { s ->
+                                if (s.character.id == localSession.character.id) {
+                                    runBlocking {
+                                        s.kick()
                                     }
                                 }
-                                gameSessions += localSession
                             }
-                            session!!.connected(request)
+                            // добавляем в список активных сессий
+                            gameSessions += localSession
+
+                            localSession.connected(request)
                         } else if (session != null) {
                             try {
-                                session!!.process(request)
+                                session.process(request)
                             } catch (e: Exception) {
                                 logger.error("session recv error ${e.message}", e)
                                 close(
