@@ -1,9 +1,6 @@
-package com.origin
+package com.origin.model
 
-import com.origin.model.Grid
-import com.origin.model.ObjectPosition
-import com.origin.model.Player
-import com.origin.model.Region
+import com.origin.ObjectID
 import java.util.concurrent.ConcurrentHashMap
 
 /**

@@ -23,6 +23,7 @@ object GlobalVariables {
     fun saveLong(name: String, value: Long) {
         DatabaseConfig.dsl
             .insertInto(GLOBAL_VAR)
+            .set(GLOBAL_VAR.NAME, name)
             .set(GLOBAL_VAR.VALUE_LONG, value)
             .onConflict(GLOBAL_VAR.NAME.eq(name))
             .doUpdate()
@@ -33,6 +34,7 @@ object GlobalVariables {
     fun saveString(name: String, value: String) {
         DatabaseConfig.dsl
             .insertInto(GLOBAL_VAR)
+            .set(GLOBAL_VAR.NAME, name)
             .set(GLOBAL_VAR.VALUE_STRING, value)
             .onConflict(GLOBAL_VAR.NAME.eq(name))
             .doUpdate()

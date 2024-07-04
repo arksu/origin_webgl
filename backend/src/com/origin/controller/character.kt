@@ -1,5 +1,6 @@
 package com.origin.controller
 
+import com.origin.IdFactory
 import com.origin.ObjectID
 import com.origin.error.BadRequestException
 import com.origin.jooq.tables.references.ACCOUNT
@@ -92,7 +93,7 @@ fun Route.characters(dsl: DSLContext) {
                 // TODO: new character spawn coordinates
 
                 val saved = dsl.insertInto(CHARACTER)
-                    .set(CHARACTER.ID, Random.nextLong(1000))
+                    .set(CHARACTER.ID, IdFactory.getNext())
                     .set(CHARACTER.ACCOUNT_ID, account.id)
                     .set(CHARACTER.NAME, request.name)
                     .set(CHARACTER.X, Random.nextInt(1000))

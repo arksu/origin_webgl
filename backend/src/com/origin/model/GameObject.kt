@@ -3,7 +3,6 @@
 package com.origin.model
 
 import com.origin.ObjectID
-import com.origin.World
 import com.origin.move.CollisionResult
 import com.origin.util.ACTOR_BUFFER_CAPACITY
 import com.origin.util.ACTOR_DISPATCHER
@@ -22,6 +21,12 @@ abstract class GameObject(val id: ObjectID, val position: ObjectPosition) {
 
     var isSpawned = false
         private set
+
+    /**
+     * в каком гриде сейчас находится объект
+     */
+
+    var grid: Grid? = null
 
     /**
      * актор для обработки сообщений

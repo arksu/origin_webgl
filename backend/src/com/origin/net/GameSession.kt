@@ -2,7 +2,7 @@ package com.origin.net
 
 import com.google.gson.Gson
 import com.origin.ServerConfig
-import com.origin.World
+import com.origin.model.World
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.model.Player
