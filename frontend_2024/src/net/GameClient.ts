@@ -2,6 +2,7 @@ import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameRequestDTO from '@/net/GameRequestDTO'
 import GameProto from '@/net/GameProto'
 import type Render from '@/game/Render'
+import type GameData from '@/net/GameData'
 
 enum State {
   Disconnected,
@@ -31,6 +32,8 @@ export default class GameClient {
    * реализация игрового протокола
    */
   private readonly gameProto: GameProto
+
+  private readonly gameData : GameData
 
   /**
    * каждый запрос имеет свой id, увеличиваем его на 1 при каждом запросе
@@ -65,6 +68,7 @@ export default class GameClient {
     this.socket.onclose = this.onclose.bind(this)
     this.socket.onmessage = this.onmessage.bind(this)
 
+    this.gameData = render.gameData
     this.gameProto = new GameProto(this, render)
   }
 

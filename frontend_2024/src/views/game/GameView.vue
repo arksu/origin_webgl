@@ -7,6 +7,7 @@ import { useGameStore } from '@/stores/gameStore'
 import GameClient from '@/net/GameClient'
 import GameButton from '@/components/GameButton.vue'
 import Render from '@/game/Render'
+import GameData from '@/net/GameData'
 
 /**
  * игровой вид, рендер и весь UI для игры
@@ -36,7 +37,8 @@ export default defineComponent({
       const token = authStore.websocketToken
       if (token) {
         // подключаемся к вебсокету на игровом сервере
-        render = new Render()
+        const data = new GameData()
+        render = new Render(data)
         client = new GameClient(render)
 
         client.onConnect = () => {

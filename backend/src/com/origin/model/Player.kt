@@ -1,6 +1,6 @@
 package com.origin.model
 
-import com.origin.GameSession
+import com.origin.net.GameSession
 import com.origin.jooq.tables.records.CharacterRecord
 
 class Player : GameObject {

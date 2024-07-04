@@ -32,4 +32,10 @@ class Grid(
             .execute()
         if (affected != 1) throw RuntimeException("failed update grid $record tiles")
     }
+
+    val tilesBlob get() = record.tilesBlob
+
+    val x: Int get() = record.x
+
+    val y: Int get() = record.y
 }

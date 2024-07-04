@@ -1,5 +1,7 @@
 import * as PIXI from 'pixi.js'
 import { utils } from '@pixi/core'
+import type GameData from '@/net/GameData'
+import Grid from '@/game/Grid'
 
 export default class Render {
 
@@ -10,8 +12,25 @@ export default class Render {
    */
   private readonly app: PIXI.Application
 
-  public constructor() {
+  /**
+   * загруженные гриды
+   */
+  private grids: { [key: string]: Grid } = {}
+
+  /**
+   * игровые данные
+   */
+  public readonly gameData: GameData
+
+  /**
+   * контейнер в котором храним контейнеры с гридами и тайлами
+   * их координаты внутри абсолютные мировые экранные
+   */
+  readonly mapGrids: PIXI.Container
+
+  public constructor(data: GameData) {
     console.info('pixi start')
+    this.gameData = data
 
     // создаем канвас для рендера
     this.canvas = document.createElement('canvas')
@@ -31,6 +50,7 @@ export default class Render {
     PIXI.isMobile.any
 
     this.app = new PIXI.Application()
+    this.mapGrids = new PIXI.Container()
   }
 
   init() {
@@ -49,6 +69,8 @@ export default class Render {
       this.app.ticker.maxFPS = 30
 
       this.app.ticker.add(this.update.bind(this))
+
+
     })
   }
 
@@ -66,9 +88,10 @@ export default class Render {
       // добавляем в резолвер только 1 раз, при рестарте pixi оно остается в памяти
       PIXI.Assets.add({ alias: 'base', src: '/assets/game/base.json' })
       PIXI.Assets.add({ alias: 'tiles', src: '/assets/game/tiles.json' })
+      PIXI.Assets.add({ alias: 'tiles2', src: '/assets/game/tiles.png' })
     }
 
-    return PIXI.Assets.load(['base', 'tiles'])
+    return PIXI.Assets.load(['base', 'tiles', 'tiles2'])
   }
 
   stop() {
@@ -90,6 +113,13 @@ export default class Render {
     // debug
     const s = PIXI.Sprite.from('clock14')
     this.app.stage.addChild(s)
+
+    this.app.stage.addChild(this.mapGrids)
+    console.log(this.mapGrids)
+
+    this.mapGrids.x = -500
+    this.mapGrids.y = -500
+    this.mapGrids.scale = 0.7
   }
 
   private update(_ticker: PIXI.Ticker): void {
@@ -101,41 +131,44 @@ export default class Render {
    * добавить ранее полученный от сервера грид в игру
    */
   public addGrid(x: number, y: number) {
-    const gameData = this.data;
-    const k = x + "_" + y
-    // // такой грид уже есть и создан
-    // if (this.grids[k] !== undefined) {
-    //   let g = this.grids[k]
-    //   // сделаем его видимым
-    //   if (!g.visible) {
-    //     g.visible = true
-    //   }
-    //   // а если еще и изменился - перестроим его
-    //   if (gameData.map[k].isChanged) {
-    //     // TODO если изменился тайл в нашем гриде и он на границе.
-    //     //  надо обновить и соседние гриды. т.к. там возможно перекрытие тайлов
-    //     g.rebuild()
-    //   }
-    // } else {
-    //   // такого грида еще нет - надо создать
-    //   this.grids[k] = new Grid(this.mapGrids, x, y)
-    //
-    //   // зачистим старые гриды, которые давно уже не видели
-    //   for (let gridsKey in this.grids) {
-    //     const grid = this.grids[gridsKey];
-    //     const playerObject = gameData.playerObject;
-    //     if (playerObject !== undefined) {
-    //       const dist = Math.sqrt(Math.pow(playerObject.x - grid.absoluteX, 2) + Math.pow(playerObject.y - grid.absoluteY, 2))
-    //       // дистанция от игрока на которой начнем удалять гриды иэ кэша
-    //       const limit = 5 * Tile.FULL_GRID_SIZE
-    //       if (!grid.visible && dist > limit) {
-    //         grid.destroy()
-    //         delete this.grids[gridsKey]
-    //         console.warn("old grid delete ", gridsKey)
-    //       }
-    //     }
-    //   }
+    const gameData = this.gameData
+    const k = x + '_' + y
+    console.log('render add grid', k)
+
+    // такой грид уже есть и создан
+    if (this.grids[k] !== undefined) {
+      const g = this.grids[k]
+      // сделаем его видимым
+      if (!g.visible) {
+        g.visible = true
+      }
+      // а если еще и изменился - перестроим его
+      if (gameData.map[k].isChanged) {
+        // TODO если изменился тайл в нашем гриде и он на границе.
+        //  надо обновить и соседние гриды. т.к. там возможно перекрытие тайлов
+        g.rebuild()
+      }
+    } else {
+      // такого грида еще нет - надо создать
+      this.grids[k] = new Grid(this, this.mapGrids, x, y)
+
+      // зачистим старые гриды, которые давно уже не видели
+      for (const gridsKey in this.grids) {
+        const grid = this.grids[gridsKey]
+        const playerObject = gameData.playerObject
+        if (playerObject !== undefined) {
+          // const dist = Math.sqrt(Math.pow(playerObject.x - grid.absoluteX, 2) + Math.pow(playerObject.y - grid.absoluteY, 2))
+          //       // дистанция от игрока на которой начнем удалять гриды иэ кэша
+          //       const limit = 5 * Tile.FULL_GRID_SIZE
+          //       if (!grid.visible && dist > limit) {
+          //         grid.destroy()
+          //         delete this.grids[gridsKey]
+          //         console.warn("old grid delete ", gridsKey)
+        }
+      }
+    }
     // }
+
     // gameData.map[k].isChanged = false
   }
 

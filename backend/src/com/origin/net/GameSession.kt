@@ -1,13 +1,11 @@
-package com.origin
+package com.origin.net
 
 import com.google.gson.Gson
+import com.origin.ServerConfig
+import com.origin.World
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.model.Player
-import com.origin.net.AuthorizeTokenResponse
-import com.origin.net.GameRequestDTO
-import com.origin.net.GameResponseDTO
-import com.origin.net.ServerMessage
 import io.ktor.websocket.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,6 +38,14 @@ class GameSession(
         ack(request, AuthorizeTokenResponse(character.id, ServerConfig.PROTO_VERSION))
 
         player = Player(character, this)
+
+        // TODO : DEBUG
+        send(MapGridData(World.getGrid(0, 0, 0, 0), MapGridData.Type.ADD))
+        send(MapGridData(World.getGrid(0, 0, 1, 0), MapGridData.Type.ADD))
+        send(MapGridData(World.getGrid(0, 0, 0, 1), MapGridData.Type.ADD))
+        send(MapGridData(World.getGrid(0, 0, 1, 1), MapGridData.Type.ADD))
+
+        send(MapGridConfirm())
     }
 
     fun disconnected() {

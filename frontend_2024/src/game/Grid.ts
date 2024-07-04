@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js'
 import Tile from './Tile'
-import GameClient from '@/net/GameClient'
 import VertexBuffer from '@/util/VertexBuffer'
 import { getRandomByCoord } from '@/util/random'
+import type Render from '@/game/Render'
 
 export interface MapData {
   x: number
@@ -26,12 +26,11 @@ export default class Grid {
 
   private static readonly MAKE_CORNERS = true
 
-  private static readonly PROGRAM: PIXI.GlProgram = PIXI.GlProgram.from({
-    vertex:
-      `precision mediump float;
+  private static readonly VERTEX_SHADER =
+    `precision mediump float;
 
-    attribute vec2 aVertexPosition;
-    attribute vec2 aTextureCoord;
+    attribute vec2 aPosition;
+    attribute vec2 aUV;
 
     uniform mat3 translationMatrix;
     uniform mat3 projectionMatrix;
@@ -40,12 +39,12 @@ export default class Grid {
 
     void main() {
 
-        vUvs = aTextureCoord;
-        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+        vUvs = aUV;
+        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aPosition, 1.0)).xy, 0.0, 1.0);
 
-    }`,
-    fragment:
-      `precision mediump float;
+    }`
+  private static readonly FRAGMENT_SHADER =
+    `precision mediump float;
 
     varying vec2 vUvs;
 
@@ -55,6 +54,10 @@ export default class Grid {
 
         gl_FragColor = texture2D(uSamplerTexture, vUvs);
     }`
+
+  private static readonly PROGRAM: PIXI.GlProgram = PIXI.GlProgram.from({
+    vertex: Grid.VERTEX_SHADER,
+    fragment: Grid.FRAGMENT_SHADER
   })
 
   /**
@@ -66,6 +69,8 @@ export default class Grid {
   private static readonly by = [1, 0, 1, 2]
   private static readonly cx = [0, 0, 2, 2]
   private static readonly cy = [0, 2, 2, 0]
+
+  private readonly render: Render
 
   /**
    * чанки-контейнеры на которые делим грид (иначе по размеру текстуры целый грид не влезает в память)
@@ -89,7 +94,8 @@ export default class Grid {
 
   private _visible: boolean = true
 
-  constructor(parent: PIXI.Container, x: number, y: number) {
+  constructor(render: Render, parent: PIXI.Container, x: number, y: number) {
+    this.render = render
     this.parent = parent
     this.x = x
     this.y = y
@@ -162,14 +168,15 @@ export default class Grid {
     container.y = x * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE + y * Tile.TILE_HEIGHT_HALF * Tile.GRID_SIZE
 
     this.makeTiles(container, cx, cy)
-    container.calculateBounds()
+    // container.calculateBounds() // !!!!!!!!!!!!!!!!
+    container.boundsArea
     // console.log("grid screen x=" + container.x + " y=" + container.y + " w=" + container.width + " h=" + container.height)
 
     return container
   }
 
   private makeTiles(container: PIXI.Container, cx: number, cy: number) {
-    const gameData = GameClient.data
+    const gameData = this.render.gameData
     const tiles = gameData.map[this.key].tiles
 
     // создаем заранее массив в 2 раза больше чем надо (под кусочки тайлов)
@@ -291,9 +298,41 @@ export default class Grid {
     }
 
     vertexBuffer.finish()
-    const geometry = new PIXI.MeshGeometry(vertexBuffer.vertex, vertexBuffer.uv, vertexBuffer.index)
+    // console.log(vertexBuffer)
 
-    // const mesh = new PIXI.Mesh(
+    const geometry = new PIXI.MeshGeometry({
+      positions: vertexBuffer.vertex,
+      uvs: vertexBuffer.uv,
+      indices: vertexBuffer.index
+    })
+    // console.log(geometry.attributes)
+
+    // const shader = PIXI.Shader.from({
+    //   gl: {
+    //     vertex: Grid.VERTEX_SHADER,
+    //     fragment: Grid.FRAGMENT_SHADER
+    //   },
+    //   resources: {
+    //     uSamplerTexture: PIXI.Texture.from(Tile.ATLAS)
+    //   }
+    // })
+    // console.log(Grid.PROGRAM)
+    const sh2 = new PIXI.Shader({
+        glProgram: Grid.PROGRAM,
+        // gpuProgram: undefined,
+        resources: {
+          uSamplerTexture: PIXI.Texture.from('tiles2').source
+          // uSamplerTexture: (await Assets.load('https://pixijs.com/assets/bg_displacement.jpg')).source,
+        }
+      }
+    )
+
+    const mesh = new PIXI.Mesh({
+        geometry: geometry,
+        shader: sh2,
+        state: PIXI.State.for2d()
+      }
+    )
     //   geometry,
     //   new PIXI.Shader(Grid.PROGRAM, {
     //     uSamplerTexture: PIXI.Texture.from(Tile.ATLAS)
@@ -302,6 +341,7 @@ export default class Grid {
     //   PIXI.DRAW_MODES.TRIANGLES
     // )
     //
-    // container.addChild(mesh)
+    // console.log(mesh)
+    container.addChild(mesh)
   }
 }

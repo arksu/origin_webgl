@@ -1,11 +1,11 @@
 package com.origin.controller
 
-import com.origin.GameSession
 import com.origin.GameWebServer.gsonDeserializer
 import com.origin.GameWebServer.logger
 import com.origin.jooq.tables.references.ACCOUNT
 import com.origin.jooq.tables.references.CHARACTER
 import com.origin.net.GameRequestDTO
+import com.origin.net.GameSession
 import com.origin.util.transactionResultWrapper
 import io.ktor.server.plugins.*
 import io.ktor.server.routing.*
@@ -37,37 +37,47 @@ fun Route.websockets(dsl: DSLContext) {
                         logger.debug(request.toString())
 
                         if (request.target == "token") {
-                            val token = request.data["token"] as String
-                            val localSession = dsl.transactionResultWrapper { trx ->
-                                // ищем аккаунт по токену
-                                val account = trx.selectFrom(ACCOUNT)
-                                    .where(ACCOUNT.WS_TOKEN.eq(token))
-                                    .fetchOne() ?: throw BadRequestException("Invalid token")
+                            try {
+                                val token = request.data["token"] as String
+                                val localSession = dsl.transactionResultWrapper { trx ->
+                                    // ищем аккаунт по токену
+                                    val account = trx.selectFrom(ACCOUNT)
+                                        .where(ACCOUNT.WS_TOKEN.eq(token))
+                                        .fetchOne() ?: throw BadRequestException("Invalid token")
 
-                                // ищем выбранного персонажа
-                                val character = trx.selectFrom(CHARACTER)
-                                    .where(CHARACTER.ID.eq(account.selectedCharacter))
-                                    .and(CHARACTER.DELETED.isFalse)
-                                    .fetchOne() ?: throw BadRequestException("Character not found")
+                                    // ищем выбранного персонажа
+                                    val character = trx.selectFrom(CHARACTER)
+                                        .where(CHARACTER.ID.eq(account.selectedCharacter))
+                                        .and(CHARACTER.DELETED.isFalse)
+                                        .fetchOne() ?: throw BadRequestException("Character not found")
 
-                                // создаем игровую сессию
-                                GameSession(this, token, account, character)
-                            }
-                            session = localSession
+                                    // создаем игровую сессию
+                                    GameSession(this, token, account, character)
+                                }
+                                session = localSession
 
-                            // кикнуть таких же персонажей этого юзера
-                            // (можно заходить в игру своими разными персонажами одновременно)
-                            gameSessions.forEach { s ->
-                                if (s.character.id == localSession.character.id) {
-                                    runBlocking {
-                                        s.kick()
+                                // кикнуть таких же персонажей этого юзера
+                                // (можно заходить в игру своими разными персонажами одновременно)
+                                gameSessions.forEach { s ->
+                                    if (s.character.id == localSession.character.id) {
+                                        runBlocking {
+                                            s.kick()
+                                        }
                                     }
                                 }
-                            }
-                            // добавляем в список активных сессий
-                            gameSessions += localSession
+                                // добавляем в список активных сессий
+                                gameSessions += localSession
 
-                            localSession.connected(request)
+                                localSession.connected(request)
+                            } catch (e: Exception) {
+                                logger.error("session process token error ${e.message}", e)
+                                close(
+                                    CloseReason(
+                                        CloseReason.Codes.INTERNAL_ERROR,
+                                        e.javaClass.simpleName + ": " + e.message
+                                    )
+                                )
+                            }
                         } else if (session != null) {
                             try {
                                 session.process(request)
