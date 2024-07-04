@@ -46,8 +46,8 @@ export default defineComponent({
           // загружаем атласы
           render?.load()
             // как только атласы загружены
-            .then(() => {
-              console.log('assets loaded')
+            .then((r) => {
+              console.log('assets loaded', r)
               // шлем запрос с токеном на сервер для первичной авторизации и активации токена
               client?.send('token', { token })
                 .then((r) => {

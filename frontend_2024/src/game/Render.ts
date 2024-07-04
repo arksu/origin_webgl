@@ -88,10 +88,10 @@ export default class Render {
       // добавляем в резолвер только 1 раз, при рестарте pixi оно остается в памяти
       PIXI.Assets.add({ alias: 'base', src: '/assets/game/base.json' })
       PIXI.Assets.add({ alias: 'tiles', src: '/assets/game/tiles.json' })
-      PIXI.Assets.add({ alias: 'tiles2', src: '/assets/game/tiles.png' })
+      PIXI.Assets.add({ alias: 'assets/game/tiles.png', src: '/assets/game/tiles.png' })
     }
 
-    return PIXI.Assets.load(['base', 'tiles', 'tiles2'])
+    return PIXI.Assets.load(['base', 'tiles', 'assets/game/tiles.png'])
   }
 
   stop() {
@@ -115,11 +115,12 @@ export default class Render {
     this.app.stage.addChild(s)
 
     this.app.stage.addChild(this.mapGrids)
-    console.log(this.mapGrids)
+    // console.log(this.mapGrids)
 
-    this.mapGrids.x = -500
+    this.mapGrids.x = -1500
     this.mapGrids.y = -500
-    this.mapGrids.scale = 0.7
+    this.mapGrids.scale = 5
+
   }
 
   private update(_ticker: PIXI.Ticker): void {
@@ -184,4 +185,5 @@ export default class Render {
     //   }
     // }
   }
+
 }

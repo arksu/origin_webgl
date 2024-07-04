@@ -29,30 +29,33 @@ export default class Grid {
   private static readonly VERTEX_SHADER =
     `precision mediump float;
 
-    attribute vec2 aPosition;
-    attribute vec2 aUV;
+    in vec2 aPosition;
+    in vec2 aUV;
 
-    uniform mat3 translationMatrix;
-    uniform mat3 projectionMatrix;
-
-    varying vec2 vUvs;
+    uniform mat3 uProjectionMatrix;
+    uniform mat3 uWorldTransformMatrix;
+    
+    uniform mat3 uTransformMatrix;
+    
+    out vec2 vUV;
 
     void main() {
 
-        vUvs = aUV;
-        gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aPosition, 1.0)).xy, 0.0, 1.0);
+        vUV = aUV;
+        mat3 mvp = uProjectionMatrix * uWorldTransformMatrix * uTransformMatrix;
+        gl_Position = vec4((mvp * vec3(aPosition, 1.0)).xy, 0.0, 1.0);
 
     }`
   private static readonly FRAGMENT_SHADER =
     `precision mediump float;
 
-    varying vec2 vUvs;
+    in vec2 vUV;
 
-    uniform sampler2D uSamplerTexture;
+    uniform sampler2D uTexture;
 
     void main() {
 
-        gl_FragColor = texture2D(uSamplerTexture, vUvs);
+        gl_FragColor = texture2D(uTexture, vUV);
     }`
 
   private static readonly PROGRAM: PIXI.GlProgram = PIXI.GlProgram.from({
@@ -84,6 +87,7 @@ export default class Grid {
    */
   public readonly x: number
   public readonly y: number
+
   /**
    * абсолютные игровые координаты
    */
@@ -298,50 +302,28 @@ export default class Grid {
     }
 
     vertexBuffer.finish()
-    // console.log(vertexBuffer)
 
     const geometry = new PIXI.MeshGeometry({
       positions: vertexBuffer.vertex,
       uvs: vertexBuffer.uv,
       indices: vertexBuffer.index
     })
-    // console.log(geometry.attributes)
 
-    // const shader = PIXI.Shader.from({
-    //   gl: {
-    //     vertex: Grid.VERTEX_SHADER,
-    //     fragment: Grid.FRAGMENT_SHADER
-    //   },
-    //   resources: {
-    //     uSamplerTexture: PIXI.Texture.from(Tile.ATLAS)
-    //   }
-    // })
-    // console.log(Grid.PROGRAM)
-    const sh2 = new PIXI.Shader({
+    const shader = new PIXI.Shader({
         glProgram: Grid.PROGRAM,
         // gpuProgram: undefined,
         resources: {
-          uSamplerTexture: PIXI.Texture.from('tiles2').source
-          // uSamplerTexture: (await Assets.load('https://pixijs.com/assets/bg_displacement.jpg')).source,
+          uTexture: (PIXI.Assets.get('tiles') as PIXI.Spritesheet).textureSource
         }
       }
     )
 
     const mesh = new PIXI.Mesh({
         geometry: geometry,
-        shader: sh2,
+        shader: shader,
         state: PIXI.State.for2d()
       }
     )
-    //   geometry,
-    //   new PIXI.Shader(Grid.PROGRAM, {
-    //     uSamplerTexture: PIXI.Texture.from(Tile.ATLAS)
-    //   }),
-    //   PIXI.State.for2d(),
-    //   PIXI.DRAW_MODES.TRIANGLES
-    // )
-    //
-    // console.log(mesh)
     container.addChild(mesh)
   }
 }
