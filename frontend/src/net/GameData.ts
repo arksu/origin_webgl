@@ -1,23 +1,23 @@
-import GameObject from "../game/GameObject";
-import {MapData} from "../game/Grid";
+import type GameObject from '@/game/GameObject'
+import type { MapData } from '@/game/Grid'
 
 export default class GameData {
-    /**
-     * данные карты (тайлы)
-     */
-    public map: { [key: string]: MapData } = {};
+  /**
+   * данные карты (тайлы)
+   */
+  public map: { [key: string]: MapData } = {}
 
-    /**
-     * игровые объекты полученные с сервера
-     */
-    public objects: { [key: number]: GameObject } = {}
+  /**
+   * игровые объекты полученные с сервера
+   */
+  public objects: { [key: number]: GameObject } = {}
 
-    /**
-     * ид выбранного персонажа
-     */
-    public selectedCharacterId: number = 0
+  /**
+   * ид выбранного персонажа
+   */
+  public selectedCharacterId: number = 0
 
-    get playerObject(): GameObject {
-        return this.objects[this.selectedCharacterId]
-    }
+  get playerObject(): GameObject {
+    return this.objects[this.selectedCharacterId]
+  }
 }

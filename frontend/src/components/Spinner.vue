@@ -1,13 +1,13 @@
-<template>
-  <div class="spinner"></div>
-  <br>
-</template>
-
 <script lang="ts">
 export default {
   name: "Spinner"
 }
 </script>
+
+<template>
+  <div class="spinner"></div>
+  <br>
+</template>
 
 <style scoped lang="scss">
 .spinner {

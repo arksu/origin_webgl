@@ -1,6 +1,5 @@
 import * as PIXI from 'pixi.js';
-import {getRandomByCoord} from "../utils/random";
-import Coord from "./Coord";
+import {getRandomByCoord} from "@/util/random";
 
 import water from "./tiles/water.json"
 import water_deep from "./tiles/water_deep.json"
@@ -20,6 +19,7 @@ import fen from "./tiles/fen.json"
 
 import terrainWald from "./terrain/wald.json"
 import terrainHeath from "./terrain/heath.json"
+import type Coord from '@/util/Coord'
 
 interface ResTile {
     img: string
@@ -52,6 +52,7 @@ class TileArray {
         if (this.tw == 0) return undefined
         let w = t % this.tw
         let i = 0
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             if ((w -= this.tiles[i].w) < 0) {
                 break
@@ -109,29 +110,29 @@ class TerrainObject {
      */
     public generate(x: number, y: number, sx: number, sy: number): PIXI.Sprite[] | undefined {
         if (this.sz > 0) {
-            let list: PIXI.Sprite[] = []
+            const list: PIXI.Sprite[] = []
 
             let isShadow = false;
             let seed = getRandomByCoord(x, y)
             let cnt = 0
             do {
                 for (let i = 0; i < this.sz; i++) {
-                    let l = this.data.layers[i]
+                    const l = this.data.layers[i]
                     if (l.p == 0) {
                         isShadow = true
                     }
                     // проверим шанс генерации
                     seed = getRandomByCoord(x, y, i, seed);
                     if ((l.p == 0 && list.length == 0) || (seed % l.p) == 0) {
-                        let path = l.img
-                        let spr = PIXI.Sprite.from(path)
-                        let dx = -this.data.offset[0] + l.offset[0]
-                        let dy = -this.data.offset[1] + l.offset[1]
+                        const path = l.img
+                        const spr = PIXI.Sprite.from(path)
+                        const dx = -this.data.offset[0] + l.offset[0]
+                        const dy = -this.data.offset[1] + l.offset[1]
 
                         spr.x = sx + dx
                         spr.y = sy + dy
                         spr.zIndex = 100
-                        let z = l.z
+                        const z = l.z
                         if (z !== undefined) {
                             spr.zIndex += z
                         }
@@ -154,7 +155,7 @@ class TerrainObjects {
 
     constructor(d: any) {
         for (let i = 0; i < d.length; i++) {
-            let to = new TerrainObject(d[i])
+            const to = new TerrainObject(d[i])
             this.list.push(to)
         }
     }

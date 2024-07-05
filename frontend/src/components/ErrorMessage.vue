@@ -1,21 +1,21 @@
-<template>
-  <div class="error-message" v-if="error != null">
-    {{ error }}
-  </div>
-</template>
-
 <script lang="ts">
-import {computed, defineComponent} from "vue";
-import {useMainStore} from "../store/main";
+import { defineComponent } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
 
 export default defineComponent({
   setup() {
-    const store = useMainStore();
+    const authStore = useAuthStore()
 
-    return {error: computed(() => store.lastError)};
-  },
-});
+    return { authStore }
+  }
+})
 </script>
+
+<template>
+  <div class="error-message" v-if="authStore.lastError">
+    {{ authStore.lastError }}
+  </div>
+</template>
 
 <style scoped>
 </style>

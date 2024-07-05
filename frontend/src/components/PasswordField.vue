@@ -1,7 +1,3 @@
-<template>
-  <input type="password" id="password" placeholder="Password" required v-model="value">
-</template>
-
 <script lang="ts">
 import {computed, defineComponent} from 'vue'
 
@@ -23,6 +19,10 @@ export default defineComponent({
 })
 
 </script>
+
+<template>
+  <input type="password" id="password" placeholder="Password" required v-model="value">
+</template>
 
 <style scoped>
 

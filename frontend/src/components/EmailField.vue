@@ -1,12 +1,7 @@
-<template>
-  <input type="text" id="email" placeholder="Email (optional)" v-model="value">
-</template>
-
 <script lang="ts">
 import {computed, defineComponent} from 'vue'
 
 export default defineComponent({
-  name: "EmailField",
   props: {
     modelValue: String
   },
@@ -28,6 +23,11 @@ export default defineComponent({
   }
 })
 </script>
+
+<template>
+  <input type="text" id="email" placeholder="Email (optional)" v-model="value">
+</template>
+
 <style scoped>
 
 </style>

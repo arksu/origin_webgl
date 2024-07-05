@@ -1,49 +1,36 @@
-<template>
-  <div class="padding-all">
-    <div class="form-container">
-      <div class="login-panel">
-        <form @submit.prevent="submit" action="#">
-          <input v-focus id="name" type="text" placeholder="Name" required v-model="name">
-
-          <button type="button" class="login-button padding" v-bind:disabled="isLoading" :onclick="back">back</button>
-          <submit-button class="padding" :loading="isLoading" caption="create"/>
-        </form>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
-import SubmitButton from "../../components/SubmitButton.vue";
-import {useApi} from "../../composition/useApi";
-import router from "../../router";
-import {RouteNames} from "../../router/routeNames";
+import { defineComponent, ref } from 'vue'
+import SubmitButton from '@/components/SubmitButton.vue'
+import { useApi } from '@/net/useApi'
+import router from '@/router'
+import { RouteNames } from '@/router/routeNames'
+import ErrorMessage from '@/components/ErrorMessage.vue'
 
 export default defineComponent({
-  components: {SubmitButton},
+  components: { ErrorMessage, SubmitButton },
   setup() {
     const name = ref('')
 
     const back = () => {
-      router.replace({name: RouteNames.CHARACTERS})
+      router.replace({ name: RouteNames.CHARACTERS })
     }
 
     const request = {
-      name: '',
+      name: ''
     }
 
-    const {isLoading, data, isSuccess, fetch} = useApi("character", {
-      method: "POST",
+    const { isLoading, isSuccess, fetch } = useApi('character', {
+      method: 'POST',
+      excludeErrorStatuses: [400],
       data: request
     })
 
     const submit = async () => {
-      console.log('submit')
+      console.log('submit create new character')
       request.name = name.value
       await fetch()
       if (isSuccess.value) {
-        router.push({name: RouteNames.CHARACTERS})
+        await router.replace({ name: RouteNames.CHARACTERS })
       }
     }
 
@@ -53,6 +40,23 @@ export default defineComponent({
   }
 })
 </script>
+
+<template>
+  <div class="padding-all">
+    <div class="form-container">
+      <div class="login-panel">
+        <form @submit.prevent="submit" action="#">
+          <error-message />
+
+          <input v-focus id="name" type="text" placeholder="Name" required v-model="name">
+
+          <button type="button" class="login-button padding" v-bind:disabled="isLoading" @click="back">back</button>
+          <submit-button class="padding" :loading="isLoading" caption="create" />
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped lang="scss">
 .padding {

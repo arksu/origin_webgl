@@ -1,49 +1,29 @@
-<template>
-  <div class="padding-all">
-    <div class="form-container">
-
-      <logo/>
-
-      <div class="login-panel">
-        <form @submit.prevent="submit" action="#">
-          <error-message/>
-
-          <login-field v-model="login"/>
-          <email-field v-model="email"/>
-          <password-field v-model="password"/>
-          <submit-button :loading="isLoading" caption="create account"/>
-
-          <div class="signup-link">
-            Already have an account?
-            <router-link :to="{ name: 'LOGIN'}">Log in</router-link>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
-import Logo from "../components/Logo.vue";
-import ErrorMessage from "../components/ErrorMessage.vue";
-import LoginField from "../components/LoginField.vue";
-import PasswordField from "../components/PasswordField.vue";
-import EmailField from "../components/EmailField.vue";
-import SubmitButton from "../components/SubmitButton.vue";
-import {useMainStore} from "../store/main";
-import {useApi} from "../composition/useApi";
-import {makeHash} from "../utils/passwordHash";
+import { defineComponent, ref } from 'vue'
+import Logo from '@/components/Logo.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import LoginField from '@/components/LoginField.vue'
+import PasswordField from '@/components/PasswordField.vue'
+import EmailField from '@/components/EmailField.vue'
+import SubmitButton from '@/components/SubmitButton.vue'
+import { useApi } from '@/net/useApi'
+import { useAuthStore } from '@/stores/authStore'
+import { RouteNames } from '@/router/routeNames'
 
 export default defineComponent({
-  name: "SignUp",
-  components: {Logo, ErrorMessage, LoginField, PasswordField, EmailField, SubmitButton},
+  name: 'SignUp',
+  computed: {
+    RouteNames() {
+      return RouteNames
+    }
+  },
+  components: { Logo, ErrorMessage, LoginField, PasswordField, EmailField, SubmitButton },
   setup() {
-    const store = useMainStore()
+    const authStore = useAuthStore()
 
-    const login = ref('');
-    const password = ref('');
-    const email = ref('');
+    const login = ref('')
+    const password = ref('')
+    const email = ref('')
 
     const request = {
       login: '',
@@ -51,28 +31,22 @@ export default defineComponent({
       password: ''
     }
 
-    const {isLoading, data, isSuccess, fetch} = useApi("signup", {
-      method: "POST",
-      authorized: false,
-      logoutOnError: false,
+    const { isLoading, isSuccess, fetch } = useApi('signup', {
+      method: 'POST',
+      onErrorRouteName: RouteNames.SIGN_UP,
       data: request
     })
 
     const submit = async () => {
-      store.ssid = null
-      store.lastError = null
-
       request.login = login.value
       request.email = email.value
       request.password = password.value
-      await fetch()
+
+      const response = await fetch()
 
       if (isSuccess.value) {
-        store.onSuccessLogin(data.value.ssid)
-
-        // запомним что ввели в поля ввода в локалсторадже
-        localStorage.setItem("login", login.value || "")
-        localStorage.setItem("hash", makeHash(password.value))
+        localStorage.setItem('login', request.login)
+        authStore.setToken(response.value.ssid)
       }
     }
 
@@ -83,6 +57,30 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<template>
+  <div class="padding-all">
+    <div class="form-container">
 
+      <logo />
+
+      <div class="login-panel">
+        <form @submit.prevent="submit" action="#">
+          <error-message />
+
+          <login-field v-model="login" />
+<!--          <email-field v-model="email" />-->
+          <password-field v-model="password" />
+          <submit-button :loading="isLoading" caption="create account" />
+
+          <div class="signup-link">
+            Already have an account?
+            <router-link :to="{ name: RouteNames.LOGIN}">Log in</router-link>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
 </style>
