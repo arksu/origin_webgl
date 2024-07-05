@@ -1,5 +1,6 @@
-package com.origin
+package com.origin.config
 
+import com.origin.TILE_SIZE
 import com.typesafe.config.ConfigFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

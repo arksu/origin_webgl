@@ -1,6 +1,5 @@
 package com.origin.config
 
-import com.origin.ServerConfig
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.flywaydb.core.Flyway

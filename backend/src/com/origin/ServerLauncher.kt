@@ -1,8 +1,8 @@
 package com.origin
 
 import com.origin.config.DatabaseConfig
+import com.origin.config.ServerConfig
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import org.flywaydb.core.Flyway
 import java.util.*
 
 @ObsoleteCoroutinesApi
@@ -35,8 +35,7 @@ object ServerLauncher {
         DatabaseConfig.flywayMigrate()
 
 //        FileWatcher.start()
-        EventBus.init()
-//        DatabaseFactory.init()
+//        EventBus.init()
 //        TimeController.start()
         GameWebServer.start()
     }

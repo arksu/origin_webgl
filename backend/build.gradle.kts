@@ -125,7 +125,7 @@ jooq {
 
     configurations {
         create("main") {
-            generateSchemaSourceOnCompilation.set(false)
+            generateSchemaSourceOnCompilation.set(true)
 
             jooqConfiguration.apply {
                 logging = org.jooq.meta.jaxb.Logging.WARN

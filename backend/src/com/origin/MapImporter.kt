@@ -1,6 +1,7 @@
 package com.origin
 
 import com.origin.config.DatabaseConfig
+import com.origin.config.ServerConfig
 import com.origin.generator.IMG_SIZE
 import com.origin.generator.TileColors
 import com.origin.jooq.tables.references.GRID

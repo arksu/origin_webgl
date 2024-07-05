@@ -3,10 +3,10 @@
 package com.origin.model
 
 import com.origin.ObjectID
-import com.origin.move.CollisionResult
 import com.origin.util.ACTOR_BUFFER_CAPACITY
 import com.origin.util.ACTOR_DISPATCHER
 import com.origin.util.MessageWithAck
+import com.origin.util.Rect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.actor
@@ -14,7 +14,7 @@ import kotlinx.coroutines.channels.consumeEach
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-abstract class GameObject(val id: ObjectID, val position: ObjectPosition) {
+abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(Player::class.java)
     }
@@ -81,17 +81,19 @@ abstract class GameObject(val id: ObjectID, val position: ObjectPosition) {
         if (isSpawned) throw RuntimeException("pos.grid is already set, on spawn")
 
         // берем грид и спавнимся через него
-        val g = World.getGrid(position)
+        val g = World.getGrid(pos)
 
-        val result = g.sendAndWaitAck(GridMessage.Spawn(this))
+        val spawned = g.sendAndWaitAck(GridMessage.Spawn(this))
 
         // если успешно добавились в грид - запомним его у себя
-        return if (result.result == CollisionResult.CollisionType.COLLISION_NONE) {
+        return if (spawned) {
             grid = g
             true
         } else {
             false
         }
     }
+
+    abstract fun getBoundRect(): Rect
 
 }

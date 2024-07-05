@@ -1,4 +1,6 @@
-@file:OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+@file:OptIn(
+    DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class
+)
 
 package com.origin.util
 
