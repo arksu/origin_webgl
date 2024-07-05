@@ -6,7 +6,7 @@ import com.origin.ObjectID
 import com.origin.move.CollisionResult
 import com.origin.util.ACTOR_BUFFER_CAPACITY
 import com.origin.util.ACTOR_DISPATCHER
-import kotlinx.coroutines.CompletableDeferred
+import com.origin.util.MessageWithAck
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.actor
@@ -19,43 +19,75 @@ abstract class GameObject(val id: ObjectID, val position: ObjectPosition) {
         private val logger: Logger = LoggerFactory.getLogger(Player::class.java)
     }
 
-    var isSpawned = false
-        private set
-
     /**
      * в каком гриде сейчас находится объект
+     * грид указан только тогда, когда берет на себя ответственность за него (заспавнен)
      */
-
     var grid: Grid? = null
+
+    val isSpawned: Boolean get() = grid != null
 
     /**
      * актор для обработки сообщений
      */
-    private val actor = CoroutineScope(ACTOR_DISPATCHER).actor<Any>(capacity = ACTOR_BUFFER_CAPACITY) {
-        channel.consumeEach {
-            try {
-//                processMessage(it)
-            } catch (t: Throwable) {
-                logger.error("error while process game object message: ${t.message}", t)
+    private val actor by lazy {
+        CoroutineScope(ACTOR_DISPATCHER).actor(capacity = ACTOR_BUFFER_CAPACITY) {
+            channel.consumeEach { message ->
+                try {
+                    processMessage(message)
+                } catch (t: Throwable) {
+//                    if (message is MessageWithAck) {
+//                        message
+//                    }
+                    logger.error("error while process game object message: ${t.message}", t)
+                }
             }
+            logger.warn("game obj actor $this finished")
         }
-        logger.warn("game obj actor $this finished")
     }
 
-    suspend fun spawn(): Boolean {
+    /**
+     * отправить сообщение объекту не дожидаясь ответа
+     */
+    suspend fun send(msg: Any) {
+        actor.send(msg)
+    }
+
+    suspend fun <T> sendAndWaitAck(msg: MessageWithAck<T>): T {
+        actor.send(msg)
+        return msg.ack.await()
+    }
+
+    protected open suspend fun processMessage(msg: Any) {
+        when (msg) {
+            is GameObjectMessage.Spawn -> msg.run { onSpawn(msg.variants) }
+            else -> throw RuntimeException("unprocessed actor message ${msg.javaClass.simpleName} $msg")
+        }
+    }
+
+    private suspend fun onSpawn(variants: List<SpawnType>): Boolean {
+        for (variant in variants) {
+            val result = when (variant) {
+                SpawnType.EXACTLY_POINT -> spawn()
+                SpawnType.NEAR -> TODO()
+                SpawnType.RANDOM_SAME_REGION -> TODO()
+            }
+            if (result) return true
+        }
+        return false
+    }
+
+    private suspend fun spawn(): Boolean {
         if (isSpawned) throw RuntimeException("pos.grid is already set, on spawn")
 
         // берем грид и спавнимся через него
         val g = World.getGrid(position)
 
-        val resp = CompletableDeferred<CollisionResult>()
-//        g.send(GridMsg.Spawn(this, resp))
-        val result = resp.await()
+        val result = g.sendAndWaitAck(GridMessage.Spawn(this))
 
         // если успешно добавились в грид - запомним его у себя
         return if (result.result == CollisionResult.CollisionType.COLLISION_NONE) {
-            position.setGrid(g)
-            isSpawned = true
+            grid = g
             true
         } else {
             false

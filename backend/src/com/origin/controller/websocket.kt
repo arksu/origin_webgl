@@ -69,7 +69,7 @@ fun Route.websockets(dsl: DSLContext) {
                                 gameSessions += localSession
 
                                 localSession.connected(request)
-                            } catch (e: Exception) {
+                            } catch (e: Throwable) {
                                 logger.error("session process token error ${e.message}", e)
                                 close(
                                     CloseReason(

@@ -26,16 +26,4 @@ class ObjectPosition(
      */
     val gridX get() = point.x / GRID_FULL_SIZE
     val gridY get() = point.y / GRID_FULL_SIZE
-
-    /**
-     * грид в котором находится объект
-     * либо null если еще не привязан к гриду (не заспавнен)
-     * по этому полю детектим заспавнен ли объект в мир
-     */
-    var grid: Grid? = null
-        private set
-
-    fun setGrid(grid: Grid) {
-        this.grid = grid
-    }
 }

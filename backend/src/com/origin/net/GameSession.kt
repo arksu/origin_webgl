@@ -2,10 +2,12 @@ package com.origin.net
 
 import com.google.gson.Gson
 import com.origin.ServerConfig
-import com.origin.model.World
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
+import com.origin.model.GameObjectMessage
 import com.origin.model.Player
+import com.origin.model.SpawnType.*
+import com.origin.model.World
 import io.ktor.websocket.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -38,6 +40,10 @@ class GameSession(
         ack(request, AuthorizeTokenResponse(character.id, ServerConfig.PROTO_VERSION))
 
         player = Player(character, this)
+
+        // пробуем заспавнить игрока в мир
+        val spawnResult = player.sendAndWaitAck(GameObjectMessage.Spawn(listOf(EXACTLY_POINT, NEAR, RANDOM_SAME_REGION)))
+        if (!spawnResult) throw RuntimeException("Failed to spawn player")
 
         // TODO : DEBUG
         send(MapGridData(World.getGrid(0, 0, 0, 0), MapGridData.Type.ADD))

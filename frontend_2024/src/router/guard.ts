@@ -7,6 +7,7 @@ export default function guards(from: RouteLocationNormalized, to: RouteLocationN
   if (to.name == RouteNames.LOGIN && !isAuthenticated) {
     next()
   } else if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+    console.log('redirect to login because authentication fail')
     next({ name: RouteNames.LOGIN })
   } else {
     next()

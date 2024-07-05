@@ -6,6 +6,7 @@ import Grid from '@/game/Grid'
 export default class Render {
 
   private readonly canvas: HTMLCanvasElement
+  private wasDestroyed: boolean = false
 
   /**
    * PIXI application
@@ -95,6 +96,7 @@ export default class Render {
 
   stop() {
     console.log('pixi stop')
+    if (this.wasDestroyed) return
     PIXI.Assets.unload(['base', 'tiles'])
 
     this.app.destroy({
@@ -104,6 +106,7 @@ export default class Render {
     })
 
     document.body.removeChild(this.canvas)
+    this.wasDestroyed = true
   }
 
   setup() {

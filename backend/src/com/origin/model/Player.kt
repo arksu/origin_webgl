@@ -1,7 +1,7 @@
 package com.origin.model
 
-import com.origin.net.GameSession
 import com.origin.jooq.tables.records.CharacterRecord
+import com.origin.net.GameSession
 
 class Player(
     /**
@@ -17,5 +17,6 @@ class Player(
         heading = character.heading
     )
 ) {
+
 
 }
