@@ -43,8 +43,7 @@ export default class Render {
     // this.initCanvasHandlers()
 
     // сглаживание пикселей при масштабировании
-    // PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
-    PIXI.TexturePool.textureOptions.scaleMode = 'nearest'
+    PIXI.TextureStyle.defaultOptions.scaleMode = 'nearest'
 
     // проверка мобильной версии
     PIXI.isMobile.any
