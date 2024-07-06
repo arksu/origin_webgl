@@ -235,6 +235,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
     }
 
     abstract fun getBoundRect(): Rect
+    abstract fun getResourcePath(): String
 
     /**
      * дает ли коллизию этот объект с другим (в качестве парметра передаем объект который движется)

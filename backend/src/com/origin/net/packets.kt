@@ -1,7 +1,10 @@
 package com.origin.net
 
 import com.origin.ObjectID
+import com.origin.model.GameObject
 import com.origin.model.Grid
+import com.origin.model.Player
+import com.origin.model.StaticObject
 
 /**
  * сообщение для клиента
@@ -40,3 +43,37 @@ class MapGridData(grid: Grid, flag: Type) : ServerMessage("m") {
  */
 class MapGridConfirm : ServerMessage("mc")
 
+class ObjectAdd(obj: GameObject) : ServerMessage("oa") {
+    private val id = obj.id
+    private val x = obj.pos.x
+    private val y = obj.pos.y
+
+    /**
+     * heading
+     */
+    private val h = obj.pos.heading
+
+    /**
+     * class name of object
+     */
+    private val c: String = obj.javaClass.simpleName
+
+    /**
+     * type id
+     */
+    private val t = if (obj is StaticObject) obj.type else 0
+
+    /**
+     * path to resource
+     */
+    private val r = obj.getResourcePath()
+
+    /**
+     * appearance
+     */
+    private val a = null// if (obj is Player) obj.appearance else null
+}
+
+class ObjectDel(obj: GameObject) : ServerMessage("od") {
+    private val id = obj.id
+}

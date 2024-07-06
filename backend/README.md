@@ -17,8 +17,8 @@ for Origin MMO game
 - install MariaDB database for your platform
 - start MariaDB server
 - create a database into your MariaDB server named 'origin' 
-- by default server configured for dabatase name `origin`, db user `origin` and password `origin`, you can change this in `server.conf` file
-- game server is configured to start on [8020](http://localhost:8020) port.
+- by default server configured for database name `origin`, db user `origin` and password `origin`, you can change this in `server.conf` file
+- game server is configured to start by default on [8010](http://localhost:8010) port.
 
 # Fast start
 
@@ -91,3 +91,12 @@ config file `./config/server.conf` with HOCON format
 # Help
 
 Please fork and PR to improve the code.
+
+# Useful links
+(https://github.com/HextoryWorld/ProceduralHexTerrainGenerator/blob/master/resources/js/source.js)
+
+(https://www.redblobgames.com/maps/terrain-from-noise/)
+
+(https://mewo2.com/notes/terrain/)
+
+(https://heredragonsabound.blogspot.com/)

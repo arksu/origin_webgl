@@ -27,6 +27,10 @@ class ObjectPosition(
     val gridX get() = point.x / GRID_FULL_SIZE
     val gridY get() = point.y / GRID_FULL_SIZE
 
+    fun dist(other: ObjectPosition): Double = point.dist(other.point)
+
+    fun dist(px: Int, py: Int): Double = point.dist(px, py)
+
     override fun toString(): String {
         return "{pos level=$level $x, $y ${this.hashCode()}}"
     }

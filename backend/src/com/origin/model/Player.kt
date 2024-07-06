@@ -8,6 +8,9 @@ import com.origin.net.MapGridConfirm
 import com.origin.util.PLAYER_RECT
 import com.origin.util.Rect
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.runBlocking
+import kotlin.math.roundToInt
 
 class Player(
     /**
@@ -110,5 +113,30 @@ class Player(
 
     override fun getBoundRect(): Rect {
         return PLAYER_RECT
+    }
+
+    override fun getResourcePath(): String {
+        return "player"
+    }
+
+    override fun broadcastStatusUpdate() {
+        // TODO
+
+//        val su = StatusUpdate(this)
+//        su.addAttribute(CUR_SHP, status.currentSoftHp.roundToInt())
+//        su.addAttribute(CUR_HHP, status.currentHardHp.roundToInt())
+//        su.addAttribute(MAX_HP, getMaxHp().roundToInt())
+//
+//        su.addAttribute(CUR_STAMINA, status.currentStamina.roundToInt())
+//        su.addAttribute(MAX_STAMINA, getMaxStamina().roundToInt())
+//
+//        su.addAttribute(CUR_ENERGY, status.currentEnergy.roundToInt())
+//        su.addAttribute(MAX_ENERGY, getMaxEnergy().roundToInt())
+//
+//        runBlocking(IO) {
+//            session.send(su)
+//        }
+
+        // TODO broadcast my status to party members
     }
 }
