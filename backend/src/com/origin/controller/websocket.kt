@@ -93,16 +93,14 @@ fun Route.websockets(dsl: DSLContext) {
                         }
                     }
 
-                    else -> {
-                        logger.warn("unknown WS frame $frame")
-                    }
+                    else -> logger.warn("unknown WS frame $frame")
                 }
             }
         } finally {
             logger.debug("ws disconnected")
             if (session != null) {
-                session?.disconnected()
-                gameSessions -= session!!
+                session.disconnected()
+                gameSessions -= session
             }
         }
     }

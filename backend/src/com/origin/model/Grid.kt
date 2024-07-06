@@ -9,10 +9,7 @@ import com.origin.jooq.tables.references.GRID
 import com.origin.move.CheckCollisionModel
 import com.origin.move.CollisionResult
 import com.origin.move.MoveType
-import com.origin.util.ACTOR_BUFFER_CAPACITY
-import com.origin.util.ACTOR_DISPATCHER
-import com.origin.util.MessageWithAck
-import com.origin.util.Vec2i
+import com.origin.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.actor
@@ -23,7 +20,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class Grid(
     private val record: GridRecord,
-    val layer: LandLayer,
+    private val layer: LandLayer,
 ) {
     val tilesBlob get() = record.tilesBlob
 
@@ -41,13 +38,12 @@ class Grid(
     /**
      * список объектов в гриде
      */
-    val objects = ConcurrentLinkedQueue<GameObject>()
+    private val objects = ConcurrentLinkedQueue<GameObject>()
 
     /**
      * активен ли грид?
      */
     private val isActive: Boolean get() = !activeObjects.isEmpty()
-
 
     /**
      * актор для обработки сообщений
@@ -72,9 +68,16 @@ class Grid(
         return msg.ack.await()
     }
 
+    suspend fun sendAndWait(msg: MessageWithJob) {
+        actor.send(msg)
+        return msg.job.join()
+    }
+
+
     private suspend fun processMessage(msg: Any) {
         when (msg) {
             is GridMessage.Spawn -> msg.run { onSpawn(msg.obj, false) }
+            is GridMessage.RemoveObject -> msg.run { onRemoveObject(msg.obj) }
 
             else -> logger.error("Unknown Grid message $msg")
         }
@@ -125,7 +128,7 @@ class Grid(
     /**
      * удалить объект из грида
      */
-    private suspend fun removeObject(obj: GameObject) {
+    private suspend fun onRemoveObject(obj: GameObject) {
         if (objects.remove(obj)) {
             obj.send(GameObjectMessage.RemovedFromGrid())
 
@@ -226,6 +229,7 @@ class Grid(
             logger.warn("delegate collision to next $next")
             next.sendAndWaitAck(GridMessage.CheckCollisionInternal(model))
         } else {
+            // TODO: DEBUG
             CollisionResult.NONE
             // таким образом на момент обработки коллизии
             // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии

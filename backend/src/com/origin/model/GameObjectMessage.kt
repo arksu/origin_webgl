@@ -18,5 +18,5 @@ sealed class GameObjectMessage {
     /**
      * этот объект был удален из грида
      */
-    class RemovedFromGrid()
+    class RemovedFromGrid
 }

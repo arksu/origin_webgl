@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory
 
 abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
     companion object {
-        private val logger: Logger = LoggerFactory.getLogger(Player::class.java)
+        val logger: Logger = LoggerFactory.getLogger(Player::class.java)
     }
 
     /**
@@ -36,9 +36,6 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
                 try {
                     processMessage(message)
                 } catch (t: Throwable) {
-//                    if (message is MessageWithAck) {
-//                        message
-//                    }
                     logger.error("error while process game object message: ${t.message}", t)
                 }
             }
@@ -92,6 +89,28 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
         } else {
             false
         }
+    }
+
+    /**
+     * удалить объект из мира, это последнее, что может сделать объект
+     * после этого его актор убивается
+     */
+    protected open suspend fun remove() {
+        // учесть телепорт когда грида еще еще нет
+        grid?.sendAndWait(GridMessage.RemoveObject(this))
+
+        // если есть что-то вложенное внутри
+        // TODO
+//        if (!lift.isEmpty()) {
+//            lift.values.forEach { _ ->
+//                // TODO remove when lift it.pos.set xy coord
+//                // spawn it
+//                // it.pos.spawn()
+//                // store pos into db
+//            }
+//        }
+        // завершаем актора
+        actor.close()
     }
 
     abstract fun getBoundRect(): Rect

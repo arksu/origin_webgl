@@ -6,8 +6,8 @@ import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.model.GameObjectMessage
 import com.origin.model.Player
+import com.origin.model.PlayerMessage
 import com.origin.model.SpawnType.*
-import com.origin.model.World
 import io.ktor.websocket.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -45,17 +45,11 @@ class GameSession(
         val spawnResult = player.sendAndWaitAck(GameObjectMessage.Spawn(listOf(EXACTLY_POINT, NEAR, RANDOM_SAME_REGION)))
         if (!spawnResult) throw RuntimeException("Failed to spawn player")
 
-        // TODO : DEBUG
-        send(MapGridData(World.getGrid(0, 0, 0, 0), MapGridData.Type.ADD))
-        send(MapGridData(World.getGrid(0, 0, 1, 0), MapGridData.Type.ADD))
-        send(MapGridData(World.getGrid(0, 0, 0, 1), MapGridData.Type.ADD))
-        send(MapGridData(World.getGrid(0, 0, 1, 1), MapGridData.Type.ADD))
-
-        send(MapGridConfirm())
+        player.send(PlayerMessage.Connected())
     }
 
-    fun disconnected() {
-
+    suspend fun disconnected() {
+        player.send(PlayerMessage.Disconnected())
     }
 
     /**

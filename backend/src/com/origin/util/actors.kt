@@ -6,8 +6,6 @@ package com.origin.util
 
 import kotlinx.coroutines.*
 
-abstract class MessageWithJob(val job: CompletableJob?)
-
 val WorkerScope = GlobalScope
 
 /**
@@ -29,5 +27,14 @@ abstract class MessageWithAck<T> {
         } catch (t: Throwable) {
             ack.completeExceptionally(t)
         }
+    }
+}
+
+abstract class MessageWithJob(
+    val job: CompletableJob = Job()
+) {
+    suspend fun run(block: suspend () -> Unit) {
+        block()
+        job.complete()
     }
 }
