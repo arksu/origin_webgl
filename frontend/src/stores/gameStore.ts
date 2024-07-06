@@ -4,7 +4,7 @@ import router from '@/router'
 
 export const useGameStore = defineStore('game', {
   state: () => ({
-    selectedCharacterId: undefined as number | undefined
+    // selectedCharacterId: undefined as number | undefined
   }),
   actions: {
     logout() {

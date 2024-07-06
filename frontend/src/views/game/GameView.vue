@@ -8,6 +8,7 @@ import GameClient from '@/net/GameClient'
 import GameButton from '@/components/GameButton.vue'
 import Render from '@/game/Render'
 import GameData from '@/net/GameData'
+import type { AuthorizeTokenResponse } from '@/net/packets'
 
 /**
  * игровой вид, рендер и весь UI для игры
@@ -51,8 +52,11 @@ export default defineComponent({
               // шлем запрос с токеном на сервер для первичной авторизации и активации токена
               client?.send('token', { token })
                 .then((r) => {
+                  const response = r as AuthorizeTokenResponse
                   render?.setup()
                   isActive.value = true
+                  data.selectedCharacterId = response.characterId
+                  console.log('proto version', response.proto)
                 })
                 .catch((e) => {
                   isActive.value = false
@@ -119,15 +123,15 @@ export default defineComponent({
     </div>
   </div>
 
-  <div class="game-ui" v-if="isActive">
+  <div v-if="isActive" class="game-ui">
     <!--  Logout  -->
     <div style="right: 0; bottom: 0; position: absolute">
       <game-button
+        back-color="#683E36"
+        border-color="#59322C"
+        font-color="#301717"
         tooltip="Logout"
         @click="gameStore.logout()"
-        font-color="#301717"
-        border-color="#59322C"
-        back-color="#683E36"
       >
         <i class="fas fa-sign-out-alt"></i>
       </game-button>
@@ -135,7 +139,7 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .game-ui {
   position: absolute;
   width: 100%;

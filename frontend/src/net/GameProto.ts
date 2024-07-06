@@ -1,6 +1,6 @@
 import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameClient from '@/net/GameClient'
-import { type MapGridData, ServerPacket } from '@/net/packets'
+import { type MapGridData, type ObjectAdd, ServerPacket } from '@/net/packets'
 import Render from '@/game/Render'
 import type GameData from '@/net/GameData'
 
@@ -20,44 +20,58 @@ export default class GameProto {
   }
 
   processMessage(r: GameResponseDTO) {
+    const gameData = this.gameData
     const channel = r.c
     const data = r.d
     switch (channel) {
 
       case ServerPacket.MAP_DATA: {
-        const p = (<MapGridData>data)
-        const key = p.x + '_' + p.y
+        const pkt = <MapGridData>data
+        const key = pkt.x + '_' + pkt.y
         console.log('map', key)
-        switch (p.a) {
+        switch (pkt.a) {
           case 0 : // delete
-            delete this.gameData.map[key]
-            this.render.deleteGrid(p.x, p.y)
+            delete gameData.map[key]
+            this.render.deleteGrid(pkt.x, pkt.y)
             break
           case 1: // add
-            this.gameData.map[key] = {
-              x: p.x,
-              y: p.y,
-              tiles: p.tiles,
+            gameData.map[key] = {
+              x: pkt.x,
+              y: pkt.y,
+              tiles: pkt.tiles,
               isChanged: false
             }
             // после добалвения всех гридов придет пакет MAP_CONFIRMED
             break
           case 2: // change
-            this.gameData.map[key].tiles = p.tiles
-            this.gameData.map[key].isChanged = true
-            this.render.addGrid(p.x, p.y)
+            gameData.map[key].tiles = pkt.tiles
+            gameData.map[key].isChanged = true
+            this.render.addGrid(pkt.x, pkt.y)
             break
         }
         break
       }
 
       case ServerPacket.MAP_CONFIRMED : {
-        for (const mapKey in this.gameData.map) {
+        for (const mapKey in gameData.map) {
           const s = mapKey.split('_')
           const x: number = +s[0]
           const y: number = +s[1]
           this.render.addGrid(x, y)
         }
+        break
+      }
+
+      case ServerPacket.OBJECT_ADD : {
+        const pkt = <ObjectAdd>data
+        const old = gameData.objects[pkt.id]
+        gameData.objects[pkt.id] = pkt
+        if (old !== undefined) {
+          // gameData.objects[pkt.id].moveController = old.moveController
+          // gameData.objects[pkt.id].view = old.view
+        }
+        this.render.onObjectAdd(gameData.objects[data.id])
+        this.render.updateMapScalePos()
         break
       }
     }

@@ -151,7 +151,7 @@ export default class GameClient {
    * @param target
    * @param data
    */
-  public send(target: string, data: any = undefined) {
+  public send(target: string, data: any = undefined)  {
     const request: GameRequestDTO = {
       id: ++this.lastId,
       t: target,

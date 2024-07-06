@@ -17,6 +17,11 @@ export enum ServerPacket {
   FILE_CHANGED = 'fc',
 }
 
+export interface AuthorizeTokenResponse {
+  readonly characterId : number
+  readonly proto : string
+}
+
 export interface MapGridData {
   readonly x: number
   readonly y: number
@@ -26,4 +31,32 @@ export interface MapGridData {
    */
   readonly a: number
   readonly tiles: number[]
+}
+
+export interface ObjectAdd {
+  id: number
+  x: number
+  y: number
+
+  /**
+   * heading
+   */
+  h: number
+
+  /**
+   * class
+   */
+  c: string
+
+  /**
+   * type id
+   */
+  t: number
+
+  /**
+   * resource path
+   */
+  r: string
+
+  // a?: PcAppearance
 }
