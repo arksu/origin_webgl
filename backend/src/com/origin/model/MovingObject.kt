@@ -19,6 +19,18 @@ abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, 
     }
 
     /**
+     * удаление объекта
+     */
+    override suspend fun remove() {
+        // deactivate and unload grids
+        unloadGrids()
+
+        // TODO
+//        moveController?.stop()
+        super.remove()
+    }
+
+    /**
      * заполнить список гридов с которыми взаимодействует этот объект
      * вызываться может только если еще не был заполнен этот список
      * в случае телепорта объекта надо очистить этот список
@@ -40,6 +52,16 @@ abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, 
                 onEnterGrid(g)
             }
         }
+    }
+
+    /**
+     * выгрузить все гриды в которых находимся
+     */
+    private suspend fun unloadGrids() {
+        if (this is Human) grids.forEach {
+            onLeaveGrid(it)
+        }
+        grids.clear()
     }
 
     /**
