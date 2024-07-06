@@ -7,7 +7,7 @@ import kotlin.math.sqrt
 /**
  * vector of 2 int
  */
-class Vec2i(
+data class Vec2i(
     var x: Int,
     var y: Int,
 ) {

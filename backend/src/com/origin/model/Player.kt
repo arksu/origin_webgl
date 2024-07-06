@@ -4,6 +4,7 @@ package com.origin.model
 
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.net.GameSession
+import com.origin.net.MapGridConfirm
 import com.origin.util.PLAYER_RECT
 import com.origin.util.Rect
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -82,6 +83,16 @@ class Player(
             remove()
         }
         save()
+    }
+
+    override suspend fun loadGrids() {
+        super.loadGrids()
+        session.send(MapGridConfirm())
+    }
+
+    override suspend fun onGridChanged() {
+        super.onGridChanged()
+        session.send(MapGridConfirm())
     }
 
     /**

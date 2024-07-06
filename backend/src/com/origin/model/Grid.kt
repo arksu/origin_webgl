@@ -7,8 +7,10 @@ import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.GridRecord
 import com.origin.jooq.tables.references.GRID
 import com.origin.move.CheckCollisionModel
+import com.origin.move.Collision
 import com.origin.move.CollisionResult
 import com.origin.move.MoveType
+import com.origin.net.MapGridData
 import com.origin.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -20,10 +22,12 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 class Grid(
     private val record: GridRecord,
-    private val layer: LandLayer,
+    val layer: LandLayer,
 ) {
+
     val tilesBlob get() = record.tilesBlob
 
+    val pos = Vec2i(record.x, record.y)
     val region get() = record.region
     val level get() = record.level
     val x: Int get() = record.x
@@ -38,7 +42,7 @@ class Grid(
     /**
      * список объектов в гриде
      */
-    private val objects = ConcurrentLinkedQueue<GameObject>()
+    val objects = ConcurrentLinkedQueue<GameObject>()
 
     /**
      * активен ли грид?
@@ -59,6 +63,18 @@ class Grid(
         logger.warn("game obj actor $this finished")
     }
 
+    private suspend fun processMessage(msg: Any) {
+        when (msg) {
+            is GridMessage.Spawn -> msg.run { onSpawn(msg.obj, false) }
+            is GridMessage.RemoveObject -> msg.run { onRemoveObject(msg.obj) }
+            is GridMessage.Activate -> msg.run { onActivate(msg.obj) }
+            is GridMessage.Deactivate -> msg.run { onDeactivate(msg.obj) }
+            is GridMessage.CheckCollisionInternal -> msg.run { checkCollisionInternal(msg.model) }
+
+            else -> logger.error("Unknown Grid message $msg")
+        }
+    }
+
     suspend fun send(msg: Any) {
         actor.send(msg)
     }
@@ -73,21 +89,11 @@ class Grid(
         return msg.job.join()
     }
 
-
-    private suspend fun processMessage(msg: Any) {
-        when (msg) {
-            is GridMessage.Spawn -> msg.run { onSpawn(msg.obj, false) }
-            is GridMessage.RemoveObject -> msg.run { onRemoveObject(msg.obj) }
-
-            else -> logger.error("Unknown Grid message $msg")
-        }
-    }
-
     private suspend fun onSpawn(obj: GameObject, force: Boolean): Boolean {
         if (obj.pos.region != region || obj.pos.level != level) {
             throw RuntimeException("wrong spawn condition")
         }
-        logger.debug("spawn obj grid=${obj.pos.gridX} ${obj.pos.gridY} pos=$x $y")
+        logger.debug("spawn obj grid=${obj.pos.gridX} ${obj.pos.gridY}")
         if (obj.pos.gridX != x || obj.pos.gridY != y) {
             throw RuntimeException("wrong spawn condition")
         }
@@ -137,6 +143,43 @@ class Grid(
             }
         }
         logger.debug("objects size=${objects.size}")
+    }
+
+    /**
+     * активировать грид
+     * только пока есть хоть 1 объект связанный с гридом - он будет считатся активным
+     * если ни одного объекта нет грид становится не активным и не обновляет свое состояние
+     * @param human объект который связывается с гридом
+     * @return только если удалось активировать
+     */
+    private suspend fun onActivate(human: Human) {
+        if (!activeObjects.contains(human)) {
+            // если грид был до этого не активен обязательно надо обновить состояние
+            if (!isActive) {
+                update()
+            }
+
+            activeObjects.add(human)
+            if (human is Player) {
+                human.session.send(MapGridData(this, MapGridData.Type.ADD))
+            }
+
+//            TimeController.addActiveGrid(this)
+        }
+    }
+
+    /**
+     * деактивировать грид
+     * если в гриде не осталось ни одного активного объекта то он прекращает обновляться
+     */
+    private suspend fun onDeactivate(human: Human) {
+        activeObjects.remove(human)
+        if (human is Player) {
+            human.session.send(MapGridData(this, MapGridData.Type.REMOVE))
+        }
+        if (!isActive) {
+//            TimeController.removeActiveGrid(this)
+        }
     }
 
     fun updateTiles() {
@@ -229,11 +272,9 @@ class Grid(
             logger.warn("delegate collision to next $next")
             next.sendAndWaitAck(GridMessage.CheckCollisionInternal(model))
         } else {
-            // TODO: DEBUG
-            CollisionResult.NONE
             // таким образом на момент обработки коллизии
             // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
-//            Collision.process(toX, toY, dist, obj, moveType, list, isMove)
+            Collision.process(model.toX, model.toY, model.dist, model.obj, model.moveType, model.list, model.isMove)
         }
     }
 

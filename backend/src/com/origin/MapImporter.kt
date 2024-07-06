@@ -12,6 +12,11 @@ import java.io.File
 import javax.imageio.ImageIO
 
 object MapImporter {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        run()
+    }
+
     private val logger: Logger = LoggerFactory.getLogger(MapImporter::class.java)
 
     fun run() {
@@ -97,10 +102,5 @@ object MapImporter {
         }
 
         logger.info("map import done")
-    }
-
-    @JvmStatic
-    fun main(args: Array<String>) {
-        run()
     }
 }

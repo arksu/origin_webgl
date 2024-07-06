@@ -8,12 +8,12 @@ sealed class GameObjectMessage {
     /**
      * грид добавил себе какой-то объект и нас уведомил об этом
      */
-    class GridObjectAdded(obj: GameObject)
+    class GridObjectAdded(val obj: GameObject)
 
     /**
      * грид удалил у себя какой-то объект
      */
-    class GridObjectRemoved(obj: GameObject)
+    class GridObjectRemoved(val obj: GameObject)
 
     /**
      * этот объект был удален из грида

@@ -10,6 +10,9 @@ object ServerLauncher {
 
     @JvmStatic
     fun main(args: Array<String>) {
+        System.setProperty("org.jooq.no-logo", "true")
+        System.setProperty("org.jooq.no-tips", "true")
+
         if (args.isNotEmpty()) {
             when (args[0]) {
                 "-mapgen" -> {

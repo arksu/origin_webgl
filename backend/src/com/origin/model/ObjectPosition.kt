@@ -26,4 +26,8 @@ class ObjectPosition(
      */
     val gridX get() = point.x / GRID_FULL_SIZE
     val gridY get() = point.y / GRID_FULL_SIZE
+
+    override fun toString(): String {
+        return "{pos level=$level $x, $y ${this.hashCode()}}"
+    }
 }
