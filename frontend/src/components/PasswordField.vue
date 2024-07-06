@@ -21,7 +21,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <input type="password" id="password" placeholder="Password" required v-model="value">
+  <input type="password" id="password" placeholder="Password" required autocomplete="current-password" v-model="value">
 </template>
 
 <style scoped>

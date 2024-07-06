@@ -49,6 +49,7 @@ class GameSession(
     }
 
     suspend fun disconnected() {
+        isDisconnected = true
         player.send(PlayerMessage.Disconnected())
     }
 

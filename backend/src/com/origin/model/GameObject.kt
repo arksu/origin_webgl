@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory
 
 abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
     companion object {
-        val logger: Logger = LoggerFactory.getLogger(Player::class.java)
+        val logger: Logger = LoggerFactory.getLogger(GameObject::class.java)
     }
 
     /**

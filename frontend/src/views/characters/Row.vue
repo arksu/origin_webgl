@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import { useApi } from '@/net/useApi'
 import router from '@/router'
 import { RouteNames } from '@/router/routeNames'
@@ -73,6 +73,12 @@ export default defineComponent({
         emit('onDeleted', props.id)
       }
     }
+
+    onMounted(() => {
+      if (authStore.devMode && localStorage.getItem('wasLogout') !== '1' && (''+props.id === localStorage.getItem('lastSelectedChar'))) {
+        selectChar()
+      }
+    })
 
     return { selectChar, deleteChar, deleteInProcess, selectInProcess }
   }

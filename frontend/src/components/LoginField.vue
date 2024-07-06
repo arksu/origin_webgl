@@ -19,5 +19,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <input v-focus id="login" type="text" placeholder="Login" required v-model="value">
+  <input v-focus id="login" type="text" placeholder="Login" required autocomplete="on" v-model="value">
 </template>

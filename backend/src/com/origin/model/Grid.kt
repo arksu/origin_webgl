@@ -198,7 +198,7 @@ class Grid(
      * обновление состояния грида и его объектов
      */
     private fun update() {
-
+        // TODO update grid
     }
 
     /**

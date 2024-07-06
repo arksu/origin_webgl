@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 
 import LoginField from '@/components/LoginField.vue'
 import PasswordField from '@/components/PasswordField.vue'
@@ -25,6 +25,7 @@ export default defineComponent({
 
     const login = ref(localStorage.getItem('login') || '')
     const password = ref('')
+    let intervalId = 0;
 
     const request = {
       login: '',
@@ -40,6 +41,12 @@ export default defineComponent({
       request.login = login.value
       request.hash = makeHash(password.value)
 
+      // для разработчика всегда сохраняем пароль
+      if (authStore.devMode) {
+        localStorage.setItem('password', password.value)
+        localStorage.removeItem('wasLogout')
+      }
+
       const response = await fetch()
 
       if (isSuccess.value) {
@@ -51,7 +58,23 @@ export default defineComponent({
     onMounted(() => {
       if (authStore.token) {
         router.push({ name: RouteNames.CHARACTERS })
+      } else {
+        // для разработки сразу восстановим пароль
+        if (authStore.devMode) {
+          password.value = localStorage.getItem('password') || ''
+          console.log('password.value', password.value)
+
+          if (localStorage.getItem('wasLogout') !== '1') {
+            intervalId = setInterval(() => {
+              submit()
+            }, 1000);
+          }
+        }
       }
+    })
+
+    onUnmounted(() => {
+      clearInterval(intervalId)
     })
 
     return { login, password, submit, isLoading }
@@ -66,7 +89,7 @@ export default defineComponent({
       <logo />
 
       <div class="login-panel">
-        <form @submit.prevent="submit" action="#">
+        <form action="#" @submit.prevent="submit">
           <error-message />
 
           <login-field v-model="login" />

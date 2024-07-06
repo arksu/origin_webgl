@@ -8,6 +8,7 @@ export const useGameStore = defineStore('game', {
   }),
   actions: {
     logout() {
+      localStorage.setItem('wasLogout', '1')
       router.push({ name: RouteNames.CHARACTERS });
     }
   }

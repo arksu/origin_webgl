@@ -88,10 +88,9 @@ export default class Render {
       // добавляем в резолвер только 1 раз, при рестарте pixi оно остается в памяти
       PIXI.Assets.add({ alias: 'base', src: '/assets/game/base.json' })
       PIXI.Assets.add({ alias: 'tiles', src: '/assets/game/tiles.json' })
-      PIXI.Assets.add({ alias: 'assets/game/tiles.png', src: '/assets/game/tiles.png' })
     }
 
-    return PIXI.Assets.load(['base', 'tiles', 'assets/game/tiles.png'])
+    return PIXI.Assets.load(['base', 'tiles'])
   }
 
   stop() {

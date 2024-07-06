@@ -8,6 +8,10 @@ export const useAuthStore = defineStore('auth', () => {
   const websocketToken = ref<string | undefined>(localStorage.getItem('websocketToken') || undefined)
   const lastError = ref<string | undefined>(undefined)
 
+  // режим разработчика включен?
+  const devMode = ref('1' === localStorage.getItem('dev') || false)
+
+
   const setToken = (newToken: string) => {
     token.value = newToken
     localStorage.setItem('token', newToken)
@@ -22,6 +26,7 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = () => {
     token.value = undefined
     localStorage.removeItem('token')
+    if (devMode.value) localStorage.setItem('wasLogout', '1')
     router.push({ name: RouteNames.LOGIN })
   }
 
@@ -42,6 +47,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
+    devMode,
     lastError, setError,
     logout,
     token: readonly(token), setToken, clearToken,
