@@ -330,17 +330,8 @@ export default class Render {
     }
   }
 
-  private contextMenuHandler = (e: Event) => {
-    e.preventDefault()
-    if (e instanceof MouseEvent) {
-      console.log('right click ' + e.x + ' ' + e.y)
-      console.log(e.button + ' alt=' + e.altKey + ' shift=' + e.shiftKey + ' meta=' + e.metaKey)
-      this.onMouseRightClick(e)
-    }
-  }
-
-  private onMouseRightClick(e: MouseEvent) {
-
+  onMouseRightClick(_e: MouseEvent) {
+    // TODO
   }
 
   /**
@@ -349,12 +340,18 @@ export default class Render {
   private initCanvasHandlers() {
     // ловим прокрутку страницы и делаем скейл на основе этого
     this.canvas.addEventListener('wheel', (e: WheelEvent) => {
-      e.preventDefault()
       this.onMouseWheel(-e.deltaY)
-    })
+    }, { passive: true })
 
     // ловим правый клик за счет вызоыва context menu
-    this.canvas.addEventListener('contextmenu', this.contextMenuHandler)
+    this.canvas.addEventListener('contextmenu', (e: Event) => {
+      e.preventDefault()
+      if (e instanceof MouseEvent) {
+        console.log('right click ' + e.x + ' ' + e.y)
+        console.log(e.button + ' alt=' + e.altKey + ' shift=' + e.shiftKey + ' meta=' + e.metaKey)
+        this.onMouseRightClick(e)
+      }
+    })
 
     window.addEventListener('resize', this.resizeHandler)
     window.addEventListener('orientationchange', this.orientationchangeHandler)
