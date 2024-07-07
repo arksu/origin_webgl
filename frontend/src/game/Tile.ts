@@ -240,3 +240,9 @@ export default class Tile {
 }
 
 Tile.init()
+
+export function coordGame2Screen(x: number, y: number): Coord {
+    const px = x / Tile.TILE_SIZE;
+    const py = y / Tile.TILE_SIZE;
+    return [px * Tile.TILE_WIDTH_HALF - py * Tile.TILE_WIDTH_HALF, px * Tile.TILE_HEIGHT_HALF + py * Tile.TILE_HEIGHT_HALF];
+}

@@ -5,6 +5,7 @@ import Grid from '@/game/Grid'
 import type GameObject from '@/game/GameObject'
 import Tile from '@/game/Tile'
 import Point from '@/util/Point'
+import ObjectView from '@/game/ObjectView'
 
 export default class Render {
 
@@ -221,14 +222,14 @@ export default class Render {
   }
 
   public onObjectAdd(obj: GameObject) {
-    // if (obj.view !== undefined) {
-    //   obj.view.destroy()
-    // }
-    //
-    // obj.view = new ObjectView(obj)
-    // for (let i = 0; i < obj.view.view.length; i++) {
-    //   this.objectsContainer.addChild(obj.view.view[i])
-    // }
+    if (obj.view !== undefined) {
+      obj.view.destroy()
+    }
+
+    obj.view = new ObjectView(obj)
+    for (let i = 0; i < obj.view.view.length; i++) {
+      this.objectsContainer.addChild(obj.view.view[i])
+    }
   }
 
   private getPlayerCoord(): { sx: number, sy: number } {
