@@ -5,7 +5,10 @@ package com.origin.model
 import com.origin.GRID_FULL_SIZE
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.GridRecord
+import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.jooq.tables.references.GRID
+import com.origin.jooq.tables.references.OBJECT
+import com.origin.model.`object`.ObjectsFactory
 import com.origin.move.CheckCollisionModel
 import com.origin.move.Collision
 import com.origin.move.CollisionResult
@@ -61,6 +64,10 @@ class Grid(
             }
         }
         logger.warn("game obj actor $this finished")
+    }
+
+    init {
+        loadObjects()
     }
 
     private suspend fun processMessage(msg: Any) {
@@ -275,6 +282,23 @@ class Grid(
             // таким образом на момент обработки коллизии
             // все эти гриды будет заблокированы обработкой сообщения обсчета коллизии
             Collision.process(model.toX, model.toY, model.dist, model.obj, model.moveType, model.list, model.isMove)
+        }
+    }
+
+    /**
+     * загрузка объектов при создании грида
+     */
+    private fun loadObjects() {
+        val list: List<ObjectRecord> = DatabaseConfig.dsl.selectFrom(OBJECT)
+            .where(OBJECT.GRID_X.eq(x))
+            .and(OBJECT.GRID_Y.eq(y))
+            .and(OBJECT.REGION.eq(region))
+            .and(OBJECT.LEVEL.eq(level))
+            .fetch()
+        list.forEach { record ->
+            val obj = ObjectsFactory.constructByRecord(record)
+            obj.grid = this
+            objects.add(obj)
         }
     }
 

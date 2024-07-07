@@ -5,6 +5,7 @@ package com.origin.model
 import com.origin.GRID_FULL_SIZE
 import com.origin.ObjectID
 import com.origin.TILE_SIZE
+import com.origin.model.inventory.Inventory
 import com.origin.move.Collision
 import com.origin.util.*
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +27,11 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
     var grid: Grid? = null
 
     val isSpawned: Boolean get() = grid != null
+
+    /**
+     * инвентарь объекта (обязательно надо уточнить в конечных объектах, что делать с инвентарем: либо есть либо нет - null)
+     */
+    abstract val inventory: Inventory?
 
     /**
      * актор для обработки сообщений

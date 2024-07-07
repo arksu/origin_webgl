@@ -3,14 +3,12 @@
 package com.origin.model
 
 import com.origin.jooq.tables.records.CharacterRecord
+import com.origin.model.inventory.Inventory
 import com.origin.net.GameSession
 import com.origin.net.MapGridConfirm
 import com.origin.util.PLAYER_RECT
 import com.origin.util.Rect
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.runBlocking
-import kotlin.math.roundToInt
 
 class Player(
     /**
@@ -26,6 +24,10 @@ class Player(
         heading = character.heading
     )
 ) {
+    /**
+     * инвентарь игрока
+     */
+    override val inventory = Inventory(this)
 
     override suspend fun processMessage(msg: Any) {
         when (msg) {

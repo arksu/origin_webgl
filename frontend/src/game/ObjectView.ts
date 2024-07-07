@@ -2,9 +2,6 @@ import * as PIXI from 'pixi.js'
 import type GameObject from '@/game/GameObject'
 import type Coord from '@/util/Coord'
 import { coordGame2Screen } from '@/game/Tile'
-import Render from '@/game/Render'
-import Point from '@/util/Point'
-import { FederatedEvent } from 'pixi.js'
 import objects from './objects.json'
 
 export interface Layer {
@@ -26,6 +23,7 @@ export interface Resource {
  */
 export default class ObjectView {
   readonly obj: GameObject
+  container = new PIXI.Container()
   view: PIXI.Sprite[] = []
 
   isDestroyed: boolean = false
@@ -39,9 +37,10 @@ export default class ObjectView {
 
     this.res = this.getResource(obj.r)
     if (this.res == undefined) {
-      this.res = this.getResource("unknown")
+      this.res = this.getResource('unknown')
     }
     this.makeLayers()
+    this.setSpritePositions()
     this.onMoved()
   }
 
@@ -49,7 +48,7 @@ export default class ObjectView {
    * получить ресурс объекта из пути
    */
   private getResource(r: string): Resource {
-    const strings = r.split("/");
+    const strings = r.split('/')
 
     // берем первый уровень вложенности
     // @ts-ignore
@@ -76,7 +75,7 @@ export default class ObjectView {
   private addLayer(l: Layer) {
     let path = l.img
     // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
-    if (path.includes(".")) path = "assets/game/" + path
+    if (path.includes('.')) path = '/assets/game/' + path
 
     // если есть оффсет надо его проставить
     if (l.offset != undefined) {
@@ -84,31 +83,52 @@ export default class ObjectView {
     } else {
       this.layersOffset.push([0, 0])
     }
-    // создаем спрайт для каждого слоя
-    const spr = PIXI.Sprite.from(path)
-    if (l.interactive) this.setInteractive(spr)
-    if (l.shadow) {
-      spr.zIndex = -1
+
+    if (!PIXI.Assets.cache.has(path)) {
+      PIXI.Assets.load(path).then((t) => {
+        console.log('loaded', path)
+        // создаем спрайт для каждого слоя
+        const spr = PIXI.Sprite.from(t)
+        console.log(spr)
+        if (l.interactive) this.setInteractive(spr)
+        if (l.shadow) {
+          spr.zIndex = -1
+        }
+        this.view.push(spr)
+        this.container.addChild(spr)
+
+        // TODO : проставлять только для этого спрайта
+        this.setSpritePositions()
+      })
+    } else {
+
+      // создаем спрайт для каждого слоя
+      const spr = PIXI.Sprite.from(path)
+      if (l.interactive) this.setInteractive(spr)
+      if (l.shadow) {
+        spr.zIndex = -1
+      }
+      this.view.push(spr)
+      this.container.addChild(spr)
     }
-    this.view.push(spr)
   }
 
   public destroy() {
     if (!this.isDestroyed) {
       for (let i = 0; i < this.view.length; i++) {
-        this.view[i].destroy();
+        this.view[i].destroy()
       }
+      this.container.destroy()
       this.isDestroyed = true
     }
   }
 
-  public onMoved() {
-    const coord = coordGame2Screen(this.obj.x, this.obj.y)
-
+  private setSpritePositions() {
+    console.log('setSpritePositions')
     for (let i = 0; i < this.view.length; i++) {
       // оффсет слоя
-      this.view[i].x = coord[0] + this.layersOffset[i][0]
-      this.view[i].y = coord[1] + this.layersOffset[i][1]
+      this.view[i].x =  this.layersOffset[i][0]
+      this.view[i].y =  this.layersOffset[i][1]
 
       // добавим оффсет для объекта
       if (this.res.offset != undefined) {
@@ -116,12 +136,19 @@ export default class ObjectView {
         this.view[i].y -= this.res.offset[1]
       }
       // z = y
-      let z = coord[1]
+      let z = this.container.y
       if (this.res.layers[i].shadow) {
         z = -1
       }
       this.view[i].zIndex = z
     }
+
+  }
+
+  public onMoved() {
+    const coord = coordGame2Screen(this.obj.x, this.obj.y)
+    this.container.x = coord[0]
+    this.container.y = coord[1]
   }
 
   /**
@@ -135,7 +162,7 @@ export default class ObjectView {
         const l = this.res.layers[i]
         let path = l.img
         // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
-        if (path.includes(".")) path = "assets/game/" + path + "?" + (+new Date())
+        if (path.includes('.')) path = 'assets/game/' + path + '?' + (+new Date())
 
         this.view[i].texture = PIXI.Texture.from(path)
       }
@@ -143,51 +170,51 @@ export default class ObjectView {
   }
 
   private setInteractive(target: PIXI.Sprite | PIXI.Container) {
-   /*
-    target.interactive = true
-    target.on("rightclick", (e: PIXI.InteractionEvent) => {
-      this.onRightClick(e)
-    })
-    target.on("touchstart", (e: PIXI.InteractionEvent) => {
-      this.isTouched = true
-      // this.touchTimer = setTimeout(() => {
-      //     if (this.isTouched) {
-      //         this.isTouched = false
-      //         // укажем что был правый клик (сработал)
-      //         this.wasRightClick = true
-      //         console.log("rightclick")
-      //         this.onRightClick(e)
-      //
-      //         clearTimeout(this.touchTimer)
-      //         this.touchTimer = -1
-      //     }
-      // }, 800)
-    })
-    target.on("touchend", (e: PIXI.InteractionEvent) => {
-      this.isTouched = false
-      if (this.touchTimer != -1) {
-        clearTimeout(this.touchTimer)
-        this.touchTimer = -1
-      }
-      // только если не сработал правый клик - выполним основной клик
-      if (!this.wasRightClick) {
-        this.onClick(e)
-      }
-      // и в любом случае затрем флаг правого клика
-      this.wasRightClick = false
-    })
-    target.on("touchendoutside", () => {
-      this.isTouched = false
-      if (this.touchTimer != -1) {
-        clearTimeout(this.touchTimer)
-        this.touchTimer = -1
-      }
-    })
-    target.on("mousedown", (e: PIXI.InteractionEvent) => {
-      this.onClick(e)
-    })
+    /*
+     target.interactive = true
+     target.on("rightclick", (e: PIXI.InteractionEvent) => {
+       this.onRightClick(e)
+     })
+     target.on("touchstart", (e: PIXI.InteractionEvent) => {
+       this.isTouched = true
+       // this.touchTimer = setTimeout(() => {
+       //     if (this.isTouched) {
+       //         this.isTouched = false
+       //         // укажем что был правый клик (сработал)
+       //         this.wasRightClick = true
+       //         console.log("rightclick")
+       //         this.onRightClick(e)
+       //
+       //         clearTimeout(this.touchTimer)
+       //         this.touchTimer = -1
+       //     }
+       // }, 800)
+     })
+     target.on("touchend", (e: PIXI.InteractionEvent) => {
+       this.isTouched = false
+       if (this.touchTimer != -1) {
+         clearTimeout(this.touchTimer)
+         this.touchTimer = -1
+       }
+       // только если не сработал правый клик - выполним основной клик
+       if (!this.wasRightClick) {
+         this.onClick(e)
+       }
+       // и в любом случае затрем флаг правого клика
+       this.wasRightClick = false
+     })
+     target.on("touchendoutside", () => {
+       this.isTouched = false
+       if (this.touchTimer != -1) {
+         clearTimeout(this.touchTimer)
+         this.touchTimer = -1
+       }
+     })
+     target.on("mousedown", (e: PIXI.InteractionEvent) => {
+       this.onClick(e)
+     })
 
-    */
+     */
   }
 
   private onClick(e: PIXI.FederatedEvent) {

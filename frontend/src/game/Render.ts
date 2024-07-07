@@ -6,6 +6,7 @@ import type GameObject from '@/game/GameObject'
 import Tile from '@/game/Tile'
 import Point from '@/util/Point'
 import ObjectView from '@/game/ObjectView'
+import sleep from '@/util/sleep'
 
 export default class Render {
 
@@ -227,9 +228,7 @@ export default class Render {
     }
 
     obj.view = new ObjectView(obj)
-    for (let i = 0; i < obj.view.view.length; i++) {
-      this.objectsContainer.addChild(obj.view.view[i])
-    }
+    this.objectsContainer.addChild(obj.view.container)
   }
 
   private getPlayerCoord(): { sx: number, sy: number } {
