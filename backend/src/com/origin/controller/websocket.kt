@@ -1,11 +1,11 @@
 package com.origin.controller
 
-import com.origin.GameWebServer.gsonDeserializer
 import com.origin.GameWebServer.logger
 import com.origin.jooq.tables.references.ACCOUNT
 import com.origin.jooq.tables.references.CHARACTER
 import com.origin.net.GameRequestDTO
 import com.origin.net.GameSession
+import com.origin.util.MapDeserializerDoubleAsIntFix.gsonDeserializer
 import com.origin.util.transactionResultWrapper
 import io.ktor.server.plugins.*
 import io.ktor.server.routing.*

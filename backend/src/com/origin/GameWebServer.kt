@@ -1,12 +1,8 @@
 package com.origin
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import com.origin.config.ServerConfig
 import com.origin.controller.api
 import com.origin.error.*
-import com.origin.util.MapDeserializerDoubleAsIntFix
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -30,11 +26,11 @@ object GameWebServer {
 
     val accountCache = AccountCache()
 
-    val gsonDeserializer: Gson = GsonBuilder()
-        .registerTypeAdapter(
-            object : TypeToken<Map<String, Any>>() {}.type, MapDeserializerDoubleAsIntFix()
-        )
-        .create()
+//    val gsonDeserializer: Gson = GsonBuilder()
+//        .registerTypeAdapter(
+//            object : TypeToken<Map<String, Object>>() {}.type, MapDeserializerDoubleAsIntFix()
+//        )
+//        .create()
 
     fun start() {
         logger.info("start game server [${ServerConfig.SERVER_PORT}]...")

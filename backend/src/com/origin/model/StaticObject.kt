@@ -6,16 +6,16 @@ import com.origin.util.Rect
 /**
  * статичный игровой объект (дерево, ящик и тд)
  */
-abstract class StaticObject(val objectRecord: ObjectRecord) : GameObject(
-    objectRecord.id, ObjectPosition(
-        objectRecord.x,
-        objectRecord.y,
-        objectRecord.level,
-        objectRecord.region,
-        objectRecord.heading
+abstract class StaticObject(val record: ObjectRecord) : GameObject(
+    record.id, ObjectPosition(
+        record.x,
+        record.y,
+        record.level,
+        record.region,
+        record.heading
     )
 ) {
-    val type get() = objectRecord.type
+    val type get() = record.type
 
     override fun getBoundRect(): Rect {
         // TODO getBoundRect

@@ -33,7 +33,7 @@ class GameSession(
 
 
     fun process(request: GameRequestDTO) {
-        TODO("Not yet implemented")
+        logger.debug("client request {}", request)
     }
 
     suspend fun connected(request: GameRequestDTO) {

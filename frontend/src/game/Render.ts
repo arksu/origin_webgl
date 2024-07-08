@@ -6,7 +6,7 @@ import type GameObject from '@/game/GameObject'
 import Tile from '@/game/Tile'
 import Point from '@/util/Point'
 import ObjectView from '@/game/ObjectView'
-import sleep from '@/util/sleep'
+import type GameClient from '@/net/GameClient'
 
 export default class Render {
 
@@ -27,6 +27,8 @@ export default class Render {
    * игровые данные
    */
   public readonly gameData: GameData
+
+  private _client ?: GameClient
 
   /**
    * масштаб карты и игровой графики
@@ -159,6 +161,16 @@ export default class Render {
     this.wasDestroyed = true
   }
 
+  public get client(): GameClient {
+    if (this._client == undefined) throw new Error('game client in render is not defined')
+    return this._client
+  }
+
+  public set client(client: GameClient) {
+    if (this._client !== undefined) throw new Error('game client in render is already defined')
+    this._client = client
+  }
+
   private update(_ticker: PIXI.Ticker): void {
     // console.log('update', ticker)
     // console.log(this.app)
@@ -227,7 +239,7 @@ export default class Render {
       obj.view.destroy()
     }
 
-    obj.view = new ObjectView(obj)
+    obj.view = new ObjectView(obj, this)
     this.objectsContainer.addChild(obj.view.container)
   }
 
@@ -244,6 +256,29 @@ export default class Render {
       console.warn('no player object')
       return { sx: 0, sy: 0 }
     }
+  }
+
+  /**
+   * перевести экранные координаты в игровые
+   */
+  public coordScreen2Game(p: Point): Point {
+    p.dec(this.offset);
+
+    const px = this.gameData.playerObject.x;
+    const py = this.gameData.playerObject.y;
+
+    console.log("player pos " + px + " " + py)
+
+    const screenWidthHalf = this.app.renderer.width / 2;
+    const screenHeightHalf = this.app.renderer.height / 2;
+    p.decValue(screenWidthHalf, screenHeightHalf).div(this.scale);
+
+    return new Point(
+      p.y / Tile.TEXTURE_HEIGHT + p.x / Tile.TEXTURE_WIDTH,
+      p.y / Tile.TEXTURE_HEIGHT - p.x / Tile.TEXTURE_WIDTH)
+      .mul(Tile.TILE_SIZE)
+      .incValue(px, py)
+      .round();
   }
 
   public updateMapScalePos() {
@@ -357,5 +392,4 @@ export default class Render {
     window.addEventListener('orientationchange', this.orientationchangeHandler)
     document.addEventListener('keydown', this.keydownHandler)
   }
-
 }

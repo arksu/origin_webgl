@@ -1,8 +1,11 @@
 import * as PIXI from 'pixi.js'
+import { FederatedEvent, FederatedPointerEvent } from 'pixi.js'
 import type GameObject from '@/game/GameObject'
 import type Coord from '@/util/Coord'
 import { coordGame2Screen } from '@/game/Tile'
 import objects from './objects.json'
+import type Render from '@/game/Render'
+import Point from '@/util/Point'
 
 export interface Layer {
   img: string
@@ -22,25 +25,25 @@ export interface Resource {
  * внешнее представление объекта в игре
  */
 export default class ObjectView {
+  readonly render: Render
   readonly obj: GameObject
   container = new PIXI.Container()
-  view: PIXI.Sprite[] = []
+  sprites: PIXI.Sprite[] = []
 
   isDestroyed: boolean = false
   private readonly res: Resource
-  private layersOffset: Coord[] = []
   private touchTimer: number = -1
   private wasRightClick: boolean = false
 
-  constructor(obj: GameObject) {
+  constructor(obj: GameObject, render: Render) {
     this.obj = obj
+    this.render = render
 
     this.res = this.getResource(obj.r)
     if (this.res == undefined) {
       this.res = this.getResource('unknown')
     }
     this.makeLayers()
-    this.setSpritePositions()
     this.onMoved()
   }
 
@@ -77,72 +80,54 @@ export default class ObjectView {
     // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
     if (path.includes('.')) path = '/assets/game/' + path
 
-    // если есть оффсет надо его проставить
-    if (l.offset != undefined) {
-      this.layersOffset.push(l.offset)
-    } else {
-      this.layersOffset.push([0, 0])
-    }
-
     if (!PIXI.Assets.cache.has(path)) {
       PIXI.Assets.load(path).then((t) => {
         console.log('loaded', path)
-        // создаем спрайт для каждого слоя
-        const spr = PIXI.Sprite.from(t)
-        console.log(spr)
-        if (l.interactive) this.setInteractive(spr)
-        if (l.shadow) {
-          spr.zIndex = -1
-        }
-        this.view.push(spr)
-        this.container.addChild(spr)
-
-        // TODO : проставлять только для этого спрайта
-        this.setSpritePositions()
+        // создаем спрайт из текстуры которую загрузили
+        this.makeSprite(t, l)
       })
     } else {
-
       // создаем спрайт для каждого слоя
-      const spr = PIXI.Sprite.from(path)
-      if (l.interactive) this.setInteractive(spr)
-      if (l.shadow) {
-        spr.zIndex = -1
-      }
-      this.view.push(spr)
-      this.container.addChild(spr)
+      this.makeSprite(path, l)
     }
+  }
+
+  private makeSprite(src: any, l: Layer): void {
+    const spr = PIXI.Sprite.from(src)
+    if (l.interactive) this.setInteractive(spr)
+    if (l.shadow) {
+      spr.zIndex = -1
+    }
+
+    // оффсет слоя
+    if (l.offset != undefined) {
+      spr.x = l.offset[0]
+      spr.y = l.offset[1]
+    }
+
+    // добавим оффсет для объекта
+    if (this.res.offset != undefined) {
+      spr.x -= this.res.offset[0]
+      spr.y -= this.res.offset[1]
+    }
+    // z = y
+    let z = this.container.y
+    if (l.shadow) {
+      z = -1
+    }
+    spr.zIndex = z
+    this.sprites.push(spr)
+    this.container.addChild(spr)
   }
 
   public destroy() {
     if (!this.isDestroyed) {
-      for (let i = 0; i < this.view.length; i++) {
-        this.view[i].destroy()
+      for (let i = 0; i < this.sprites.length; i++) {
+        this.sprites[i].destroy()
       }
       this.container.destroy()
       this.isDestroyed = true
     }
-  }
-
-  private setSpritePositions() {
-    console.log('setSpritePositions')
-    for (let i = 0; i < this.view.length; i++) {
-      // оффсет слоя
-      this.view[i].x =  this.layersOffset[i][0]
-      this.view[i].y =  this.layersOffset[i][1]
-
-      // добавим оффсет для объекта
-      if (this.res.offset != undefined) {
-        this.view[i].x -= this.res.offset[0]
-        this.view[i].y -= this.res.offset[1]
-      }
-      // z = y
-      let z = this.container.y
-      if (this.res.layers[i].shadow) {
-        z = -1
-      }
-      this.view[i].zIndex = z
-    }
-
   }
 
   public onMoved() {
@@ -164,14 +149,18 @@ export default class ObjectView {
         // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
         if (path.includes('.')) path = 'assets/game/' + path + '?' + (+new Date())
 
-        this.view[i].texture = PIXI.Texture.from(path)
+        this.sprites[i].texture = PIXI.Texture.from(path)
       }
     }
   }
 
   private setInteractive(target: PIXI.Sprite | PIXI.Container) {
+    // console.log('setInteractive', target)
+    target.interactive = true
+    target.onrightclick = (e: FederatedPointerEvent) => {
+      this.onRightClick(e)
+    }
     /*
-     target.interactive = true
      target.on("rightclick", (e: PIXI.InteractionEvent) => {
        this.onRightClick(e)
      })
@@ -237,20 +226,17 @@ export default class ObjectView {
      */
   }
 
-  private onRightClick(e: PIXI.FederatedEvent) {
-    /*
-    console.log(e)
-    if (Render.instance != undefined) {
-      const p = new Point(e.data.global).round();
-      let cp = Render.instance.coordScreen2Game(p);
+  private onRightClick(e: PIXI.FederatedPointerEvent) {
 
-      GameClient.remoteCall("objrclick", {
-        id: this.obj.id,
-        x: cp.x,
-        y: cp.y
-      })
-    }
+    console.log('onrightclick', e)
+    const p = new Point(e.global).round()
+    const cp = this.render.coordScreen2Game(p)
 
-     */
+    this.render.client.send('objrclick', {
+      id: this.obj.id,
+      x: cp.x,
+      y: cp.y
+    })
+
   }
 }

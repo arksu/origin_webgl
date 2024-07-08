@@ -18,4 +18,9 @@ public class GameRequestDTO {
 
     @SerializedName("d")
     public Map<String, Object> data;
+
+    @Override
+    public String toString() {
+        return "GameRequestDTO [id=" + id + ", target=" + target + ", data=" + data + "]";
+    }
 }

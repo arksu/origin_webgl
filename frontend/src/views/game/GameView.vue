@@ -41,6 +41,7 @@ export default defineComponent({
         const data = new GameData()
         render = new Render(data)
         client = new GameClient(render)
+        render.client = client
 
         client.onConnect = () => {
           render?.init()
