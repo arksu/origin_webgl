@@ -1,10 +1,9 @@
 package com.origin.net
 
 import com.origin.ObjectID
-import com.origin.model.GameObject
-import com.origin.model.Grid
-import com.origin.model.Player
-import com.origin.model.StaticObject
+import com.origin.model.*
+import com.origin.model.inventory.Inventory
+import com.origin.model.inventory.InventoryItem
 
 /**
  * сообщение для клиента
@@ -76,4 +75,35 @@ class ObjectAdd(obj: GameObject) : ServerMessage("oa") {
 
 class ObjectDel(obj: GameObject) : ServerMessage("od") {
     private val id = obj.id
+}
+
+class ContextMenuData(contextMenu: ContextMenu?) : ServerMessage("cm") {
+    // -1 очистка контекстного меню
+    private val id = contextMenu?.obj?.id ?: -1
+    private val l = contextMenu?.items
+}
+
+class InventoryItemData(item: InventoryItem) {
+    private val id = item.id
+    private val x = item.x
+    private val y = item.y
+    private val w = item.width
+    private val h = item.height
+    private val q = item.q
+
+    private val icon = item.icon
+}
+
+class InventoryUpdate(inventory: Inventory) : ServerMessage("iv") {
+    private val id = inventory.id
+    private val t = inventory.title
+    private val w = inventory.getWidth()
+    private val h = inventory.getHeight()
+    private val l = ArrayList<InventoryItemData>()
+
+    init {
+        inventory.items.values.forEach {
+            l.add(InventoryItemData(it))
+        }
+    }
 }

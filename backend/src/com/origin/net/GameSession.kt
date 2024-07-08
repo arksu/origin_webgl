@@ -2,6 +2,7 @@ package com.origin.net
 
 import com.google.gson.Gson
 import com.origin.config.ServerConfig
+import com.origin.error.BadRequestException
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.model.GameObjectMessage
@@ -32,8 +33,16 @@ class GameSession(
     private var isDisconnected = false
 
 
-    fun process(request: GameRequestDTO) {
+    suspend fun process(request: GameRequestDTO) {
         logger.debug("client request {}", request)
+
+        when (request.target) {
+            // right click
+            "objrclick" -> {
+                val id = (request.data["id"] as Long?) ?: throw BadRequestException("wrong obj id")
+                player.send(PlayerMessage.ObjectRightClick(id))
+            }
+        }
     }
 
     suspend fun connected(request: GameRequestDTO) {

@@ -48,10 +48,10 @@ create table if not exists inventory
     type         int      not null comment 'тип объекта',
     x            int      not null,
     y            int      not null,
-    quality      smallint not null default 10 comment 'качество',
-    count        int      not null default 1 comment 'количество в стаке',
-    last_tick    bigint   not null default 0 comment 'время последнего апдейта объекта',
-    deleted      bool     not null default false
+    quality      smallint not null comment 'качество',
+    count        int      not null comment 'количество в стаке',
+    last_tick    bigint   not null comment 'время последнего апдейта объекта',
+    deleted      bool     not null
 );
 
 create table if not exists object
@@ -65,11 +65,11 @@ create table if not exists object
     grid_x      int          not null comment 'координаты грида в котором находится объект',
     grid_y      int          not null,
     type        int          not null comment 'тип объекта',
-    quality     smallint     not null default 10 comment 'качество',
-    hp          int          not null default 100 comment 'здоровье (hit points) объекта',
+    quality     smallint     not null  comment 'качество',
+    hp          int          not null  comment 'здоровье (hit points) объекта',
     create_tick bigint       not null comment 'время создания, игровой тик сервера',
-    last_tick   bigint       not null default 0 comment 'время последнего апдейта объекта',
-    data        varchar(255) null     default null comment 'внутренние данные объекта в json формате',
+    last_tick   bigint       not null  comment 'время последнего апдейта объекта',
+    data        varchar(255) null default null comment 'внутренние данные объекта в json формате',
     index idx (region, x, y, level)
 );
 

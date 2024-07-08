@@ -2,8 +2,10 @@
 
 package com.origin.model
 
+import com.origin.ObjectID
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.model.inventory.Inventory
+import com.origin.net.ContextMenuData
 import com.origin.net.GameSession
 import com.origin.net.MapGridConfirm
 import com.origin.util.PLAYER_RECT
@@ -29,10 +31,16 @@ class Player(
      */
     override val inventory = Inventory(this)
 
+    /**
+     * контекстное меню активное в данный момент
+     */
+    private var contextMenu: ContextMenu? = null
+
     override suspend fun processMessage(msg: Any) {
         when (msg) {
             is PlayerMessage.Connected -> onConnected()
             is PlayerMessage.Disconnected -> onDisconnected()
+            is PlayerMessage.ObjectRightClick -> onObjectRightClick(msg.id)
             else -> super.processMessage(msg)
         }
     }
@@ -98,6 +106,23 @@ class Player(
     override suspend fun onGridChanged() {
         super.onGridChanged()
         session.send(MapGridConfirm())
+    }
+
+    private fun onObjectRightClick(id: ObjectID) {
+
+    }
+
+    /**
+     * вырбан пункт контекстного меню
+     */
+    private suspend fun contextMenuItem(item: String) {
+        contextMenu?.processItem(this, item)
+        contextMenu = null
+    }
+
+    private suspend fun clearContextMenu() {
+        session.send(ContextMenuData(null))
+        contextMenu = null
     }
 
     /**
