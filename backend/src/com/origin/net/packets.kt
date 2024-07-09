@@ -28,6 +28,7 @@ data class AuthorizeTokenResponse(
 
 enum class ClientPacket(val n: String) {
     MAP_CLICK("mc"),
+    OBJECT_CLICK("oc"),
     OBJECT_RIGHT_CLICK("orc")
 }
 

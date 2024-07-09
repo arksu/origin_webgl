@@ -1,4 +1,5 @@
 export enum ClientPacket {
+  OBJECT_CLICK = 'oc',
   OBJECT_RIGHT_CLICK = 'orc',
   MAP_CLICK = 'mc',
 }

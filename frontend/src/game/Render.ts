@@ -114,7 +114,8 @@ export default class Render {
     this.mapGridsContainer = new PIXI.Container()
 
     this.objectsContainer = new PIXI.Container()
-    this.objectsContainer.sortableChildren = true
+    // TODO sort z index
+    // this.objectsContainer.sortableChildren = true
 
     this.screenContainer = new PIXI.Sprite()
   }

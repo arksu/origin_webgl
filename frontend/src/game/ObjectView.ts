@@ -7,6 +7,7 @@ import objects from './objects.json'
 import type Render from '@/game/Render'
 import Point from '@/util/Point'
 import { ClientPacket } from '@/net/packets'
+import { getKeyFlags } from '@/util/keyboard'
 
 export interface Layer {
   img: string
@@ -116,7 +117,9 @@ export default class ObjectView {
     if (l.shadow) {
       z = -1
     }
-    spr.zIndex = z
+    // TODO sort z index
+    // spr.zIndex = z
+
     this.sprites.push(spr)
     this.container.addChild(spr)
   }
@@ -161,10 +164,10 @@ export default class ObjectView {
     target.onrightclick = (e: FederatedPointerEvent) => {
       this.onRightClick(e)
     }
+    target.onmousedown = (e: FederatedPointerEvent) => {
+      this.onClick(e)
+    }
     /*
-     target.on("rightclick", (e: PIXI.InteractionEvent) => {
-       this.onRightClick(e)
-     })
      target.on("touchstart", (e: PIXI.InteractionEvent) => {
        this.isTouched = true
        // this.touchTimer = setTimeout(() => {
@@ -207,24 +210,19 @@ export default class ObjectView {
      */
   }
 
-  private onClick(e: PIXI.FederatedEvent) {
-    /*
+  private onClick(e: PIXI.FederatedPointerEvent) {
     // screen point coord
-    const p = new Point(e.data.global).round();
-    if (Render.instance !== undefined) {
-      // вычислим игровые координаты куда тыкнула мышь
-      // их тоже отправим на сервер
-      let cp = Render.instance.coordScreen2Game(p);
+    const p = new Point(e.screen).round()
+    // вычислим игровые координаты куда тыкнула мышь
+    // их тоже отправим на сервер
+    const cp = this.render.coordScreen2Game(p)
 
-      GameClient.remoteCall("objclick", {
-        id: this.obj.id,
-        f: getKeyFlags(e),
-        x: cp.x,
-        y: cp.y
-      })
-    }
-
-     */
+    this.render.client.send(ClientPacket.OBJECT_CLICK, {
+      id: this.obj.id,
+      f: getKeyFlags(e),
+      x: cp.x,
+      y: cp.y
+    })
   }
 
   private onRightClick(e: PIXI.FederatedPointerEvent) {
