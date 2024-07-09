@@ -1,3 +1,8 @@
+export enum ClientPacket {
+  OBJECT_RIGHT_CLICK = 'orc',
+  MAP_CLICK = 'mc',
+}
+
 export enum ServerPacket {
   MAP_DATA = 'm',
   MAP_CONFIRMED = 'mc',

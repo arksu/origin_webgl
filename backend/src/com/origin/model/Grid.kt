@@ -72,11 +72,24 @@ class Grid(
 
     private suspend fun processMessage(msg: Any) {
         when (msg) {
+            is GridMessage.Update -> update()
             is GridMessage.Spawn -> msg.run { onSpawn(msg.obj, false) }
             is GridMessage.RemoveObject -> msg.run { onRemoveObject(msg.obj) }
             is GridMessage.Activate -> msg.run { onActivate(msg.obj) }
             is GridMessage.Deactivate -> msg.run { onDeactivate(msg.obj) }
             is GridMessage.CheckCollisionInternal -> msg.run { checkCollisionInternal(msg.model) }
+            is GridMessage.CheckCollision -> msg.run {
+                checkCollision(
+                    msg.obj,
+                    msg.toX,
+                    msg.toY,
+                    msg.dist,
+                    msg.type,
+                    msg.virtual,
+                    msg.isMove
+                )
+            }
+            is GridMessage.Broadcast -> activeObjects.forEach { it.send(msg.e) }
 
             else -> logger.error("Unknown Grid message $msg")
         }
@@ -94,6 +107,13 @@ class Grid(
     suspend fun sendAndWait(msg: MessageWithJob) {
         actor.send(msg)
         return msg.job.join()
+    }
+
+    /**
+     * отправить всем активным объектам сообщение
+     */
+    suspend fun broadcast(msg: BroadcastEvent) {
+        actor.send(GridMessage.Broadcast(msg))
     }
 
     private suspend fun onSpawn(obj: GameObject, force: Boolean): Boolean {

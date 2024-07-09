@@ -251,6 +251,10 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
         return true
     }
 
+    fun getGridSafety(): Grid {
+        return grid ?: throw IllegalStateException("grid is null")
+    }
+
     override fun toString(): String {
         return "${this::class.simpleName} [$id] ${pos.point}"
     }

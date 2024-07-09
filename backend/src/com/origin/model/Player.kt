@@ -3,11 +3,18 @@
 package com.origin.model
 
 import com.origin.ObjectID
+import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.CharacterRecord
+import com.origin.jooq.tables.references.CHARACTER
+import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
+import com.origin.model.inventory.InventoryItem
+import com.origin.move.Move2Point
 import com.origin.net.ContextMenuData
 import com.origin.net.GameSession
+import com.origin.net.HandUpdate
 import com.origin.net.MapGridConfirm
+import com.origin.util.ClientButton
 import com.origin.util.PLAYER_RECT
 import com.origin.util.Rect
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -32,6 +39,11 @@ class Player(
     override val inventory = Inventory(this)
 
     /**
+     * вещь, которую держим в данный момент в руке
+     */
+    private var hand: Hand? = null
+
+    /**
      * контекстное меню активное в данный момент
      */
     private var contextMenu: ContextMenu? = null
@@ -40,8 +52,35 @@ class Player(
         when (msg) {
             is PlayerMessage.Connected -> onConnected()
             is PlayerMessage.Disconnected -> onDisconnected()
+            is PlayerMessage.MapClick -> onMapClick(msg)
             is PlayerMessage.ObjectRightClick -> onObjectRightClick(msg.id)
             else -> super.processMessage(msg)
+        }
+    }
+
+    private suspend fun onMapClick(msg: PlayerMessage.MapClick) {
+        logger.debug("mapClick {}", msg)
+
+        if (contextMenu != null) {
+            clearContextMenu()
+        }
+
+        if (msg.btn == ClientButton.LEFT) {
+            // если что-то держим в руке надо дропнуть это
+            if (hand != null) {
+//                dropHandItem()
+            } else {
+//                if (commandToExecute != null) {
+//                    if (flags and SHIFT_KEY > 0) {
+//                        logger.warn("SHIFT")
+//                        val xx = x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
+//                        val yy = y / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
+//                        if (executeCommand(xx, yy)) commandToExecute = null
+//                    } else if (executeCommand(x, y)) commandToExecute = null
+//                } else {
+                startMove(Move2Point(this, msg.x, msg.y))
+//                }
+            }
         }
     }
 
@@ -112,6 +151,17 @@ class Player(
 
     }
 
+    private suspend fun setHand(item: InventoryItem?, msg: PlayerMessage.InventoryItemClick) {
+        hand = if (item != null) {
+            val h = Hand(this, item, msg.x, msg.y, msg.ox, msg.oy)
+            session.send(HandUpdate(h))
+            h
+        } else {
+            session.send(HandUpdate())
+            null
+        }
+    }
+
     /**
      * вырбан пункт контекстного меню
      */
@@ -136,6 +186,28 @@ class Player(
 //
 //        status.storeToCharacter(character)
 //        lastOnlineStoreTime = currentMillis
+    }
+
+    /**
+     * сохранение текущей позиции в бд
+     */
+    override fun storePositionInDb() {
+        logger.warn("storePositionInDb ${pos.x} ${pos.y}")
+        character.x = pos.x
+        character.y = pos.y
+        character.level = pos.level
+        character.region = pos.region
+        character.heading = pos.heading
+
+        DatabaseConfig.dsl
+            .update(CHARACTER)
+            .set(CHARACTER.X, character.x)
+            .set(CHARACTER.Y, character.y)
+            .set(CHARACTER.LEVEL, character.level)
+            .set(CHARACTER.REGION, character.region)
+            .set(CHARACTER.HEADING, character.heading)
+            .where(CHARACTER.ID.eq(character.id))
+            .execute()
     }
 
     override fun getBoundRect(): Rect {

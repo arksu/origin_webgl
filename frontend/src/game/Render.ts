@@ -1,3 +1,4 @@
+import type { FederatedPointerEvent } from 'pixi.js'
 import * as PIXI from 'pixi.js'
 import { utils } from '@pixi/core'
 import type GameData from '@/net/GameData'
@@ -7,6 +8,8 @@ import Tile from '@/game/Tile'
 import Point from '@/util/Point'
 import ObjectView from '@/game/ObjectView'
 import type GameClient from '@/net/GameClient'
+import { ClientPacket } from '@/net/packets'
+import { getKeyFlags } from '@/util/keyboard'
 
 export default class Render {
 
@@ -44,12 +47,48 @@ export default class Render {
    * контейнер в котором храним контейнеры с гридами и тайлами
    * их координаты внутри абсолютные мировые экранные
    */
-  readonly mapGrids: PIXI.Container
+  readonly mapGridsContainer: PIXI.Container
 
   /**
    * контейнер для отображения объектов
    */
   public readonly objectsContainer: PIXI.Container
+
+  /**
+   * контейнер для перехвата событий ввода от пользователя
+   */
+  public readonly screenContainer: PIXI.Sprite
+
+  /**
+   * "перетаскивание" карты мышью
+   */
+  private dragStart ?: Point
+  /**
+   * какой был отступ карты в начале перетаскивания
+   */
+  private dragOffset ?: Point
+  private dragMoved: boolean = false
+
+  /**
+   * прикосновения к экрану
+   * для обработки мультитача для скейла на мобилках
+   */
+  private touchCurrent: { [key: number]: Point } = {}
+
+  /**
+   * текущее расстояние между пальцами при скейле на мобилках
+   */
+  private touchLength: number = -1
+
+  /**
+   * таймер для непрерывного движения пока нажата ЛКМ
+   */
+  private continuousMovingTimer: number = -1
+
+  /**
+   * последние экранные координаты при нажатой ЛКМ
+   */
+  private lastMoveCoord ?: Point
 
   public constructor(data: GameData) {
     console.info('pixi start')
@@ -72,10 +111,12 @@ export default class Render {
     PIXI.isMobile.any
 
     this.app = new PIXI.Application()
-    this.mapGrids = new PIXI.Container()
+    this.mapGridsContainer = new PIXI.Container()
 
     this.objectsContainer = new PIXI.Container()
     this.objectsContainer.sortableChildren = true
+
+    this.screenContainer = new PIXI.Sprite()
   }
 
   init() {
@@ -122,8 +163,27 @@ export default class Render {
   setup() {
     this.canvas.style.display = 'block'
 
-    this.app.stage.addChild(this.mapGrids)
+    this.app.stage.addChild(this.mapGridsContainer)
+    this.app.stage.addChild(this.screenContainer)
     this.app.stage.addChild(this.objectsContainer)
+
+    this.screenContainer.x = 0
+    this.screenContainer.y = 0
+    this.screenContainer.width = this.app.renderer.width
+    this.screenContainer.height = this.app.renderer.height
+    this.screenContainer.interactive = true
+    console.log(this.screenContainer)
+    console.log(this.app.renderer)
+
+    this.screenContainer.onmousedown = (e: FederatedPointerEvent) => {
+      this.onMouseDown(e)
+    }
+    this.screenContainer.onmouseup = (e: FederatedPointerEvent) => {
+      this.onMouseUp(e)
+    }
+    this.screenContainer.onmousemove = (e: FederatedPointerEvent) => {
+      this.onMouseMove(e)
+    }
 
     // пройдем по всем уже полученным объектам и добавим их в игровой мир
     for (const key in this.gameData.objects) {
@@ -153,7 +213,7 @@ export default class Render {
     for (const gridsKey in this.grids) {
       this.grids[gridsKey].destroy()
     }
-    this.mapGrids.destroy({ children: true })
+    this.mapGridsContainer.destroy({ children: true })
     this.objectsContainer.destroy({ children: true })
 
     document.body.removeChild(this.canvas)
@@ -199,7 +259,7 @@ export default class Render {
       }
     } else {
       // такого грида еще нет - надо создать
-      this.grids[k] = new Grid(this, this.mapGrids, x, y)
+      this.grids[k] = new Grid(this, this.mapGridsContainer, x, y)
 
       // зачистим старые гриды, которые давно уже не видели
       for (const gridsKey in this.grids) {
@@ -262,23 +322,23 @@ export default class Render {
    * перевести экранные координаты в игровые
    */
   public coordScreen2Game(p: Point): Point {
-    p.dec(this.offset);
+    p.dec(this.offset)
 
-    const px = this.gameData.playerObject.x;
-    const py = this.gameData.playerObject.y;
+    const px = this.gameData.playerObject.x
+    const py = this.gameData.playerObject.y
 
-    console.log("player pos " + px + " " + py)
+    // console.log('player pos ' + px + ' ' + py)
 
-    const screenWidthHalf = this.app.renderer.width / 2;
-    const screenHeightHalf = this.app.renderer.height / 2;
-    p.decValue(screenWidthHalf, screenHeightHalf).div(this.scale);
+    const screenWidthHalf = this.app.renderer.width / 2
+    const screenHeightHalf = this.app.renderer.height / 2
+    p.decValue(screenWidthHalf, screenHeightHalf).div(this.scale)
 
     return new Point(
       p.y / Tile.TEXTURE_HEIGHT + p.x / Tile.TEXTURE_WIDTH,
       p.y / Tile.TEXTURE_HEIGHT - p.x / Tile.TEXTURE_WIDTH)
       .mul(Tile.TILE_SIZE)
       .incValue(px, py)
-      .round();
+      .round()
   }
 
   public updateMapScalePos() {
@@ -288,13 +348,13 @@ export default class Render {
     const offsetX = this.app.renderer.width / 2 + this.offset.x
     const offsetY = this.app.renderer.height / 2 + this.offset.y
 
-    this.mapGrids.x = offsetX - sx * this.scale
-    this.mapGrids.y = offsetY - sy * this.scale
+    this.mapGridsContainer.x = offsetX - sx * this.scale
+    this.mapGridsContainer.y = offsetY - sy * this.scale
     this.objectsContainer.x = offsetX - sx * this.scale
     this.objectsContainer.y = offsetY - sy * this.scale
 
-    this.mapGrids.scale.x = this.scale
-    this.mapGrids.scale.y = this.scale
+    this.mapGridsContainer.scale.x = this.scale
+    this.mapGridsContainer.scale.y = this.scale
     this.objectsContainer.scale.x = this.scale
     this.objectsContainer.scale.y = this.scale
 
@@ -313,12 +373,159 @@ export default class Render {
     this.updateScale()
   }
 
+  private onMouseDown(e: PIXI.FederatedPointerEvent) {
+    console.log('onMouseDown buttons', e.buttons)
+    // this.touchCurrent[e.data.identifier] = new Point(e.data.global)
+
+    // двигаем карту если средняя кнопка мыши или мобильное устройство
+    if (e.buttons == 4 || PIXI.isMobile.any) {
+      this.dragStart = new Point(e.screen).round()
+      this.dragOffset = new Point(this.offset)
+      console.log('onMouseDown ' + this.dragStart.toString())
+    } else if (e.buttons == 1 && !PIXI.isMobile.any) {
+      const p = new Point(e.screen).round()
+      this.lastMoveCoord = new Point(e.screen).round()
+      // console.log('lastMoveCoord!!!!!!!', this.lastMoveCoord)
+      // это просто клик. без сдвига карты
+      const cp = this.coordScreen2Game(p)
+
+      console.log('mapclick ' + cp.toString())
+      this.client.send(ClientPacket.MAP_CLICK, {
+        b: e.button,
+        f: getKeyFlags(e),
+        x: cp.x,
+        y: cp.y
+      })
+
+      // запускаем таймер который периодически шлет клики по карте на сервер в текущие экранные координаты
+      this.continuousMovingTimer = window.setInterval(() => {
+        if (this.lastMoveCoord !== undefined) {
+          console.log('lastMoveCoord', this.lastMoveCoord)
+          const cp = this.coordScreen2Game(this.lastMoveCoord.clone())
+
+          console.log('mapclick ' + cp.toString())
+          this.client.send(ClientPacket.MAP_CLICK, {
+            b: e.button,
+            f: getKeyFlags(e),
+            x: cp.x,
+            y: cp.y
+          })
+        }
+      }, 333)
+    }
+    this.dragMoved = false
+  }
+
+  private onMouseUp(e: PIXI.FederatedPointerEvent) {
+    // delete this.touchCurrent[e.data.identifier]
+
+    // this.touchLength = -1
+
+    // screen point coord
+    const p = new Point(e.screen).round()
+
+    // console.log('onMouseUp ' + p.toString())
+
+    // если сдвинули карту при нажатии мыши
+    if (this.dragStart !== undefined && this.dragOffset !== undefined) {
+      const d = new Point(p).dec(this.dragStart)
+
+      // мышь передвинулась достаточно далеко?
+      if (Math.abs(d.x) > 10 || Math.abs(d.y) > 10 || this.dragMoved) {
+        this.offset.set(this.dragOffset).inc(d)
+
+        this.updateMapScalePos()
+      } else {
+        // иначе это был просто клик
+        const cp = this.coordScreen2Game(p)
+        console.log('mapclick ' + cp.toString())
+        this.client.send(ClientPacket.MAP_CLICK, {
+          b: e.button,
+          f: getKeyFlags(e),
+          x: cp.x,
+          y: cp.y
+        })
+      }
+      this.dragStart = undefined
+      this.dragOffset = undefined
+      this.touchCurrent = {}
+    } else {
+      // выключим таймер непрерывного движения
+      if (this.continuousMovingTimer !== -1) {
+        clearInterval(this.continuousMovingTimer)
+      }
+      this.continuousMovingTimer = -1
+      this.lastMoveCoord = undefined
+    }
+  }
+
+  private onMouseMove(e: PIXI.FederatedPointerEvent) {
+    const keys = Object.keys(this.touchCurrent)
+    if (keys.length == 2) {
+      this.dragStart = undefined
+      this.dragOffset = undefined
+
+      const current = new Point(e.screen)
+      // this.touchCurrent[e.data.identifier] = current
+
+      let cx2 = 0
+      let cy2 = 0
+      // ищем вторую точку
+      for (const key of keys) {
+        const k = +key
+        // if (k !== e.data.identifier) {
+        //   cx2 = this.touchCurrent[k].x
+        //   cy2 = this.touchCurrent[k].y
+        // }
+      }
+
+      // touch len
+      const tl = Math.sqrt(Math.pow(current.x - cx2, 2) + Math.pow(current.y - cy2, 2))
+      if (this.touchLength < 0) {
+        this.touchLength = tl
+      }
+      // на сколько изменилась длина между касаниями
+      const dt = tl - this.touchLength
+      this.touchLength = tl
+
+      if (this.scale < 1) {
+        this.scale += dt * 0.007 * this.scale
+      } else {
+        this.scale += dt * 0.01
+      }
+      this.updateScale()
+    } else {
+      if (this.dragStart !== undefined && this.dragOffset !== undefined) {
+        const p = new Point(e.screen).round()
+
+        p.dec(this.dragStart)
+
+        if (Math.abs(p.x) > 10 || Math.abs(p.y) > 10 || this.dragMoved) {
+          this.dragMoved = true
+          this.offset.set(this.dragOffset).inc(p)
+
+          this.updateMapScalePos()
+        }
+      } else {
+        // обновляем текущие экранные координаты
+        this.lastMoveCoord = new Point(e.screen).round()
+      }
+    }
+  }
+
   private updateScale() {
     if (this.scale < 0.05) this.scale = 0.05
     this.updateMapScalePos()
   }
 
   private onResize() {
+    const w = this.app.screen.width
+    const h = this.app.screen.height
+    // this.app.renderer.resize(w, h)
+
+    this.screenContainer.width = w
+    this.screenContainer.height = h
+
     this.updateMapScalePos()
   }
 

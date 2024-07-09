@@ -1,11 +1,12 @@
 import * as PIXI from 'pixi.js'
-import { FederatedEvent, FederatedPointerEvent } from 'pixi.js'
+import { FederatedPointerEvent } from 'pixi.js'
 import type GameObject from '@/game/GameObject'
 import type Coord from '@/util/Coord'
 import { coordGame2Screen } from '@/game/Tile'
 import objects from './objects.json'
 import type Render from '@/game/Render'
 import Point from '@/util/Point'
+import { ClientPacket } from '@/net/packets'
 
 export interface Layer {
   img: string
@@ -232,7 +233,7 @@ export default class ObjectView {
     const p = new Point(e.global).round()
     const cp = this.render.coordScreen2Game(p)
 
-    this.render.client.send('objrclick', {
+    this.render.client.send(ClientPacket.OBJECT_RIGHT_CLICK, {
       id: this.obj.id,
       x: cp.x,
       y: cp.y
