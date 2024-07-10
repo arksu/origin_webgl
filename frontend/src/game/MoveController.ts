@@ -42,6 +42,7 @@ export default class MoveController {
   }
 
   public applyData(data: ObjectMoved) {
+    console.log('applyData', data)
     this.serverStopped = false
     this.serverX = data.x
     this.serverY = data.y
@@ -67,7 +68,10 @@ export default class MoveController {
     // let c1 = Game.coordGame2Screen(this.me.x, this.me.y)
     const c1 = coordGame2Screen(this.serverX, this.serverY)
     const c2 = coordGame2Screen(this.toX, this.toY)
-    this.lineView.clear().lineStyle(2, 0x00ff00).moveTo(c1[0], c1[1]).lineTo(c2[0], c2[1])
+    this.lineView.clear()
+    this.lineView.moveTo(c1[0], c1[1])
+    this.lineView.lineTo(c2[0], c2[1])
+    this.lineView.stroke({ width: 2, color: 0x00ff00 })
 
     // корректировка скорости
     // let diff = Math.abs(sd - ld)
