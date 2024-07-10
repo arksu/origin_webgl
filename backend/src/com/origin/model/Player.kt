@@ -2,6 +2,7 @@
 
 package com.origin.model
 
+import com.origin.OPEN_DISTANCE
 import com.origin.ObjectID
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.CharacterRecord
@@ -9,6 +10,7 @@ import com.origin.jooq.tables.references.CHARACTER
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
+import com.origin.move.Move2Object
 import com.origin.move.Move2Point
 import com.origin.net.ContextMenuData
 import com.origin.net.GameSession
@@ -17,6 +19,7 @@ import com.origin.net.MapGridConfirm
 import com.origin.util.ClientButton
 import com.origin.util.PLAYER_RECT
 import com.origin.util.Rect
+import com.origin.util.Vec2i
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 class Player(
@@ -53,6 +56,7 @@ class Player(
             is PlayerMessage.Connected -> onConnected()
             is PlayerMessage.Disconnected -> onDisconnected()
             is PlayerMessage.MapClick -> onMapClick(msg)
+            is PlayerMessage.ObjectClick -> onObjectClick(msg)
             is PlayerMessage.ObjectRightClick -> onObjectRightClick(msg.id)
             else -> super.processMessage(msg)
         }
@@ -81,6 +85,41 @@ class Player(
                 startMove(Move2Point(this, msg.x, msg.y))
 //                }
             }
+        }
+    }
+
+    private suspend fun onObjectClick(msg: PlayerMessage.ObjectClick) {
+        logger.debug("objectClick $id")
+
+        if (contextMenu != null) {
+            clearContextMenu()
+        }
+        val obj = knownList.getKnownObject(id)
+        if (obj != null) {
+            // если дистанция между объектом и местом клика меньше порога - считаем что попали в объект
+            if (obj.pos.point.dist(Vec2i(msg.x, msg.y)) < 10) {
+                // пока просто движемся к объекту
+                goAndOpenObject(obj)
+            } else if (hand == null) {
+                startMove(Move2Point(this, msg.x, msg.y))
+            }
+        }
+    }
+
+    private suspend fun goAndOpenObject(obj: GameObject) {
+        // проверим расстояние от меня до объекта
+        val myRect = getBoundRect().clone().move(pos.point)
+        val objRect = obj.getBoundRect().clone().move(obj.pos.point)
+        val (mx, my) = myRect.min(objRect)
+        logger.debug("goAndOpenObject min $mx $my")
+        if (mx <= OPEN_DISTANCE && my <= OPEN_DISTANCE) {
+            openObjectsList.open(obj)
+        } else {
+            startMove(
+                Move2Object(this, obj) {
+                    openObjectsList.open(obj)
+                }
+            )
         }
     }
 

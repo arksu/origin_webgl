@@ -42,6 +42,8 @@ const val GRID_SQUARE = GRID_SIZE * GRID_SIZE
  */
 const val GRID_BLOB_SIZE = GRID_SQUARE * 3
 
+const val OPEN_DISTANCE = 3
+
 object Tile {
     const val WATER_DEEP: Byte = 1
     const val WATER: Byte = 3

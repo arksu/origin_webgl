@@ -1,6 +1,7 @@
 package com.origin
 
 import com.origin.model.*
+import com.origin.move.MovingObject
 import com.origin.util.WorkerScope
 import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.launch

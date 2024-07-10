@@ -9,8 +9,7 @@ import com.origin.model.GameObjectMessage
 import com.origin.model.Player
 import com.origin.model.PlayerMessage
 import com.origin.model.SpawnType.*
-import com.origin.net.ClientPacket.MAP_CLICK
-import com.origin.net.ClientPacket.OBJECT_RIGHT_CLICK
+import com.origin.net.ClientPacket.*
 import com.origin.util.getClientButton
 import io.ktor.websocket.*
 import org.slf4j.Logger
@@ -46,6 +45,14 @@ class GameSession(
                 val btn = (request.data["b"] as Long?) ?: throw BadRequestException("wrong button")
                 val flags = (request.data["f"] as Long?) ?: throw BadRequestException("wrong flags")
                 player.send(PlayerMessage.MapClick(getClientButton(btn), flags.toInt(), x.toInt(), y.toInt()))
+            }
+
+            OBJECT_CLICK.n -> {
+                val id = (request.data["id"] as Long?) ?: throw BadRequestException("wrong obj id")
+                val x = (request.data["x"] as Long?) ?: throw BadRequestException("wrong coord x")
+                val y = (request.data["y"] as Long?) ?: throw BadRequestException("wrong coord y")
+                val flags = (request.data["f"] as Long?) ?: throw BadRequestException("wrong flags")
+                player.send(PlayerMessage.ObjectClick(id, flags.toInt(), x.toInt(), y.toInt()))
             }
 
             OBJECT_RIGHT_CLICK.n -> {

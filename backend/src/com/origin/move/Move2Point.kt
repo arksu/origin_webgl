@@ -1,7 +1,5 @@
 package com.origin.move
 
-import com.origin.model.MovingObject
-
 class Move2Point(me: MovingObject, _toX: Int, _toY: Int) : MoveController(me) {
 
     override val toX: Int = _toX

@@ -39,7 +39,7 @@ object ServerLauncher {
 
 //        FileWatcher.start()
 //        EventBus.init()
-//        TimeController.start()
+        TimeController.start()
         GameWebServer.start()
     }
 }

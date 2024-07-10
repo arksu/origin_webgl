@@ -1,10 +1,8 @@
-package com.origin.model
+package com.origin.move
 
 import com.origin.ObjectID
 import com.origin.TimeController
-import com.origin.move.MoveController
-import com.origin.move.MoveMode
-import com.origin.move.MoveType
+import com.origin.model.*
 import com.origin.util.Vec2i
 import java.util.*
 

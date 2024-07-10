@@ -3,6 +3,10 @@ package com.origin.model
 import com.origin.ObjectID
 import com.origin.TILE_SIZE
 import com.origin.config.ServerConfig
+import com.origin.move.MovingObject
+import com.origin.net.ObjectMoved
+import com.origin.net.ObjectStartMove
+import com.origin.net.ObjectStopped
 import com.origin.util.Vec2i
 
 abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) {
@@ -21,10 +25,66 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
     protected val knownList by lazy { KnownList(this) }
 
     /**
+     * список объектов которые "открыли" (есть инвентарь и надо его отобразить на клиенте)
+     */
+    protected val openObjectsList by lazy { OpenObjectsList(this) }
+
+
+    /**
      * последняя позиция в которой было обновление видимых объектов
      * нужно чтобы часто не обновлять список видимых (слишком накладно)
      */
     private var lastPosUpdateVisible: Vec2i? = null
+
+    override suspend fun processMessage(msg: Any) {
+        when (msg) {
+            is BroadcastEvent.StartMove -> {
+                if (this is Player && knownList.isKnownObject(msg.obj)) {
+                    session.send(ObjectStartMove(msg))
+                }
+            }
+
+            is BroadcastEvent.Moved -> {
+                // если мы знаем объект
+                if (knownList.isKnownObject(msg.obj)) {
+                    // больше его не видим
+                    if (!isObjectVisibleForMe(msg.obj)) {
+                        // удаляем объект из видимых
+                        knownList.removeKnownObject(msg.obj)
+                    } else {
+                        if (this is Player) session.send(ObjectMoved(msg))
+                    }
+                } else {
+                    // объект не знаем. но видим
+                    if (isObjectVisibleForMe(msg.obj)) {
+                        knownList.addKnownObject(msg.obj)
+                        if (this is Player) session.send(ObjectMoved(msg))
+                    }
+                }
+            }
+
+            is BroadcastEvent.Stopped -> {
+                // если мы знаем объект
+                if (knownList.isKnownObject(msg.obj)) {
+                    // больше его не видим
+                    if (!isObjectVisibleForMe(msg.obj)) {
+                        // удаляем объект из видимых
+                        knownList.removeKnownObject(msg.obj)
+                    } else {
+                        if (this is Player) session.send(ObjectStopped(msg))
+                    }
+                } else {
+                    // объект не знаем. но видим
+                    if (isObjectVisibleForMe(msg.obj)) {
+                        knownList.addKnownObject(msg.obj)
+                        if (this is Player) session.send(ObjectStopped(msg))
+                    }
+                }
+            }
+
+            else -> super.processMessage(msg)
+        }
+    }
 
     override suspend fun afterSpawn() {
         super.afterSpawn()

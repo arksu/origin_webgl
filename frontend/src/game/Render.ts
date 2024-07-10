@@ -15,6 +15,7 @@ export default class Render {
 
   private readonly canvas: HTMLCanvasElement
   private wasDestroyed: boolean = false
+  private isInitialized: boolean = false
 
   /**
    * PIXI application
@@ -132,6 +133,7 @@ export default class Render {
       antialias: false,
       backgroundColor: 0x333333
     }).then(() => {
+      this.isInitialized = true
       this.app.ticker.minFPS = 10
       this.app.ticker.maxFPS = 30
 
@@ -205,11 +207,13 @@ export default class Render {
 
     PIXI.Assets.unload(['base', 'tiles'])
 
-    this.app.destroy({
-      removeView: false
-    }, {
-      children: true
-    })
+    if (this.isInitialized) {
+      this.app.destroy({
+        removeView: false
+      }, {
+        children: true
+      })
+    }
 
     for (const gridsKey in this.grids) {
       this.grids[gridsKey].destroy()
@@ -302,6 +306,19 @@ export default class Render {
 
     obj.view = new ObjectView(obj, this)
     this.objectsContainer.addChild(obj.view.container)
+    this.sortObjects()
+  }
+
+  public onObjectDelete(obj: GameObject) {
+    if (obj.view !== undefined) {
+      obj.view.destroy()
+      this.sortObjects()
+    }
+  }
+
+  public sortObjects() {
+    this.objectsContainer.children.sort((a, b) => a.position.y - b.position.y)
+
   }
 
   private getPlayerCoord(): { sx: number, sy: number } {
@@ -314,7 +331,6 @@ export default class Render {
       const sy = px / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF + py / Tile.TILE_SIZE * Tile.TILE_HEIGHT_HALF
       return { sx, sy }
     } else {
-      console.warn('no player object')
       return { sx: 0, sy: 0 }
     }
   }

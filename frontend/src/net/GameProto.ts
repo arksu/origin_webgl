@@ -1,6 +1,6 @@
 import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameClient from '@/net/GameClient'
-import { type MapGridData, type ObjectAdd, ServerPacket } from '@/net/packets'
+import { type MapGridData, type ObjectAdd, type ObjectDel, ServerPacket } from '@/net/packets'
 import Render from '@/game/Render'
 import type GameData from '@/net/GameData'
 
@@ -73,6 +73,14 @@ export default class GameProto {
         this.render.onObjectAdd(gameData.objects[data.id])
         this.render.updateMapScalePos()
         break
+      }
+
+      case ServerPacket.OBJECT_DELETE : {
+        const obj = gameData.objects[(<ObjectDel>data).id];
+        // obj?.moveController?.stop()
+        this.render.onObjectDelete(obj)
+        delete gameData.objects[(<ObjectDel>data).id];
+        break;
       }
     }
   }

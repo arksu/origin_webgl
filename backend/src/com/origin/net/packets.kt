@@ -1,10 +1,7 @@
 package com.origin.net
 
 import com.origin.ObjectID
-import com.origin.model.ContextMenu
-import com.origin.model.GameObject
-import com.origin.model.Grid
-import com.origin.model.StaticObject
+import com.origin.model.*
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
@@ -106,6 +103,33 @@ class ObjectDel(obj: GameObject) : ServerMessage(OBJECT_DELETE.n) {
     private val id = obj.id
 }
 
+class ObjectStartMove(m: BroadcastEvent.StartMove) : ServerMessage(OBJECT_MOVE.n) {
+    private val id = m.obj.id
+    private val tx = m.toX
+    private val ty = m.toY
+    private val x = m.obj.pos.x
+    private val y = m.obj.pos.y
+    private val s = m.speed
+    private val mt = m.moveType
+}
+
+class ObjectMoved(m: BroadcastEvent.Moved) : ServerMessage(OBJECT_MOVE.n) {
+    private val id = m.obj.id
+    private val tx = m.toX
+    private val ty = m.toY
+    private val x = m.obj.pos.x
+    private val y = m.obj.pos.y
+    private val s = m.speed
+    private val mt = m.moveType
+}
+
+class ObjectStopped(m: BroadcastEvent.Stopped) : ServerMessage(OBJECT_STOP.n) {
+    private val id = m.obj.id
+    private val x = m.obj.pos.x
+    private val y = m.obj.pos.y
+}
+
+
 class ContextMenuData(contextMenu: ContextMenu?) : ServerMessage(CONTEXT_MENU.n) {
     // -1 очистка контекстного меню
     private val id = contextMenu?.obj?.id ?: -1
@@ -136,6 +160,8 @@ class InventoryUpdate(inventory: Inventory) : ServerMessage(INVENTORY_UPDATE.n) 
         }
     }
 }
+
+class InventoryClose(val id: ObjectID) : ServerMessage(INVENTORY_CLOSE.n)
 
 class HandUpdate : ServerMessage {
     private val icon: String?

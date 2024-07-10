@@ -7,6 +7,7 @@ sealed class PlayerMessage {
     class Connected
     class Disconnected
     class MapClick(val btn: ClientButton, val flags: Int, val x: Int, val y: Int)
+    class ObjectClick(val id: ObjectID, val flags: Int, val x: Int, val y: Int)
     class ObjectRightClick(val id: ObjectID)
 
     // игрок кликнул по вещи в инвентаре

@@ -1,3 +1,5 @@
+import type GameObject from '@/game/GameObject'
+
 export enum ClientPacket {
   OBJECT_CLICK = 'oc',
   OBJECT_RIGHT_CLICK = 'orc',
@@ -65,4 +67,120 @@ export interface ObjectAdd {
   r: string
 
   // a?: PcAppearance
+}
+
+export interface ObjectDel {
+  readonly id: number
+}
+
+export interface ObjectMoved {
+  readonly id: number
+  readonly x: number
+  readonly y: number
+  readonly tx: number
+  readonly ty: number
+  readonly s: number
+  readonly mt: string
+}
+
+export interface ObjectStopped {
+  readonly id: number
+  readonly x: number
+  readonly y: number
+}
+
+export interface ContextMenuData {
+  readonly id: number
+  readonly l: string[]
+  obj: GameObject
+}
+
+export interface ActionProgressData {
+  /**
+   * current
+   */
+  readonly c: number
+
+  /**
+   * total
+   */
+  readonly t: number
+}
+
+export interface StatusUpdateAttribute {
+  // index
+  readonly i: number
+  // value
+  readonly v: number
+}
+
+export interface StatusUpdate {
+  readonly id: number
+  readonly list: StatusUpdateAttribute[]
+}
+
+export interface CreatureSay {
+  readonly id: number
+  readonly c: number
+  readonly t: string
+}
+
+export interface InvItem {
+  readonly id: number
+  readonly x: number
+  readonly y: number
+  readonly w: number
+  readonly h: number
+  readonly q: number
+  readonly icon: string
+  readonly c: string
+}
+
+export interface InventoryUpdate {
+  readonly id: number
+  readonly t: string
+  readonly w: number
+  readonly h: number
+  readonly l: InvItem[]
+}
+
+export interface HandData {
+  readonly icon?: string
+  // offset in px
+  readonly mx: number
+  readonly my: number
+}
+
+export interface TimeUpdate {
+  // world ticks
+  readonly t: number
+  // in game hour
+  readonly h: number
+  // minute
+  readonly m: number
+  // day
+  readonly d: number,
+  // month
+  readonly  mm: number,
+  // night value 0-255
+  readonly nv: number,
+  // sun value 0-255
+  readonly sv: number,
+  // moon value
+  readonly mv: number,
+}
+
+export interface CraftItemData {
+  readonly icon: string
+  readonly count: number
+}
+
+export interface CraftData {
+  readonly name: string
+  readonly produced: CraftItemData[]
+  readonly required: CraftItemData[]
+}
+
+export interface CraftList {
+  readonly list: CraftData[]
 }
