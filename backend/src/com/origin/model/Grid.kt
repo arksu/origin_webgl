@@ -2,23 +2,22 @@
 
 package com.origin.model
 
-import com.origin.GRID_FULL_SIZE
+import com.origin.*
+import com.origin.TimeController.GRID_UPDATE_PERIOD
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.GridRecord
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.jooq.tables.references.GRID
 import com.origin.jooq.tables.references.OBJECT
 import com.origin.model.`object`.ObjectsFactory
-import com.origin.move.CheckCollisionModel
-import com.origin.move.Collision
-import com.origin.move.CollisionResult
-import com.origin.move.MoveType
+import com.origin.move.*
 import com.origin.net.MapGridData
 import com.origin.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -74,6 +73,7 @@ class Grid(
         when (msg) {
             is GridMessage.Update -> update()
             is GridMessage.Spawn -> msg.run { onSpawn(msg.obj, false) }
+            is GridMessage.SpawnForce -> onSpawn(msg.obj, true)
             is GridMessage.RemoveObject -> msg.run { onRemoveObject(msg.obj) }
             is GridMessage.Activate -> msg.run { onActivate(msg.obj) }
             is GridMessage.Deactivate -> msg.run { onDeactivate(msg.obj) }
@@ -89,6 +89,7 @@ class Grid(
                     msg.isMove
                 )
             }
+
             is GridMessage.Broadcast -> activeObjects.forEach { it.send(msg.e) }
 
             else -> logger.error("Unknown Grid message $msg")
@@ -191,7 +192,7 @@ class Grid(
                 human.session.send(MapGridData(this, MapGridData.Type.ADD))
             }
 
-//            TimeController.addActiveGrid(this)
+            TimeController.addActiveGrid(this)
         }
     }
 
@@ -205,7 +206,7 @@ class Grid(
             human.session.send(MapGridData(this, MapGridData.Type.REMOVE))
         }
         if (!isActive) {
-//            TimeController.removeActiveGrid(this)
+            TimeController.removeActiveGrid(this)
         }
     }
 
@@ -225,7 +226,28 @@ class Grid(
      * обновление состояния грида и его объектов
      */
     private fun update() {
-        // TODO update grid
+        // не даем слишком часто апдейтить грид
+        if (TimeController.tickCount - record.lastTick < GRID_UPDATE_PERIOD - 2 && record.lastTick != 0L) return
+        val old = record.lastTick
+        // сразу меняем последний тик
+        record.lastTick = TimeController.tickCount
+
+        // если еще никогда не апдейтили грид - это первичная инициализация, запустим генерацию объектов в гриде
+        if (old == 0L) {
+            generateObjects()
+        } else {
+            // TODO grid update
+        }
+
+        // обновим в базе время апдейта грида
+        DatabaseConfig.dsl
+            .update(GRID)
+            .set(GRID.LAST_TICK, record.lastTick)
+            .where(GRID.X.eq(record.x))
+            .and(GRID.Y.eq(record.y))
+            .and(GRID.REGION.eq(record.region))
+            .and(GRID.LEVEL.eq(record.level))
+            .execute()
     }
 
     /**
@@ -319,6 +341,42 @@ class Grid(
             val obj = ObjectsFactory.constructByRecord(record)
             obj.grid = this
             objects.add(obj)
+        }
+    }
+
+    /**
+     * первичная генерация объектов в гриде
+     */
+    private fun generateObjects() {
+        // идем по каждому тайлу в гриде
+        for (x in 0 until GRID_SIZE) for (y in 0 until GRID_SIZE) {
+            val ox = this.x * GRID_FULL_SIZE + (TILE_SIZE / 2)
+            val oy = this.y * GRID_FULL_SIZE + (TILE_SIZE / 2)
+            val pos = PositionModel(x * TILE_SIZE + ox, y * TILE_SIZE + oy, this)
+            when (tilesBlob[x + y * GRID_SIZE]) {
+                Tile.FOREST_LEAF -> {
+                    if (Rnd.next(170) == 0) generateObject(1, pos)
+                    if (Rnd.next(320) == 0) generateObject(5, pos)
+                }
+
+                Tile.FOREST_PINE -> {
+                    if (Rnd.next(130) == 0) generateObject(2, pos)
+                    if (Rnd.next(270) == 0) generateObject(3, pos)
+                }
+            }
+        }
+    }
+
+    private fun generateObject(type: Int, pos: PositionModel) {
+        // запускаем генерацию объекта в корутине
+        // вот тут просиходит ай-ай-ай мы в отдельном потоке запускаем генерацию объектов
+        WorkerScope.launch {
+            val record = ObjectsFactory.create(type, pos)
+            val obj = ObjectsFactory.constructByRecord(record)
+
+            obj.grid = this@Grid
+            // шлем сообщение самому себе на спавн объекта
+            this@Grid.send(GridMessage.SpawnForce(obj))
         }
     }
 

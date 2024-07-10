@@ -9,6 +9,7 @@ import com.origin.util.MessageWithJob
 sealed class GridMessage {
     class Update
     class Spawn(val obj: GameObject) : MessageWithAck<Boolean>()
+    class SpawnForce(val obj: GameObject)
     class RemoveObject(val obj: GameObject) : MessageWithJob()
     class Activate(val obj: Human) : MessageWithJob()
     class Deactivate(val obj: Human) : MessageWithJob()

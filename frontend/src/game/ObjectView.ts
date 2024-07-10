@@ -119,6 +119,7 @@ export default class ObjectView {
     }
     // TODO sort z index
     // spr.zIndex = z
+    // spr.setChildIndex()
 
     this.sprites.push(spr)
     this.container.addChild(spr)
