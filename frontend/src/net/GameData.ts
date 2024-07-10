@@ -17,7 +17,7 @@ export default class GameData {
    */
   public selectedCharacterId: number = 0
 
-  get playerObject(): GameObject {
+  get playerObject(): GameObject | undefined {
     return this.objects[this.selectedCharacterId]
   }
 }

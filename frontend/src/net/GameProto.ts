@@ -1,8 +1,16 @@
 import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameClient from '@/net/GameClient'
-import { type MapGridData, type ObjectAdd, type ObjectDel, ServerPacket } from '@/net/packets'
+import {
+  type MapGridData,
+  type ObjectAdd,
+  type ObjectDel,
+  type ObjectMoved,
+  type ObjectStopped,
+  ServerPacket
+} from '@/net/packets'
 import Render from '@/game/Render'
 import type GameData from '@/net/GameData'
+import MoveController from '@/game/MoveController'
 
 /**
  * реализация игрового протокола
@@ -76,11 +84,45 @@ export default class GameProto {
       }
 
       case ServerPacket.OBJECT_DELETE : {
-        const obj = gameData.objects[(<ObjectDel>data).id];
+        const pkt = <ObjectDel>data
+        const obj = gameData.objects[pkt.id]
         // obj?.moveController?.stop()
         this.render.onObjectDelete(obj)
-        delete gameData.objects[(<ObjectDel>data).id];
-        break;
+        delete gameData.objects[pkt.id]
+        break
+      }
+
+      case ServerPacket.OBJECT_MOVE : {
+        const pkt = <ObjectMoved>data
+        const obj = gameData.objects[pkt.id]
+        if (obj !== undefined) {
+          if (obj.moveController === undefined) {
+            obj.moveController = new MoveController(this.render, obj, pkt)
+          } else {
+            obj.moveController.applyData(pkt)
+          }
+        }
+        break
+      }
+
+      case ServerPacket.OBJECT_STOP : {
+        const pkt = <ObjectStopped>data
+        const obj = gameData.objects[pkt.id]
+        if (obj !== undefined) {
+          if (obj.moveController !== undefined) {
+            obj.moveController.serverStop(pkt)
+          } else {
+            console.warn('stopped: set pos')
+            obj.x = data.x
+            obj.y = data.y
+            this.render.onObjectMoved(obj)
+          }
+        }
+
+        if (this.gameData.selectedCharacterId == pkt.id) {
+          this.render.updateMapScalePos()
+        }
+        break
       }
     }
   }

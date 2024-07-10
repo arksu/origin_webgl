@@ -33,7 +33,7 @@ export default class GameClient {
    */
   private readonly gameProto: GameProto
 
-  private readonly gameData : GameData
+  private readonly gameData: GameData
 
   /**
    * каждый запрос имеет свой id, увеличиваем его на 1 при каждом запросе
@@ -59,7 +59,7 @@ export default class GameClient {
     + window.location.port
     + '/api/game'
 
-  constructor(render : Render) {
+  constructor(render: Render, gameData: GameData) {
     console.warn('ws connecting...')
     this.state = State.Connecting
     this.socket = new WebSocket(GameClient.url)
@@ -68,7 +68,7 @@ export default class GameClient {
     this.socket.onclose = this.onclose.bind(this)
     this.socket.onmessage = this.onmessage.bind(this)
 
-    this.gameData = render.gameData
+    this.gameData = gameData
     this.gameProto = new GameProto(this, render)
   }
 
@@ -151,7 +151,7 @@ export default class GameClient {
    * @param target
    * @param data
    */
-  public send(target: string, data: any = undefined)  {
+  public send(target: string, data: any = undefined) {
     const request: GameRequestDTO = {
       id: ++this.lastId,
       t: target,

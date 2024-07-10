@@ -28,6 +28,12 @@ export default class Render {
   private grids: { [key: string]: Grid } = {}
 
   /**
+   * список объектов которые в данный момент движутся
+   * апдейтим их позицию каждый тик через move controller
+   */
+  public movingObjects: { [key: number]: GameObject } = {}
+
+  /**
    * игровые данные
    */
   public readonly gameData: GameData
@@ -237,8 +243,31 @@ export default class Render {
   }
 
   private update(_ticker: PIXI.Ticker): void {
-    // console.log('update', ticker)
-    // console.log(this.app)
+    if (this.wasDestroyed) return
+    // console.log('update', _ticker.deltaTime)
+
+    // delta time in seconds
+    // важно. берем elapsedMS т.к. у нас сервер управляет движением. и нам надо абсолютное время ни от чего не зависящее
+    const dt = _ticker.elapsedMS / 1000 // PIXI.Ticker.shared.elapsedMS / 1000
+
+    // изменились размеры окна
+    if (this.app.renderer.width !== this.screenContainer.width || this.app.renderer.height !== this.screenContainer.height) {
+      this.onResize()
+    }
+
+    // передвигаем все движущиеся объекты
+    let cnt = 0
+    for (const key in this.movingObjects) {
+      const moveController = this.movingObjects[key].moveController
+      if (moveController !== undefined) {
+        moveController.update(dt)
+      }
+      cnt++
+    }
+    // если передвинулся хотя бы 1 объект на экране - надо пересортировать Z Order
+    if (cnt > 0) {
+      this.sortObjects()
+    }
   }
 
   /**
@@ -316,6 +345,10 @@ export default class Render {
     }
   }
 
+  public onObjectMoved(obj: GameObject) {
+    obj.view?.onMoved()
+  }
+
   public sortObjects() {
     this.objectsContainer.children.sort((a, b) => a.position.y - b.position.y)
 
@@ -341,8 +374,13 @@ export default class Render {
   public coordScreen2Game(p: Point): Point {
     p.dec(this.offset)
 
-    const px = this.gameData.playerObject.x
-    const py = this.gameData.playerObject.y
+    const playerObject = this.gameData.playerObject
+    if (playerObject == undefined) {
+      console.warn('coordScreen2Game no player object')
+      return new Point(0, 0)
+    }
+    const px = playerObject.x
+    const py = playerObject.y
 
     // console.log('player pos ' + px + ' ' + py)
 
@@ -485,8 +523,8 @@ export default class Render {
       const current = new Point(e.screen)
       // this.touchCurrent[e.data.identifier] = current
 
-      let cx2 = 0
-      let cy2 = 0
+      const cx2 = 0
+      const cy2 = 0
       // ищем вторую точку
       for (const key of keys) {
         const k = +key
