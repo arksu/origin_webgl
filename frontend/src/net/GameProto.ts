@@ -75,8 +75,8 @@ export default class GameProto {
         const old = gameData.objects[pkt.id]
         gameData.objects[pkt.id] = pkt
         if (old !== undefined) {
-          // gameData.objects[pkt.id].moveController = old.moveController
-          // gameData.objects[pkt.id].view = old.view
+          gameData.objects[pkt.id].moveController = old.moveController
+          gameData.objects[pkt.id].view = old.view
         }
         this.render.onObjectAdd(gameData.objects[data.id])
         this.render.updateMapScalePos()
@@ -86,7 +86,7 @@ export default class GameProto {
       case ServerPacket.OBJECT_DELETE : {
         const pkt = <ObjectDel>data
         const obj = gameData.objects[pkt.id]
-        // obj?.moveController?.stop()
+        obj?.moveController?.stop()
         this.render.onObjectDelete(obj)
         delete gameData.objects[pkt.id]
         break
@@ -112,7 +112,6 @@ export default class GameProto {
           if (obj.moveController !== undefined) {
             obj.moveController.serverStop(pkt)
           } else {
-            console.warn('stopped: set pos')
             obj.x = data.x
             obj.y = data.y
             this.render.onObjectMoved(obj)

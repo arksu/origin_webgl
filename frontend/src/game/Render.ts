@@ -131,13 +131,13 @@ export default class Render {
       resizeTo: window,
       autoDensity: true,
       preserveDrawingBuffer: true,
-      powerPreference: 'high-performance',
+      // powerPreference: 'high-performance',
       antialias: false,
       backgroundColor: 0x333333
     }).then(() => {
       this.isInitialized = true
       this.app.ticker.minFPS = 10
-      this.app.ticker.maxFPS = 30
+      this.app.ticker.maxFPS = 25
 
       this.app.ticker.add(this.update.bind(this))
     })
@@ -423,7 +423,7 @@ export default class Render {
     this.updateScale()
   }
 
-  private onMouseDown(e: PIXI.FederatedPointerEvent) {
+  onMouseDown(e: PIXI.FederatedPointerEvent) {
     console.log('onMouseDown buttons', e.buttons)
     // this.touchCurrent[e.data.identifier] = new Point(e.data.global)
 
@@ -431,11 +431,10 @@ export default class Render {
     if (e.buttons == 4 || PIXI.isMobile.any) {
       this.dragStart = new Point(e.screen).round()
       this.dragOffset = new Point(this.offset)
-      console.log('onMouseDown ' + this.dragStart.toString())
+      console.log('onMouseDown drag start ' + this.dragStart.toString())
     } else if (e.buttons == 1 && !PIXI.isMobile.any) {
       const p = new Point(e.screen).round()
       this.lastMoveCoord = new Point(e.screen).round()
-      // console.log('lastMoveCoord!!!!!!!', this.lastMoveCoord)
       // это просто клик. без сдвига карты
       const cp = this.coordScreen2Game(p)
 
@@ -446,6 +445,10 @@ export default class Render {
         x: cp.x,
         y: cp.y
       })
+
+      if (this.continuousMovingTimer !== -1) {
+        clearInterval(this.continuousMovingTimer)
+      }
 
       // запускаем таймер который периодически шлет клики по карте на сервер в текущие экранные координаты
       this.continuousMovingTimer = window.setInterval(() => {
@@ -466,7 +469,7 @@ export default class Render {
     this.dragMoved = false
   }
 
-  private onMouseUp(e: PIXI.FederatedPointerEvent) {
+  onMouseUp(e: PIXI.FederatedPointerEvent) {
     // delete this.touchCurrent[e.data.identifier]
 
     // this.touchLength = -1
@@ -474,7 +477,7 @@ export default class Render {
     // screen point coord
     const p = new Point(e.screen).round()
 
-    // console.log('onMouseUp ' + p.toString())
+    console.log('onMouseUp buttons ' + e.buttons)
 
     // если сдвинули карту при нажатии мыши
     if (this.dragStart !== undefined && this.dragOffset !== undefined) {
@@ -499,17 +502,16 @@ export default class Render {
       this.dragStart = undefined
       this.dragOffset = undefined
       this.touchCurrent = {}
-    } else {
-      // выключим таймер непрерывного движения
-      if (this.continuousMovingTimer !== -1) {
-        clearInterval(this.continuousMovingTimer)
-      }
-      this.continuousMovingTimer = -1
-      this.lastMoveCoord = undefined
     }
+    // выключим таймер непрерывного движения
+    if (this.continuousMovingTimer !== -1) {
+      clearInterval(this.continuousMovingTimer)
+    }
+    this.continuousMovingTimer = -1
+    this.lastMoveCoord = undefined
   }
 
-  private onMouseMove(e: PIXI.FederatedPointerEvent) {
+  onMouseMove(e: PIXI.FederatedPointerEvent) {
     const keys = Object.keys(this.touchCurrent)
     if (keys.length == 2) {
       this.dragStart = undefined

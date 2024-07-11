@@ -166,7 +166,13 @@ export default class ObjectView {
       this.onRightClick(e)
     }
     target.onmousedown = (e: FederatedPointerEvent) => {
-      this.onClick(e)
+      this.onMouseDown(e)
+    }
+    target.onmousemove = (e : FederatedPointerEvent) => {
+      this.render.onMouseMove(e)
+    }
+    target.onmouseup = (e: FederatedPointerEvent) => {
+      this.render.onMouseUp(e)
     }
     /*
      target.on("touchstart", (e: PIXI.InteractionEvent) => {
@@ -211,19 +217,23 @@ export default class ObjectView {
      */
   }
 
-  private onClick(e: PIXI.FederatedPointerEvent) {
-    // screen point coord
-    const p = new Point(e.screen).round()
-    // вычислим игровые координаты куда тыкнула мышь
-    // их тоже отправим на сервер
-    const cp = this.render.coordScreen2Game(p)
+  private onMouseDown(e: PIXI.FederatedPointerEvent) {
+    if (e.buttons == 1) {
+      // screen point coord
+      const p = new Point(e.screen).round()
+      // вычислим игровые координаты куда тыкнула мышь
+      // их тоже отправим на сервер
+      const cp = this.render.coordScreen2Game(p)
 
-    this.render.client.send(ClientPacket.OBJECT_CLICK, {
-      id: this.obj.id,
-      f: getKeyFlags(e),
-      x: cp.x,
-      y: cp.y
-    })
+      this.render.client.send(ClientPacket.OBJECT_CLICK, {
+        id: this.obj.id,
+        f: getKeyFlags(e),
+        x: cp.x,
+        y: cp.y
+      })
+    } else {
+      this.render.onMouseDown(e)
+    }
   }
 
   private onRightClick(e: PIXI.FederatedPointerEvent) {

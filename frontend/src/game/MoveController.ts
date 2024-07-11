@@ -68,21 +68,14 @@ export default class MoveController {
     this.vy = sdy / magnitude * this.speed
     // console.log('vector', this.vx, this.vy)
 
-    // const ldx = this.me.x - this.serverX
-    // const ldy = this.me.y - this.serverY
-    // const lds = Math.sqrt(ldx * ldx + ldy * ldy)
+    const ldx = this.me.x - this.serverX
+    const ldy = this.me.y - this.serverY
+    const localDelta = Math.sqrt(ldx * ldx + ldy * ldy)
 
-    // if (lds > 2) {
-    // this.me.x = this.serverX
-    // this.me.y = this.serverY
-    // }
-
-    // server distance
-    // const sd = Math.sqrt(Math.pow(this.toX - this.serverX, 2) + Math.pow(this.toY - this.serverY, 2))
-    // local distance
-    // const ld = Math.sqrt(Math.pow(this.toX - this.me.x, 2) + Math.pow(this.toY - this.me.y, 2))
-
-    // let c1 = Game.coordGame2Screen(this.me.x, this.me.y)
+    if (localDelta < 2) {
+      this.me.x = this.serverX
+      this.me.y = this.serverY
+    }
 
     // рисуем анимацию движения по серверу
     const c1 = coordGame2Screen(this.serverX, this.serverY)
@@ -91,18 +84,6 @@ export default class MoveController {
     this.lineView.moveTo(c1[0], c1[1])
     this.lineView.lineTo(c2[0], c2[1])
     this.lineView.stroke({ width: 2, color: 0x00ff00 })
-
-    // корректировка скорости
-    // let diff = Math.abs(sd - ld)
-    // if (sd > 2 && (diff > 1)) {
-    //     let k = ld / sd
-    //     // ограничиваем максимальную и минимальную корректировку, чтобы сильно не дергалось
-    //     k = Math.max(0.4, k)
-    //     k = Math.min(1.4, k)
-    //     console.warn("speed correct k=" + k.toFixed(2))
-    //     this.speed = this.speed * k
-    // }
-    // console.log("diff=" + diff.toFixed(2) + " ld=" + ld.toFixed(2) + " sd=" + sd.toFixed(2) + " speed=" + this.speed.toFixed(2))
   }
 
   /**
@@ -126,8 +107,6 @@ export default class MoveController {
       this.stop()
       this.render.onObjectMoved(this.me)
     }
-
-    // this.lineView.destroy({children: true, texture: true})
   }
 
   public stop() {
@@ -154,56 +133,47 @@ export default class MoveController {
    */
   public update(_dt: number) {
     if (this.stopped) return
-    // console.log('update move', _dt)
-    // if (this.serverStopped) console.log("dt=" + Math.round(dt * 1000))
-    // if (this.serverStopped) console.log(this)
 
     // дистанция до конечной точки по данным сервера
-    // server distance
-    // let sd = Math.sqrt(Math.pow(this.toX - this.serverX, 2) + Math.pow(this.toY - this.serverY, 2))
     // local distance
     const dx = this.toX - this.me.x
     const dy = this.toY - this.me.y
     // local distance
     const ld = (dx == 0 && dy == 0) ? 0 : Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
 
-    const SMOOTHING_FACTOR = 0.1
-
-    // if (this.serverStopped) console.log("ld=" + ld)
     // если осталось идти слишком мало - посчитаем что уже пришли в назначенную точку
     if (ld <= 2 || Number.isNaN(ld)) {
       this.me.x = this.toX
       this.me.y = this.toY
-      console.warn('stop by low distance', ld)
+      // console.warn('stop by low distance', ld)
       this.stop()
     } else {
       const predictedX = this.me.x + this.vx * _dt
       const predictedY = this.me.y + this.vy * _dt
-      // console.log('predicted', predictedX, predictedY)
 
       const correctDx = this.serverX - predictedX
       const correctDy = this.serverY - predictedY
       const CORRECTION_THRESHOLD = 3
+      let k = 0.3
+      if (this.serverStopped) k = 0.4
       if (Math.abs(correctDx) > CORRECTION_THRESHOLD || Math.abs(correctDy) > CORRECTION_THRESHOLD || this.serverStopped) {
-        console.warn('correct', correctDx, correctDy)
-        // this.me.x += correctDx * 0.6
-        // this.me.y += correctDy * 0.6
-        this.smoothCorrect(this.serverX, this.serverY, 0.3)
+        // console.warn('correct', correctDx, correctDy)
+        this.smoothCorrect(this.serverX, this.serverY, k)
       }
 
 
-      // пройдем расстояение не больше чем осталось до конечной точки
-      // let nd = Math.min(ld, this.speed * dt)
-
-      // сколько прошли
+      // //  пройдем расстояение не больше чем осталось до конечной точки
+      // let nd = Math.min(ld, this.speed * _dt)
+      //
+      // // сколько прошли
       // const dx = nd * ((this.toX - this.me.x) / ld)
       // const dy = nd * ((this.toY - this.me.y) / ld)
+      //
+      // //добавим к координатам объекта дельту
+      // this.me.x += dx
+      // this.me.y += dy
 
-      // добавим к координатам объекта дельту
-      //  this.me.x += dx
-      //  this.me.y += dy
 
-      // let k = this.speed / 1000
       if (!this.serverStopped) {
         const k = 0.8
         this.me.x = lerp(this.me.x, predictedX, k)
@@ -212,11 +182,10 @@ export default class MoveController {
         // this.me.x += (predictedX - this.me.x) * k
         // this.me.y += (predictedY - this.me.y) * k
       } else {
-        const k = 0.1
-        // this.me.x += (this.serverX - this.me.x) * k
-        // this.me.y += (this.serverY - this.me.y) * k
+        // const k = 0.1
+        // this.me.x += (this.toX - this.me.x) * k
+        // this.me.y += (this.toY - this.me.y) * k
       }
-      // console.log(this.me.x, this.me.y)
     }
 
     this.render.onObjectMoved(this.me)
