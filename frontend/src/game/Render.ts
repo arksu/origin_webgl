@@ -119,11 +119,7 @@ export default class Render {
 
     this.app = new PIXI.Application()
     this.mapGridsContainer = new PIXI.Container()
-
     this.objectsContainer = new PIXI.Container()
-    // TODO sort z index
-    // this.objectsContainer.sortableChildren = true
-
     this.screenContainer = new PIXI.Sprite()
   }
 
@@ -244,11 +240,10 @@ export default class Render {
 
   private update(_ticker: PIXI.Ticker): void {
     if (this.wasDestroyed) return
-    // console.log('update', _ticker.deltaTime)
 
     // delta time in seconds
     // важно. берем elapsedMS т.к. у нас сервер управляет движением. и нам надо абсолютное время ни от чего не зависящее
-    const dt = _ticker.elapsedMS / 1000 // PIXI.Ticker.shared.elapsedMS / 1000
+    const dt = _ticker.elapsedMS / 1000
 
     // изменились размеры окна
     if (this.app.renderer.width !== this.screenContainer.width || this.app.renderer.height !== this.screenContainer.height) {
