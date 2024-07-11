@@ -167,6 +167,8 @@ export default class MoveController {
     // local distance
     const ld = (dx == 0 && dy == 0) ? 0 : Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
 
+    const SMOOTHING_FACTOR = 0.1
+
     // if (this.serverStopped) console.log("ld=" + ld)
     // если осталось идти слишком мало - посчитаем что уже пришли в назначенную точку
     if (ld <= 2 || Number.isNaN(ld)) {
@@ -183,9 +185,10 @@ export default class MoveController {
       const correctDy = this.serverY - predictedY
       const CORRECTION_THRESHOLD = 3
       if (Math.abs(correctDx) > CORRECTION_THRESHOLD || Math.abs(correctDy) > CORRECTION_THRESHOLD || this.serverStopped) {
-        // console.warn('correct', correctDx, correctDy)
-        this.me.x += correctDx * 0.6
-        this.me.y += correctDy * 0.6
+        console.warn('correct', correctDx, correctDy)
+        // this.me.x += correctDx * 0.6
+        // this.me.y += correctDy * 0.6
+        this.smoothCorrect(this.serverX, this.serverY, 0.3)
       }
 
 
@@ -203,12 +206,15 @@ export default class MoveController {
       // let k = this.speed / 1000
       if (!this.serverStopped) {
         const k = 0.8
-        this.me.x += (predictedX - this.me.x) * k
-        this.me.y += (predictedY - this.me.y) * k
+        this.me.x = lerp(this.me.x, predictedX, k)
+        this.me.y = lerp(this.me.y, predictedY, k)
+
+        // this.me.x += (predictedX - this.me.x) * k
+        // this.me.y += (predictedY - this.me.y) * k
       } else {
         const k = 0.1
-        this.me.x += (this.serverX - this.me.x) * k
-        this.me.y += (this.serverY - this.me.y) * k
+        // this.me.x += (this.serverX - this.me.x) * k
+        // this.me.y += (this.serverY - this.me.y) * k
       }
       // console.log(this.me.x, this.me.y)
     }
@@ -216,4 +222,14 @@ export default class MoveController {
     this.render.onObjectMoved(this.me)
     if (this.render.gameData.selectedCharacterId == this.me.id) this.render?.updateMapScalePos()
   }
+
+  private smoothCorrect(targetX: number, targetY: number, smoothing: number) {
+    this.me.x = lerp(this.me.x, targetX, smoothing)
+    this.me.y = lerp(this.me.y, targetY, smoothing)
+  }
+
+}
+
+function lerp(start: number, end: number, t: number) {
+  return start + (end - start) * t
 }
