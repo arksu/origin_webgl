@@ -129,9 +129,9 @@ export default class MoveController {
 
   /**
    * обновление движения
-   * @param _dt в секундах
+   * @param dt в секундах
    */
-  public update(_dt: number) {
+  public update(dt: number) {
     if (this.stopped) return
 
     // дистанция до конечной точки по данным сервера
@@ -139,7 +139,7 @@ export default class MoveController {
     const dx = this.toX - this.me.x
     const dy = this.toY - this.me.y
     // local distance
-    const ld = (dx == 0 && dy == 0) ? 0 : Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
+    const ld = (dx == 0 && dy == 0) ? 0 : Math.sqrt(dx * dx + dy * dy)
 
     // если осталось идти слишком мало - посчитаем что уже пришли в назначенную точку
     if (ld <= 2 || Number.isNaN(ld)) {
@@ -148,16 +148,19 @@ export default class MoveController {
       // console.warn('stop by low distance', ld)
       this.stop()
     } else {
-      const predictedX = this.me.x + this.vx * _dt
-      const predictedY = this.me.y + this.vy * _dt
+      const predictedX = this.me.x + this.vx * dt
+      const predictedY = this.me.y + this.vy * dt
 
       const correctDx = this.serverX - predictedX
       const correctDy = this.serverY - predictedY
-      const CORRECTION_THRESHOLD = 3
-      let k = 0.3
-      if (this.serverStopped) k = 0.4
+
+      const CORRECTION_THRESHOLD = 5
       if (Math.abs(correctDx) > CORRECTION_THRESHOLD || Math.abs(correctDy) > CORRECTION_THRESHOLD || this.serverStopped) {
-        // console.warn('correct', correctDx, correctDy)
+        const dist = Math.sqrt(correctDx * correctDx + correctDy * correctDy)
+        let k = 0.1
+        if (dist < 3 || dist > 12) k = 0.3
+        if (this.serverStopped) k = 0.3
+        console.warn('correct', correctDx, correctDy, k)
         this.smoothCorrect(this.serverX, this.serverY, k)
       }
 

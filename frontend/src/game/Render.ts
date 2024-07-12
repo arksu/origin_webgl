@@ -10,6 +10,7 @@ import ObjectView from '@/game/ObjectView'
 import type GameClient from '@/net/GameClient'
 import { ClientPacket } from '@/net/packets'
 import { getKeyFlags } from '@/util/keyboard'
+import { isButtonMiddle, isButtonPrimary } from '@/util/mouse'
 
 export default class Render {
 
@@ -137,7 +138,7 @@ export default class Render {
     }).then(() => {
       this.isInitialized = true
       this.app.ticker.minFPS = 10
-      this.app.ticker.maxFPS = 25
+      this.app.ticker.maxFPS = 30
 
       this.app.ticker.add(this.update.bind(this))
     })
@@ -428,11 +429,11 @@ export default class Render {
     // this.touchCurrent[e.data.identifier] = new Point(e.data.global)
 
     // двигаем карту если средняя кнопка мыши или мобильное устройство
-    if (e.buttons == 4 || PIXI.isMobile.any) {
+    if (isButtonMiddle(e) || PIXI.isMobile.any) {
       this.dragStart = new Point(e.screen).round()
       this.dragOffset = new Point(this.offset)
       console.log('onMouseDown drag start ' + this.dragStart.toString())
-    } else if (e.buttons == 1 && !PIXI.isMobile.any) {
+    } else if (isButtonPrimary(e) && !PIXI.isMobile.any) {
       const p = new Point(e.screen).round()
       this.lastMoveCoord = new Point(e.screen).round()
       // это просто клик. без сдвига карты
