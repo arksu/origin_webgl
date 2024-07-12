@@ -82,8 +82,8 @@ export default defineComponent({
 
 .rows {
   pointer-events: none;
-  font-family: Bitter, Georgia, serif;
-  font-size: 20px;
+  //font-family: Bitter, Georgia, serif;
+  font-size: 16px;
   color: #daedfa;
   text-shadow: 2px 2px 0 #000,
   -1px -1px 0 #000,
