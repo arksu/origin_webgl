@@ -16,7 +16,6 @@ export default class Render {
 
   private readonly canvas: HTMLCanvasElement
   private wasDestroyed: boolean = false
-  private wasLoaded: boolean = false
   private isInitialized: boolean = false
 
   /**
@@ -189,6 +188,16 @@ export default class Render {
       this.onMouseUp(e)
     }
     this.screenContainer.onmousemove = (e: FederatedPointerEvent) => {
+      this.onMouseMove(e)
+    }
+    this.screenContainer.onpointerdown = (e: FederatedPointerEvent) => {
+      console.log('onpointerdown', e)
+      this.onMouseDown(e)
+    }
+    this.screenContainer.onpointerup = (e: FederatedPointerEvent) => {
+      this.onMouseUp(e)
+    }
+    this.screenContainer.onpointermove = (e: FederatedPointerEvent) => {
       this.onMouseMove(e)
     }
 
