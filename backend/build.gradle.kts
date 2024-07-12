@@ -111,8 +111,10 @@ buildscript {
     }
 }
 
+val dbHost = System.getenv("DB_HOST") ?: "localhost"
+
 flyway {
-    url = "jdbc:mariadb://localhost:3406/origin"
+    url = "jdbc:mariadb://${dbHost}:3406/origin"
     user = "origin"
     password = "origin"
     schemas = arrayOf("origin")
@@ -131,7 +133,7 @@ jooq {
                 logging = org.jooq.meta.jaxb.Logging.WARN
                 jdbc.apply {
                     driver = "org.mariadb.jdbc.Driver"
-                    url = "jdbc:mariadb://localhost:3406/origin"
+                    url = "jdbc:mariadb://${dbHost}:3406/origin"
                     user = "origin"
                     password = "origin"
                 }

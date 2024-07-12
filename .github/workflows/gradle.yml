@@ -20,6 +20,17 @@ jobs:
     permissions:
       contents: read
 
+    services:
+      db:
+        image: mariadb:11.4.2
+      ports:
+        - 3406:3306
+      env:
+        MYSQL_DATABASE: origin
+        MYSQL_USER: origin
+        MYSQL_PASSWORD: origin
+        MYSQL_ROOT_PASSWORD: origin
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
