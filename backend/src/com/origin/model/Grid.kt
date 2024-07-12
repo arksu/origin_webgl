@@ -355,13 +355,13 @@ class Grid(
             val pos = PositionModel(x * TILE_SIZE + ox, y * TILE_SIZE + oy, this)
             when (tilesBlob[x + y * GRID_SIZE]) {
                 Tile.FOREST_LEAF -> {
-                    if (Rnd.next(170) == 0) generateObject(1, pos)
+                    if (Rnd.next(170) == 0) generateObject(2, pos)
                     if (Rnd.next(320) == 0) generateObject(5, pos)
                 }
 
                 Tile.FOREST_PINE -> {
-                    if (Rnd.next(130) == 0) generateObject(2, pos)
-                    if (Rnd.next(270) == 0) generateObject(3, pos)
+                    if (Rnd.next(130) == 0) generateObject(3, pos)
+                    if (Rnd.next(270) == 0) generateObject(4, pos)
                 }
             }
         }

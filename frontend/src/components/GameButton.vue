@@ -34,7 +34,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .game-button {
-  margin: 2px;
+  margin: 4px;
   width: 46px;
   height: 46px;
   border: solid 3px;

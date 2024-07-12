@@ -1,7 +1,6 @@
 package com.origin.model.`object`.tree
 
 import com.origin.jooq.tables.records.ObjectRecord
-import com.origin.model.inventory.Inventory
 
 class Birch(objectRecord: ObjectRecord) : Tree(objectRecord) {
 

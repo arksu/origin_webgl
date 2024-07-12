@@ -74,8 +74,8 @@ export default defineComponent({
 
 .chat {
   position: absolute;
-  left: 10px;
-  bottom: 10px;
+  left: 4px;
+  bottom: 4px;
   width: calc(100% - 70px);
   max-width: 340px;
 }

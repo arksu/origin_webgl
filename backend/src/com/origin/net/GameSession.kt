@@ -67,19 +67,23 @@ class GameSession(
             CHAT.n -> {
                 val text = (request.data["text"] as String?) ?: throw BadRequestException("no text")
                 if (text.isNotEmpty()) {
+                    val trimmed = text.trim()
+                    val t = if (trimmed.length > 1020) trimmed.substring(0, 1020) else trimmed
                     runBlocking {
                         DatabaseConfig.dsl
                             .insertInto(CHAT_HISTORY)
                             .set(CHAT_HISTORY.CHANNEL, ChatChannel.GENERAL.id.toByte())
-                            .set(CHAT_HISTORY.TEXT, text)
+                            .set(CHAT_HISTORY.TEXT, t)
                             .set(CHAT_HISTORY.SENDER_ID, player.id)
+                            .set(CHAT_HISTORY.X, player.pos.x.toLong())
+                            .set(CHAT_HISTORY.Y, player.pos.y.toLong())
                             .execute()
                     }
-                    if (text.startsWith("/")) {
+                    if (t.startsWith("/")) {
                         // удаляем слеш в начале строки и заускаем на выполнение
 //                        player.consoleCommand(text.substring(1))
                     } else {
-                        player.getGridSafety().broadcast(BroadcastEvent.ChatMessage(player, ChatChannel.GENERAL, text))
+                        player.getGridSafety().broadcast(BroadcastEvent.ChatMessage(player, ChatChannel.GENERAL, t))
                     }
                 }
             }

@@ -18,7 +18,7 @@ create table if not exists `character`
     name        varchar(128) not null,
 
     region      int          not null comment 'на каком континенте находится объект, либо ид дома (инстанса, локации)',
-    x           int          not null comment 'координаты в игровых еденицах внутри континента (из этого расчитываем супергрид и грид)',
+    x           int          not null comment 'координаты в игровых единицах внутри континента (из этого рассчитываем супергрид и грид)',
     y           int          not null,
     level       int          not null comment 'уровень (слой) глубины где находится объект',
     heading     tinyint      not null comment 'угол поворота, то куда смотрит объект',
@@ -58,7 +58,7 @@ create table if not exists object
 (
     id          bigint primary key,
     region      int          not null comment 'на каком континенте находится объект, либо ид дома (инстанса, локации)',
-    x           int          not null comment 'координаты в игровых еденицах внутри континента (из этого расчитываем супергрид и грид)',
+    x           int          not null comment 'координаты в игровых единицах внутри континента (из этого рассчитываем супергрид и грид)',
     y           int          not null,
     level       int          not null comment 'уровень (слой) глубины где находится объект',
     heading     tinyint      not null comment 'угол поворота, то куда смотрит объект',
@@ -84,6 +84,8 @@ create table if not exists chat_history
 (
     channel   tinyint       not null,
     sender_id bigint        not null,
+    x         bigint        not null comment 'координаты объекта в момент отправки сообщения',
+    y         bigint        not null,
     text      varchar(1020) not null,
     created   datetime default current_timestamp
 ) engine = MyISAM;
