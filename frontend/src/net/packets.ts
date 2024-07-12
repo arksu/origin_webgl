@@ -26,8 +26,8 @@ export enum ServerPacket {
 }
 
 export interface AuthorizeTokenResponse {
-  readonly characterId : number
-  readonly proto : string
+  readonly characterId: number
+  readonly proto: string
 }
 
 export interface MapGridData {
@@ -123,6 +123,7 @@ export interface CreatureSay {
   readonly id: number
   readonly c: number
   readonly t: string
+  readonly ti: string
 }
 
 export interface InvItem {

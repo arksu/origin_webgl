@@ -26,7 +26,8 @@ data class AuthorizeTokenResponse(
 enum class ClientPacket(val n: String) {
     MAP_CLICK("mc"),
     OBJECT_CLICK("oc"),
-    OBJECT_RIGHT_CLICK("orc")
+    OBJECT_RIGHT_CLICK("orc"),
+    CHAT("chat"),
 }
 
 enum class ServerPacket(val n: String) {
@@ -181,4 +182,22 @@ class HandUpdate : ServerMessage {
         mx = 0
         my = 0
     }
+}
+
+enum class ChatChannel(val id: Int) {
+    GENERAL(0),
+    PRIVATE(1),
+    PARTY(2),
+    VILLAGE(3),
+    SHOUT(4),
+    WORLD(5),
+    ANNOUNCEMENT(6),
+    SYSTEM(0xff),
+}
+
+class CreatureSay(val id: ObjectID, title: String, text: String, channel: ChatChannel) : ServerMessage(CREATURE_SAY.n) {
+
+    private val ti = title
+    private val t = text
+    private val c = channel.id
 }

@@ -121,7 +121,7 @@ class Grid(
         if (obj.pos.region != region || obj.pos.level != level) {
             throw RuntimeException("wrong spawn condition")
         }
-        logger.debug("spawn obj grid=${obj.pos.gridX} ${obj.pos.gridY}")
+//        logger.debug("spawn obj grid=${obj.pos.gridX} ${obj.pos.gridY}")
         if (obj.pos.gridX != x || obj.pos.gridY != y) {
             throw RuntimeException("wrong spawn condition")
         }
@@ -339,7 +339,7 @@ class Grid(
             .fetch()
         list.forEach { record ->
             val obj = ObjectsFactory.constructByRecord(record)
-            obj.grid = this
+            obj.setGrid(this)
             objects.add(obj)
         }
     }
@@ -374,7 +374,7 @@ class Grid(
             val record = ObjectsFactory.create(type, pos)
             val obj = ObjectsFactory.constructByRecord(record)
 
-            obj.grid = this@Grid
+            obj.setGrid(this@Grid)
             // шлем сообщение самому себе на спавн объекта
             this@Grid.send(GridMessage.SpawnForce(obj))
         }

@@ -25,7 +25,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
      * в каком гриде сейчас находится объект
      * грид указан только тогда, когда берет на себя ответственность за него (заспавнен)
      */
-    var grid: Grid? = null
+    private var grid: Grid? = null
 
     val isSpawned: Boolean get() = grid != null
 
@@ -189,13 +189,13 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
                 val old = grid ?: throw IllegalStateException("old grid is null")
                 // получим новый грид из мира
                 val newGrid = World.getGrid(pos)
+                grid = newGrid
                 if (this is MovingObject) {
                     // уведомим объект о смене грида
                     onGridChanged()
                 }
                 old.objects.remove(this)
                 newGrid.objects.add(this)
-                grid = newGrid
             }
         }
     }
@@ -254,6 +254,10 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
 
     fun getGridSafety(): Grid {
         return grid ?: throw IllegalStateException("grid is null")
+    }
+
+    fun setGrid(g: Grid) {
+        this.grid = g
     }
 
     override fun toString(): String {

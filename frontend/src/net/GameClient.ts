@@ -117,7 +117,7 @@ export default class GameClient {
   private onmessage(ev: MessageEvent) {
     if (typeof ev.data === 'string') {
       const response: GameResponseDTO = JSON.parse(ev.data)
-      // console.log('%cRECV', 'color: #1BAC19', response)
+      console.log('%cRECV', 'color: #1BAC19', response)
 
       if (response.id === 0 && response.c !== undefined) {
         this.gameProto.processMessage(response)

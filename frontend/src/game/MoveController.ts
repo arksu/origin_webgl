@@ -160,10 +160,9 @@ export default class MoveController {
         let k = 0.1
         if (dist < 3 || dist > 12) k = 0.3
         if (this.serverStopped) k = 0.3
-        console.warn('correct', correctDx, correctDy, k)
+        // console.warn('correct', correctDx, correctDy, k)
         this.smoothCorrect(this.serverX, this.serverY, k)
       }
-
 
       // //  пройдем расстояение не больше чем осталось до конечной точки
       // let nd = Math.min(ld, this.speed * _dt)

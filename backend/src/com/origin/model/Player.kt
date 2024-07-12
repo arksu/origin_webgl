@@ -12,10 +12,7 @@ import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
 import com.origin.move.Move2Object
 import com.origin.move.Move2Point
-import com.origin.net.ContextMenuData
-import com.origin.net.GameSession
-import com.origin.net.HandUpdate
-import com.origin.net.MapGridConfirm
+import com.origin.net.*
 import com.origin.util.ClientButton
 import com.origin.util.PLAYER_RECT
 import com.origin.util.Rect
@@ -58,6 +55,7 @@ class Player(
             is PlayerMessage.MapClick -> onMapClick(msg)
             is PlayerMessage.ObjectClick -> onObjectClick(msg)
             is PlayerMessage.ObjectRightClick -> onObjectRightClick(msg.id)
+            is BroadcastEvent.ChatMessage -> onChatMessage(msg)
             else -> super.processMessage(msg)
         }
     }
@@ -174,6 +172,15 @@ class Player(
             remove()
         }
         save()
+    }
+
+    private suspend fun onChatMessage(msg: BroadcastEvent.ChatMessage) {
+        if (msg.channel == ChatChannel.GENERAL) {
+            if (knownList.isKnownObject(msg.obj)) {
+                val title = if (msg.obj is Player) msg.obj.character.name else "unk"
+                session.send(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
+            }
+        }
     }
 
     override suspend fun loadGrids() {

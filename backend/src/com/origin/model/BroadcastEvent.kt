@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.move.MoveType
+import com.origin.net.ChatChannel
 
 sealed class BroadcastEvent {
     class Moved(
@@ -20,4 +21,5 @@ sealed class BroadcastEvent {
     ) : BroadcastEvent()
 
     class Stopped(val obj: GameObject) : BroadcastEvent()
+    class ChatMessage(val obj: GameObject, val channel: ChatChannel, val text: String) : BroadcastEvent()
 }

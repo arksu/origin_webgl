@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'
-import { useApi } from '@/net/useApi'
+import { useApi } from '@/net/api'
 import router from '@/router'
 import { RouteNames } from '@/router/routeNames'
 import { useAuthStore } from '@/stores/authStore'

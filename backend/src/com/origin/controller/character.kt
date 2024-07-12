@@ -90,12 +90,11 @@ fun Route.characters(dsl: DSLContext) {
                     throw BadRequestException("Characters limit exceed")
                 }
 
-                // TODO: new character spawn coordinates
-
                 val saved = dsl.insertInto(CHARACTER)
                     .set(CHARACTER.ID, IdFactory.getNext())
                     .set(CHARACTER.ACCOUNT_ID, account.id)
                     .set(CHARACTER.NAME, request.name)
+                    // TODO: new character spawn coordinates
                     .set(CHARACTER.X, Random.nextInt(1000))
                     .set(CHARACTER.Y, Random.nextInt(1000))
                     .set(CHARACTER.REGION, 0)

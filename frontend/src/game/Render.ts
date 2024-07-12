@@ -16,6 +16,7 @@ export default class Render {
 
   private readonly canvas: HTMLCanvasElement
   private wasDestroyed: boolean = false
+  private wasLoaded: boolean = false
   private isInitialized: boolean = false
 
   /**
@@ -208,21 +209,22 @@ export default class Render {
     window.removeEventListener('orientationchange', this.orientationchangeHandler)
     document.removeEventListener('keydown', this.keydownHandler)
 
-    PIXI.Assets.unload(['base', 'tiles'])
 
     if (this.isInitialized) {
+      PIXI.Assets.unload(['base', 'tiles'])
+
       this.app.destroy({
         removeView: false
       }, {
         children: true
       })
-    }
 
-    for (const gridsKey in this.grids) {
-      this.grids[gridsKey].destroy()
+      for (const gridsKey in this.grids) {
+        this.grids[gridsKey].destroy()
+      }
+      this.mapGridsContainer.destroy({ children: true })
+      this.objectsContainer.destroy({ children: true })
     }
-    this.mapGridsContainer.destroy({ children: true })
-    this.objectsContainer.destroy({ children: true })
 
     document.body.removeChild(this.canvas)
     this.canvas.remove()
@@ -270,7 +272,6 @@ export default class Render {
    * добавить ранее полученный от сервера грид в игру
    */
   public addGrid(x: number, y: number) {
-    const gameData = this.gameData
     const k = x + '_' + y
     console.log('render add grid', k)
 
@@ -282,7 +283,7 @@ export default class Render {
         g.visible = true
       }
       // а если еще и изменился - перестроим его
-      if (gameData.map[k].isChanged) {
+      if (this.gameData.map[k].isChanged) {
         // TODO если изменился тайл в нашем гриде и он на границе.
         //  надо обновить и соседние гриды. т.к. там возможно перекрытие тайлов
         g.rebuild()
@@ -294,7 +295,7 @@ export default class Render {
       // зачистим старые гриды, которые давно уже не видели
       for (const gridsKey in this.grids) {
         const grid = this.grids[gridsKey]
-        const playerObject = gameData.playerObject
+        const playerObject = this.gameData.playerObject
         if (playerObject !== undefined) {
           const dist = Math.sqrt(Math.pow(playerObject.x - grid.absoluteX, 2) + Math.pow(playerObject.y - grid.absoluteY, 2))
           // дистанция от игрока на которой начнем удалять гриды иэ кэша
@@ -308,7 +309,7 @@ export default class Render {
       }
     }
 
-    gameData.map[k].isChanged = false
+    this.gameData.map[k].isChanged = false
   }
 
   /**
@@ -616,7 +617,7 @@ export default class Render {
         // this.store.craft.isOpened = !this.store.craft.isOpened
         break
       case 'Enter':
-        // document.getElementById("inputChat")?.focus();
+        document.getElementById("inputChat")?.focus();
         break
       case 'Home':
         this.scale = 1

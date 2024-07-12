@@ -9,13 +9,14 @@ import GameButton from '@/components/GameButton.vue'
 import Render from '@/game/Render'
 import GameData from '@/net/GameData'
 import type { AuthorizeTokenResponse } from '@/net/packets'
+import Chat from '@/views/game/Chat.vue'
 
 /**
  * игровой вид, рендер и весь UI для игры
  */
 export default defineComponent({
   name: 'GameView',
-  components: { GameButton },
+  components: { GameButton, Chat },
   setup() {
     const isActive = ref(false)
     const authStore = useAuthStore()
@@ -55,13 +56,13 @@ export default defineComponent({
                 .then((r) => {
                   const response = r as AuthorizeTokenResponse
                   render?.setup()
+                  gameStore.client = client!!
                   isActive.value = true
                   data.selectedCharacterId = response.characterId
                   console.log('proto version', response.proto)
                 })
                 .catch((e) => {
-                  isActive.value = false
-                  render!.stop()
+                  stop()
                   authStore.setError(e.toString(), false)
                   router.push({ name: RouteNames.CHARACTERS })
                 })
@@ -69,16 +70,14 @@ export default defineComponent({
         }
 
         client.onError = (errorMessage) => {
-          isActive.value = false
           console.error(errorMessage)
-          render?.stop()
+          stop()
           authStore.setError(errorMessage)
           router.push({ name: RouteNames.CHARACTERS })
         }
 
         client.onDisconnect = () => {
-          isActive.value = false
-          render?.stop()
+          stop()
           router.push({ name: RouteNames.CHARACTERS })
         }
       } else {
@@ -98,8 +97,13 @@ export default defineComponent({
       }
       gameStore.$reset()
       window.removeEventListener('mousemove', onMouseMove)
-      // Render.stop();
     })
+
+    function stop() {
+      isActive.value = false
+      render?.stop()
+      gameStore.client = undefined
+    }
 
     const toggleCraftWindow = () => {
       console.log('toggleCraftWindow')
@@ -111,7 +115,8 @@ export default defineComponent({
       mouseX,
       mouseY,
       gameStore,
-      toggleCraftWindow
+      toggleCraftWindow,
+      client
     }
   }
 })
@@ -125,6 +130,8 @@ export default defineComponent({
   </div>
 
   <div v-if="isActive" class="game-ui">
+    <Chat></Chat>
+
     <!--  Logout  -->
     <div style="right: 0; bottom: 0; position: absolute">
       <game-button

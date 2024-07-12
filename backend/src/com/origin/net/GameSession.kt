@@ -1,10 +1,13 @@
 package com.origin.net
 
 import com.google.gson.Gson
+import com.origin.config.DatabaseConfig
 import com.origin.config.ServerConfig
 import com.origin.error.BadRequestException
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
+import com.origin.jooq.tables.references.CHAT_HISTORY
+import com.origin.model.BroadcastEvent
 import com.origin.model.GameObjectMessage
 import com.origin.model.Player
 import com.origin.model.PlayerMessage
@@ -12,6 +15,7 @@ import com.origin.model.SpawnType.*
 import com.origin.net.ClientPacket.*
 import com.origin.util.getClientButton
 import io.ktor.websocket.*
+import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -58,6 +62,26 @@ class GameSession(
             OBJECT_RIGHT_CLICK.n -> {
                 val id = (request.data["id"] as Long?) ?: throw BadRequestException("wrong obj id")
                 player.send(PlayerMessage.ObjectRightClick(id))
+            }
+
+            CHAT.n -> {
+                val text = (request.data["text"] as String?) ?: throw BadRequestException("no text")
+                if (text.isNotEmpty()) {
+                    runBlocking {
+                        DatabaseConfig.dsl
+                            .insertInto(CHAT_HISTORY)
+                            .set(CHAT_HISTORY.CHANNEL, ChatChannel.GENERAL.id.toByte())
+                            .set(CHAT_HISTORY.TEXT, text)
+                            .set(CHAT_HISTORY.SENDER_ID, player.id)
+                            .execute()
+                    }
+                    if (text.startsWith("/")) {
+                        // удаляем слеш в начале строки и заускаем на выполнение
+//                        player.consoleCommand(text.substring(1))
+                    } else {
+                        player.getGridSafety().broadcast(BroadcastEvent.ChatMessage(player, ChatChannel.GENERAL, text))
+                    }
+                }
             }
         }
     }

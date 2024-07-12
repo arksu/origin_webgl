@@ -95,7 +95,7 @@ abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, 
         if (!grids.isEmpty()) {
             throw RuntimeException("activateGrids - grids is not empty")
         }
-        val gr = grid ?: throw RuntimeException("not spawned to grid")
+        val gr = getGridSafety()
         // гриды рядом
         for (x in -1..1) for (y in -1..1) {
             val gx = pos.gridX + x
@@ -123,7 +123,7 @@ abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, 
      * изменился грид в котором находимся. надо отреагировать
      */
     open suspend fun onGridChanged() {
-        val currentGrid = grid ?: throw IllegalStateException("grid is null")
+        val currentGrid = getGridSafety()
 
         // новый список гридов в которых находимся (координаты)
         val newList = ArrayList<Vec2i>(5)

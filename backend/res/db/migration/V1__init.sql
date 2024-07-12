@@ -65,10 +65,10 @@ create table if not exists object
     grid_x      int          not null comment 'координаты грида в котором находится объект',
     grid_y      int          not null,
     type        int          not null comment 'тип объекта',
-    quality     smallint     not null  comment 'качество',
-    hp          int          not null  comment 'здоровье (hit points) объекта',
+    quality     smallint     not null comment 'качество',
+    hp          int          not null comment 'здоровье (hit points) объекта',
     create_tick bigint       not null comment 'время создания, игровой тик сервера',
-    last_tick   bigint       not null  comment 'время последнего апдейта объекта',
+    last_tick   bigint       not null comment 'время последнего апдейта объекта',
     data        varchar(255) null default null comment 'внутренние данные объекта в json формате',
     index idx (region, x, y, level)
 );
@@ -79,3 +79,11 @@ create table if not exists global_var
     value_long   bigint        null,
     value_string varchar(1024) null
 );
+
+create table if not exists chat_history
+(
+    channel   tinyint       not null,
+    sender_id bigint        not null,
+    text      varchar(1020) not null,
+    created   datetime default current_timestamp
+) engine = MyISAM;

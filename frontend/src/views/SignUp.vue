@@ -6,7 +6,7 @@ import LoginField from '@/components/LoginField.vue'
 import PasswordField from '@/components/PasswordField.vue'
 import EmailField from '@/components/EmailField.vue'
 import SubmitButton from '@/components/SubmitButton.vue'
-import { useApi } from '@/net/useApi'
+import { useApi } from '@/net/api'
 import { useAuthStore } from '@/stores/authStore'
 import { RouteNames } from '@/router/routeNames'
 
