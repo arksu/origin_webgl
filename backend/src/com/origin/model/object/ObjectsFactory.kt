@@ -25,6 +25,7 @@ object ObjectsFactory {
             10 -> Willow(record)
             11 -> Yew(record)
             12 -> Crate(record)
+            13 -> Stone(record)
             else -> UnknownObject(record)
         }
     }

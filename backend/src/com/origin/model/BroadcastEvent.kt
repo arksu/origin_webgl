@@ -21,5 +21,6 @@ sealed class BroadcastEvent {
     ) : BroadcastEvent()
 
     class Stopped(val obj: GameObject) : BroadcastEvent()
+    class Changed(val obj: GameObject) : BroadcastEvent()
     class ChatMessage(val obj: GameObject, val channel: ChatChannel, val text: String) : BroadcastEvent()
 }

@@ -2,12 +2,15 @@ package com.origin.model.`object`.container
 
 import com.origin.ObjectID
 import com.origin.jooq.tables.records.ObjectRecord
-import com.origin.model.GameObjectMessage
+import com.origin.model.BroadcastEvent
 import com.origin.model.Human
 import com.origin.model.Player
 import com.origin.model.StaticObject
 import com.origin.model.inventory.Inventory
 
+/**
+ * контейнеры, которые могут хранить вещи (ящики, шкафы и тд)
+ */
 abstract class Container(record: ObjectRecord) : StaticObject(record) {
     /**
      * создаем (а значит и загрузим) инвентарь при первом обращении к нему, этого момента его в объекте не будет
@@ -17,6 +20,8 @@ abstract class Container(record: ObjectRecord) : StaticObject(record) {
 
     /**
      * список тех кто открыл данный контейнер
+     * объекты которые "держат" меня в открытом состоянии,
+     * взаимодействуют со мной
      */
     private val discoverers = HashMap<ObjectID, Human>()
 
@@ -32,10 +37,10 @@ abstract class Container(record: ObjectRecord) : StaticObject(record) {
 
     override suspend fun processMessage(msg: Any) {
         when (msg) {
-            is GameObjectMessage.OpenBy -> onOpenBy(msg.who)
-            is GameObjectMessage.CloseBy -> onCloseBy(msg.who)
-            is GameObjectMessage.PutItem -> msg.run { inventory.putItem(msg.item, msg.x, msg.y) }
-            is GameObjectMessage.TakeItem -> msg.run { inventory.takeItem(msg.id) }
+            is ContainerMessage.OpenBy -> onOpenBy(msg.who)
+            is ContainerMessage.CloseBy -> onCloseBy(msg.who)
+            is ContainerMessage.PutItem -> msg.run { inventory.putItem(msg.item, msg.x, msg.y) }
+            is ContainerMessage.TakeItem -> msg.run { inventory.takeItem(msg.id) }
             else -> super.processMessage(msg)
         }
     }
@@ -51,7 +56,7 @@ abstract class Container(record: ObjectRecord) : StaticObject(record) {
         // если это первый открывший - надо всем отослать эвент изменения состояния
         // это заставит получить новое имя ресурса и отправить его клиентам
         if (oldSize == 0) {
-//            grid.broadcast(BroadcastEvent.Changed(this))
+            getGridSafety().broadcast(BroadcastEvent.Changed(this))
         }
     }
 
@@ -60,7 +65,7 @@ abstract class Container(record: ObjectRecord) : StaticObject(record) {
         // если после закрытия не осталось тех кто открывает контейнер
         // надо послать эвент об изменении (закрытии)
         if (discoverers.size == 0) {
-//            grid.broadcast(BroadcastEvent.Changed(this))
+            getGridSafety().broadcast(BroadcastEvent.Changed(this))
         }
     }
 

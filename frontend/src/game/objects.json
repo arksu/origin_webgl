@@ -916,6 +916,14 @@
       }
     ]
   },
+  "stone": {
+    "offset": [68, 98],
+    "layers": [
+      {
+        "img": "obj/stone/stone.png"
+      }
+    ]
+  },
   "palisade": {
     "1": {
       "offset": [

@@ -10,6 +10,7 @@ import com.origin.jooq.tables.references.CHARACTER
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.inventory.InventoryItem
+import com.origin.model.`object`.container.ContainerMessage
 import com.origin.move.Move2Object
 import com.origin.move.Move2Point
 import com.origin.net.*
@@ -56,6 +57,8 @@ class Player(
             is PlayerMessage.ObjectClick -> onObjectClick(msg)
             is PlayerMessage.ObjectRightClick -> onObjectRightClick(msg.id)
             is BroadcastEvent.ChatMessage -> onChatMessage(msg)
+            is PlayerMessage.InventoryItemClick -> onItemClick(msg)
+            is PlayerMessage.InventoryClose -> onInventoryClose(msg)
             else -> super.processMessage(msg)
         }
     }
@@ -87,15 +90,16 @@ class Player(
     }
 
     private suspend fun onObjectClick(msg: PlayerMessage.ObjectClick) {
-        logger.debug("objectClick $id")
+        logger.debug("objectClick $msg")
 
         if (contextMenu != null) {
             clearContextMenu()
         }
-        val obj = knownList.getKnownObject(id)
+        // знаем ли мы объект по которому шлет клик клиент
+        val obj = knownList.getKnownObject(msg.id)
         if (obj != null) {
             // если дистанция между объектом и местом клика меньше порога - считаем что попали в объект
-            if (obj.pos.point.dist(Vec2i(msg.x, msg.y)) < 10) {
+            if (obj.pos.point.dist(Vec2i(msg.x, msg.y)) < 8) {
                 // пока просто движемся к объекту
                 goAndOpenObject(obj)
             } else if (hand == null) {
@@ -111,13 +115,66 @@ class Player(
         val (mx, my) = myRect.min(objRect)
         logger.debug("goAndOpenObject min $mx $my")
         if (mx <= OPEN_DISTANCE && my <= OPEN_DISTANCE) {
-            openObjectsList.open(obj)
+            openedObjectsList.open(obj)
         } else {
             startMove(
                 Move2Object(this, obj) {
-                    openObjectsList.open(obj)
+                    openedObjectsList.open(obj)
                 }
             )
+        }
+    }
+
+    private suspend fun onItemClick(msg: PlayerMessage.InventoryItemClick) {
+        if (contextMenu != null) clearContextMenu()
+
+        // держим в руке что-то?
+        val h = hand
+        if (h == null) {
+            // в руке ничего нет. возьмем из инвентаря
+            val taken = if (msg.inventoryId == id) {
+                inventory.takeItem(msg.id)
+            } else {
+                val obj = openedObjectsList.get(msg.inventoryId)
+                // возьмем из объекта вещь
+                obj?.sendAndWaitAck(ContainerMessage.TakeItem(this, msg.id))
+            }
+            // взяли вещь из инвентаря
+            if (taken != null) {
+                setHand(taken, msg)
+            }
+        } else {
+            // в руке ЕСТЬ вещь
+            // если попали в пустой слот
+            if (msg.id == 0L) {
+                // кликнули в мой инвентарь?
+                val success = if (msg.inventoryId == id) {
+                    inventory.putItem(h.item, msg.x - h.offsetX, msg.y - h.offsetY)
+                } else {
+                    val obj = openedObjectsList.get(msg.inventoryId)
+                    obj?.sendAndWaitAck(ContainerMessage.PutItem(h.item, msg.x - h.offsetX, msg.y - h.offsetY)) ?: false
+                }
+                if (success) {
+                    setHand(null, msg)
+                }
+            }
+        }
+    }
+
+    private suspend fun onInventoryClose(msg: PlayerMessage.InventoryClose) {
+        if (msg.id == id) {
+            session.send(InventoryClose(id))
+        } else {
+            openedObjectsList.close(msg.id)
+        }
+    }
+
+    private suspend fun onChatMessage(msg: BroadcastEvent.ChatMessage) {
+        if (msg.channel == ChatChannel.GENERAL) {
+            if (knownList.isKnownObject(msg.obj)) {
+                val title = if (msg.obj is Player) msg.obj.character.name else "unk"
+                session.send(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
+            }
         }
     }
 
@@ -167,20 +224,11 @@ class Player(
         if (isSpawned) {
             // TODO
 //            status.stopRegeneration()
-//            openObjectsList.closeAll()
+            openedObjectsList.closeAll()
             // удалить объект из грида
             remove()
         }
         save()
-    }
-
-    private suspend fun onChatMessage(msg: BroadcastEvent.ChatMessage) {
-        if (msg.channel == ChatChannel.GENERAL) {
-            if (knownList.isKnownObject(msg.obj)) {
-                val title = if (msg.obj is Player) msg.obj.character.name else "unk"
-                session.send(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
-            }
-        }
     }
 
     override suspend fun loadGrids() {
@@ -193,8 +241,29 @@ class Player(
         session.send(MapGridConfirm())
     }
 
-    private fun onObjectRightClick(id: ObjectID) {
+    /**
+     * правый клик по объекту
+     */
+    private suspend fun onObjectRightClick(id: ObjectID) {
+        logger.debug("objectRightClick $id")
+        if (hand != null) return
 
+        // если уже есть активное контекстное меню на экране
+        if (contextMenu != null) {
+            // пошлем отмену КМ
+            clearContextMenu()
+        } else {
+            // попробуем вызывать КМ у объекта
+            val obj = knownList.getKnownObject(id)
+            contextMenu = obj?.contextMenu(this)
+            if (contextMenu != null) {
+                session.send(ContextMenuData(contextMenu!!))
+            } else {
+                if (obj != null) {
+                    goAndOpenObject(obj)
+                }
+            }
+        }
     }
 
     private suspend fun setHand(item: InventoryItem?, msg: PlayerMessage.InventoryItemClick) {

@@ -245,7 +245,21 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
     abstract fun getResourcePath(): String
 
     /**
-     * дает ли коллизию этот объект с другим (в качестве парметра передаем объект который движется)
+     * игрок вызывает контекстное меню объекта
+     */
+    open fun contextMenu(p: Player): ContextMenu? {
+        return null
+    }
+
+    /**
+     * обработать выбор контекстного меню игроком
+     * выполняется в контексте ИГРОКА
+     */
+    open suspend fun processContextItem(player: Player, item: String) {
+    }
+
+    /**
+     * дает ли коллизию этот объект с другим (в качестве парметра передаем объект, который движется)
      * упрется ли движущийся объект в этот (в меня)
      */
     open fun isCollideWith(moving: GameObject): Boolean {

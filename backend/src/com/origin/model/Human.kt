@@ -3,7 +3,9 @@ package com.origin.model
 import com.origin.ObjectID
 import com.origin.TILE_SIZE
 import com.origin.config.ServerConfig
+import com.origin.move.MoveController
 import com.origin.move.MovingObject
+import com.origin.net.ObjectAdd
 import com.origin.net.ObjectMoved
 import com.origin.net.ObjectStartMove
 import com.origin.net.ObjectStopped
@@ -27,8 +29,12 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
     /**
      * список объектов которые "открыли" (есть инвентарь и надо его отобразить на клиенте)
      */
-    protected val openObjectsList by lazy { OpenObjectsList(this) }
+    protected val openedObjectsList by lazy { OpenedObjectsList(this) }
 
+    /**
+     * действие которое выполняет объект в данный момент
+     */
+    var action: Action? = null
 
     /**
      * последняя позиция в которой было обновление видимых объектов
@@ -82,6 +88,12 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
                 }
             }
 
+            is BroadcastEvent.Changed -> {
+                if (knownList.isKnownObject(msg.obj)) {
+                    if (this is Player) session.send(ObjectAdd(msg.obj))
+                }
+            }
+
             else -> super.processMessage(msg)
         }
     }
@@ -117,6 +129,22 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
     private fun isObjectVisibleForMe(obj: GameObject): Boolean {
         // себя всегда видим!
         return obj.id == this.id || pos.dist(obj.pos) < visibleDistance
+    }
+
+    suspend fun stopAction() {
+        action?.stop()
+        action = null
+    }
+
+    override suspend fun startMove(controller: MoveController) {
+        openedObjectsList.closeAll()
+        super.startMove(controller)
+        stopAction()
+    }
+
+    override suspend fun stopMove() {
+        super.stopMove()
+        updateVisibleObjects(false)
     }
 
     override suspend fun onEnterGrid(grid: Grid) {
