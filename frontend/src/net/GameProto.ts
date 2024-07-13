@@ -2,6 +2,7 @@ import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameClient from '@/net/GameClient'
 import {
   type CreatureSay,
+  type InventoryUpdate,
   type MapGridData,
   type ObjectAdd,
   type ObjectDel,
@@ -140,9 +141,20 @@ export default class GameProto {
         // ограничим максимальную длину истории чата
         const MAX_LEN = 10
         if (len > MAX_LEN) {
-          store.chatLines.splice(0, len - MAX_LEN,)
+          store.chatLines.splice(0, len - MAX_LEN)
         }
-        break;
+        break
+      }
+
+      case ServerPacket.INVENTORY_UPDATE : {
+        const pkt = <InventoryUpdate>data
+        store.setInventory(pkt)
+        break
+      }
+
+      case ServerPacket.INVENTORY_CLOSE : {
+        store.closeInventory(data.id)
+        break
       }
     }
   }

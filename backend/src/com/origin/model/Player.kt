@@ -162,6 +162,7 @@ class Player(
     }
 
     private suspend fun onInventoryClose(msg: PlayerMessage.InventoryClose) {
+        // это требование закрыть мой инвентарь?
         if (msg.id == id) {
             session.send(InventoryClose(id))
         } else {

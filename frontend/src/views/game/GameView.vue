@@ -10,13 +10,14 @@ import Render from '@/game/Render'
 import GameData from '@/net/GameData'
 import type { AuthorizeTokenResponse } from '@/net/packets'
 import Chat from '@/views/game/Chat.vue'
+import Inventory from '@/views/game/Inventory.vue'
 
 /**
  * игровой вид, рендер и весь UI для игры
  */
 export default defineComponent({
   name: 'GameView',
-  components: { GameButton, Chat },
+  components: { GameButton, Chat, Inventory },
   setup() {
     const isActive = ref(false)
     const authStore = useAuthStore()
@@ -131,6 +132,9 @@ export default defineComponent({
 
   <div v-if="isActive" class="game-ui">
     <Chat></Chat>
+
+    <!-- inventories-->
+    <inventory v-for="i in gameStore.inventories" :key="i.id" :inventory="i" />
 
     <!--  Logout  -->
     <div style="right: 0; bottom: 0; position: absolute">

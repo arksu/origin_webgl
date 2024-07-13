@@ -11,6 +11,7 @@ import type GameClient from '@/net/GameClient'
 import { ClientPacket } from '@/net/packets'
 import { getKeyFlags } from '@/util/keyboard'
 import { isButtonMiddle, isButtonPrimary } from '@/util/mouse'
+import { useGameStore } from '@/stores/gameStore'
 
 export default class Render {
 
@@ -97,6 +98,8 @@ export default class Render {
    * последние экранные координаты при нажатой ЛКМ
    */
   private lastMoveCoord ?: Point
+
+  private readonly store = useGameStore();
 
   public constructor(data: GameData) {
     console.info('pixi start')
@@ -576,6 +579,21 @@ export default class Render {
     }
   }
 
+  private toggleInventory() {
+    console.log('openInventory')
+    const selectedCharacterId = this.gameData.selectedCharacterId;
+    if (selectedCharacterId != 0) {
+      // если еще нет открытого инвентаря игрока
+      if (this.store.getInventoryById(selectedCharacterId) == undefined) {
+        this.client.send("openmyinv")
+      } else {
+        this.client.send("invclose", {
+          iid: selectedCharacterId
+        })
+      }
+    }
+  }
+
   private updateScale() {
     if (this.scale < 0.05) this.scale = 0.05
     this.updateMapScalePos()
@@ -618,8 +636,8 @@ export default class Render {
     console.log('onKeyDown:', e.key)
     switch (e.key) {
       case 'Tab':
-        // e.preventDefault()
-        // this.store.toggleInventory()
+        e.preventDefault()
+        this.toggleInventory()
         break
       case 'c':
         // e.preventDefault()

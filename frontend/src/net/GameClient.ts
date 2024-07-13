@@ -16,6 +16,7 @@ interface Request {
 }
 
 export default class GameClient {
+  public static instance?: GameClient
 
   /**
    * состояние клиента сети
@@ -32,8 +33,6 @@ export default class GameClient {
    * реализация игрового протокола
    */
   private readonly gameProto: GameProto
-
-  private readonly gameData: GameData
 
   /**
    * каждый запрос имеет свой id, увеличиваем его на 1 при каждом запросе
@@ -59,7 +58,7 @@ export default class GameClient {
     + window.location.port
     + '/api/game'
 
-  constructor(render: Render, gameData: GameData) {
+  constructor(render: Render) {
     console.warn('ws connecting...')
     this.state = State.Connecting
     this.socket = new WebSocket(GameClient.url)
@@ -68,8 +67,8 @@ export default class GameClient {
     this.socket.onclose = this.onclose.bind(this)
     this.socket.onmessage = this.onmessage.bind(this)
 
-    this.gameData = gameData
     this.gameProto = new GameProto(this, render)
+    GameClient.instance = this
   }
 
   public disconnect() {
@@ -102,6 +101,7 @@ export default class GameClient {
     console.warn('ws closed [' + ev.code + '] ' + ev.reason)
 
     this.state = State.Disconnected
+    GameClient.instance = undefined
 
     if (ev.code == 1011 && this.onError !== undefined) {
       this.onError(ev.reason)

@@ -87,6 +87,17 @@ class GameSession(
                     }
                 }
             }
+
+            OPEN_MY_INVENTORY.n -> {
+                // открывать инвентарь игрока по запросу клиента
+                player.inventory.send(player)
+            }
+
+            INVENTORY_CLOSE.n -> {
+                val inventoryId = (request.data["iid"] as Long?) ?: throw BadRequestException("wrong obj id")
+                player.send(PlayerMessage.InventoryClose(inventoryId))
+
+            }
         }
     }
 
