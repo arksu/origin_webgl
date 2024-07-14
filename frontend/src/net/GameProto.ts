@@ -2,6 +2,7 @@ import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameClient from '@/net/GameClient'
 import {
   type CreatureSay,
+  type HandData,
   type InventoryUpdate,
   type MapGridData,
   type ObjectAdd,
@@ -154,6 +155,12 @@ export default class GameProto {
 
       case ServerPacket.INVENTORY_CLOSE : {
         store.closeInventory(data.id)
+        break
+      }
+
+      case ServerPacket.PLAYER_HAND : {
+        const pkt = <HandData>data
+        store.hand = pkt.icon !== undefined ? pkt : undefined
         break
       }
     }

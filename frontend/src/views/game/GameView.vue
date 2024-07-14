@@ -11,13 +11,14 @@ import GameData from '@/net/GameData'
 import type { AuthorizeTokenResponse } from '@/net/packets'
 import Chat from '@/views/game/Chat.vue'
 import Inventory from '@/views/game/Inventory.vue'
+import Hand from '@/views/game/Hand.vue'
 
 /**
  * игровой вид, рендер и весь UI для игры
  */
 export default defineComponent({
   name: 'GameView',
-  components: { GameButton, Chat, Inventory },
+  components: { Hand, GameButton, Chat, Inventory },
   setup() {
     const isActive = ref(false)
     const authStore = useAuthStore()
@@ -60,6 +61,7 @@ export default defineComponent({
                   gameStore.client = client!!
                   isActive.value = true
                   data.selectedCharacterId = response.characterId
+                  window.addEventListener('mousemove', onMouseMove)
                   console.log('proto version', response.proto)
                 })
                 .catch((e) => {
@@ -135,6 +137,9 @@ export default defineComponent({
 
     <!-- inventories-->
     <inventory v-for="i in gameStore.inventories" :key="i.id" :inventory="i" />
+
+    <!-- player hand-->
+    <hand v-if="gameStore.hand !== undefined" :left="mouseX" :top="mouseY" :hand="gameStore.hand"/>
 
     <!--  Logout  -->
     <div style="right: 0; bottom: 0; position: absolute">
