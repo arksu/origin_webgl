@@ -113,13 +113,17 @@ export default defineComponent({
       // gameStore.craft.isOpened = !gameStore.craft.isOpened;
     }
 
+    const toggleInventory = () => {
+      render?.toggleInventory()
+    }
+
     return {
       isActive,
       mouseX,
       mouseY,
       gameStore,
       toggleCraftWindow,
-      client
+      toggleInventory
     }
   }
 })
@@ -143,6 +147,16 @@ export default defineComponent({
 
     <!--  Logout  -->
     <div style="right: 0; bottom: 0; position: absolute">
+
+      <game-button
+        tooltip="Inventory"
+        @click="toggleInventory"
+        font-color="#142628"
+        border-color="#25484B"
+        back-color="#315B5E">
+        <i class="fas fa-box"></i>
+      </game-button>
+
       <game-button
         back-color="#683E36"
         border-color="#59322C"

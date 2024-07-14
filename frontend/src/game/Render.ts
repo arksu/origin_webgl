@@ -99,7 +99,7 @@ export default class Render {
    */
   private lastMoveCoord ?: Point
 
-  private readonly store = useGameStore();
+  private readonly store = useGameStore()
 
   public constructor(data: GameData) {
     console.info('pixi start')
@@ -579,9 +579,9 @@ export default class Render {
     }
   }
 
-  private toggleInventory() {
+  toggleInventory() {
     console.log('openInventory')
-    const selectedCharacterId = this.gameData.selectedCharacterId;
+    const selectedCharacterId = this.gameData.selectedCharacterId
     if (selectedCharacterId != 0) {
       // если еще нет открытого инвентаря игрока
       if (this.store.getInventoryById(selectedCharacterId) == undefined) {
@@ -644,7 +644,7 @@ export default class Render {
         // this.store.craft.isOpened = !this.store.craft.isOpened
         break
       case 'Enter':
-        document.getElementById("inputChat")?.focus();
+        document.getElementById('inputChat')?.focus()
         break
       case 'Home':
         this.scale = 1
