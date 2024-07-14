@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GameClient from '../../net/GameClient'
-import type { InventoryUpdate, InvItem } from '@/net/packets'
+import { ClientPacket, type InventoryUpdate, type InvItem } from '@/net/packets'
 import ItemSlot from '@/views/game/ItemSlot.vue'
 import Item from '@/views/game/Item.vue'
 import Window from '@/views/game/Window.vue'
@@ -27,7 +27,7 @@ export default defineComponent({
     // клик по пустому слоту (класть вещь в инвентарь)
     const onSlotClick = (x: number, y: number, ox: number, oy: number) => {
       console.log('onSlotClick', x, y)
-      GameClient.instance?.send('itemclick', {
+      GameClient.instance?.send(ClientPacket.ITEM_CLICK, {
         id: 0, // ни в какую вещь не попали (это пустой слот)
         iid: props.inventory.id,
         x: x,
@@ -40,7 +40,7 @@ export default defineComponent({
     // клик по вещи (взять ее)
     const onItemClick = (item: InvItem, ox: number, oy: number) => {
       console.log('itemClick', item.c)
-      GameClient.instance?.send('itemclick', {
+      GameClient.instance?.send(ClientPacket.ITEM_CLICK, {
         id: item.id,
         iid: props.inventory.id,
         x: Math.floor(ox / 31),

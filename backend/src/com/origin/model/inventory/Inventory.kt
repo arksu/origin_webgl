@@ -64,6 +64,7 @@ class Inventory(private val parent: GameObject) {
             is Player -> {
                 send(parent)
             }
+
             is Container -> {
                 parent.inventoryChanged()
             }
@@ -129,11 +130,16 @@ class Inventory(private val parent: GameObject) {
         return result
     }
 
+    /**
+     * положить вещь в инвентарь
+     * попытаться положить в любое место которое свободно
+     */
     suspend fun putItem(item: InventoryItem): Boolean {
+        // перебираем все возможные координаты в инвентаре
         for (iy in 0 until getHeight()) for (ix in 0 until getWidth())
+            // пробуем положить вещь в эти координаты
             if (tryPut(item, ix, iy)) {
                 notify()
-
                 return true
             }
         return false
@@ -143,9 +149,11 @@ class Inventory(private val parent: GameObject) {
      * проверка можно ли положить вещь в этот инвентарь
      */
     private fun tryPut(item: InventoryItem, x: Int, y: Int): Boolean {
+        // проверяем что вещь влезает вообще в инвентарь по размеру
         if (x >= 0 && y >= 0 && x + item.width <= getWidth() && y + item.height <= getHeight()) {
             var conflict = false
 
+            // проверим на коллизии со всеми вещами которые лежат в инвентаре
             for (i in items.values) {
                 if (i.collide(x, y, item.width, item.height)) {
                     conflict = true

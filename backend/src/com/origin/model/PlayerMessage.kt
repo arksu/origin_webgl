@@ -10,6 +10,7 @@ sealed class PlayerMessage {
     class ObjectClick(val id: ObjectID, val flags: Int, val x: Int, val y: Int)
     class ObjectRightClick(val id: ObjectID)
     class InventoryClose(val id: ObjectID)
+    class ChatMessage(val text: String)
 
     // игрок кликнул по вещи в инвентаре
     class InventoryItemClick(val id: ObjectID, val inventoryId: ObjectID, val x: Int, val y: Int, val ox: Int, val oy: Int)

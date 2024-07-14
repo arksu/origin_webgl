@@ -59,6 +59,7 @@ class Player(
             is BroadcastEvent.ChatMessage -> onChatMessage(msg)
             is PlayerMessage.InventoryItemClick -> onItemClick(msg)
             is PlayerMessage.InventoryClose -> onInventoryClose(msg)
+            is PlayerMessage.ChatMessage -> onClientChatMessage(msg)
             else -> super.processMessage(msg)
         }
     }
@@ -167,6 +168,15 @@ class Player(
             session.send(InventoryClose(id))
         } else {
             openedObjectsList.close(msg.id)
+        }
+    }
+
+    private suspend fun onClientChatMessage(msg: PlayerMessage.ChatMessage) {
+        if (msg.text.startsWith("/")) {
+            // удаляем слеш в начале строки и заускаем на выполнение
+            PlayerCommands.runCommand(this, msg.text.substring(1))
+        } else {
+            getGridSafety().broadcast(BroadcastEvent.ChatMessage(this, ChatChannel.GENERAL, msg.text))
         }
     }
 

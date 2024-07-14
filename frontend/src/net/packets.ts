@@ -4,6 +4,10 @@ export enum ClientPacket {
   OBJECT_CLICK = 'oc',
   OBJECT_RIGHT_CLICK = 'orc',
   MAP_CLICK = 'mc',
+  CHAT = 'chat',
+  OPEN_MY_INVENTORY = 'openmyinv',
+  INVENTORY_CLOSE = 'invclose',
+  ITEM_CLICK = 'itemclick',
 }
 
 export enum ServerPacket {

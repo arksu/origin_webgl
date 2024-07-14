@@ -371,7 +371,7 @@ class Grid(
         // запускаем генерацию объекта в корутине
         // вот тут просиходит ай-ай-ай мы в отдельном потоке запускаем генерацию объектов
         WorkerScope.launch {
-            val record = ObjectsFactory.create(type, pos)
+            val record = ObjectsFactory.createAndInsert(type, pos)
             val obj = ObjectsFactory.constructByRecord(record)
 
             obj.setGrid(this@Grid)

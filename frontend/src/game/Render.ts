@@ -585,9 +585,9 @@ export default class Render {
     if (selectedCharacterId != 0) {
       // если еще нет открытого инвентаря игрока
       if (this.store.getInventoryById(selectedCharacterId) == undefined) {
-        this.client.send("openmyinv")
+        this.client.send(ClientPacket.OPEN_MY_INVENTORY)
       } else {
-        this.client.send("invclose", {
+        this.client.send(ClientPacket.INVENTORY_CLOSE, {
           iid: selectedCharacterId
         })
       }

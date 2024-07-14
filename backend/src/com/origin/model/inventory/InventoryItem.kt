@@ -17,27 +17,35 @@ class InventoryItem(val record: InventoryRecord) {
     val height get() = type.height
     val icon get() = type.icon
 
-    val x: Int = record.x
-
-    val y: Int = record.y
-
-    val q: Short = record.quality
+    val x: Int get() = record.x
+    val y: Int get() = record.y
+    val q: Short get() = record.quality
 
     /**
      * инвентарь кладет эту вещь в себя
      */
     fun inventoryPutTo(inv: Inventory, x: Int, y: Int) {
+        val oldInventoryId = record.inventoryId
         record.inventoryId = inv.id
         record.x = x
         record.y = y
 
-        DatabaseConfig.dsl
-            .update(INVENTORY)
-            .set(INVENTORY.INVENTORY_ID, record.inventoryId)
-            .set(INVENTORY.X, record.x)
-            .set(INVENTORY.Y, record.y)
-            .where(INVENTORY.ID.eq(record.id))
-            .execute()
+        // если не был указан ид инвентаря - значит это спавн вещи. и надо ее вставить в таблицу,
+        // иначе просто обновляем данные по вещи
+        if (oldInventoryId == -1L) {
+            DatabaseConfig.dsl
+                .insertInto(INVENTORY)
+                .set(record)
+                .execute()
+        } else {
+            DatabaseConfig.dsl
+                .update(INVENTORY)
+                .set(INVENTORY.INVENTORY_ID, record.inventoryId)
+                .set(INVENTORY.X, record.x)
+                .set(INVENTORY.Y, record.y)
+                .where(INVENTORY.ID.eq(record.id))
+                .execute()
+        }
     }
 
     fun setXY(x: Int, y: Int) {

@@ -30,6 +30,7 @@ enum class ClientPacket(val n: String) {
     CHAT("chat"),
     OPEN_MY_INVENTORY("openmyinv"),
     INVENTORY_CLOSE("invclose"),
+    ITEM_CLICK("itemclick"),
 }
 
 enum class ServerPacket(val n: String) {

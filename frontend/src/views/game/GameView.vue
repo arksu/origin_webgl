@@ -42,7 +42,7 @@ export default defineComponent({
         // подключаемся к вебсокету на игровом сервере
         const data = new GameData()
         render = new Render(data)
-        client = new GameClient(render, data)
+        client = new GameClient(render)
         render.client = client
 
         client.onConnect = () => {

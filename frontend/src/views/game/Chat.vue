@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
+import { ClientPacket } from '@/net/packets'
 
 export default defineComponent({
   name: 'Chat',
@@ -30,7 +31,7 @@ export default defineComponent({
       if (chatText.value.length > 0) {
         console.log('chat submit', chatText.value)
         console.log(store.client)
-        store.client!.send('chat', {
+        store.client!.send(ClientPacket.CHAT, {
           text: chatText.value
         })
         store.chatHistory.push(chatText.value)

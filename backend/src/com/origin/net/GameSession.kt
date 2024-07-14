@@ -7,7 +7,6 @@ import com.origin.error.BadRequestException
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHAT_HISTORY
-import com.origin.model.BroadcastEvent
 import com.origin.model.GameObjectMessage
 import com.origin.model.Player
 import com.origin.model.PlayerMessage
@@ -67,6 +66,7 @@ class GameSession(
             CHAT.n -> {
                 val text = (request.data["text"] as String?) ?: throw BadRequestException("no text")
                 if (text.isNotEmpty()) {
+                    // обрежем текст до длины поля в бд
                     val trimmed = text.trim()
                     val t = if (trimmed.length > 1020) trimmed.substring(0, 1020) else trimmed
                     runBlocking {
@@ -79,12 +79,7 @@ class GameSession(
                             .set(CHAT_HISTORY.Y, player.pos.y.toLong())
                             .execute()
                     }
-                    if (t.startsWith("/")) {
-                        // удаляем слеш в начале строки и заускаем на выполнение
-//                        player.consoleCommand(text.substring(1))
-                    } else {
-                        player.getGridSafety().broadcast(BroadcastEvent.ChatMessage(player, ChatChannel.GENERAL, t))
-                    }
+                    player.send(PlayerMessage.ChatMessage(t))
                 }
             }
 
@@ -97,6 +92,16 @@ class GameSession(
                 val inventoryId = (request.data["iid"] as Long?) ?: throw BadRequestException("wrong obj id")
                 player.send(PlayerMessage.InventoryClose(inventoryId))
 
+            }
+
+            ITEM_CLICK.n -> {
+                val id = (request.data["id"] as Long?) ?: throw BadRequestException("wrong obj id")
+                val inventoryId = (request.data["iid"] as Long?) ?: throw BadRequestException("wrong obj id")
+                val x = (request.data["x"] as Long?) ?: throw BadRequestException("wrong coord x")
+                val y = (request.data["y"] as Long?) ?: throw BadRequestException("wrong coord y")
+                val ox = (request.data["ox"] as Long?) ?: throw BadRequestException("wrong coord ox")
+                val oy = (request.data["oy"] as Long?) ?: throw BadRequestException("wrong coord oy")
+                player.send(PlayerMessage.InventoryItemClick(id, inventoryId, x.toInt(), y.toInt(), ox.toInt(), oy.toInt()))
             }
         }
     }

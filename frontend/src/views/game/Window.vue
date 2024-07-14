@@ -123,10 +123,10 @@ export default defineComponent({
     </div>
 
     <div class="close-btn-back">
-      <img alt="" src="../../../assets/img/window_close.png">
+      <img alt="" src="/assets/img/window_close.png">
     </div>
 
-    <div class="header" @touchstart.prevent="onTouchStart" @mousedown.prevent="onMouseDown">
+    <div class="header" @touchstart.prevent.passive="onTouchStart" @mousedown.prevent="onMouseDown">
       <div class="title">
         <span class="title-text">
           {{ title }}
@@ -161,7 +161,7 @@ export default defineComponent({
   border-right: 18px solid transparent;
   border-top: 0 solid transparent;
   border-bottom: 0 solid transparent;
-  border-image: url('../../../assets/img/window_title.png') 0 30% 0 30% fill / 0 18px 0 18px;
+  border-image: url('/assets/img/window_title.png') 0 30% 0 30% fill / 0 18px 0 18px;
   position: relative;
   height: 22px;
   display: inline-block;
@@ -179,7 +179,7 @@ export default defineComponent({
   height: 100%;
   top: 7px;
   border-width: 0;
-  border-image: url('../../../assets/img/window_frame.png') 34% fill / 8px repeat repeat;
+  border-image: url('/assets/img/window_frame.png') 34% fill / 8px repeat repeat;
 }
 
 .content {
@@ -220,6 +220,6 @@ export default defineComponent({
 }
 
 .close-btn:hover {
-  background-image: url('../../../assets/img/btn_close_hover.png');
+  background-image: url('/assets/img/btn_close_hover.png');
 }
 </style>
