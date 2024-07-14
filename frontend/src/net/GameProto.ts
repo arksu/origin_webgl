@@ -1,6 +1,7 @@
 import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameClient from '@/net/GameClient'
 import {
+  type ContextMenuData,
   type CreatureSay,
   type HandData,
   type InventoryUpdate,
@@ -125,6 +126,20 @@ export default class GameProto {
 
         if (this.gameData.selectedCharacterId == pkt.id) {
           this.render.updateMapScalePos()
+        }
+        break
+      }
+
+      case ServerPacket.CONTEXT_MENU : {
+        const pkt = <ContextMenuData>data
+        const obj = gameData.objects[pkt.id]
+        if (obj !== undefined) {
+          const sc = this.render.coordGame2ScreenAbs(obj.x, obj.y)
+          pkt.x = sc[0]
+          pkt.y = sc[1]
+          store.contextMenu = pkt
+        } else {
+          store.contextMenu = undefined
         }
         break
       }

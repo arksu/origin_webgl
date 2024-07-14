@@ -94,9 +94,13 @@ export interface ObjectStopped {
 }
 
 export interface ContextMenuData {
+  // ид объекта
   readonly id: number
+  // список действий
   readonly l: string[]
-  obj: GameObject
+
+  x : number
+  y : number
 }
 
 export interface ActionProgressData {

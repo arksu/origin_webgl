@@ -31,6 +31,7 @@ enum class ClientPacket(val n: String) {
     OPEN_MY_INVENTORY("openmyinv"),
     INVENTORY_CLOSE("invclose"),
     ITEM_CLICK("itemclick"),
+    CONTEXT_MENU_SELECT("cmselect")
 }
 
 enum class ServerPacket(val n: String) {

@@ -12,6 +12,7 @@ import { ClientPacket } from '@/net/packets'
 import { getKeyFlags } from '@/util/keyboard'
 import { isButtonMiddle, isButtonPrimary } from '@/util/mouse'
 import { useGameStore } from '@/stores/gameStore'
+import type Coord from '@/util/Coord'
 
 export default class Render {
 
@@ -403,6 +404,23 @@ export default class Render {
       .mul(Tile.TILE_SIZE)
       .incValue(px, py)
       .round()
+  }
+
+  public coordGame2ScreenAbs(x: number, y: number): Coord {
+    const {sx, sy} = this.getPlayerCoord();
+
+    const cx = x / Tile.TILE_SIZE;
+    const cy = y / Tile.TILE_SIZE;
+    const ax = cx * Tile.TILE_WIDTH_HALF - cy * Tile.TILE_WIDTH_HALF
+    const ay = cx * Tile.TILE_HEIGHT_HALF + cy * Tile.TILE_HEIGHT_HALF
+
+
+    // центр экрана с учетом отступа перетаскиванием
+    const offsetX = this.app.renderer.width / 2 + this.offset.x;
+    const offsetY = this.app.renderer.height / 2 + this.offset.y;
+    console.log("coord", ax, ay)
+    console.log("offx=" + offsetX + " offy=" + offsetY)
+    return [offsetX - (sx - ax) * this.scale, offsetY - (sy - ay) * this.scale]
   }
 
   public updateMapScalePos() {

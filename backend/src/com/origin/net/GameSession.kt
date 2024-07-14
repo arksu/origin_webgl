@@ -103,6 +103,10 @@ class GameSession(
                 val oy = (request.data["oy"] as Long?) ?: throw BadRequestException("wrong coord oy")
                 player.send(PlayerMessage.InventoryItemClick(id, inventoryId, x.toInt(), y.toInt(), ox.toInt(), oy.toInt()))
             }
+
+            CONTEXT_MENU_SELECT.n -> {
+
+            }
         }
     }
 

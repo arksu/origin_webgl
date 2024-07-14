@@ -12,13 +12,14 @@ import type { AuthorizeTokenResponse } from '@/net/packets'
 import Chat from '@/views/game/Chat.vue'
 import Inventory from '@/views/game/Inventory.vue'
 import Hand from '@/views/game/Hand.vue'
+import ContextMenu from '@/views/game/ContextMenu.vue'
 
 /**
  * игровой вид, рендер и весь UI для игры
  */
 export default defineComponent({
   name: 'GameView',
-  components: { Hand, GameButton, Chat, Inventory },
+  components: { ContextMenu, Hand, GameButton, Chat, Inventory },
   setup() {
     const isActive = ref(false)
     const authStore = useAuthStore()
@@ -138,6 +139,8 @@ export default defineComponent({
 
   <div v-if="isActive" class="game-ui">
     <Chat></Chat>
+
+    <context-menu  :x="mouseX" :y="mouseY"></context-menu>
 
     <!-- inventories-->
     <inventory v-for="i in gameStore.inventories" :key="i.id" :inventory="i" />
