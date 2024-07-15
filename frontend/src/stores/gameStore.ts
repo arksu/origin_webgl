@@ -11,6 +11,8 @@ export const useGameStore = defineStore('game', {
     chatHistory: [] as string[],
 
     contextMenu: undefined as ContextMenuData | undefined,
+    contextMenuPosX : 0 as number,
+    contextMenuPosY : 0 as number,
     inventories: [] as InventoryUpdate[],
     hand: undefined as HandData | undefined,
   }),

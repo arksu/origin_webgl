@@ -16,6 +16,7 @@ import Render from '@/game/Render'
 import type GameData from '@/net/GameData'
 import MoveController from '@/game/MoveController'
 import { type ChatItem, useGameStore } from '@/stores/gameStore'
+import { mouse } from '@/game/Mouse'
 
 /**
  * реализация игрового протокола
@@ -134,9 +135,9 @@ export default class GameProto {
         const pkt = <ContextMenuData>data
         const obj = gameData.objects[pkt.id]
         if (obj !== undefined) {
-          const sc = this.render.coordGame2ScreenAbs(obj.x, obj.y)
-          pkt.x = sc[0]
-          pkt.y = sc[1]
+          // const sc = this.render.coordGame2ScreenAbs(obj.x, obj.y)
+          store.contextMenuPosX = mouse.x
+          store.contextMenuPosY = mouse.y
           store.contextMenu = pkt
         } else {
           store.contextMenu = undefined

@@ -1,38 +1,17 @@
 <script lang="ts" setup>
 import ContextMenuButton from '@/views/game/ContextMenuButton.vue'
 import { useGameStore } from '@/stores/gameStore'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed } from 'vue'
 
-const props = defineProps<{
-  x: number,
-  y: number,
-}>()
-
-const posX = ref(props.x)
-const posY = ref(props.y)
-
-onMounted(() => {
-})
+const posX = computed(() => store.contextMenuPosX)
+const posY = computed(() => store.contextMenuPosY)
 
 const store = useGameStore()
 
-const initial = () => {
-  return [
-    'take',
-    'take',
-    'take',
-    'some'
-  ]
-}
-
-const list = ref<string[]>([])
-
-onMounted(() => {
-  list.value = store.contextMenu?.l || []
-})
+const list = computed(() => store.contextMenu?.l || [])
 
 const getButtonStyle = (idx: number) => {
-  let radius1 = 50 +list.value.length * 10
+  let radius1 = 50 + list.value.length * 10
   let radius2 = 55
   let radius3 = 45
   const offset = list.value.length * 0.3
@@ -40,13 +19,15 @@ const getButtonStyle = (idx: number) => {
   let angle2 = (idx / list.value.length) * Math.PI - offset - 0.72
   let angle3 = (idx / list.value.length) * Math.PI - offset - 1.9
 
-  const x1 = Math.cos(angle1) * radius1
-  const y1 = Math.sin(angle1) * radius1
+  const xOffset = 50
+  const yOffset = 30
 
-  const x2 = Math.cos(angle2) * radius2
-  const y2 = Math.sin(angle2) * radius2
-  const x3 = Math.cos(angle3) * radius3
-  const y3 = Math.sin(angle3) * radius3
+  const x1 = Math.cos(angle1) * radius1 - xOffset
+  const y1 = Math.sin(angle1) * radius1 - yOffset
+  const x2 = Math.cos(angle2) * radius2 - xOffset
+  const y2 = Math.sin(angle2) * radius2 - yOffset
+  const x3 = Math.cos(angle3) * radius3 - xOffset
+  const y3 = Math.sin(angle3) * radius3 - yOffset
 
 
   return {
@@ -59,19 +40,9 @@ const getButtonStyle = (idx: number) => {
   }
 }
 
-const onClear = () => {
-  console.log('onClear')
-  if (list.value.length > 0) {
-    list.value = []
-  } else {
-    list.value = initial()
-  }
-}
-
 </script>
 
 <template>
-  <button class="clear-button" @click.prevent="onClear">clear</button>
   <transition-group :style="{left: posX+'px', top: posY+'px'}" class="context-menu-container" name="spiral" tag="div">
     <context-menu-button
       v-for="(c, idx) in list"
@@ -91,23 +62,15 @@ const onClear = () => {
 
 .context-menu-container {
   pointer-events: auto;
-  //width: 300px;
-  //height: 300px;
-  //background: #1a4f72;
   opacity: 1;
   position: relative;
 }
 
 .action-button {
   position: absolute;
-  //transition: transform 0.5s ease, opacity 0.5s ease;
   transform: translate(var(--x1), var(--y1));
-  //opacity: 1;
   animation-duration: 0.4s;
-  //animation-name: cm-move;
   animation-direction: alternate;
-  //animation-fill-mode: both;
-  //animation-timing-function: ease-in-out;
   animation-timing-function: linear;
 }
 

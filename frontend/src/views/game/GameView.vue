@@ -13,6 +13,7 @@ import Chat from '@/views/game/Chat.vue'
 import Inventory from '@/views/game/Inventory.vue'
 import Hand from '@/views/game/Hand.vue'
 import ContextMenu from '@/views/game/ContextMenu.vue'
+import { mouse } from '@/game/Mouse'
 
 /**
  * игровой вид, рендер и весь UI для игры
@@ -34,6 +35,8 @@ export default defineComponent({
     const onMouseMove = (e: MouseEvent) => {
       mouseX.value = e.clientX
       mouseY.value = e.clientY
+      mouse.x = e.clientX
+      mouse.y = e.clientY
     }
 
     onMounted(() => {
@@ -140,7 +143,7 @@ export default defineComponent({
   <div v-if="isActive" class="game-ui">
     <Chat></Chat>
 
-    <context-menu v-if="gameStore.contextMenu !== undefined" :x="mouseX" :y="mouseY"></context-menu>
+    <context-menu></context-menu>
 
     <!-- inventories-->
     <inventory v-for="i in gameStore.inventories" :key="i.id" :inventory="i" />

@@ -105,7 +105,8 @@ class GameSession(
             }
 
             CONTEXT_MENU_SELECT.n -> {
-
+                val item = (request.data["item"] as String?) ?: throw BadRequestException("no item")
+                player.send(PlayerMessage.ContextMenuItem(item))
             }
         }
     }

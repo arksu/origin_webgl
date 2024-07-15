@@ -5,6 +5,7 @@ import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.StaticObject
 import com.origin.model.inventory.Inventory
+import com.origin.model.inventory.ItemType
 import com.origin.util.Rect
 
 abstract class Tree(record: ObjectRecord) : StaticObject(record) {
@@ -27,7 +28,7 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
 
     override suspend fun processContextItem(player: Player, item: String) {
         logger.debug("processContextItem $player $item")
-//        when (item) {
+        when (item) {
 //            "Chop" -> {
 //                player.startActionCyclic(
 //                    this, 3, getMaxHP() - this.entity.hp, getMaxHP(),
@@ -59,14 +60,14 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
 //                    done
 //                }
 //            }
-//            "Take branch" -> {
-//                player.startActionOnce(
-//                    this, 2, 21,
-//                    // возьмем у игрока часть стамины
+            "Take branch" -> {
+                player.startActionOnce(
+                    this, 2, 21,
+                    // возьмем у игрока часть стамины
 //                    Status.reduceStamina(1.0),
-//                    Action.generateItems(ItemType.BRANCH)
-//                )
-//            }
+                    Action.generateItems(ItemType.BRANCH)
+                )
+            }
 //            "Take bark" -> {
 //                player.startActionOnce(
 //                    this, 2, 2,
@@ -75,6 +76,6 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
 //                    Action.generateItems(ItemType.BARK)
 //                )
 //            }
-//        }
+        }
     }
 }

@@ -60,6 +60,7 @@ class Player(
             is PlayerMessage.InventoryItemClick -> onItemClick(msg)
             is PlayerMessage.InventoryClose -> onInventoryClose(msg)
             is PlayerMessage.ChatMessage -> onClientChatMessage(msg)
+            is PlayerMessage.ContextMenuItem -> onContextMenuItem(msg)
             else -> super.processMessage(msg)
         }
     }
@@ -187,6 +188,14 @@ class Player(
                 session.send(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
             }
         }
+    }
+
+    /**
+     * выбран пункт контекстного меню объекта
+     */
+    private suspend fun onContextMenuItem(msg: PlayerMessage.ContextMenuItem) {
+        contextMenu?.processItem(this, msg.item)
+        contextMenu = null
     }
 
     /**

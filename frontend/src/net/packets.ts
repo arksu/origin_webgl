@@ -8,6 +8,7 @@ export enum ClientPacket {
   OPEN_MY_INVENTORY = 'openmyinv',
   INVENTORY_CLOSE = 'invclose',
   ITEM_CLICK = 'itemclick',
+  CONTEXT_MENU_SELECT = 'cmselect'
 }
 
 export enum ServerPacket {
@@ -98,9 +99,6 @@ export interface ContextMenuData {
   readonly id: number
   // список действий
   readonly l: string[]
-
-  x : number
-  y : number
 }
 
 export interface ActionProgressData {
