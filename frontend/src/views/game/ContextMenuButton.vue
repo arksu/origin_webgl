@@ -13,7 +13,10 @@ const props = defineProps<{
 
 <style scoped lang="scss">
 .context-menu-button {
-  position: relative;
-  left: 20px;
+  padding: 5px;
+  color: #A8B087;
+  border: 2px solid #9F935D;
+  border-radius: 5px;
+  background-color: #363E19;
 }
 </style>

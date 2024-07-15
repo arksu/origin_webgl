@@ -140,7 +140,7 @@ export default defineComponent({
   <div v-if="isActive" class="game-ui">
     <Chat></Chat>
 
-    <context-menu  :x="mouseX" :y="mouseY"></context-menu>
+    <context-menu v-if="gameStore.contextMenu !== undefined" :x="mouseX" :y="mouseY"></context-menu>
 
     <!-- inventories-->
     <inventory v-for="i in gameStore.inventories" :key="i.id" :inventory="i" />
