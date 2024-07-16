@@ -116,6 +116,7 @@ class Player(
         val objRect = obj.getBoundRect().clone().move(obj.pos.point)
         val (mx, my) = myRect.min(objRect)
         logger.debug("goAndOpenObject min $mx $my")
+        // TODO : проверка hand - положить вещь в инвентарь, или наполнить его (дрова, вода и тд)
         if (mx <= OPEN_DISTANCE && my <= OPEN_DISTANCE) {
             openedObjectsList.open(obj)
         } else {
@@ -188,14 +189,6 @@ class Player(
                 session.send(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
             }
         }
-    }
-
-    /**
-     * выбран пункт контекстного меню объекта
-     */
-    private suspend fun onContextMenuItem(msg: PlayerMessage.ContextMenuItem) {
-        contextMenu?.processItem(this, msg.item)
-        contextMenu = null
     }
 
     /**
@@ -275,7 +268,8 @@ class Player(
         } else {
             // попробуем вызывать КМ у объекта
             val obj = knownList.getKnownObject(id)
-            contextMenu = obj?.contextMenu(this)
+            contextMenu = obj?.openContextMenu(this)
+            // если у объекта есть контекстное меню
             if (contextMenu != null) {
                 session.send(ContextMenuData(contextMenu!!))
             } else {
@@ -284,6 +278,19 @@ class Player(
                 }
             }
         }
+    }
+
+    /**
+     * выбран пункт контекстного меню объекта
+     */
+    private suspend fun onContextMenuItem(msg: PlayerMessage.ContextMenuItem) {
+        contextMenu?.processItem(this, msg.item)
+        clearContextMenu()
+    }
+
+    private suspend fun clearContextMenu() {
+        session.send(ContextMenuData(null))
+        contextMenu = null
     }
 
     private suspend fun setHand(item: InventoryItem?, msg: PlayerMessage.InventoryItemClick) {
@@ -295,19 +302,6 @@ class Player(
             session.send(HandUpdate())
             null
         }
-    }
-
-    /**
-     * вырбан пункт контекстного меню
-     */
-    private suspend fun contextMenuItem(item: String) {
-        contextMenu?.processItem(this, item)
-        contextMenu = null
-    }
-
-    private suspend fun clearContextMenu() {
-        session.send(ContextMenuData(null))
-        contextMenu = null
     }
 
     /**

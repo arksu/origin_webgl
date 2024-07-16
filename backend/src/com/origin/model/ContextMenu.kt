@@ -20,7 +20,7 @@ class ContextMenu(val obj: GameObject, vararg i: String) {
             player.startMove(
                 Move2Object(player, obj) {
                     // и потом запустить само действие
-                    obj.processContextItem(player, item)
+                    obj.executeContextMenuItem(player, item)
                 }
             )
         }

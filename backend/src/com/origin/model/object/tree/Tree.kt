@@ -4,8 +4,8 @@ import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.StaticObject
+import com.origin.model.action.ChopTree
 import com.origin.model.inventory.Inventory
-import com.origin.model.inventory.ItemType
 import com.origin.util.Rect
 
 abstract class Tree(record: ObjectRecord) : StaticObject(record) {
@@ -22,14 +22,15 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
         return Rect(6)
     }
 
-    override fun contextMenu(p: Player): ContextMenu {
+    override fun openContextMenu(p: Player): ContextMenu {
         return ContextMenu(this, "Chop", "Take branch", "Take bark")
     }
 
-    override suspend fun processContextItem(player: Player, item: String) {
+    override suspend fun executeContextMenuItem(player: Player, item: String) {
         logger.debug("processContextItem $player $item")
         when (item) {
-//            "Chop" -> {
+            "Chop" -> {
+                player.action = ChopTree(this)
 //                player.startActionCyclic(
 //                    this, 3, getMaxHP() - this.entity.hp, getMaxHP(),
 //                    Status.reduceStamina(4.0)
@@ -59,14 +60,15 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
 //                    }
 //                    done
 //                }
-//            }
+            }
+
             "Take branch" -> {
-                player.startActionOnce(
-                    this, 2, 21,
-                    // возьмем у игрока часть стамины
-//                    Status.reduceStamina(1.0),
-                    Action.generateItems(ItemType.BRANCH)
-                )
+//                player.startActionOnce(
+//                    this, 2, 21,
+//                    // возьмем у игрока часть стамины
+////                    Status.reduceStamina(1.0),
+//                    Action.generateItems(ItemType.BRANCH)
+//                )
             }
 //            "Take bark" -> {
 //                player.startActionOnce(

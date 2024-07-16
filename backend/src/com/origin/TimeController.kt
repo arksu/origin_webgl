@@ -23,8 +23,10 @@ object TimeController : Thread("TimeController") {
 
     /**
      * игровых тиков в реальной секунде (на передвижение)
+     * должно делится на цело 1000 / TICKS_PER_SECOND
+     * 4, 5, 8, 10
      */
-    private const val TICKS_PER_SECOND = 4
+    private const val TICKS_PER_SECOND = 5
 
     /**
      * период обновления гридов и объектов в них (в тиках)

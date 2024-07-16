@@ -80,6 +80,10 @@ const getButtonStyle = () => {
     transform: translate(-40px, -30px);
     opacity: 0;
   }
+  50% {
+    transform: translate(-40px, -30px);
+    opacity: 1;
+  }
   0% {
     transform: translate(var(--x1), var(--y1));
     opacity: 1;

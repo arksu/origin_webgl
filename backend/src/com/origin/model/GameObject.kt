@@ -246,8 +246,10 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
 
     /**
      * игрок вызывает контекстное меню объекта
+     * выполняется в контексте ИГРОКА
      */
-    open fun contextMenu(p: Player): ContextMenu? {
+    open fun openContextMenu(p: Player): ContextMenu? {
+        // по дефолту у объектов нет контекстного меню
         return null
     }
 
@@ -255,7 +257,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
      * обработать выбор контекстного меню игроком
      * выполняется в контексте ИГРОКА
      */
-    open suspend fun processContextItem(player: Player, item: String) {
+    open suspend fun executeContextMenuItem(player: Player, item: String) {
     }
 
     /**

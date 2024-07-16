@@ -3,6 +3,7 @@ package com.origin.model
 import com.origin.ObjectID
 import com.origin.TILE_SIZE
 import com.origin.config.ServerConfig
+import com.origin.model.action.Action
 import com.origin.move.MoveController
 import com.origin.move.MovingObject
 import com.origin.net.ObjectAdd
@@ -93,6 +94,8 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
                     if (this is Player) session.send(ObjectAdd(msg.obj))
                 }
             }
+
+            is HumanMessage.StopAction -> stopAction()
 
             else -> super.processMessage(msg)
         }
