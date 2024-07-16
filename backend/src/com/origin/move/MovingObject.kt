@@ -190,9 +190,10 @@ abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, 
     fun getMovementSpeed(): Double {
         // TODO : смотреть тайл, если мощеный камень - увеличиваем скорость
         val s = when (getMovementMode()) {
-            MoveMode.STEAL -> 25.0
-            MoveMode.WALK -> 62.0
-            MoveMode.RUN -> 800.0
+            MoveMode.CRAWL -> 18.0 // 1.5 tiles per sec
+            MoveMode.WALK -> 36.0 // 3.0 tiles per sec
+            MoveMode.RUN -> 54.0 // 4.5 tiles per sec
+            MoveMode.SPRINT -> 72.0 // 6.0 tiles per sec
         }
         // по воде движемся в 2 раза медленее
         return if (getMovementType() == MoveType.SWIMMING) s / 2 else s

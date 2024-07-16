@@ -73,7 +73,7 @@ abstract class Container(record: ObjectRecord) : StaticObject(record) {
         discoverers.forEach {
             val p = it.value
             if (p is Player) {
-                inventory.send(p)
+                inventory.sendInventory(p)
             }
         }
     }

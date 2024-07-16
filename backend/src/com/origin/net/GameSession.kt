@@ -39,7 +39,7 @@ class GameSession(
 
 
     suspend fun process(request: GameRequestDTO) {
-        logger.debug("client request {}", request)
+//        logger.debug("client request {}", request)
 
         when (request.target) {
             MAP_CLICK.n -> {
@@ -85,7 +85,7 @@ class GameSession(
 
             OPEN_MY_INVENTORY.n -> {
                 // открывать инвентарь игрока по запросу клиента
-                player.inventory.send(player)
+                player.inventory.sendInventory(player)
             }
 
             INVENTORY_CLOSE.n -> {

@@ -6,7 +6,8 @@ package com.origin.util
 
 import kotlinx.coroutines.*
 
-val WorkerScope = GlobalScope
+//val WorkerScope = GlobalScope
+val WorkerScope = CoroutineScope(Dispatchers.Default)
 
 /**
  * каким диспатчером обрабатываем очереди акторов

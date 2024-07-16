@@ -23,6 +23,10 @@ create table if not exists `character`
     level       int          not null comment 'уровень (слой) глубины где находится объект',
     heading     tinyint      not null comment 'угол поворота, то куда смотрит объект',
 
+    stamina     int          not null,
+    shp         int          not null,
+    hhp         int          not null,
+
     deleted     bool         not null default false,
     online_time bigint       not null default 0,
     created     datetime     not null default current_timestamp,

@@ -76,7 +76,7 @@ object TimeController : Thread("TimeController") {
     /**
      * сколько длится тик для игрового действия
      */
-    const val GAME_ACTION_PERIOD = 250L
+    const val GAME_ACTION_PERIOD = 100L
 
     /**
      * период в тиках между сохранением значения времени в базу

@@ -24,7 +24,7 @@ class Player(
     /**
      * персонаж игрока (сущность хранимая в БД)
      */
-    private val character: CharacterRecord, val session: GameSession
+    val character: CharacterRecord, val session: GameSession
 ) : Human(
     character.id, ObjectPosition(
         initX = character.x,
@@ -48,6 +48,8 @@ class Player(
      * контекстное меню активное в данный момент
      */
     private var contextMenu: ContextMenu? = null
+
+    override val status: PlayerStatus = PlayerStatus(this)
 
     override suspend fun processMessage(msg: Any) {
         when (msg) {
@@ -345,6 +347,10 @@ class Player(
 
     override fun getResourcePath(): String {
         return "player"
+    }
+
+    override fun getMaxStamina(): Int {
+        return 1000
     }
 
     override fun broadcastStatusUpdate() {

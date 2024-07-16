@@ -100,6 +100,9 @@ fun Route.characters(dsl: DSLContext) {
                     .set(CHARACTER.REGION, 0)
                     .set(CHARACTER.LEVEL, 0)
                     .set(CHARACTER.HEADING, 0)
+                    .set(CHARACTER.STAMINA, 1000)
+                    .set(CHARACTER.SHP, 100)
+                    .set(CHARACTER.HHP, 100)
                     .returning()
                     .fetchSingle()
 

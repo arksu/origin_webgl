@@ -186,10 +186,10 @@ export default class Render {
     console.log(this.app.renderer)
 
     this.screenContainer.onmousedown = (e: FederatedPointerEvent) => {
-      this.onMouseDown(e)
+      // this.onMouseDown(e)
     }
     this.screenContainer.onmouseup = (e: FederatedPointerEvent) => {
-      this.onMouseUp(e)
+      // this.onMouseUp(e)
     }
     this.screenContainer.onmousemove = (e: FederatedPointerEvent) => {
       this.onMouseMove(e)

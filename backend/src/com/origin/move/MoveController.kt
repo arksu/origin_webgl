@@ -64,7 +64,7 @@ abstract class MoveController(val me: MovingObject) {
      */
     fun canStartMoving(): Boolean {
         // берем новую точку через 1 тик
-        // чтобы убедиться что мы можем туда передвигаться
+        // чтобы убедиться, что мы можем туда передвигаться
 //        val dist = calcDistance(0.2 / TimeController.TICKS_PER_SECOND, me.getMovementSpeed())
 
 //        logger.debug("nx=$nx ny=$ny")
@@ -90,6 +90,9 @@ abstract class MoveController(val me: MovingObject) {
         if (currentTime > lastMoveTime) {
             // узнаем сколько времени прошло между апдейтами
             val deltaTime: Double = (currentTime - lastMoveTime) / 1000.0
+            // если проходит слишком мало времени у нас дельта движения будет нулевая - и будет остановка по триггеру abs(ad) < 0.35
+            // поэтому исключаем обсчет когда прошло еще мало времени для сколь нибудь значительного передвижения
+            if (deltaTime < 0.030) return false
             lastMoveTime = currentTime
 
             // запомним тип движеня на начало обсчетов. возможно он изменится после
@@ -111,14 +114,14 @@ abstract class MoveController(val me: MovingObject) {
                 // сколько осталось до конечной точки после обсчета коллизии
                 val actualLeft = me.pos.dist(toX, toY)
                 val ad = abs(actualLeft - left)
-                logger.debug("ad =$ad left=$left actualLeft=$actualLeft")
+                logger.debug("ad=$ad left=$left actualLeft=$actualLeft")
                 when {
                     // расстояние до конечной точки при котором считаем что уже дошли куда надо
                     actualLeft <= 1.0 -> {
                         true
                     }
                     // в ходе обсчета коллизии мы сдвинулись. но сдвинулись на малое расстояние
-                    abs(actualLeft - left) < 0.35 -> {
+                    abs(ad) < 0.35 -> {
                         implementation(c, left, speed, moveType)
                     }
 

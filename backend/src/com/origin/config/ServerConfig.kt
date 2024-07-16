@@ -31,12 +31,12 @@ object ServerConfig {
     /**
      * расстояние через которое будет обновлятся позиция в базе данных при передвижении
      */
-    var UPDATE_DB_DISTANCE = TILE_SIZE * 10
+    val UPDATE_DB_DISTANCE = TILE_SIZE * 10
 
     /**
      * дистанция которую нужно пройти чтобы произошел апдейт видимых объектов
      */
-    var VISIBLE_UPDATE_DISTANCE = TILE_SIZE * 2
+    val VISIBLE_UPDATE_DISTANCE = TILE_SIZE * 2
 
     /**
      * сервер запущен в дев режиме (слежение за каталогами с графикой и др фичи)

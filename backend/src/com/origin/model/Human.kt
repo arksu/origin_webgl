@@ -37,6 +37,20 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
      */
     var action: Action? = null
 
+    abstract val status: HumanStatus
+
+    /**
+     * этот чувак мертв?
+     */
+    var isDead = false
+        private set
+
+    /**
+     * в нокауте?
+     */
+    var isKnocked = false
+        private set
+
     /**
      * последняя позиция в которой было обновление видимых объектов
      * нужно чтобы часто не обновлять список видимых (слишком накладно)
@@ -193,6 +207,8 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
             logger.warn("updateVisibleObjects $this total vis=${knownList.size()} new=$newCounter del=$delCounter")
         }
     }
+
+    abstract fun getMaxStamina(): Int
 
     /**
      * отправить в окружающее пространство информацию о своем статусе, hp, stamina и тд

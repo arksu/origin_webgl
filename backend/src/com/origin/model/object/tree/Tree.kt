@@ -5,6 +5,7 @@ import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.StaticObject
 import com.origin.model.action.ChopTree
+import com.origin.model.action.TakeBranch
 import com.origin.model.inventory.Inventory
 import com.origin.util.Rect
 
@@ -30,7 +31,7 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
         logger.debug("processContextItem $player $item")
         when (item) {
             "Chop" -> {
-                player.action = ChopTree(this)
+                player.action = ChopTree(player, this)
 //                player.startActionCyclic(
 //                    this, 3, getMaxHP() - this.entity.hp, getMaxHP(),
 //                    Status.reduceStamina(4.0)
@@ -63,6 +64,7 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
             }
 
             "Take branch" -> {
+                player.action = TakeBranch(player, this)
 //                player.startActionOnce(
 //                    this, 2, 21,
 //                    // возьмем у игрока часть стамины

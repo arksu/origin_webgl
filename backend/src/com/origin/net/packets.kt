@@ -200,8 +200,14 @@ enum class ChatChannel(val id: Int) {
 }
 
 class CreatureSay(val id: ObjectID, title: String, text: String, channel: ChatChannel) : ServerMessage(CREATURE_SAY.n) {
-
     private val ti = title
     private val t = text
     private val c = channel.id
 }
+
+class ActionProgress(
+    // current
+    val c: Int,
+    // total
+    val t: Int
+) : ServerMessage("ap")

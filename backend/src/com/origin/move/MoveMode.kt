@@ -5,11 +5,13 @@ package com.origin.move
  */
 enum class MoveMode {
     // красться
-    STEAL,
+    CRAWL,
 
     // пешком
     WALK,
 
     // бегом
     RUN,
+
+    SPRINT,
 }
