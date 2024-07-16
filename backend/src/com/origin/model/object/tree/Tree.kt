@@ -17,6 +17,16 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
      */
     var stage: Int = record.data?.toInt() ?: 6
 
+    /**
+     * сколько очков рубки надо потратить чтобы целиком срубить дерево
+     */
+    var chopPoints: Int = 1000
+
+    /**
+     * текущее число очков рубки когда рубим дерево
+     */
+    var chop: Int = 0
+
     override val inventory: Inventory? = null
 
     override fun getBoundRect(): Rect {

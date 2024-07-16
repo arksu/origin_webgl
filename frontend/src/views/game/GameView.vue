@@ -14,13 +14,14 @@ import Inventory from '@/views/game/Inventory.vue'
 import Hand from '@/views/game/Hand.vue'
 import ContextMenu from '@/views/game/ContextMenu.vue'
 import { mouse } from '@/game/Mouse'
+import ActionHourGlass from '@/views/game/ActionHourGlass.vue'
 
 /**
  * игровой вид, рендер и весь UI для игры
  */
 export default defineComponent({
   name: 'GameView',
-  components: { ContextMenu, Hand, GameButton, Chat, Inventory },
+  components: { ActionHourGlass, ContextMenu, Hand, GameButton, Chat, Inventory },
   setup() {
     const isActive = ref(false)
     const authStore = useAuthStore()
@@ -141,28 +142,29 @@ export default defineComponent({
   </div>
 
   <div v-if="isActive" class="game-ui">
-    <Chat></Chat>
-
-    <context-menu></context-menu>
+    <chat />
+    <action-hour-glass />
+    <context-menu />
 
     <!-- inventories-->
     <inventory v-for="i in gameStore.inventories" :key="i.id" :inventory="i" />
 
     <!-- player hand-->
-    <hand v-if="gameStore.hand !== undefined" :left="mouseX" :top="mouseY" :hand="gameStore.hand"/>
+    <hand v-if="gameStore.hand !== undefined" :hand="gameStore.hand" :left="mouseX" :top="mouseY" />
 
-    <!--  Logout  -->
     <div style="right: 0; bottom: 0; position: absolute">
 
+      <!--  Inventory  -->
       <game-button
-        tooltip="Inventory"
-        @click="toggleInventory"
-        font-color="#142628"
+        back-color="#315B5E"
         border-color="#25484B"
-        back-color="#315B5E">
+        font-color="#142628"
+        tooltip="Inventory"
+        @click="toggleInventory">
         <i class="fas fa-box"></i>
       </game-button>
 
+      <!--  Logout  -->
       <game-button
         back-color="#683E36"
         border-color="#59322C"

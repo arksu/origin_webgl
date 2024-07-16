@@ -1,6 +1,7 @@
 import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameClient from '@/net/GameClient'
 import {
+  type ActionProgressData,
   type ContextMenuData,
   type CreatureSay,
   type HandData,
@@ -177,6 +178,13 @@ export default class GameProto {
       case ServerPacket.PLAYER_HAND : {
         const pkt = <HandData>data
         store.hand = pkt.icon !== undefined ? pkt : undefined
+        break
+      }
+
+      case ServerPacket.ACTION_PROGRESS : {
+        const pkt = <ActionProgressData>data
+        store.actionProgress.total = pkt.t
+        store.actionProgress.current = pkt.c
         break
       }
     }

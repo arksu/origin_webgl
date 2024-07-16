@@ -90,7 +90,9 @@ class Grid(
                 )
             }
 
-            is GridMessage.Broadcast -> activeObjects.forEach { it.send(msg.e) }
+            is GridMessage.Broadcast -> activeObjects.forEach {
+                it.send(msg.e)
+            }
 
             else -> logger.error("Unknown Grid message $msg")
         }

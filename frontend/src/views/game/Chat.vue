@@ -30,7 +30,6 @@ export default defineComponent({
     const chatSubmit = () => {
       if (chatText.value.length > 0) {
         console.log('chat submit', chatText.value)
-        console.log(store.client)
         store.client!.send(ClientPacket.CHAT, {
           text: chatText.value
         })

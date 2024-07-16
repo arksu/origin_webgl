@@ -7,14 +7,22 @@ import type { ContextMenuData, HandData, InventoryUpdate } from '@/net/packets'
 export const useGameStore = defineStore('game', {
   state: () => ({
     client: undefined as GameClient | undefined,
+
     chatLines: [] as ChatItem[],
     chatHistory: [] as string[],
 
     contextMenu: undefined as ContextMenuData | undefined,
     contextMenuPosX : 0 as number,
     contextMenuPosY : 0 as number,
+
     inventories: [] as InventoryUpdate[],
     hand: undefined as HandData | undefined,
+
+    actionProgress: {
+      total: 0,
+      current: 0
+    } as ActionProgress,
+
   }),
   getters: {
     /**
@@ -26,7 +34,14 @@ export const useGameStore = defineStore('game', {
         const idx = this.inventories.findIndex(inventory => inventory.id == id)
         return (idx >= 0) ? state.inventories[idx] : undefined
       }
-    }
+    },
+    /**
+     * номер кадра (часов) для выполняемого действия
+     */
+    actionFrame(): number {
+      return Math.round((this.actionProgress.current / this.actionProgress.total) * 21)
+    },
+
   },
   actions: {
     setInventory(pkt: InventoryUpdate) {
@@ -52,4 +67,9 @@ export type ChatItem = {
   title: string,
   text: string,
   channel: number
+}
+
+export type ActionProgress = {
+  total: number,
+  current: number
 }

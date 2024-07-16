@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory
  *  если веток нет - продолжать не даем. завершаем
  */
 abstract class Action(
-    val me: Human,
+    private val me: Human,
 ) {
     /**
      * сколько тиков занимает один цикл действия
@@ -41,41 +41,81 @@ abstract class Action(
     /**
      * минимальное количество стамины которое требуется, чтобы разрешить совершать данное действие
      */
-    abstract val staminaRequired: Int
+    abstract val minimumStaminaRequired: Int
+
+    var tick: Int = 0
 
     /**
      * условие для начала действия или его продолжения
      */
     open fun condition(): Boolean {
-        return staminaRequired == 0 || staminaRequired >= me.status.stamina
+        return minimumStaminaRequired == 0 || me.status.stamina >= minimumStaminaRequired
     }
 
     /**
      * при создании действия запускается корутина
      */
     private val job: Job = WorkerScope.launch {
+        // если вообще не можем запустить действие сразу выходим отсюда, на клиент даже ничего не шлем
+        if (!condition()) {
+            logger.debug("cant start Action. condition check failed")
+            me.send(HumanMessage.StopAction())
+            return@launch
+        }
+
+        // в самом начале отправим прогресс на клиент, чтобы отобразить его визуально
         sendProgress()
+
         // повторяем циклы задержки и выполнения блока
-        while (condition()) {
+        do {
+            // если не можем поглотить стамину на очередной цикл действия - выходим из цикла
             if (staminaConsume > 0 && !me.status.checkAndReduceStamina(staminaConsume)) break
 
             // ждем нужное количество тиков, чтобы выполнить очередное действие/цикл над объектом
             repeat(ticks) { i ->
                 logger.debug("delay tick $i...")
-                delay(GAME_ACTION_PERIOD)
+                delay(getTickDelay())
+                tick++
+                if (tick < ticks) sendProgress()
             }
 
-            val needContinue = run()
-            if (!needContinue) break
-        }
+            logger.debug("action run...")
+            val isFinished = run()
+            if (isFinished) break
+            tick = 0
+            sendProgress()
+        } while (condition())
+
+        // корректно завершим действие
         me.send(HumanMessage.StopAction())
     }
 
-    private suspend fun sendProgress() {
-
+    /**
+     * кастомно вычисляемый прогресс действия
+     */
+    open fun getProgress(): Pair<Int, Int>? {
+        return null
     }
 
-    abstract fun run(): Boolean
+    private suspend fun sendProgress() {
+        if (me is Player) {
+            val p = getProgress()
+            if (p != null) {
+                logger.debug("progress ${p.first} ${p.second}")
+                me.session.send(ActionProgress(p.first, p.second))
+            } else {
+                logger.debug("progress $tick ${ticks - 1}")
+                // чтобы прогресс бар в конце доходил до конца надо послать на 1 тик меньше.
+                me.session.send(ActionProgress(tick, ticks - 1))
+            }
+        }
+    }
+
+    /**
+     * выполнить основную логику очередного цикла действия
+     * @return true - если действие надо продолжать (isFinished)
+     */
+    abstract suspend fun run(): Boolean
 
     suspend fun stop() {
         logger.debug("stop action...")
@@ -83,6 +123,10 @@ abstract class Action(
         logger.debug("action was stopped")
 
         if (me is Player) me.session.send(ActionProgress(-1, -1))
+    }
+
+    open fun getTickDelay(): Long {
+        return GAME_ACTION_PERIOD
     }
 
     companion object {
