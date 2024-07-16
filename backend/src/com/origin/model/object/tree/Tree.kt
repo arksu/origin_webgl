@@ -15,7 +15,11 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
      * если есть данные объекта то это и есть номер стадии.
      * если нет данных ставим по дефолту 6 стадию роста
      */
-    var stage: Int = record.data?.toInt() ?: 6
+    var stage: Int
+        get() = record.data?.toInt() ?: 6
+        set(s) {
+            record.data = s.toString()
+        }
 
     /**
      * сколько очков рубки надо потратить чтобы целиком срубить дерево

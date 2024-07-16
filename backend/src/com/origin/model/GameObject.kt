@@ -5,6 +5,8 @@ package com.origin.model
 import com.origin.GRID_FULL_SIZE
 import com.origin.ObjectID
 import com.origin.TILE_SIZE
+import com.origin.config.DatabaseConfig
+import com.origin.jooq.tables.references.OBJECT
 import com.origin.model.inventory.Inventory
 import com.origin.move.Collision
 import com.origin.move.MovingObject

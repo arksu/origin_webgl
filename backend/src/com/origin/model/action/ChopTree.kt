@@ -28,6 +28,7 @@ class ChopTree(
         return if (tree.chop >= tree.chopPoints) {
             // теперь это пень
             tree.stage = 10
+            tree.saveData()
             // уведомим окружающие объекты о том что это дерево изменилось
             tree.getGridSafety().broadcast(BroadcastEvent.Changed(tree))
             // действие завершается

@@ -1,6 +1,8 @@
 package com.origin.model
 
+import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.ObjectRecord
+import com.origin.jooq.tables.references.OBJECT
 import com.origin.util.Rect
 
 /**
@@ -21,5 +23,14 @@ abstract class StaticObject(val record: ObjectRecord) : GameObject(
         // TODO getBoundRect
         return Rect(4)
     }
+
+    fun saveData() {
+        DatabaseConfig.dsl
+            .update(OBJECT)
+            .set(OBJECT.DATA, record.data)
+            .where(OBJECT.ID.eq(record.id))
+            .execute()
+    }
+
 
 }
