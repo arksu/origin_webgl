@@ -13,6 +13,8 @@ import com.origin.model.PlayerMessage
 import com.origin.model.SpawnType.*
 import com.origin.net.ClientPacket.*
 import com.origin.util.getClientButton
+import com.origin.util.getLong
+import com.origin.util.getString
 import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
@@ -43,28 +45,28 @@ class GameSession(
 
         when (request.target) {
             MAP_CLICK.n -> {
-                val x = (request.data["x"] as Long?) ?: throw BadRequestException("wrong coord x")
-                val y = (request.data["y"] as Long?) ?: throw BadRequestException("wrong coord y")
-                val btn = (request.data["b"] as Long?) ?: throw BadRequestException("wrong button")
-                val flags = (request.data["f"] as Long?) ?: throw BadRequestException("wrong flags")
+                val x = request.getLong("x")
+                val y = request.getLong("y")
+                val btn = request.getLong("b")
+                val flags = request.getLong("f")
                 player.send(PlayerMessage.MapClick(getClientButton(btn), flags.toInt(), x.toInt(), y.toInt()))
             }
 
             OBJECT_CLICK.n -> {
-                val id = (request.data["id"] as Long?) ?: throw BadRequestException("wrong obj id")
-                val x = (request.data["x"] as Long?) ?: throw BadRequestException("wrong coord x")
-                val y = (request.data["y"] as Long?) ?: throw BadRequestException("wrong coord y")
-                val flags = (request.data["f"] as Long?) ?: throw BadRequestException("wrong flags")
+                val id = request.getLong("id")
+                val x = request.getLong("x")
+                val y = request.getLong("y")
+                val flags = request.getLong("f")
                 player.send(PlayerMessage.ObjectClick(id, flags.toInt(), x.toInt(), y.toInt()))
             }
 
             OBJECT_RIGHT_CLICK.n -> {
-                val id = (request.data["id"] as Long?) ?: throw BadRequestException("wrong obj id")
+                val id = request.getLong("id")
                 player.send(PlayerMessage.ObjectRightClick(id))
             }
 
             CHAT.n -> {
-                val text = (request.data["text"] as String?) ?: throw BadRequestException("no text")
+                val text = request.getString("text")
                 if (text.isNotEmpty()) {
                     // обрежем текст до длины поля в бд
                     val trimmed = text.trim()
@@ -89,23 +91,23 @@ class GameSession(
             }
 
             INVENTORY_CLOSE.n -> {
-                val inventoryId = (request.data["iid"] as Long?) ?: throw BadRequestException("wrong obj id")
+                val inventoryId = request.getLong("iid")
                 player.send(PlayerMessage.InventoryClose(inventoryId))
 
             }
 
             ITEM_CLICK.n -> {
-                val id = (request.data["id"] as Long?) ?: throw BadRequestException("wrong obj id")
-                val inventoryId = (request.data["iid"] as Long?) ?: throw BadRequestException("wrong obj id")
-                val x = (request.data["x"] as Long?) ?: throw BadRequestException("wrong coord x")
-                val y = (request.data["y"] as Long?) ?: throw BadRequestException("wrong coord y")
-                val ox = (request.data["ox"] as Long?) ?: throw BadRequestException("wrong coord ox")
-                val oy = (request.data["oy"] as Long?) ?: throw BadRequestException("wrong coord oy")
+                val id = request.getLong("id")
+                val inventoryId = request.getLong("iid")
+                val x = request.getLong("x")
+                val y = request.getLong("y")
+                val ox = request.getLong("ox")
+                val oy = request.getLong("oy")
                 player.send(PlayerMessage.InventoryItemClick(id, inventoryId, x.toInt(), y.toInt(), ox.toInt(), oy.toInt()))
             }
 
             CONTEXT_MENU_SELECT.n -> {
-                val item = (request.data["item"] as String?) ?: throw BadRequestException("no item")
+                val item = request.getString("item")
                 player.send(PlayerMessage.ContextMenuItem(item))
             }
         }

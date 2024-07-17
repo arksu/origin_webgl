@@ -14,5 +14,4 @@ class WoodenLog(record: ObjectRecord) : StaticObject(record) {
     override fun getBoundRect(): Rect {
         return Rect(0)
     }
-
 }

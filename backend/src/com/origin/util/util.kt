@@ -1,5 +1,7 @@
 package com.origin.util
 
+import com.origin.error.BadRequestException
+import com.origin.net.GameRequestDTO
 import org.jooq.DSLContext
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
@@ -26,4 +28,12 @@ fun <T> DSLContext.transactionResultWrapper(block: (dsl: DSLContext) -> T): T {
     return this.transactionResult { configuration ->
         block(configuration.dsl())
     }
+}
+
+fun GameRequestDTO.getLong(name: String): Long {
+    return (this.data[name] as Long?) ?: throw BadRequestException("wrong data field: $name")
+}
+
+fun GameRequestDTO.getString(name: String): String {
+    return (this.data[name] as String?) ?: throw BadRequestException("wrong data field: $name")
 }
