@@ -378,6 +378,7 @@ class Grid(
 
             obj.setGrid(this@Grid)
             // шлем сообщение самому себе на спавн объекта
+            // т.к. мы сейчас в корутине
             this@Grid.send(GridMessage.SpawnForce(obj))
         }
     }

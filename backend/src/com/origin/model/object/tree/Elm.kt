@@ -11,4 +11,7 @@ class Elm(objectRecord: ObjectRecord) : Tree(objectRecord) {
         if (stage == 10) return "trees/elm/stump"
         return "trees/elm/$stage"
     }
+
+    override val maxBranch = 16
+    override val logs = 1
 }

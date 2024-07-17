@@ -8,4 +8,6 @@ class Apple(objectRecord: ObjectRecord) : Tree(objectRecord) {
         if (stage == 10) return "trees/apple/stump"
         return "trees/apple/$stage"
     }
+
+    override val logs = 1
 }

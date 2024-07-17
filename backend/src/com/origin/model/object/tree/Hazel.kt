@@ -11,4 +11,7 @@ class Hazel(objectRecord: ObjectRecord) : Tree(objectRecord) {
         if (stage == 10) return "trees/hazel/stump"
         return "trees/hazel/$stage"
     }
+
+    override val maxBranch = 8
+    override val logs = 1
 }

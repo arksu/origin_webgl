@@ -17,7 +17,7 @@ class ChopTree(
 
     override fun condition(): Boolean {
         // рубим до тех пор, пока очки рубки не превышают максимум
-        return tree.chop < tree.chopPoints && super.condition()
+        return tree.chop < tree.chopThreshold && super.condition()
     }
 
     override suspend fun run(): Boolean {
@@ -25,7 +25,7 @@ class ChopTree(
         tree.chop += chop
         logger.debug("chop tree ${tree.chop}")
         // если целиком срубили дерево
-        return if (tree.chop >= tree.chopPoints) {
+        return if (tree.chop >= tree.chopThreshold) {
             // теперь это пень
             tree.stage = 10
             tree.saveData()
@@ -37,6 +37,6 @@ class ChopTree(
     }
 
     override fun getProgress(): Pair<Int, Int> {
-        return Pair(min(tree.chop + ((tick * chop) / ticks), tree.chopPoints), tree.chopPoints)
+        return Pair(min(tree.chop + ((tick * chop) / ticks), tree.chopThreshold), tree.chopThreshold)
     }
 }

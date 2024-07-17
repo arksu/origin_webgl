@@ -11,4 +11,6 @@ class Willow(objectRecord: ObjectRecord) : Tree(objectRecord) {
         if (stage == 10) return "trees/willow/stump"
         return "trees/willow/$stage"
     }
+
+    override val maxBranch = 8
 }

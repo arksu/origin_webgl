@@ -14,7 +14,7 @@ import com.origin.move.PositionModel
 
 object ObjectsFactory {
     fun constructByRecord(record: ObjectRecord): GameObject {
-        return when (record.type) {
+        val obj = when (record.type) {
             1 -> Box(record)
             2 -> Birch(record)
             3 -> Fir(record)
@@ -30,6 +30,8 @@ object ObjectsFactory {
             13 -> Stone(record)
             else -> UnknownObject(record)
         }
+        obj.afterLoad()
+        return obj
     }
 
     fun createAndInsert(type: Int, pos: PositionModel): ObjectRecord {

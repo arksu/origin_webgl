@@ -9,4 +9,6 @@ class Birch(objectRecord: ObjectRecord) : Tree(objectRecord) {
         return "trees/birch/$stage"
     }
 
+    override val maxBranch = 7
+    override val logs = 2
 }

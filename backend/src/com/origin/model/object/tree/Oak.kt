@@ -8,4 +8,6 @@ class Oak(objectRecord: ObjectRecord) : Tree(objectRecord) {
         if (stage == 10) return "trees/oak/stump"
         return "trees/oak/$stage"
     }
+
+    override val logs = 1
 }

@@ -210,4 +210,4 @@ class ActionProgress(
     val c: Int,
     // total
     val t: Int
-) : ServerMessage("ap")
+) : ServerMessage(ACTION_PROGRESS.n)

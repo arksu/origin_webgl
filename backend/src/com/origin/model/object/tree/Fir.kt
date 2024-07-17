@@ -11,4 +11,7 @@ class Fir(objectRecord: ObjectRecord) : Tree(objectRecord) {
         if (stage == 10) return "trees/fir/stump"
         return "trees/fir/$stage"
     }
+
+    override val maxBranch = 7
+    override val logs = 1
 }

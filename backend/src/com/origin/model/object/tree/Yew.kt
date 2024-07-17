@@ -11,4 +11,6 @@ class Yew(objectRecord: ObjectRecord) : Tree(objectRecord) {
         if (stage == 10) return "trees/yew/stump"
         return "trees/yew/$stage"
     }
+
+    override val maxBranch = 8
 }

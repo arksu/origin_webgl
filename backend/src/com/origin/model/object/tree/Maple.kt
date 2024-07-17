@@ -11,4 +11,7 @@ class Maple(objectRecord: ObjectRecord) : Tree(objectRecord) {
         if (stage == 10) return "trees/maple/stump"
         return "trees/maple/$stage"
     }
+
+    override val maxBranch = 10
+    override val logs = 3
 }

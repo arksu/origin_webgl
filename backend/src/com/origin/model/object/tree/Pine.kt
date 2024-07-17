@@ -13,4 +13,7 @@ class Pine(objectRecord: ObjectRecord) : Tree(objectRecord) {
     override fun getBoundRect(): Rect {
         return Rect(10)
     }
+
+    override val maxBranch = 3
+    override val logs = 3
 }
