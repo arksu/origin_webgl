@@ -31,6 +31,15 @@ class ObjectPosition(
 
     fun dist(px: Int, py: Int): Double = point.dist(px, py)
 
+    fun clone(): ObjectPosition {
+        return ObjectPosition(x, y, level, region, heading)
+    }
+
+    fun add(x: Int, y: Int) {
+        point.x += x
+        point.y += y
+    }
+
     override fun toString(): String {
         return "{pos level=$level $x, $y ${this.hashCode()}}"
     }

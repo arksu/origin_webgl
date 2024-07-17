@@ -7,12 +7,8 @@ import com.origin.move.Move2Object
  * создается при вызове меню. и сохраняется в объекте игрока пока не будет выбран пункт меню
  * или отмена меню
  */
-class ContextMenu(val obj: GameObject, vararg i: String) {
+class ContextMenu(val obj: GameObject, val items: Collection<String>) {
 
-    /**
-     * пункты контекстного меню
-     */
-    val items: List<String> = i.asList()
 
     suspend fun processItem(player: Player, item: String) {
         if (items.contains(item)) {

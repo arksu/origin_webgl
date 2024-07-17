@@ -28,6 +28,7 @@ object ObjectsFactory {
             11 -> Yew(record)
             12 -> Crate(record)
             13 -> Stone(record)
+            14 -> WoodenLog(record)
             else -> UnknownObject(record)
         }
         obj.afterLoad()

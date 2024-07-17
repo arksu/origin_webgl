@@ -39,6 +39,11 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
     var bark = 0
 
     /**
+     * сучья (лапник, с листьями)
+     */
+    var bough = 0
+
+    /**
      * сколько очков рубки надо потратить чтобы целиком срубить дерево
      */
     open val chopThreshold: Int = 1000
@@ -56,9 +61,21 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
         return Rect(6)
     }
 
-    override fun openContextMenu(p: Player): ContextMenu {
-        // TODO смотрим на скиллы, одет ли топор
-        return ContextMenu(this, "Chop", "Take branch", "Take bark")
+    override fun openContextMenu(p: Player): ContextMenu? {
+        // TODO смотрим на скиллы, одет ли топор,
+        //  остались ветки? сучья? кора?
+        val items = ArrayList<String>(4)
+        items.add("Chop")
+        if (branch > 0) {
+            items.add("Take branch")
+        }
+        if (bark > 0) {
+            items.add("Take bark")
+        }
+        if (bough > 0) {
+            items.add("Take bough")
+        }
+        return ContextMenu(this, items)
     }
 
     override suspend fun executeContextMenuItem(player: Player, item: String) {

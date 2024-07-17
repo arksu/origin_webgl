@@ -900,6 +900,21 @@
       ]
     }
   },
+  "log": {
+    "offset": [37, 34],
+    "layers": [
+      {
+        "img": "obj/log/log.png",
+        "offset": [0, 0],
+        "z": 0
+      },
+      {
+        "img": "obj/log/log_.png",
+        "offset": [0, 0],
+        "shadow": true
+      }
+    ]
+  },
   "player": {
     "offset": [17, 57],
     "layers": [
