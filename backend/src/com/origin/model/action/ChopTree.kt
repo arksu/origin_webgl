@@ -1,12 +1,10 @@
 package com.origin.model.action
 
 import com.origin.model.BroadcastEvent
-import com.origin.model.GridMessage
+import com.origin.model.ObjectPosition
 import com.origin.model.Player
 import com.origin.model.World
-import com.origin.model.`object`.ObjectsFactory
 import com.origin.model.`object`.tree.Tree
-import com.origin.move.PositionModel
 import kotlin.math.min
 
 class ChopTree(
@@ -41,16 +39,17 @@ class ChopTree(
 
             // спавним бревна
             for (l in 1..tree.logs) {
-                val pos = PositionModel(tree.pos.x, tree.pos.y - 20 * l - 3, tree.pos)
-                val record = ObjectsFactory.createAndInsert(14, pos)
-                val logObject = ObjectsFactory.constructByRecord(record)
+                val pos = ObjectPosition(tree.pos.x, tree.pos.y - 20 * l - 3, tree.pos)
+                World.getGrid(pos).generateObject(14, pos)
 
-                // TODO бревно может уйти в другой грид!!!
-                logObject.setGrid(World.getGrid(logObject.pos))
-
-                // шлем сообщение самому себе на спавн объекта
-                // т.к. мы сейчас в корутине
-                tree.getGridSafety().send(GridMessage.SpawnForce(logObject))
+//                val record = ObjectsFactory.create(14, pos)
+//                val logObject = ObjectsFactory.constructByRecord(record)
+//
+//                logObject.setGrid(World.getGrid(logObject.pos))
+//
+//                // шлем сообщение самому себе на спавн объекта
+//                // т.к. мы сейчас в корутине
+//                tree.getGridSafety().send(GridMessage.SpawnForce(logObject))
             }
 
             // действие завершается

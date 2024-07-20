@@ -1,8 +1,6 @@
-package com.origin.move
+package com.origin.model
 
 import com.origin.GRID_FULL_SIZE
-import com.origin.model.Grid
-import com.origin.model.ObjectPosition
 
 data class PositionModel(
     val x: Int,

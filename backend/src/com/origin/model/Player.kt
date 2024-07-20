@@ -320,7 +320,7 @@ class Player(
     /**
      * сохранение состояния игрока в базу
      */
-    private fun save() {
+    override fun save() {
         logger.debug("store player {}", this)
 
 //        val currentMillis = System.currentTimeMillis()

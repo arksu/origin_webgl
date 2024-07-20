@@ -222,6 +222,8 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
         actor.close()
     }
 
+    abstract fun save()
+
     /**
      * когда ЭТОТ объект удален из грида
      */

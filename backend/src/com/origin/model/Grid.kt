@@ -10,7 +10,10 @@ import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.jooq.tables.references.GRID
 import com.origin.jooq.tables.references.OBJECT
 import com.origin.model.`object`.ObjectsFactory
-import com.origin.move.*
+import com.origin.move.CheckCollisionModel
+import com.origin.move.Collision
+import com.origin.move.CollisionResult
+import com.origin.move.MoveType
 import com.origin.net.MapGridData
 import com.origin.util.*
 import kotlinx.coroutines.CoroutineScope
@@ -354,7 +357,7 @@ class Grid(
         for (x in 0 until GRID_SIZE) for (y in 0 until GRID_SIZE) {
             val ox = this.x * GRID_FULL_SIZE + (TILE_SIZE / 2)
             val oy = this.y * GRID_FULL_SIZE + (TILE_SIZE / 2)
-            val pos = PositionModel(x * TILE_SIZE + ox, y * TILE_SIZE + oy, this)
+            val pos = ObjectPosition(x * TILE_SIZE + ox, y * TILE_SIZE + oy, this.level, this.region, 0)
             when (tilesBlob[x + y * GRID_SIZE]) {
                 Tile.FOREST_LEAF -> {
                     if (Rnd.next(170) == 0) generateObject(2, pos)
@@ -369,14 +372,15 @@ class Grid(
         }
     }
 
-    private fun generateObject(type: Int, pos: PositionModel) {
+    fun generateObject(type: Int, pos: ObjectPosition) {
         // запускаем генерацию объекта в корутине
         // вот тут просиходит ай-ай-ай мы в отдельном потоке запускаем генерацию объектов
         WorkerScope.launch {
-            val record = ObjectsFactory.createAndInsert(type, pos)
+            val record = ObjectsFactory.create(type, pos)
             val obj = ObjectsFactory.constructByRecord(record)
 
             obj.setGrid(this@Grid)
+            obj.save()
             // шлем сообщение самому себе на спавн объекта
             // т.к. мы сейчас в корутине
             this@Grid.send(GridMessage.SpawnForce(obj))

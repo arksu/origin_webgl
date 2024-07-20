@@ -2,8 +2,6 @@ package com.origin.model
 
 import com.origin.model.inventory.ItemType
 import com.origin.model.`object`.ObjectsFactory
-import com.origin.move.PositionModel
-import kotlinx.coroutines.CompletableDeferred
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -45,17 +43,9 @@ object PlayerCommands {
             "spawn" -> {
                 // param 1 - type id
                 val t: Int = params[1].toInt()
-                // param 2 - data for object
-                val d = if (params.size >= 3) params[2] else null
-                val posModel = PositionModel(x, y, player.pos)
-                val record = ObjectsFactory.createAndInsert(t, posModel)
-                val newObject = ObjectsFactory.constructByRecord(record)
+                val pos = ObjectPosition(x, y, player.pos)
 
-                newObject.setGrid(World.getGrid(newObject.pos))
-                val result = newObject.getGridSafety().sendAndWaitAck(GridMessage.Spawn(newObject))
-                if (!result) {
-                    player.systemSay("Failed to spawn object")
-                }
+                World.getGrid(pos).generateObject(t, pos)
             }
         }
     }

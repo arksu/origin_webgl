@@ -1,16 +1,15 @@
 package com.origin.model.`object`
 
 import com.origin.IdFactory
-import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.InventoryRecord
 import com.origin.jooq.tables.records.ObjectRecord
-import com.origin.jooq.tables.references.OBJECT
 import com.origin.model.GameObject
+import com.origin.model.ObjectPosition
 import com.origin.model.inventory.InventoryItem
 import com.origin.model.`object`.container.Box
 import com.origin.model.`object`.container.Crate
 import com.origin.model.`object`.tree.*
-import com.origin.move.PositionModel
+import com.origin.model.PositionModel
 
 object ObjectsFactory {
     fun constructByRecord(record: ObjectRecord): GameObject {
@@ -35,8 +34,8 @@ object ObjectsFactory {
         return obj
     }
 
-    fun createAndInsert(type: Int, pos: PositionModel): ObjectRecord {
-        val record = ObjectRecord(
+    fun create(type: Int, pos: ObjectPosition): ObjectRecord {
+        return ObjectRecord(
             id = IdFactory.getNext(),
             region = pos.region,
             x = pos.x,
@@ -52,12 +51,6 @@ object ObjectsFactory {
             lastTick = 0,
             data = null
         )
-        val saved = DatabaseConfig.dsl
-            .insertInto(OBJECT)
-            .set(record)
-            .returning()
-            .fetchSingle()
-        return saved
     }
 
     fun createInventoryItem(typeId: Int, count: Int = 1, quality: Short = 10): InventoryItem {

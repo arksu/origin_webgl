@@ -32,6 +32,14 @@ abstract class StaticObject(val record: ObjectRecord) : GameObject(
             .execute()
     }
 
+    override fun save() {
+        DatabaseConfig.dsl
+            .insertInto(OBJECT)
+            .set(record)
+            .returning()
+            .fetchSingle()
+    }
+
     override fun getHP(): Int {
         return record.hp
     }
