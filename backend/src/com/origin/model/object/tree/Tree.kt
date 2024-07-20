@@ -6,11 +6,9 @@ import com.origin.model.Player
 import com.origin.model.StaticObject
 import com.origin.model.action.ChopTree
 import com.origin.model.action.TakeBranch
-import com.origin.model.inventory.Inventory
 import com.origin.util.Rect
 
 abstract class Tree(record: ObjectRecord) : StaticObject(record) {
-    override val inventory: Inventory? = null
 
     /**
      * стадия роста

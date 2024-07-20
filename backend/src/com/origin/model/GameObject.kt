@@ -32,7 +32,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
     /**
      * инвентарь объекта (обязательно надо уточнить в конечных объектах, что делать с инвентарем: либо есть либо нет - null)
      */
-    abstract val inventory: Inventory?
+    open val inventory: Inventory? = null
 
     /**
      * актор для обработки сообщений
@@ -277,6 +277,13 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
     }
 
     open fun afterLoad() {
+    }
+
+    open fun getHP(): Int {
+        return 0
+    }
+
+    open fun setHP(hp: Int) {
     }
 
     override fun toString(): String {

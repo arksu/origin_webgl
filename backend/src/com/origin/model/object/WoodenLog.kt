@@ -5,7 +5,6 @@ import com.origin.model.StaticObject
 import com.origin.util.Rect
 
 class WoodenLog(record: ObjectRecord) : StaticObject(record) {
-    override val inventory = null
 
     override fun getResourcePath(): String {
         return "log"

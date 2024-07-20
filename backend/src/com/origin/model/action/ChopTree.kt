@@ -35,6 +35,9 @@ class ChopTree(
             // уведомим окружающие объекты о том что это дерево изменилось
             tree.getGridSafety().broadcast(BroadcastEvent.Changed(tree))
 
+            // определим позицию игрока относительно дерева
+            // чтобы повалить дерево в нужном направлении
+
             // спавним бревна
             for (l in 1..tree.logs) {
                 val pos = PositionModel(tree.pos.x, tree.pos.y - 20 * l - 3, tree.pos)

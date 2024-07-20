@@ -32,5 +32,11 @@ abstract class StaticObject(val record: ObjectRecord) : GameObject(
             .execute()
     }
 
+    override fun getHP(): Int {
+        return record.hp
+    }
 
+    override fun setHP(hp: Int) {
+        record.hp = hp
+    }
 }
