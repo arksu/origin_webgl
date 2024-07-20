@@ -3,6 +3,7 @@ package com.origin.model.action
 import com.origin.model.BroadcastEvent
 import com.origin.model.GridMessage
 import com.origin.model.Player
+import com.origin.model.World
 import com.origin.model.`object`.ObjectsFactory
 import com.origin.model.`object`.tree.Tree
 import com.origin.move.PositionModel
@@ -44,7 +45,9 @@ class ChopTree(
                 val record = ObjectsFactory.createAndInsert(14, pos)
                 val logObject = ObjectsFactory.constructByRecord(record)
 
-                logObject.setGrid(tree.getGridSafety())
+                // TODO бревно может уйти в другой грид!!!
+                logObject.setGrid(World.getGrid(logObject.pos))
+
                 // шлем сообщение самому себе на спавн объекта
                 // т.к. мы сейчас в корутине
                 tree.getGridSafety().send(GridMessage.SpawnForce(logObject))

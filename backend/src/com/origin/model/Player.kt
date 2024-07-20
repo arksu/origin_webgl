@@ -4,6 +4,7 @@ package com.origin.model
 
 import com.origin.OPEN_DISTANCE
 import com.origin.ObjectID
+import com.origin.TILE_SIZE
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHARACTER
@@ -14,10 +15,7 @@ import com.origin.model.`object`.container.ContainerMessage
 import com.origin.move.Move2Object
 import com.origin.move.Move2Point
 import com.origin.net.*
-import com.origin.util.ClientButton
-import com.origin.util.PLAYER_RECT
-import com.origin.util.Rect
-import com.origin.util.Vec2i
+import com.origin.util.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.runBlocking
@@ -53,6 +51,11 @@ class Player(
 
     override val status: PlayerStatus = PlayerStatus(this)
 
+    /**
+     * команда для отложенного выполнения (клик по карте)
+     */
+    var commandToExecuteByMapClick: String? = null
+
     override suspend fun processMessage(msg: Any) {
         when (msg) {
             is PlayerMessage.Connected -> onConnected()
@@ -81,16 +84,18 @@ class Player(
             if (hand != null) {
 //                dropHandItem()
             } else {
-//                if (commandToExecute != null) {
-//                    if (flags and SHIFT_KEY > 0) {
-//                        logger.warn("SHIFT")
-//                        val xx = x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
-//                        val yy = y / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
-//                        if (executeCommand(xx, yy)) commandToExecute = null
-//                    } else if (executeCommand(x, y)) commandToExecute = null
-//                } else {
-                startMove(Move2Point(this, msg.x, msg.y))
-//                }
+                val cmd = commandToExecuteByMapClick
+                if (cmd != null) {
+                    if (msg.flags and SHIFT_KEY > 0) {
+                        logger.warn("SHIFT")
+                        val xx = msg.x / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
+                        val yy = msg.y / TILE_SIZE * TILE_SIZE + TILE_SIZE / 2
+                        PlayerCommands.runCommandByMapClick(this, cmd, xx, yy)
+                    } else PlayerCommands.runCommandByMapClick(this, cmd, msg.x, msg.y)
+                    commandToExecuteByMapClick = null
+                } else {
+                    startMove(Move2Point(this, msg.x, msg.y))
+                }
             }
         }
     }
@@ -193,6 +198,10 @@ class Player(
                 session.send(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
             }
         }
+    }
+
+    suspend fun systemSay(text: String) {
+        session.send(CreatureSay(id, "System", text, ChatChannel.SYSTEM))
     }
 
     /**

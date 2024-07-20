@@ -2,6 +2,8 @@ package com.origin.model
 
 import com.origin.model.inventory.ItemType
 import com.origin.model.`object`.ObjectsFactory
+import com.origin.move.PositionModel
+import kotlinx.coroutines.CompletableDeferred
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -23,8 +25,37 @@ object PlayerCommands {
                 }
             }
 
+            "spawn" -> {
+                player.commandToExecuteByMapClick = cmd
+            }
+
             else -> {
 //                player.session.send(CreatureSay(0, text, SYSTEM))("Unknown command: $cmd")
+            }
+        }
+    }
+
+    suspend fun runCommandByMapClick(player: Player, cmd: String, x: Int, y: Int) {
+        logger.warn("runCommandByMapClick $cmd")
+
+        val params = cmd.split(" ")
+        if (params.isEmpty()) return
+
+        when (params[0]) {
+            "spawn" -> {
+                // param 1 - type id
+                val t: Int = params[1].toInt()
+                // param 2 - data for object
+                val d = if (params.size >= 3) params[2] else null
+                val posModel = PositionModel(x, y, player.pos)
+                val record = ObjectsFactory.createAndInsert(t, posModel)
+                val newObject = ObjectsFactory.constructByRecord(record)
+
+                newObject.setGrid(World.getGrid(newObject.pos))
+                val result = newObject.getGridSafety().sendAndWaitAck(GridMessage.Spawn(newObject))
+                if (!result) {
+                    player.systemSay("Failed to spawn object")
+                }
             }
         }
     }
