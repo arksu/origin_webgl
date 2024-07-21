@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory
  *  если веток нет - продолжать не даем. завершаем
  */
 abstract class Action(
-    private val me: Human,
+    protected val me: Human,
 ) {
     /**
      * сколько тиков занимает один цикл действия
@@ -42,6 +42,8 @@ abstract class Action(
      * минимальное количество стамины которое требуется, чтобы разрешить совершать данное действие
      */
     abstract val minimumStaminaRequired: Int
+
+    open val tickDelay = GAME_ACTION_PERIOD
 
     var tick: Int = 0
 
@@ -73,8 +75,8 @@ abstract class Action(
 
             // ждем нужное количество тиков, чтобы выполнить очередное действие/цикл над объектом
             repeat(ticks) { i ->
-                logger.debug("delay tick $i...")
-                delay(getTickDelay())
+//                logger.debug("delay tick $i...")
+                delay(tickDelay)
                 tick++
                 if (tick < ticks) sendProgress()
             }
@@ -123,10 +125,6 @@ abstract class Action(
         logger.debug("action was stopped")
 
         if (me is Player) me.session.send(ActionProgress(-1, -1))
-    }
-
-    open fun getTickDelay(): Long {
-        return GAME_ACTION_PERIOD
     }
 
     companion object {

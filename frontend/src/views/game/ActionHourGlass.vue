@@ -58,7 +58,7 @@ const store = useGameStore()
 
     <div class="frame">
       <div class="bar-back"></div>
-      <div :style="{width: Math.round(store.actionProgress.current / store.actionProgress.total * 100) + '%'}"
+      <div :style="{width: (store.actionProgress.current / store.actionProgress.total * 100) + '%'}"
            class="bar"></div>
     </div>
   </div>
@@ -84,12 +84,12 @@ const store = useGameStore()
   box-sizing: content-box;
   position: absolute;
   height: 5px;
-  width: 120px;
+  width: 320px;
   border: 2px solid #132d15;
   border-radius: 10px;
   pointer-events: auto;
   display: inline-block;
-  margin-left: -47px;
+  margin-left: -147px;
   margin-top: 39px;
   //margin-right: 20px;
 }

@@ -5,6 +5,7 @@ import com.origin.model.ObjectPosition
 import com.origin.model.Player
 import com.origin.model.World
 import com.origin.model.`object`.tree.Tree
+import kotlin.math.abs
 import kotlin.math.min
 
 class ChopTree(
@@ -36,20 +37,27 @@ class ChopTree(
 
             // определим позицию игрока относительно дерева
             // чтобы повалить дерево в нужном направлении
+            val delta = tree.pos.point.sub(me.pos.point)
+            var multY = 0
+            var multX = 0
+            if (abs(delta.x) > abs(delta.y)) {
+                if (delta.x < 0) {
+                    multX = -1
+                } else {
+                    multX = 1
+                }
+            } else {
+                if (delta.y < 0) {
+                    multY = -1
+                } else {
+                    multY = 1
+                }
+            }
 
             // спавним бревна
             for (l in 1..tree.logs) {
-                val pos = ObjectPosition(tree.pos.x, tree.pos.y - 20 * l - 3, tree.pos)
+                val pos = ObjectPosition(tree.pos.x + (20 * l + 3) * multX, tree.pos.y + (20 * l + 3) * multY, tree.pos)
                 World.getGrid(pos).generateObject(14, pos)
-
-//                val record = ObjectsFactory.create(14, pos)
-//                val logObject = ObjectsFactory.constructByRecord(record)
-//
-//                logObject.setGrid(World.getGrid(logObject.pos))
-//
-//                // шлем сообщение самому себе на спавн объекта
-//                // т.к. мы сейчас в корутине
-//                tree.getGridSafety().send(GridMessage.SpawnForce(logObject))
             }
 
             // действие завершается

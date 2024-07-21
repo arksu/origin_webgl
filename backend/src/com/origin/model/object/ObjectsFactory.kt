@@ -34,7 +34,7 @@ object ObjectsFactory {
         return obj
     }
 
-    fun create(type: Int, pos: ObjectPosition): ObjectRecord {
+    fun create(type: Int, pos: ObjectPosition, data : String? = null): ObjectRecord {
         return ObjectRecord(
             id = IdFactory.getNext(),
             region = pos.region,
@@ -49,7 +49,7 @@ object ObjectsFactory {
             hp = 100,
             createTick = 0,
             lastTick = 0,
-            data = null
+            data = data
         )
     }
 

@@ -22,7 +22,7 @@ class ObjectPosition {
     }
 
     constructor(x: Int, y: Int, pos: ObjectPosition) {
-        point =  Vec2i(x, y)
+        point = Vec2i(x, y)
         this.region = pos.region
         this.heading = pos.heading
         this.level = pos.level
@@ -45,11 +45,6 @@ class ObjectPosition {
 
     fun clone(): ObjectPosition {
         return ObjectPosition(x, y, level, region, heading)
-    }
-
-    fun add(x: Int, y: Int) {
-        point.x += x
-        point.y += y
     }
 
     override fun toString(): String {
