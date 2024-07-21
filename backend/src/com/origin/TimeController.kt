@@ -255,7 +255,9 @@ object TimeController : Thread("TimeController") {
     private fun updateGrids() {
         activeGrids.forEach {
             runBlocking {
-                it.send(GridMessage.Update())
+                kotlin.runCatching {
+                    it.send(GridMessage.Update())
+                }
             }
         }
     }
