@@ -15,7 +15,7 @@ object World {
     /**
      * активные игроки которые залогинены в мир
      */
-    val players = ConcurrentHashMap<ObjectID, Player>()
+    private val players = ConcurrentHashMap<ObjectID, Player>()
 
     fun getRegion(regionId: Int): Region {
         if (regionId < 0) throw RuntimeException("wrong grid region")
@@ -45,6 +45,10 @@ object World {
 
     fun removePlayer(player: Player) {
         players.remove(player.id)
+    }
+
+    fun playersIterator(): Iterator<Map.Entry<ObjectID, Player>> {
+        return players.iterator()
     }
 
     suspend fun disconnectAllCharacters() {

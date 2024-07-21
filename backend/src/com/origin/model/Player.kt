@@ -56,6 +56,11 @@ class Player(
      */
     var commandToExecuteByMapClick: String? = null
 
+    /**
+     * время последнего сохранения в базу добавления времени онлайна
+     */
+    private var lastOnlineStoreTime = System.currentTimeMillis()
+
     override suspend fun processMessage(msg: Any) {
         when (msg) {
             is PlayerMessage.Connected -> onConnected()
@@ -322,12 +327,28 @@ class Player(
      */
     override fun save() {
         logger.debug("store player {}", this)
+        status.save()
 
-//        val currentMillis = System.currentTimeMillis()
-//        character.onlineTime += TimeUnit.MILLISECONDS.toSeconds(currentMillis - lastOnlineStoreTime)
-//
-//        status.storeToCharacter(character)
-//        lastOnlineStoreTime = currentMillis
+        val currentMillis = System.currentTimeMillis()
+        val delta = currentMillis - lastOnlineStoreTime
+        if (delta >= 1000) {
+            val secs = delta / 1000
+            logger.debug("inc online time by $secs")
+            character.onlineTime += secs
+            lastOnlineStoreTime += secs * 1000
+        }
+
+        DatabaseConfig.dsl
+            .update(CHARACTER)
+            .set(CHARACTER.X, character.x)
+            .set(CHARACTER.Y, character.y)
+            .set(CHARACTER.LEVEL, character.level)
+            .set(CHARACTER.REGION, character.region)
+            .set(CHARACTER.HEADING, character.heading)
+            .set(CHARACTER.STAMINA, character.stamina)
+            .set(CHARACTER.ONLINE_TIME, character.onlineTime)
+            .where(CHARACTER.ID.eq(character.id))
+            .execute()
     }
 
     /**

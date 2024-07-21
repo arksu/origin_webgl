@@ -5,4 +5,8 @@ class PlayerStatus(val player: Player) : HumanStatus(player) {
         stamina = player.character.stamina
     }
 
+    override fun save() {
+        super.save()
+        player.character.stamina = stamina
+    }
 }

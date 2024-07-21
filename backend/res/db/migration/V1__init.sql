@@ -27,8 +27,8 @@ create table if not exists `character`
     shp         int          not null,
     hhp         int          not null,
 
-    deleted     bool         not null default false,
-    online_time bigint       not null default 0,
+    deleted     bool         not null,
+    online_time bigint       not null,
     created     datetime     not null default current_timestamp,
 
     foreign key (account_id) references account (id)

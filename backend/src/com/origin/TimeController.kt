@@ -1,6 +1,9 @@
 package com.origin
 
-import com.origin.model.*
+import com.origin.model.Grid
+import com.origin.model.GridMessage
+import com.origin.model.MovingObjectMessage
+import com.origin.model.World
 import com.origin.move.MovingObject
 import com.origin.util.WorkerScope
 import kotlinx.coroutines.channels.ClosedSendChannelException
@@ -107,6 +110,8 @@ object TimeController : Thread("TimeController") {
     var tickCount: Long = 0
         private set
 
+    var playersSaveTickCounter = 0
+
     /**
      * загрузка информации о времени из базы
      */
@@ -183,6 +188,7 @@ object TimeController : Thread("TimeController") {
             5 -> {
                 return (((60 - m).toFloat() / 60f) * 255f).toInt()
             }
+
             in 6..20 -> {
                 return 0
             }
@@ -190,6 +196,7 @@ object TimeController : Thread("TimeController") {
             21 -> {
                 return ((m.toFloat() / 60f) * 255f).toInt()
             }
+
             else -> 255
         }
     }
@@ -264,9 +271,20 @@ object TimeController : Thread("TimeController") {
 
             try {
                 moveObjects()
+
+                // обновляем все гриды
                 if (getGridTicks() > lastGridTick) {
                     updateGrids()
                     lastGridTick = getGridTicks()
+                }
+
+                // сохраняем всех игроков если надо
+                playersSaveTickCounter++
+                if (playersSaveTickCounter > 50) {
+                    playersSaveTickCounter = 0
+                    World.playersIterator().forEach { pe ->
+                        pe.value.save()
+                    }
                 }
             } catch (t: Throwable) {
                 logger.error("TimeController update error ${t.message}", t)

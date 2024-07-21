@@ -75,4 +75,8 @@ open class HumanStatus(private val me: Human) {
         return pkt
     }
 
+    open fun save() {
+
+    }
+
 }

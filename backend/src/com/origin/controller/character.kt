@@ -103,6 +103,8 @@ fun Route.characters(dsl: DSLContext) {
                     .set(CHARACTER.STAMINA, 1000)
                     .set(CHARACTER.SHP, 100)
                     .set(CHARACTER.HHP, 100)
+                    .set(CHARACTER.ONLINE_TIME, 0)
+                    .set(CHARACTER.DELETED, 0)
                     .returning()
                     .fetchSingle()
 
