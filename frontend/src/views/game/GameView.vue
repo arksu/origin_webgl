@@ -15,13 +15,14 @@ import Hand from '@/views/game/Hand.vue'
 import ContextMenu from '@/views/game/ContextMenu.vue'
 import { mouse } from '@/game/Mouse'
 import ActionHourGlass from '@/views/game/ActionHourGlass.vue'
+import Stats from '@/views/game/status/PlayerStats.vue'
 
 /**
  * игровой вид, рендер и весь UI для игры
  */
 export default defineComponent({
   name: 'GameView',
-  components: { ActionHourGlass, ContextMenu, Hand, GameButton, Chat, Inventory },
+  components: { Stats, ActionHourGlass, ContextMenu, Hand, GameButton, Chat, Inventory },
   setup() {
     const isActive = ref(false)
     const authStore = useAuthStore()
@@ -142,6 +143,7 @@ export default defineComponent({
   </div>
 
   <div v-if="isActive" class="game-ui">
+    <stats />
     <chat />
     <action-hour-glass />
     <context-menu />

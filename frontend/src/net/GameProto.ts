@@ -11,7 +11,8 @@ import {
   type ObjectDel,
   type ObjectMoved,
   type ObjectStopped,
-  ServerPacket
+  ServerPacket,
+  type StatusUpdate
 } from '@/net/packets'
 import Render from '@/game/Render'
 import type GameData from '@/net/GameData'
@@ -186,6 +187,32 @@ export default class GameProto {
         store.actionProgress.total = pkt.t
         store.actionProgress.current = pkt.c
         break
+      }
+
+      case ServerPacket.STATUS_UPDATE : {
+        const pkt = <StatusUpdate>data
+        /*
+        const val CUR_SHP = 0
+        const val CUR_HHP = 1
+        const val MAX_HP = 2
+        const val CUR_STAMINA = 3
+        const val MAX_STAMINA = 4
+        const val CUR_ENERGY = 5
+        const val MAX_ENERGY = 6
+         */
+        if (pkt.id == gameData.selectedCharacterId) {
+          for (let i = 0; i < pkt.l.length; i++) {
+            const attr = pkt.l[i]
+            switch (attr.t) {
+              case 3:
+                store.playerStatus.stamina = attr.v
+                break
+              case 4 :
+                store.playerStatus.maxStamina = attr.v
+                break
+            }
+          }
+        }
       }
     }
   }

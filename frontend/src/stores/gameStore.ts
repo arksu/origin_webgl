@@ -12,8 +12,8 @@ export const useGameStore = defineStore('game', {
     chatHistory: [] as string[],
 
     contextMenu: undefined as ContextMenuData | undefined,
-    contextMenuPosX : 0 as number,
-    contextMenuPosY : 0 as number,
+    contextMenuPosX: 0 as number,
+    contextMenuPosY: 0 as number,
 
     inventories: [] as InventoryUpdate[],
     hand: undefined as HandData | undefined,
@@ -22,6 +22,11 @@ export const useGameStore = defineStore('game', {
       total: 0,
       current: 0
     } as ActionProgress,
+
+    playerStatus: {
+      maxStamina: 0,
+      stamina: 0
+    } as PlayerStatus
 
   }),
   getters: {
@@ -40,6 +45,10 @@ export const useGameStore = defineStore('game', {
      */
     actionFrame(): number {
       return Math.round((this.actionProgress.current / this.actionProgress.total) * 21)
+    },
+
+    staminaPercent(): number {
+      return this.playerStatus.stamina / this.playerStatus.maxStamina * 100
     },
 
   },
@@ -72,4 +81,9 @@ export type ChatItem = {
 export type ActionProgress = {
   total: number,
   current: number
+}
+
+export type PlayerStatus = {
+  maxStamina: number,
+  stamina: number,
 }

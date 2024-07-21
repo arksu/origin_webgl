@@ -12,11 +12,13 @@ class ChopTree(
     player: Player,
     val tree: Tree
 ) : Action(player) {
-    override val ticks = 12
-    override val staminaConsume = 1
+    override val ticks = 10
+    override val staminaConsume = 10
     override val minimumStaminaRequired = 300
+    override val tickDelay = 120L
 
-    private val chop = 100
+    // сколько сносим дереву за 1 цикл действия
+    private val chop = 50
 
     override fun condition(): Boolean {
         // рубим до тех пор, пока очки рубки не превышают максимум

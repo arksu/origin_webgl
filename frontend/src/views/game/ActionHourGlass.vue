@@ -84,12 +84,12 @@ const store = useGameStore()
   box-sizing: content-box;
   position: absolute;
   height: 5px;
-  width: 320px;
+  width: 120px;
   border: 2px solid #132d15;
   border-radius: 10px;
   pointer-events: auto;
   display: inline-block;
-  margin-left: -147px;
+  margin-left: -47px;
   margin-top: 39px;
   //margin-right: 20px;
 }

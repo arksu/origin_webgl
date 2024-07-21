@@ -114,15 +114,15 @@ export interface ActionProgressData {
 }
 
 export interface StatusUpdateAttribute {
-  // index
-  readonly i: number
+  // type
+  readonly t: number
   // value
   readonly v: number
 }
 
 export interface StatusUpdate {
   readonly id: number
-  readonly list: StatusUpdateAttribute[]
+  readonly l: StatusUpdateAttribute[]
 }
 
 export interface CreatureSay {
