@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { RouteNames } from '@/router/routeNames'
 import router from '@/router'
 import GameClient from '@/net/GameClient'
-import type { ContextMenuData, HandData, InventoryUpdate } from '@/net/packets'
+import type { ContextMenuData, HandData, InventoryUpdate, TimeUpdate } from '@/net/packets'
 
 export const useGameStore = defineStore('game', {
   state: () => ({
@@ -26,7 +26,9 @@ export const useGameStore = defineStore('game', {
     playerStatus: {
       maxStamina: 0,
       stamina: 0
-    } as PlayerStatus
+    } as PlayerStatus,
+
+    time: undefined as TimeUpdate | undefined,
 
   }),
   getters: {
@@ -49,6 +51,16 @@ export const useGameStore = defineStore('game', {
 
     staminaPercent(): number {
       return this.playerStatus.stamina / this.playerStatus.maxStamina * 100
+    },
+    sunX(): number {
+      if (this.time !== undefined) {
+        return -Math.cos((this.time.sv / 255.0) * (Math.PI + SUN_ANGLE_MULT) - SUN_ANGLE_OFFSET)
+      } else return 0
+    },
+    sunY(): number {
+      if (this.time !== undefined) {
+        return -Math.sin((this.time.sv / 255.0) * (Math.PI + SUN_ANGLE_MULT) - SUN_ANGLE_OFFSET)
+      } else return 0
     },
 
   },
@@ -87,3 +99,6 @@ export type PlayerStatus = {
   maxStamina: number,
   stamina: number,
 }
+
+const SUN_ANGLE_MULT = 0.6
+const SUN_ANGLE_OFFSET = 0.2

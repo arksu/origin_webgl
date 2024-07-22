@@ -8,6 +8,7 @@ export enum ClientPacket {
   OPEN_MY_INVENTORY = 'openmyinv',
   INVENTORY_CLOSE = 'invclose',
   ITEM_CLICK = 'itemclick',
+  ITEM_RIGHT_CLICK = 'itemrclick',
   CONTEXT_MENU_SELECT = 'cmselect'
 }
 

@@ -4,6 +4,8 @@ import com.origin.ObjectID
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.InventoryRecord
 import com.origin.jooq.tables.references.INVENTORY
+import com.origin.model.ContextMenu
+import com.origin.model.Player
 
 class InventoryItem(val record: InventoryRecord) {
     val id: ObjectID
@@ -46,6 +48,10 @@ class InventoryItem(val record: InventoryRecord) {
                 .where(INVENTORY.ID.eq(record.id))
                 .execute()
         }
+    }
+
+    fun getContextMenu(player : Player) : ContextMenu? {
+        return ContextMenu(this, setOf("ggg"))
     }
 
     fun setXY(x: Int, y: Int) {

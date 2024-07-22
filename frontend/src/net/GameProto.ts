@@ -12,7 +12,8 @@ import {
   type ObjectMoved,
   type ObjectStopped,
   ServerPacket,
-  type StatusUpdate
+  type StatusUpdate,
+  type TimeUpdate
 } from '@/net/packets'
 import Render from '@/game/Render'
 import type GameData from '@/net/GameData'
@@ -135,8 +136,8 @@ export default class GameProto {
 
       case ServerPacket.CONTEXT_MENU : {
         const pkt = <ContextMenuData>data
-        const obj = gameData.objects[pkt.id]
-        if (obj !== undefined) {
+        // const obj = gameData.objects[pkt.id]
+        if (pkt.id > 0) {
           // const sc = this.render.coordGame2ScreenAbs(obj.x, obj.y)
           store.contextMenuPosX = mouse.x
           store.contextMenuPosY = mouse.y
@@ -213,6 +214,12 @@ export default class GameProto {
             }
           }
         }
+        break
+      }
+
+      case ServerPacket.TIME_UPDATE : {
+        store.time = <TimeUpdate>data
+        break
       }
     }
   }

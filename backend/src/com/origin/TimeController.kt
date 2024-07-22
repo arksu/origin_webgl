@@ -82,6 +82,21 @@ object TimeController : Thread("TimeController") {
     const val GAME_ACTION_PERIOD = 100L
 
     /**
+     * сколько занимает тик регенерации для игроков (мсек)
+     */
+    const val PLAYER_REGENERATION_PERIOD = 800
+
+    /**
+     * время между принудительным сохранением состояния игрока
+     */
+    const val PLAYER_SAVE_PERIOD = 10000
+
+    /**
+     * как часто шлем обновление игрового времени на клиент
+     */
+    const val PLAYER_TIME_UPDATE_PERIOD = 3000
+
+    /**
      * период в тиках между сохранением значения времени в базу
      */
     private const val STORE_TICKS_PERIOD = 5 * TICKS_PER_SECOND
@@ -110,7 +125,11 @@ object TimeController : Thread("TimeController") {
     var tickCount: Long = 0
         private set
 
-    var playersSaveTickCounter = 0
+    private var playersSaveTimeAccum = 0
+
+    private var playersRegenerateTimeAccum = 0
+
+    private var playersTimeUpdateAccum = 0
 
     /**
      * загрузка информации о времени из базы
@@ -253,8 +272,8 @@ object TimeController : Thread("TimeController") {
     }
 
     private fun updateGrids() {
-        activeGrids.forEach {
-            runBlocking {
+        runBlocking {
+            activeGrids.forEach {
                 kotlin.runCatching {
                     it.send(GridMessage.Update())
                 }
@@ -281,11 +300,35 @@ object TimeController : Thread("TimeController") {
                 }
 
                 // сохраняем всех игроков если надо
-                playersSaveTickCounter++
-                if (playersSaveTickCounter > 50) {
-                    playersSaveTickCounter = 0
-                    World.playersIterator().forEach { pe ->
-                        pe.value.save()
+                playersSaveTimeAccum += MILLIS_IN_TICK
+                if (playersSaveTimeAccum >= PLAYER_SAVE_PERIOD) {
+                    playersSaveTimeAccum -= PLAYER_SAVE_PERIOD
+                    if (World.getPlayersCount() > 0) WorkerScope.launch {
+                        World.playersIterator().forEach { pe ->
+                            pe.value.save()
+                        }
+                    }
+                }
+
+                // регенерация игроков
+                playersRegenerateTimeAccum += MILLIS_IN_TICK
+                while (playersRegenerateTimeAccum >= PLAYER_REGENERATION_PERIOD) {
+                    playersRegenerateTimeAccum -= PLAYER_REGENERATION_PERIOD
+                    if (World.getPlayersCount() > 0) WorkerScope.launch {
+                        World.playersIterator().forEach { pe ->
+                            pe.value.status.regeneration()
+                        }
+                    }
+                }
+
+                // обновление времени на клиенте
+                playersTimeUpdateAccum += MILLIS_IN_TICK
+                if (playersTimeUpdateAccum >= PLAYER_TIME_UPDATE_PERIOD) {
+                    playersTimeUpdateAccum -= PLAYER_TIME_UPDATE_PERIOD
+                    if (World.getPlayersCount() > 0) WorkerScope.launch {
+                        World.playersIterator().forEach { pe ->
+                            pe.value.sendTimeUpdate()
+                        }
                     }
                 }
             } catch (t: Throwable) {

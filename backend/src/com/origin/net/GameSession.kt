@@ -3,7 +3,6 @@ package com.origin.net
 import com.google.gson.Gson
 import com.origin.config.DatabaseConfig
 import com.origin.config.ServerConfig
-import com.origin.error.BadRequestException
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHAT_HISTORY
@@ -104,6 +103,12 @@ class GameSession(
                 val ox = request.getLong("ox")
                 val oy = request.getLong("oy")
                 player.send(PlayerMessage.InventoryItemClick(id, inventoryId, x.toInt(), y.toInt(), ox.toInt(), oy.toInt()))
+            }
+
+            ITEM_RIGHT_CLICK.n -> {
+                val id = request.getLong("id")
+                val inventoryId = request.getLong("iid")
+                player.send(PlayerMessage.InventoryRightItemClick(id, inventoryId))
             }
 
             CONTEXT_MENU_SELECT.n -> {

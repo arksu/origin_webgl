@@ -31,6 +31,7 @@ enum class ClientPacket(val n: String) {
     OPEN_MY_INVENTORY("openmyinv"),
     INVENTORY_CLOSE("invclose"),
     ITEM_CLICK("itemclick"),
+    ITEM_RIGHT_CLICK("itemrclick"),
     CONTEXT_MENU_SELECT("cmselect")
 }
 
@@ -137,7 +138,7 @@ class ObjectStopped(m: BroadcastEvent.Stopped) : ServerMessage(OBJECT_STOP.n) {
 
 class ContextMenuData(contextMenu: ContextMenu?) : ServerMessage(CONTEXT_MENU.n) {
     // -1 очистка контекстного меню
-    private val id = contextMenu?.obj?.id ?: -1
+    private val id = contextMenu?.obj?.id ?: contextMenu?.item?.id ?: -1
     private val l = contextMenu?.items
 }
 
@@ -211,3 +212,21 @@ class ActionProgress(
     // total
     val t: Int
 ) : ServerMessage(ACTION_PROGRESS.n)
+
+class TimeUpdate(
+    val t: Long,
+    // hour
+    val h: Int,
+    // minute
+    val m: Int,
+    // day
+    val d: Int,
+    // month
+    val mm: Int,
+    // night value
+    val nv: Int,
+    // sun value
+    val sv: Int,
+    // moon value
+    val mv: Int
+) : ServerMessage(TIME_UPDATE.n)

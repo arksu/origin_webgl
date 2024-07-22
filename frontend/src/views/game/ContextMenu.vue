@@ -36,6 +36,7 @@ const list = computed(() => store.contextMenu?.l || [])
   pointer-events: auto;
   opacity: 1;
   position: relative;
+  z-index: 20;
 }
 
 .action-button {

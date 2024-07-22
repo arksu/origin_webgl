@@ -31,10 +31,13 @@ open class HumanStatus(private val me: Human) {
         return old - stamina
     }
 
+    private fun addStamina(value: Int) {
+        setCurrentStamina(stamina + value)
+    }
+
     private fun setCurrentStamina(value: Int): Boolean {
 
         val old = stamina
-        val maxStamina = me.getMaxStamina()
 
         stamina = if (value > maxStamina) {
             maxStamina
@@ -48,6 +51,9 @@ open class HumanStatus(private val me: Human) {
             me.broadcastStatusUpdate()
         }
         return wasChanged
+    }
+
+    open fun save() {
     }
 
     open fun fillStatusUpdate(su: StatusUpdate) {
@@ -75,8 +81,7 @@ open class HumanStatus(private val me: Human) {
         return pkt
     }
 
-    open fun save() {
-
+    fun regeneration() {
+        addStamina(1)
     }
-
 }

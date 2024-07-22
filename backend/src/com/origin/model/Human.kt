@@ -208,8 +208,6 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
         }
     }
 
-    abstract fun getMaxStamina(): Int
-
     /**
      * отправить в окружающее пространство информацию о своем статусе, hp, stamina и тд
      */

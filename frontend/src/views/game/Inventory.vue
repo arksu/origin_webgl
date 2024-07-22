@@ -19,7 +19,7 @@ export default defineComponent({
     const visible = ref(true)
 
     const onClose = () => {
-      GameClient.instance?.send('invclose', {
+      GameClient.instance?.send(ClientPacket.INVENTORY_CLOSE, {
         iid: props.inventory.id
       })
     }
@@ -72,7 +72,7 @@ export default defineComponent({
     </div>
 
     <div v-for="item in inventory.l" :key="item.id">
-      <item :item="item" @itemClick="onItemClick"></item>
+      <item :inventory-id="inventory.id" :item="item" @itemClick="onItemClick"></item>
     </div>
   </window>
 </template>

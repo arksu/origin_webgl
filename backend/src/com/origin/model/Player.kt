@@ -5,6 +5,7 @@ package com.origin.model
 import com.origin.OPEN_DISTANCE
 import com.origin.ObjectID
 import com.origin.TILE_SIZE
+import com.origin.TimeController
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHARACTER
@@ -70,6 +71,7 @@ class Player(
             is PlayerMessage.ObjectRightClick -> onObjectRightClick(msg.id)
             is BroadcastEvent.ChatMessage -> onChatMessage(msg)
             is PlayerMessage.InventoryItemClick -> onItemClick(msg)
+            is PlayerMessage.InventoryRightItemClick -> onItemRightClick(msg)
             is PlayerMessage.InventoryClose -> onInventoryClose(msg)
             is PlayerMessage.ChatMessage -> onClientChatMessage(msg)
             is PlayerMessage.ContextMenuItem -> onContextMenuItem(msg)
@@ -178,6 +180,20 @@ class Player(
         }
     }
 
+    private suspend fun onItemRightClick(msg: PlayerMessage.InventoryRightItemClick) {
+        if (contextMenu != null) clearContextMenu()
+
+        if (msg.inventoryId == id) {
+            contextMenu = inventory.items[msg.id]?.getContextMenu(this)
+        } else {
+            val obj = openedObjectsList.get(msg.inventoryId)
+            contextMenu = obj?.inventory?.items?.get(msg.id)?.getContextMenu(this)
+        }
+        if (contextMenu != null) {
+            session.send(ContextMenuData(contextMenu))
+        }
+    }
+
     private suspend fun onInventoryClose(msg: PlayerMessage.InventoryClose) {
         // это требование закрыть мой инвентарь?
         if (msg.id == id) {
@@ -213,34 +229,9 @@ class Player(
      * вызывается в самую последнюю очередь при спавне игрока в мир
      * когда уже все прогружено и заспавнено, гриды активированы
      */
-    private fun onConnected() {
+    private suspend fun onConnected() {
         World.addPlayer(this)
-
-        // auto save task
-//        autoSaveJob = WorkerScope.launch {
-//            while (true) {
-//                delay(10000L)
-//                this@Player.send(PlayerMsg.Store())
-//            }
-//        }
-//        timeUpdateJob = WorkerScope.launch {
-//            while (true) {
-//                this@Player.session.send(
-//                    TimeUpdate(
-//                        TimeController.tickCount,
-//                        TimeController.getGameHour(),
-//                        TimeController.getGameMinute(),
-//                        TimeController.getGameDay(),
-//                        TimeController.getGameMonth(),
-//                        TimeController.getNightValue(),
-//                        TimeController.getSunValue(),
-//                        0
-//                    )
-//                )
-//                delay(3000L)
-//            }
-//        }
-
+        sendTimeUpdate()
 //        session.send(CraftList(this))
     }
 
@@ -381,10 +372,6 @@ class Player(
         return "player"
     }
 
-    override fun getMaxStamina(): Int {
-        return 1000
-    }
-
     override fun broadcastStatusUpdate() {
         val pkt = status.getPacket()
         runBlocking(IO) {
@@ -392,5 +379,20 @@ class Player(
         }
 
         // TODO broadcast my status to party members
+    }
+
+    suspend fun sendTimeUpdate() {
+        session.send(
+            TimeUpdate(
+                t = TimeController.tickCount,
+                h = TimeController.getGameHour(),
+                m = TimeController.getGameMinute(),
+                d = TimeController.getGameDay(),
+                mm = TimeController.getGameMonth(),
+                nv = TimeController.getNightValue(),
+                sv = TimeController.getSunValue(),
+                mv = 0 // TODO
+            )
+        )
     }
 }
