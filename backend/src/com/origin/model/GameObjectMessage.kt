@@ -1,7 +1,5 @@
 package com.origin.model
 
-import com.origin.ObjectID
-import com.origin.model.inventory.InventoryItem
 import com.origin.util.MessageWithAck
 
 sealed class GameObjectMessage {

@@ -1,6 +1,7 @@
 package com.origin.model.inventory
 
 import com.origin.model.Player
+import com.origin.model.item.Item
 
 /**
  * рука в которой игрок держит вещь (inventory item)
@@ -8,7 +9,7 @@ import com.origin.model.Player
 class Hand(
     private val me: Player,
 
-    val item: InventoryItem,
+    val item: Item,
 
     /**
      * отступ в координатах инвентаря (чтобы положить обратно корректно)

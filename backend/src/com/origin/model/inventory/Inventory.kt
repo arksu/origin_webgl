@@ -5,6 +5,7 @@ import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.references.INVENTORY
 import com.origin.model.GameObject
 import com.origin.model.Player
+import com.origin.model.item.Item
 import com.origin.model.`object`.container.Container
 import com.origin.net.InventoryUpdate
 import java.util.concurrent.ConcurrentHashMap
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap
 class Inventory(private val parent: GameObject) {
     val id: ObjectID = parent.id
 
-    val items = ConcurrentHashMap<ObjectID, InventoryItem>()
+    val items = ConcurrentHashMap<ObjectID, Item>()
 
     val title: String
         get() {
@@ -28,7 +29,7 @@ class Inventory(private val parent: GameObject) {
             .and(INVENTORY.DELETED.isFalse)
             .fetch()
         list.forEach {
-            items[it.id] = InventoryItem(it)
+            items[it.id] = Item(it)
         }
     }
 
@@ -77,8 +78,8 @@ class Inventory(private val parent: GameObject) {
      * либо null если не нашли все необходимые вещи
      * @param isTake надо ли забирать из инвентаря вещи, иначе просто проверяем и возвращаем список того что нашли
      */
-    suspend fun findAndTakeItem(list: List<ItemWithCount>, isTake: Boolean = true): List<InventoryItem>? {
-        val result = ArrayList<InventoryItem>(8)
+    suspend fun findAndTakeItem(list: List<ItemWithCount>, isTake: Boolean = true): List<Item>? {
+        val result = ArrayList<Item>(8)
         val req = RequiredList(list)
         // идем по всем вещам в инвентаре
         items.forEach {
@@ -107,7 +108,7 @@ class Inventory(private val parent: GameObject) {
         return result
     }
 
-    suspend fun takeItem(id: ObjectID): InventoryItem? {
+    suspend fun takeItem(id: ObjectID): Item? {
         val removed = items.remove(id)
         if (removed != null) {
             notify()
@@ -122,7 +123,7 @@ class Inventory(private val parent: GameObject) {
      * @param y координаты куда положить вещь в инвентаре
      * @return удалось ли положить
      */
-    suspend fun putItem(item: InventoryItem, x: Int, y: Int): Boolean {
+    suspend fun putItem(item: Item, x: Int, y: Int): Boolean {
         val result = tryPut(item, x, y)
         if (result) {
             notify()
@@ -134,7 +135,7 @@ class Inventory(private val parent: GameObject) {
      * положить вещь в инвентарь
      * попытаться положить в любое место которое свободно
      */
-    suspend fun putItem(item: InventoryItem): Boolean {
+    suspend fun putItem(item: Item): Boolean {
         // перебираем все возможные координаты в инвентаре
         for (iy in 0 until getHeight()) for (ix in 0 until getWidth())
             // пробуем положить вещь в эти координаты
@@ -148,7 +149,7 @@ class Inventory(private val parent: GameObject) {
     /**
      * проверка можно ли положить вещь в этот инвентарь
      */
-    private fun tryPut(item: InventoryItem, x: Int, y: Int): Boolean {
+    private fun tryPut(item: Item, x: Int, y: Int): Boolean {
         // проверяем что вещь влезает вообще в инвентарь по размеру
         if (x >= 0 && y >= 0 && x + item.width <= getWidth() && y + item.height <= getHeight()) {
             var conflict = false

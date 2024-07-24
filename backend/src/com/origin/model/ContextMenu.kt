@@ -1,6 +1,6 @@
 package com.origin.model
 
-import com.origin.model.inventory.InventoryItem
+import com.origin.model.item.Item
 import com.origin.move.Move2Object
 
 /**
@@ -10,7 +10,7 @@ import com.origin.move.Move2Object
  */
 class ContextMenu {
 
-    val item: InventoryItem?
+    val item: Item?
     val obj: GameObject?
     val items: Collection<String>
 
@@ -20,7 +20,7 @@ class ContextMenu {
         this.item = null
     }
 
-    constructor(item: InventoryItem, items: Collection<String>) {
+    constructor(item: Item, items: Collection<String>) {
         this.item = item
         this.items = items
         this.obj = null

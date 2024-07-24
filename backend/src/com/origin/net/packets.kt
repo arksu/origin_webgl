@@ -4,7 +4,7 @@ import com.origin.ObjectID
 import com.origin.model.*
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
-import com.origin.model.inventory.InventoryItem
+import com.origin.model.item.Item
 import com.origin.net.ServerPacket.*
 
 /**
@@ -142,7 +142,7 @@ class ContextMenuData(contextMenu: ContextMenu?) : ServerMessage(CONTEXT_MENU.n)
     private val l = contextMenu?.items
 }
 
-class InventoryItemData(item: InventoryItem) {
+class InventoryItemData(item: Item) {
     private val id = item.id
     private val x = item.x
     private val y = item.y

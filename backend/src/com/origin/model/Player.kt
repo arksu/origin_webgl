@@ -11,7 +11,7 @@ import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHARACTER
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
-import com.origin.model.inventory.InventoryItem
+import com.origin.model.item.Item
 import com.origin.model.`object`.container.ContainerMessage
 import com.origin.move.Move2Object
 import com.origin.move.Move2Point
@@ -302,7 +302,7 @@ class Player(
         contextMenu = null
     }
 
-    private suspend fun setHand(item: InventoryItem?, msg: PlayerMessage.InventoryItemClick) {
+    private suspend fun setHand(item: Item?, msg: PlayerMessage.InventoryItemClick) {
         hand = if (item != null) {
             val h = Hand(this, item, msg.x, msg.y, msg.ox, msg.oy)
             session.send(HandUpdate(h))

@@ -5,7 +5,7 @@ import com.origin.jooq.tables.records.InventoryRecord
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.GameObject
 import com.origin.model.ObjectPosition
-import com.origin.model.inventory.InventoryItem
+import com.origin.model.item.Item
 import com.origin.model.`object`.container.Box
 import com.origin.model.`object`.container.Crate
 import com.origin.model.`object`.tree.*
@@ -52,7 +52,7 @@ object ObjectsFactory {
         )
     }
 
-    fun createInventoryItem(typeId: Int, count: Int = 1, quality: Short = 10): InventoryItem {
+    fun createInventoryItem(typeId: Int, count: Int = 1, quality: Short = 10): Item {
         val record = InventoryRecord(
             id = IdFactory.getNext(),
             inventoryId = -1, // укажем -1 значит попытка спавна
@@ -64,6 +64,6 @@ object ObjectsFactory {
             lastTick = 0,
             deleted = 0
         )
-        return InventoryItem(record)
+        return Item(record)
     }
 }

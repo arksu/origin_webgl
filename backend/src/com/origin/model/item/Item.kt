@@ -1,4 +1,4 @@
-package com.origin.model.inventory
+package com.origin.model.item
 
 import com.origin.ObjectID
 import com.origin.config.DatabaseConfig
@@ -6,8 +6,10 @@ import com.origin.jooq.tables.records.InventoryRecord
 import com.origin.jooq.tables.references.INVENTORY
 import com.origin.model.ContextMenu
 import com.origin.model.Player
+import com.origin.model.inventory.Inventory
+import com.origin.model.inventory.ItemType
 
-class InventoryItem(val record: InventoryRecord) {
+open class Item(val record: InventoryRecord) {
     val id: ObjectID
         get() {
             return record.id
