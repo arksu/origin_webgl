@@ -904,6 +904,7 @@
     "offset": [37, 34],
     "layers": [
       {
+        "interactive": true,
         "img": "obj/log/log.png",
         "offset": [0, 0],
         "z": 0

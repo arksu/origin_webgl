@@ -1,5 +1,3 @@
-import type GameObject from '@/game/GameObject'
-
 export enum ClientPacket {
   OBJECT_CLICK = 'oc',
   OBJECT_RIGHT_CLICK = 'orc',

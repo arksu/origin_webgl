@@ -365,7 +365,7 @@ class Player(
     }
 
     override fun getBoundRect(): Rect {
-        return PLAYER_RECT
+        return Rect.PLAYER_RECT
     }
 
     override fun getResourcePath(): String {

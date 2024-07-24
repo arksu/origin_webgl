@@ -9,7 +9,6 @@ import com.origin.model.inventory.InventoryItem
 import com.origin.model.`object`.container.Box
 import com.origin.model.`object`.container.Crate
 import com.origin.model.`object`.tree.*
-import com.origin.model.PositionModel
 
 object ObjectsFactory {
     fun constructByRecord(record: ObjectRecord): GameObject {

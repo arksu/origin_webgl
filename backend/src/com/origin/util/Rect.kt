@@ -1,6 +1,11 @@
 package com.origin.util
 
 class Rect {
+    companion object {
+        val EMPTY = Rect(0)
+        val PLAYER_RECT = Rect(3)
+    }
+
     var left: Int
         private set
 

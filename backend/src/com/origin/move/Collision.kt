@@ -39,7 +39,7 @@ object Collision {
         // тип движения для расчета коллизий
         moveType: MoveType,
         // список гридов участвующих в коллизии (начали движение на границе грида и движемся в другой)
-        list: List<Grid>,
+        gridList: List<Grid>,
         // это реальное движение? если коллизии нет - изменим позицию объекта
         isMove: Boolean,
     ): CollisionResult {
@@ -57,16 +57,19 @@ object Collision {
             .extendSize(dist.roundToInt() + 5, dist.roundToInt() + 5) // extend(dp.x, dp.y) //
 
         // получаем список объектов для обсчета коллизий из списка гридов
-        val filtered = list.flatMap { it ->
+        val filtered = gridList.flatMap { grid ->
             // фильтруем список объектов. вернем только те которые ТОЧНО МОГУТ дать коллизию
             // те которые далеко или не попадают в прямоугольник движения - отсечем их
-            it.objects.filter {
+            grid.objects.filter {
                 // сами себе никогда не даем коллизию
                 if (obj == it) return@filter false
                 // дает ли объект коллизию?
                 if (!it.isCollideWith(obj)) return@filter false
                 // рект объекта
-                val r = it.getBoundRect().clone().move(it.pos.point)
+                val boundRect = it.getBoundRect()
+                // нулевой (пустой рект) не дает коллизии
+                if (boundRect == Rect.EMPTY) return@filter false
+                val r = boundRect.clone().move(it.pos.point)
                 // границы объекта должны быть в границах вектора движения объекта
                 // то есть пересекаться с областью движения объекта
                 movingArea.isIntersect(r)
@@ -263,12 +266,12 @@ object Collision {
             val intNewY = newY.roundToInt()
 
             // проверим выход за границы мира
-            if (!checkWorldLimit(intNewX, intNewY, list[0].layer)) {
+            if (!checkWorldLimit(intNewX, intNewY, gridList[0].layer)) {
                 return CollisionResult(CollisionResult.CollisionType.COLLISION_WORLD, null)
             }
 
             // проверям тайлы
-            if (isTileCollision(intNewX, intNewY, list, obj, moveType)) {
+            if (isTileCollision(intNewX, intNewY, gridList, obj, moveType)) {
                 return CollisionResult(CollisionResult.CollisionType.COLLISION_TILE, null)
             }
 
