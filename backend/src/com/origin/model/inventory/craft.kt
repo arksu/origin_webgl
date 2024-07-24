@@ -1,10 +1,10 @@
 package com.origin.model.inventory
 
 data class ItemWithCount(
-    val item: ItemType,
+    val itemTypeId: Int,
     var count: Int = 1
 ) {
-    constructor(i: ItemWithCount) : this(i.item, i.count)
+    constructor(i: ItemWithCount) : this(i.itemTypeId, i.count)
 }
 
 class RequiredList(
@@ -24,11 +24,11 @@ class RequiredList(
      * проверить что указанный тип вещи есть в требуемом списке,
      * удалить его из списка
      */
-    fun checkAndDecrement(item: ItemType): Boolean {
+    fun checkAndDecrement(itemTypeId: Int): Boolean {
         val itr = left.iterator()
         while (itr.hasNext()) {
             val l = itr.next()
-            if (l.item == item && l.count >= 1) {
+            if (l.itemTypeId == itemTypeId && l.count >= 1) {
                 l.count--
                 if (l.count <= 0) itr.remove()
                 return true

@@ -51,19 +51,4 @@ object ObjectsFactory {
             data = data
         )
     }
-
-    fun createInventoryItem(typeId: Int, count: Int = 1, quality: Short = 10): Item {
-        val record = InventoryRecord(
-            id = IdFactory.getNext(),
-            inventoryId = -1, // укажем -1 значит попытка спавна
-            x = 0,
-            y = 0,
-            type = typeId,
-            quality = quality,
-            count = count,
-            lastTick = 0,
-            deleted = 0
-        )
-        return Item(record)
-    }
 }

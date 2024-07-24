@@ -7,20 +7,18 @@ import com.origin.jooq.tables.references.INVENTORY
 import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.inventory.Inventory
-import com.origin.model.inventory.ItemType
 
-open class Item(val record: InventoryRecord) {
+abstract class Item(val record: InventoryRecord) {
     val id: ObjectID
         get() {
             return record.id
         }
 
-    val type: ItemType = ItemType.fromId(record.type)
+    open val width = 1
+    open val height = 1
+    abstract val icon: String
 
-    val width get() = type.width
-    val height get() = type.height
-    val icon get() = type.icon
-
+    val typeId: Int get() = record.type
     val x: Int get() = record.x
     val y: Int get() = record.y
     val q: Short get() = record.quality
@@ -52,7 +50,7 @@ open class Item(val record: InventoryRecord) {
         }
     }
 
-    fun getContextMenu(player : Player) : ContextMenu? {
+    fun getContextMenu(player: Player): ContextMenu? {
         return ContextMenu(this, setOf("ggg"))
     }
 
@@ -84,8 +82,8 @@ open class Item(val record: InventoryRecord) {
      * находится ли внутри этой вещи
      */
     fun collide(x: Int, y: Int, w: Int, h: Int): Boolean {
-        val tr = this.x + type.width - 1
-        val tb = this.y + type.height - 1
+        val tr = this.x + width - 1
+        val tb = this.y + height - 1
         val r = x + w - 1
         val b = y + h - 1
 

@@ -6,6 +6,7 @@ import com.origin.jooq.tables.references.INVENTORY
 import com.origin.model.GameObject
 import com.origin.model.Player
 import com.origin.model.item.Item
+import com.origin.model.item.ItemFactory
 import com.origin.model.`object`.container.Container
 import com.origin.net.InventoryUpdate
 import java.util.concurrent.ConcurrentHashMap
@@ -29,7 +30,7 @@ class Inventory(private val parent: GameObject) {
             .and(INVENTORY.DELETED.isFalse)
             .fetch()
         list.forEach {
-            items[it.id] = Item(it)
+            items[it.id] = ItemFactory.create(it)
         }
     }
 
@@ -84,7 +85,7 @@ class Inventory(private val parent: GameObject) {
         // идем по всем вещам в инвентаре
         items.forEach {
             // проверим что такая вещь есть в списке требований
-            if (req.checkAndDecrement(it.value.type)) {
+            if (req.checkAndDecrement(it.value.typeId)) {
                 // добавим ее в результат
                 result.add(it.value)
             }
@@ -138,7 +139,7 @@ class Inventory(private val parent: GameObject) {
     suspend fun putItem(item: Item): Boolean {
         // перебираем все возможные координаты в инвентаре
         for (iy in 0 until getHeight()) for (ix in 0 until getWidth())
-            // пробуем положить вещь в эти координаты
+        // пробуем положить вещь в эти координаты
             if (tryPut(item, ix, iy)) {
                 notify()
                 return true

@@ -1,7 +1,6 @@
 package com.origin.model
 
-import com.origin.model.inventory.ItemType
-import com.origin.model.`object`.ObjectsFactory
+import com.origin.model.item.ItemFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -15,11 +14,13 @@ object PlayerCommands {
         when (params[0]) {
             "give" -> {
                 // param 1 - type id || name type
-                val typeId: Int = params[1].toIntOrNull() ?: ItemType.fromName(params[1].lowercase()).id
+                val typeId: Int = params[1].toIntOrNull() ?: ItemFactory.getTypeByName(params[1].lowercase())
 
-                val newItem = ObjectsFactory.createInventoryItem(typeId)
-                if (!player.inventory.putItem(newItem)) {
-                    // TODO new item drop to ground
+                if (typeId > 0) {
+                    val newItem = ItemFactory.create(typeId)
+                    if (!player.inventory.putItem(newItem)) {
+                        // TODO new item drop to ground
+                    }
                 }
             }
 

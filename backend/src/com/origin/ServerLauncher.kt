@@ -2,7 +2,7 @@ package com.origin
 
 import com.origin.config.DatabaseConfig
 import com.origin.config.ServerConfig
-import com.origin.model.item.Apple
+import com.origin.model.item.ItemFactory
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.*
 
@@ -37,6 +37,8 @@ object ServerLauncher {
         Locale.setDefault(Locale.ROOT)
         ServerConfig.load()
         DatabaseConfig.flywayMigrate()
+
+        ItemFactory.init()
 
 //        FileWatcher.start()
 //        EventBus.init()
