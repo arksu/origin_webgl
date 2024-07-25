@@ -2,22 +2,11 @@ package com.origin.model.item
 
 import com.origin.IdFactory
 import com.origin.jooq.tables.records.InventoryRecord
-import com.origin.model.item.food.Apple
 
 object ItemFactory {
+
     private val map = HashMap<Int, Class<Item>>()
     private val mapNames = HashMap<String, Int>()
-
-    fun init() {
-        Apple.Companion
-        StoneAxe.Companion
-        Stone.Companion
-        Branch.Companion
-        Rabbit.Companion
-        Board.Companion
-        Bark.Companion
-        Bucket.Companion
-    }
 
     fun add(typeId: Int, clazz: Class<*>) {
         @Suppress("UNCHECKED_CAST")
@@ -48,5 +37,14 @@ object ItemFactory {
 
     fun getTypeByName(typeName: String): Int {
         return mapNames[typeName] ?: 0
+    }
+
+    fun init() {
+        val packageName = "com.origin.model.item"
+        val reflections = org.reflections.Reflections(packageName)
+        val objectClasses = reflections.getSubTypesOf(Item::class.java)
+        for (clazz in objectClasses) {
+            Class.forName(clazz.name)
+        }
     }
 }

@@ -4,8 +4,6 @@ import com.origin.IdFactory
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.GameObject
 import com.origin.model.ObjectPosition
-import com.origin.model.`object`.container.Box
-import com.origin.model.`object`.tree.*
 
 object ObjectsFactory {
 
@@ -53,18 +51,11 @@ object ObjectsFactory {
     }
 
     fun init() {
-        Box.Companion
-        Birch.Companion
-        Apple.Companion
-        Elm.Companion
-        Fir.Companion
-        Hazel.Companion
-        Maple.Companion
-        Oak.Companion
-        Pine.Companion
-        Willow.Companion
-        WoodenLog.Companion
-        Yew.Companion
-        Stone.Companion
+        val packageName = "com.origin.model.object"
+        val reflections = org.reflections.Reflections(packageName)
+        val objectClasses = reflections.getSubTypesOf(GameObject::class.java)
+        for (clazz in objectClasses) {
+            Class.forName(clazz.name)
+        }
     }
 }
