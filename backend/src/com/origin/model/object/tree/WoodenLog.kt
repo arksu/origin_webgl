@@ -4,12 +4,19 @@ import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.ContextMenu
 import com.origin.model.Player
 import com.origin.model.StaticObject
+import com.origin.model.`object`.ObjectsFactory
 import com.origin.util.Rect
 
 /**
  * бревно когда срубаем дерево
  */
 class WoodenLog(record: ObjectRecord) : StaticObject(record) {
+
+    companion object {
+        init {
+            ObjectsFactory.add(14, WoodenLog::class.java)
+        }
+    }
 
     override fun getResourcePath(): String {
         return "log"
@@ -26,7 +33,7 @@ class WoodenLog(record: ObjectRecord) : StaticObject(record) {
         return ContextMenu(this, items)
     }
 
-    override suspend fun executeContextMenuItem(player: Player, item: String) {
-
+    override suspend fun executeContextMenuItem(player: Player, selected: String) {
+        // TODO
     }
 }

@@ -122,7 +122,7 @@ class GameSession(
         ack(request, AuthorizeTokenResponse(character.id, ServerConfig.PROTO_VERSION))
 
         player = Player(character, this)
-        player.afterLoad()
+        player.postConstruct()
 
         // пробуем заспавнить игрока в мир
         val spawnResult = player.sendAndWaitAck(GameObjectMessage.Spawn(listOf(EXACTLY_POINT, NEAR, RANDOM_SAME_REGION)))

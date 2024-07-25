@@ -293,7 +293,7 @@ class Player(
      * выбран пункт контекстного меню объекта
      */
     private suspend fun onContextMenuItem(msg: PlayerMessage.ContextMenuItem) {
-        contextMenu?.processItem(this, msg.item)
+        contextMenu?.execute(this, msg.item)
         clearContextMenu()
     }
 
@@ -324,7 +324,6 @@ class Player(
         val delta = currentMillis - lastOnlineStoreTime
         if (delta >= 1000) {
             val secs = delta / 1000
-            logger.debug("inc online time by $secs")
             character.onlineTime += secs
             lastOnlineStoreTime += secs * 1000
         }

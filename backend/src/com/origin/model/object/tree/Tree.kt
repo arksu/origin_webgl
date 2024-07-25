@@ -50,7 +50,7 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
     open val maxBark = 3
     open val logs = 2
 
-    override fun afterLoad() {
+    override fun postConstruct() {
         bark = maxBark
         branch = maxBranch
     }
@@ -76,9 +76,9 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
         return ContextMenu(this, items)
     }
 
-    override suspend fun executeContextMenuItem(player: Player, item: String) {
-        logger.debug("Tree context menu $player - $item")
-        when (item) {
+    override suspend fun executeContextMenuItem(player: Player, selected: String) {
+        logger.debug("Tree context menu $player - $selected")
+        when (selected) {
             "Chop" -> {
                 player.action = ChopTree(player, this)
             }

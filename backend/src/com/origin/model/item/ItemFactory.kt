@@ -5,8 +5,8 @@ import com.origin.jooq.tables.records.InventoryRecord
 import com.origin.model.item.food.Apple
 
 object ItemFactory {
-    val map = HashMap<Int, Class<Item>>()
-    val mapNames = HashMap<String, Int>()
+    private val map = HashMap<Int, Class<Item>>()
+    private val mapNames = HashMap<String, Int>()
 
     fun init() {
         Apple.Companion
@@ -19,8 +19,9 @@ object ItemFactory {
         Bucket.Companion
     }
 
-    fun add(typeId: Int, clazz: Class<Item>) {
-        map[typeId] = clazz
+    fun add(typeId: Int, clazz: Class<*>) {
+        @Suppress("UNCHECKED_CAST")
+        map[typeId] = clazz as Class<Item>
         mapNames[clazz.simpleName.lowercase()] = typeId
     }
 

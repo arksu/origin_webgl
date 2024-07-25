@@ -1,6 +1,7 @@
 package com.origin.model.action
 
 import com.origin.model.Player
+import com.origin.model.item.ItemFactory
 import com.origin.model.`object`.tree.Tree
 
 class TakeBranch(player: Player, val tree: Tree) : Action(player) {
@@ -12,6 +13,9 @@ class TakeBranch(player: Player, val tree: Tree) : Action(player) {
         // если еще есть ветки в дереве И есть место в инвентаре - продолжаем. false
         if (tree.branch > 0) {
             tree.branch--
+
+            // TODO
+//            ItemFactory.create()
         }
         return true
     }

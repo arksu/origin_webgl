@@ -3,6 +3,7 @@ package com.origin
 import com.origin.config.DatabaseConfig
 import com.origin.config.ServerConfig
 import com.origin.model.item.ItemFactory
+import com.origin.model.`object`.ObjectsFactory
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.*
 
@@ -38,6 +39,7 @@ object ServerLauncher {
         ServerConfig.load()
         DatabaseConfig.flywayMigrate()
 
+        ObjectsFactory.init()
         ItemFactory.init()
 
 //        FileWatcher.start()

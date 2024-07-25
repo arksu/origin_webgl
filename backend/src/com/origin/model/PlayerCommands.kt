@@ -46,7 +46,8 @@ object PlayerCommands {
                 val t: Int = params[1].toInt()
                 val pos = ObjectPosition(x, y, player.pos)
 
-                World.getGrid(pos).generateObject(t, pos)
+                // TODO
+//                World.getGrid(pos).generateObject(t, pos)
             }
         }
     }

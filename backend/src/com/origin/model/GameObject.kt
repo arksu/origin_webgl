@@ -259,7 +259,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
      * обработать выбор контекстного меню игроком
      * выполняется в контексте ИГРОКА
      */
-    open suspend fun executeContextMenuItem(player: Player, item: String) {
+    open suspend fun executeContextMenuItem(player: Player, selected: String) {
     }
 
     /**
@@ -278,7 +278,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
         this.grid = g
     }
 
-    open fun afterLoad() {
+    open fun postConstruct() {
     }
 
     open fun getHP(): Int {

@@ -50,8 +50,8 @@ abstract class Item(val record: InventoryRecord) {
         }
     }
 
-    fun getContextMenu(player: Player): ContextMenu? {
-        return ContextMenu(this, setOf("ggg"))
+    open fun getContextMenu(player: Player): ContextMenu? {
+        return null
     }
 
     fun setXY(x: Int, y: Int) {
@@ -89,5 +89,8 @@ abstract class Item(val record: InventoryRecord) {
 
         return (this.x in x..r || tr in x..r || x in this.x..tr || r in this.x..tr) &&
                 (this.y in y..b || tb in y..b || y in this.y..tb || b in this.y..tb)
+    }
+
+    open fun executeContextMenuItem(player: Player, selected: String) {
     }
 }

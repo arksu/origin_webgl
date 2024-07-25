@@ -1,40 +1,35 @@
 package com.origin.model.`object`
 
 import com.origin.IdFactory
-import com.origin.jooq.tables.records.InventoryRecord
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.GameObject
 import com.origin.model.ObjectPosition
-import com.origin.model.item.Item
 import com.origin.model.`object`.container.Box
-import com.origin.model.`object`.container.Crate
 import com.origin.model.`object`.tree.*
 
 object ObjectsFactory {
-    fun constructByRecord(record: ObjectRecord): GameObject {
-        val obj = when (record.type) {
-            1 -> Box(record)
-            2 -> Birch(record)
-            3 -> Fir(record)
-            4 -> Pine(record)
-            5 -> Apple(record)
-            6 -> Oak(record)
-            7 -> Elm(record)
-            8 -> Hazel(record)
-            9 -> Maple(record)
-            10 -> Willow(record)
-            11 -> Yew(record)
-            12 -> Crate(record)
-            13 -> Stone(record)
-            14 -> WoodenLog(record)
-            else -> UnknownObject(record)
-        }
-        obj.afterLoad()
-        return obj
+
+    private val map = HashMap<Int, Class<GameObject>>()
+    private val reverseMap = HashMap<Class<GameObject>, Int>()
+
+    fun add(typeId: Int, clazz: Class<*>) {
+        @Suppress("UNCHECKED_CAST")
+        map[typeId] = clazz as Class<GameObject>
+        reverseMap[clazz] = typeId
     }
 
-    fun create(type: Int, pos: ObjectPosition, data : String? = null): ObjectRecord {
-        return ObjectRecord(
+    fun create(record: ObjectRecord): GameObject {
+        val clazz = map[record.type] ?: throw RuntimeException("class game object for type ${record.type} not found")
+        val c = clazz.getConstructor(ObjectRecord::class.java)
+        val gameObject = c.newInstance(record)
+        gameObject.postConstruct()
+        return gameObject
+    }
+
+    fun create(clazz: Class<GameObject>, pos: ObjectPosition, data: String? = null): GameObject {
+        val typeId = reverseMap[clazz] ?: throw RuntimeException("type id for $clazz game object not found")
+
+        val record = ObjectRecord(
             id = IdFactory.getNext(),
             region = pos.region,
             x = pos.x,
@@ -43,12 +38,33 @@ object ObjectsFactory {
             heading = pos.heading,
             gridX = pos.gridX,
             gridY = pos.gridY,
-            type = type,
+            type = typeId,
             quality = 10,
             hp = 100,
             createTick = 0,
             lastTick = 0,
             data = data
         )
+
+        val c = clazz.getConstructor(ObjectRecord::class.java)
+        val gameObject = c.newInstance(record)
+        gameObject.postConstruct()
+        return gameObject
+    }
+
+    fun init() {
+        Box.Companion
+        Birch.Companion
+        Apple.Companion
+        Elm.Companion
+        Fir.Companion
+        Hazel.Companion
+        Maple.Companion
+        Oak.Companion
+        Pine.Companion
+        Willow.Companion
+        WoodenLog.Companion
+        Yew.Companion
+        Stone.Companion
     }
 }

@@ -5,6 +5,7 @@ import com.origin.model.ObjectPosition
 import com.origin.model.Player
 import com.origin.model.World
 import com.origin.model.`object`.tree.Tree
+import com.origin.model.`object`.tree.WoodenLog
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -59,7 +60,7 @@ class ChopTree(
             // спавним бревна
             for (l in 1..tree.logs) {
                 val pos = ObjectPosition(tree.pos.x + (20 * l + 3) * multX, tree.pos.y + (20 * l + 3) * multY, tree.pos)
-                World.getGrid(pos).generateObject(14, pos)
+                World.getGrid(pos).generateObject(WoodenLog::class.java, pos)
             }
 
             // действие завершается

@@ -10,6 +10,10 @@ import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.jooq.tables.references.GRID
 import com.origin.jooq.tables.references.OBJECT
 import com.origin.model.`object`.ObjectsFactory
+import com.origin.model.`object`.tree.Apple
+import com.origin.model.`object`.tree.Birch
+import com.origin.model.`object`.tree.Fir
+import com.origin.model.`object`.tree.Pine
 import com.origin.move.CheckCollisionModel
 import com.origin.move.Collision
 import com.origin.move.CollisionResult
@@ -343,7 +347,7 @@ class Grid(
             .and(OBJECT.LEVEL.eq(level))
             .fetch()
         list.forEach { record ->
-            val obj = ObjectsFactory.constructByRecord(record)
+            val obj = ObjectsFactory.create(record)
             obj.setGrid(this)
             objects.add(obj)
         }
@@ -360,24 +364,24 @@ class Grid(
             val pos = ObjectPosition(x * TILE_SIZE + ox, y * TILE_SIZE + oy, this.level, this.region, 0)
             when (tilesBlob[x + y * GRID_SIZE]) {
                 Tile.FOREST_LEAF -> {
-                    if (Rnd.next(170) == 0) generateObject(2, pos)
-                    if (Rnd.next(320) == 0) generateObject(5, pos)
+                    if (Rnd.next(170) == 0) generateObject(Birch::class.java, pos)
+                    if (Rnd.next(320) == 0) generateObject(Apple::class.java, pos)
                 }
 
                 Tile.FOREST_PINE -> {
-                    if (Rnd.next(130) == 0) generateObject(3, pos)
-                    if (Rnd.next(270) == 0) generateObject(4, pos)
+                    if (Rnd.next(130) == 0) generateObject(Fir::class.java, pos)
+                    if (Rnd.next(270) == 0) generateObject(Pine::class.java, pos)
                 }
             }
         }
     }
 
-    fun generateObject(type: Int, pos: ObjectPosition, data: String? = null) {
+    fun generateObject(clazz: Class<*>, pos: ObjectPosition, data: String? = null) {
         // запускаем генерацию объекта в корутине
         // вот тут просиходит ай-ай-ай мы в отдельном потоке запускаем генерацию объектов
         WorkerScope.launch {
-            val record = ObjectsFactory.create(type, pos, data)
-            val obj = ObjectsFactory.constructByRecord(record)
+            @Suppress("UNCHECKED_CAST")
+            val obj = ObjectsFactory.create(clazz as Class<GameObject>, pos, data)
 
             obj.setGrid(this@Grid)
             obj.save()

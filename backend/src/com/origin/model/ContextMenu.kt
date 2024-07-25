@@ -26,18 +26,18 @@ class ContextMenu {
         this.obj = null
     }
 
-    suspend fun processItem(player: Player, item: String) {
-        if (items.contains(item)) {
+    suspend fun execute(player: Player, selected: String) {
+        if (items.contains(selected)) {
             if (obj != null) {
                 // в любом действии контекстного меню надо идти к объекту
                 player.startMove(
                     Move2Object(player, obj) {
                         // и потом запустить само действие
-                        obj.executeContextMenuItem(player, item)
+                        obj.executeContextMenuItem(player, selected)
                     }
                 )
             } else if (item != null) {
-
+                item.executeContextMenuItem(player, selected)
             }
         }
     }
