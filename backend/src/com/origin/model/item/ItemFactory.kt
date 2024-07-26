@@ -6,12 +6,14 @@ import com.origin.jooq.tables.records.InventoryRecord
 object ItemFactory {
 
     private val map = HashMap<Int, Class<Item>>()
-    private val mapNames = HashMap<String, Int>()
+    private val reverseMap = HashMap<Class<Item>, Int>()
+    private val mapNames = HashMap<String, Class<Item>>()
 
     fun add(typeId: Int, clazz: Class<*>) {
         @Suppress("UNCHECKED_CAST")
         map[typeId] = clazz as Class<Item>
-        mapNames[clazz.simpleName.lowercase()] = typeId
+        reverseMap[clazz] = typeId
+        mapNames[clazz.simpleName.lowercase()] = clazz
     }
 
     fun create(record: InventoryRecord): Item {
@@ -20,7 +22,8 @@ object ItemFactory {
         return c.newInstance(record)
     }
 
-    fun create(typeId: Int, count: Int = 1, quality: Short = 10): Item {
+    fun create(clazz: Class<*>, count: Int = 1, quality: Short = 10): Item {
+        val typeId = reverseMap[clazz] ?: throw RuntimeException("type item for class ${clazz.simpleName} not found")
         val record = InventoryRecord(
             id = IdFactory.getNext(),
             inventoryId = -1, // укажем -1 значит попытка спавна
@@ -35,8 +38,8 @@ object ItemFactory {
         return create(record)
     }
 
-    fun getTypeByName(typeName: String): Int {
-        return mapNames[typeName] ?: 0
+    fun getClassByName(typeName: String): Class<Item>? {
+        return mapNames[typeName.lowercase()]
     }
 
     fun init() {

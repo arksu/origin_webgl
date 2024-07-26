@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.model.item.ItemFactory
+import com.origin.model.`object`.ObjectsFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -14,10 +15,10 @@ object PlayerCommands {
         when (params[0]) {
             "give" -> {
                 // param 1 - type id || name type
-                val typeId: Int = params[1].toIntOrNull() ?: ItemFactory.getTypeByName(params[1].lowercase())
+                val clazz = ItemFactory.getClassByName(params[1].lowercase())
 
-                if (typeId > 0) {
-                    val newItem = ItemFactory.create(typeId)
+                if (clazz != null) {
+                    val newItem = ItemFactory.create(clazz)
                     if (!player.inventory.putItem(newItem)) {
                         // TODO new item drop to ground
                     }
@@ -42,12 +43,12 @@ object PlayerCommands {
 
         when (params[0]) {
             "spawn" -> {
-                // param 1 - type id
-                val t: Int = params[1].toInt()
-                val pos = ObjectPosition(x, y, player.pos)
-
-                // TODO
-//                World.getGrid(pos).generateObject(t, pos)
+                // param 1 - type
+                val clazz = ObjectsFactory.getClassByName(params[1])
+                if (clazz != null) {
+                    val pos = ObjectPosition(x, y, player.pos)
+                    World.getGrid(pos).generateObject(clazz, pos)
+                }
             }
         }
     }

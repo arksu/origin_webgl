@@ -9,11 +9,13 @@ object ObjectsFactory {
 
     private val map = HashMap<Int, Class<GameObject>>()
     private val reverseMap = HashMap<Class<GameObject>, Int>()
+    private val mapNames = HashMap<String, Class<GameObject>>()
 
     fun add(typeId: Int, clazz: Class<*>) {
         @Suppress("UNCHECKED_CAST")
         map[typeId] = clazz as Class<GameObject>
         reverseMap[clazz] = typeId
+        mapNames[clazz.simpleName.lowercase()] = clazz
     }
 
     fun create(record: ObjectRecord): GameObject {
@@ -48,6 +50,10 @@ object ObjectsFactory {
         val gameObject = c.newInstance(record)
         gameObject.postConstruct()
         return gameObject
+    }
+
+    fun getClassByName(typeName: String): Class<GameObject>? {
+        return mapNames[typeName.lowercase()]
     }
 
     fun init() {

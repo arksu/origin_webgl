@@ -44,16 +44,16 @@ class ChopTree(
             var multY = 0
             var multX = 0
             if (abs(delta.x) > abs(delta.y)) {
-                if (delta.x < 0) {
-                    multX = -1
+                multX = if (delta.x < 0) {
+                    -1
                 } else {
-                    multX = 1
+                    1
                 }
             } else {
-                if (delta.y < 0) {
-                    multY = -1
+                multY = if (delta.y < 0) {
+                    -1
                 } else {
-                    multY = 1
+                    1
                 }
             }
 
