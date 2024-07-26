@@ -17,13 +17,13 @@ object ItemFactory {
     }
 
     fun create(record: InventoryRecord): Item {
-        val clazz = map[record.type] ?: throw RuntimeException("class item for type ${record.type} not found")
+        val clazz = map[record.type] ?: throw RuntimeException("item class for type ${record.type} not found")
         val c = clazz.getConstructor(InventoryRecord::class.java)
         return c.newInstance(record)
     }
 
     fun create(clazz: Class<*>, count: Int = 1, quality: Short = 10): Item {
-        val typeId = reverseMap[clazz] ?: throw RuntimeException("type item for class ${clazz.simpleName} not found")
+        val typeId = reverseMap[clazz] ?: throw RuntimeException("item type for class ${clazz.simpleName} not found")
         val record = InventoryRecord(
             id = IdFactory.getNext(),
             inventoryId = -1, // укажем -1 значит попытка спавна
@@ -36,6 +36,10 @@ object ItemFactory {
             deleted = 0
         )
         return create(record)
+    }
+
+    fun getTypeByClass(clazz: Class<*>): Int {
+        return reverseMap[clazz] ?: throw RuntimeException("item type for class ${clazz.simpleName} not found")
     }
 
     fun getClassByName(typeName: String): Class<Item>? {

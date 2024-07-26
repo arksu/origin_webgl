@@ -12,5 +12,8 @@ class Rabbit(record: InventoryRecord) : Item(record) {
 
     override val width = 2
     override val height = 2
-    override val icon = "/items/rabbit.png"
+
+    override fun icon(): String {
+        return "/items/rabbit.png"
+    }
 }

@@ -10,5 +10,7 @@ class Stone(record: InventoryRecord) : Item(record) {
         }
     }
 
-    override val icon = "/items/stone.png"
+    override fun icon(): String {
+        return "/items/stone.png"
+    }
 }

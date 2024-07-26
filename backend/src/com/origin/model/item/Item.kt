@@ -16,21 +16,24 @@ abstract class Item(val record: InventoryRecord) {
 
     open val width = 1
     open val height = 1
-    abstract val icon: String
+    abstract fun icon(): String
 
     val typeId: Int get() = record.type
     val x: Int get() = record.x
     val y: Int get() = record.y
     val q: Short get() = record.quality
 
+    var inventory: Inventory? = null
+
     /**
      * инвентарь кладет эту вещь в себя
      */
-    fun inventoryPutTo(inv: Inventory, x: Int, y: Int) {
+    fun onInventoryPut(inv: Inventory, x: Int, y: Int) {
         val oldInventoryId = record.inventoryId
         record.inventoryId = inv.id
         record.x = x
         record.y = y
+        inventory = inv
 
         // если не был указан ид инвентаря - значит это спавн вещи. и надо ее вставить в таблицу,
         // иначе просто обновляем данные по вещи
@@ -50,6 +53,10 @@ abstract class Item(val record: InventoryRecord) {
         }
     }
 
+    fun onInventoryRemove() {
+        inventory = null
+    }
+
     open fun getContextMenu(player: Player): ContextMenu? {
         return null
     }
@@ -61,6 +68,19 @@ abstract class Item(val record: InventoryRecord) {
             .update(INVENTORY)
             .set(INVENTORY.X, record.x)
             .set(INVENTORY.Y, record.y)
+            .where(INVENTORY.ID.eq(record.id))
+            .execute()
+    }
+
+    fun save() {
+        DatabaseConfig.dsl
+            .update(INVENTORY)
+            .set(INVENTORY.X, record.x)
+            .set(INVENTORY.Y, record.y)
+            .set(INVENTORY.QUALITY, record.quality)
+            .set(INVENTORY.COUNT, record.count)
+            .set(INVENTORY.LAST_TICK, record.lastTick)
+            .set(INVENTORY.DATA, record.data)
             .where(INVENTORY.ID.eq(record.id))
             .execute()
     }
@@ -91,6 +111,6 @@ abstract class Item(val record: InventoryRecord) {
                 (this.y in y..b || tb in y..b || y in this.y..tb || b in this.y..tb)
     }
 
-    open fun executeContextMenuItem(player: Player, selected: String) {
+    open suspend fun executeContextMenuItem(player: Player, selected: String) {
     }
 }

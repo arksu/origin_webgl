@@ -12,5 +12,18 @@ class Apple(record: InventoryRecord) : Food(record) {
         }
     }
 
-    override val icon = "/items/apple.png"
+    override fun icon(): String {
+        return if (record.data == "1") "/items/apple_core.png" else "/items/apple.png"
+    }
+
+    override fun catEat(): Boolean {
+        return record.data != "1"
+    }
+
+    override suspend fun eat() {
+        super.eat()
+        record.data = "1"
+        save()
+        inventory?.notify()
+    }
 }

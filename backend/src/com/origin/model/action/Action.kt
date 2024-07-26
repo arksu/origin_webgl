@@ -115,7 +115,7 @@ abstract class Action(
 
     /**
      * выполнить основную логику очередного цикла действия
-     * @return true - если действие надо продолжать (isFinished)
+     * @return false - если действие надо продолжать (isFinished = false)
      */
     abstract suspend fun run(): Boolean
 

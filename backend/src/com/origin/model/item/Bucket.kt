@@ -12,5 +12,8 @@ class Bucket(record: InventoryRecord) : Item(record) {
 
     override val width = 2
     override val height = 2
-    override val icon = "/items/bucket_empty.png"
+
+    override fun icon(): String {
+        return "/items/bucket_empty.png"
+    }
 }

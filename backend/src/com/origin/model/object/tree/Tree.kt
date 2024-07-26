@@ -62,8 +62,11 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
     override fun openContextMenu(p: Player): ContextMenu? {
         // TODO смотрим на скиллы, одет ли топор,
         //  остались ветки? сучья? кора?
-        val items = ArrayList<String>(4)
+        val items = LinkedHashSet<String>(4)
+
+        // TODO if Axe
         items.add("Chop")
+
         if (branch > 0) {
             items.add("Take branch")
         }

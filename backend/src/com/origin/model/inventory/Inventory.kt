@@ -30,7 +30,9 @@ class Inventory(private val parent: GameObject) {
             .and(INVENTORY.DELETED.isFalse)
             .fetch()
         list.forEach {
-            items[it.id] = ItemFactory.create(it)
+            val item = ItemFactory.create(it)
+            item.inventory = this
+            items[it.id] = item
         }
     }
 
@@ -61,7 +63,7 @@ class Inventory(private val parent: GameObject) {
     /**
      * уведомить родителя об изменениях в инвентаре
      */
-    private suspend fun notify() {
+    suspend fun notify() {
         when (parent) {
             is Player -> {
                 sendInventory(parent)
@@ -99,7 +101,8 @@ class Inventory(private val parent: GameObject) {
         // список требований удовлетворен - удаляем вещи из инвентаря
         if (isTake) {
             result.forEach {
-                items.remove(it.id)
+                val removedItem = items.remove(it.id)
+                removedItem?.onInventoryRemove()
             }
 
             notify()
@@ -112,6 +115,7 @@ class Inventory(private val parent: GameObject) {
     suspend fun takeItem(id: ObjectID): Item? {
         val removed = items.remove(id)
         if (removed != null) {
+            removed.onInventoryRemove()
             notify()
         }
 
@@ -148,6 +152,19 @@ class Inventory(private val parent: GameObject) {
     }
 
     /**
+     * заспавнить вещь в инвентарь, если не влезает кинуть рядом на землю
+     */
+    suspend fun spawnItem(item: Item, dropIfNoSpace: Boolean = false): Boolean {
+        if (!putItem(item)) {
+            return if (dropIfNoSpace) {
+                // TODO drop down
+                true
+            } else false
+        }
+        return true
+    }
+
+    /**
      * проверка можно ли положить вещь в этот инвентарь
      */
     private fun tryPut(item: Item, x: Int, y: Int): Boolean {
@@ -164,7 +181,7 @@ class Inventory(private val parent: GameObject) {
             }
             if (!conflict) {
                 items[item.id] = item
-                item.inventoryPutTo(this, x, y)
+                item.onInventoryPut(this, x, y)
 
                 return true
             }

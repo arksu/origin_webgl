@@ -19,9 +19,7 @@ object PlayerCommands {
 
                 if (clazz != null) {
                     val newItem = ItemFactory.create(clazz)
-                    if (!player.inventory.putItem(newItem)) {
-                        // TODO new item drop to ground
-                    }
+                    player.inventory.spawnItem(newItem)
                 }
             }
 

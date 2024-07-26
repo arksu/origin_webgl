@@ -10,5 +10,7 @@ class Branch(record: InventoryRecord) : Item(record) {
         }
     }
 
-    override val icon = "/items/branch.png"
+    override fun icon(): String {
+        return "/items/branch.png"
+    }
 }

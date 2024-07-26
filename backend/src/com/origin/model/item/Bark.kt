@@ -10,5 +10,7 @@ class Bark(record: InventoryRecord) : Item(record) {
         }
     }
 
-    override val icon = "/items/bark.png"
+    override fun icon(): String {
+        return "/items/bark.png"
+    }
 }

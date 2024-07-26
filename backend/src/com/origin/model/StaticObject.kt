@@ -18,6 +18,7 @@ abstract class StaticObject(val record: ObjectRecord) : GameObject(
     )
 ) {
     val type get() = record.type
+    val quality get() = record.quality
 
     override fun getBoundRect(): Rect {
         // TODO getBoundRect

@@ -150,7 +150,7 @@ class InventoryItemData(item: Item) {
     private val h = item.height
     private val q = item.q
 
-    private val icon = item.icon
+    private val icon = item.icon()
 }
 
 class InventoryUpdate(inventory: Inventory) : ServerMessage(INVENTORY_UPDATE.n) {
@@ -176,7 +176,7 @@ class HandUpdate : ServerMessage {
 
     // взять "в руку" предмет, следует за курсором
     constructor(hand: Hand) : super(PLAYER_HAND.n) {
-        icon = hand.item.icon
+        icon = hand.item.icon()
         mx = hand.mouseX
         my = hand.mouseY
     }

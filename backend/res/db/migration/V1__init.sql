@@ -48,14 +48,15 @@ create table if not exists grid
 create table if not exists inventory
 (
     id           bigint primary key,
-    inventory_id bigint   not null,
-    type         int      not null comment 'тип объекта',
-    x            int      not null,
-    y            int      not null,
-    quality      smallint not null comment 'качество',
-    count        int      not null comment 'количество в стаке',
-    last_tick    bigint   not null comment 'время последнего апдейта объекта',
-    deleted      bool     not null
+    inventory_id bigint       not null,
+    type         int          not null comment 'тип объекта',
+    x            int          not null,
+    y            int          not null,
+    quality      smallint     not null comment 'качество',
+    count        int          not null comment 'количество в стаке',
+    last_tick    bigint       not null comment 'время последнего апдейта объекта',
+    data         varchar(255) null default null comment 'внутренние данные объекта в json формате',
+    deleted      bool         not null
 );
 
 create table if not exists object
