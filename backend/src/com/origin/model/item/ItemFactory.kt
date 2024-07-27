@@ -2,6 +2,7 @@ package com.origin.model.item
 
 import com.origin.IdFactory
 import com.origin.jooq.tables.records.InventoryRecord
+import com.origin.model.`object`.ObjectsFactory
 
 object ItemFactory {
 
@@ -10,10 +11,17 @@ object ItemFactory {
     private val mapNames = HashMap<String, Class<Item>>()
 
     fun add(typeId: Int, clazz: Class<*>) {
+        if (map.containsKey(typeId)) throw RuntimeException("item type $typeId is already registered!")
+        if (ObjectsFactory.typeExists(typeId)) throw RuntimeException("item type $typeId is already registered to object!")
+
         @Suppress("UNCHECKED_CAST")
         map[typeId] = clazz as Class<Item>
         reverseMap[clazz] = typeId
         mapNames[clazz.simpleName.lowercase()] = clazz
+    }
+
+    fun typeExists(typeId: Int): Boolean {
+        return map.containsKey(typeId)
     }
 
     fun create(record: InventoryRecord): Item {

@@ -4,6 +4,7 @@ import com.origin.IdFactory
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.GameObject
 import com.origin.model.ObjectPosition
+import com.origin.model.item.ItemFactory
 
 object ObjectsFactory {
 
@@ -12,10 +13,17 @@ object ObjectsFactory {
     private val mapNames = HashMap<String, Class<GameObject>>()
 
     fun add(typeId: Int, clazz: Class<*>) {
+        if (map.containsKey(typeId)) throw RuntimeException("object type $typeId is already registered!")
+        if (ItemFactory.typeExists(typeId)) throw RuntimeException("object type $typeId is already registered to item!")
+
         @Suppress("UNCHECKED_CAST")
         map[typeId] = clazz as Class<GameObject>
         reverseMap[clazz] = typeId
         mapNames[clazz.simpleName.lowercase()] = clazz
+    }
+
+    fun typeExists(typeId: Int): Boolean {
+        return map.containsKey(typeId)
     }
 
     fun create(record: ObjectRecord): GameObject {
