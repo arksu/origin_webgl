@@ -2,13 +2,11 @@
 
 package com.origin.model
 
-import com.origin.OPEN_DISTANCE
-import com.origin.ObjectID
-import com.origin.TILE_SIZE
-import com.origin.TimeController
+import com.origin.*
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHARACTER
+import com.origin.model.craft.CraftFactory
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.item.Item
@@ -16,7 +14,10 @@ import com.origin.model.`object`.container.ContainerMessage
 import com.origin.move.Move2Object
 import com.origin.move.Move2Point
 import com.origin.net.*
-import com.origin.util.*
+import com.origin.util.ClientButton
+import com.origin.util.Rect
+import com.origin.util.SHIFT_KEY
+import com.origin.util.Vec2i
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.runBlocking
@@ -39,6 +40,16 @@ class Player(
      * инвентарь игрока
      */
     override val inventory = Inventory(this)
+
+    /**
+     * скиллы игрока и их уровень
+     */
+    val skills = SkillsList(this)
+
+    /**
+     * актуальный список крафтов доступный игроку
+     */
+    val crafts = CraftFactory.forPlayer(this)
 
     /**
      * вещь, которую держим в данный момент в руке
@@ -232,20 +243,13 @@ class Player(
     private suspend fun onConnected() {
         World.addPlayer(this)
         sendTimeUpdate()
-//        session.send(CraftList(this))
+        session.send(CraftListPacket(crafts))
     }
 
     private suspend fun onDisconnected() {
-//        autoSaveJob?.cancel()
-//        autoSaveJob = null
-//        timeUpdateJob?.cancel()
-//        timeUpdateJob = null
-
         World.removePlayer(this)
 
-//            status.stopRegeneration()
         if (isSpawned) {
-            // TODO
             openedObjectsList.closeAll()
             // удалить объект из грида
             remove()

@@ -6,7 +6,7 @@ class Skill(
 ) {
     companion object {
         private val map = Type.entries.associateBy(Type::id)
-        fun fromId(id: Int) = map[id] ?: throw IllegalArgumentException("skill not found $id")
+        fun byTypeId(id: Int) = map[id] ?: throw IllegalArgumentException("skill not found $id")
     }
 
     enum class Type(val id: Int) {

@@ -94,3 +94,10 @@ create table if not exists chat_history
     text      varchar(1020) not null,
     created   datetime default current_timestamp
 ) engine = MyISAM;
+
+create table if not exists skill
+(
+    character_id bigint not null primary key,
+    skill_id     int    not null,
+    level        int    not null
+);

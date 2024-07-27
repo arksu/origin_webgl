@@ -1,6 +1,10 @@
 package com.origin
 
+import com.origin.model.craft.Craft
+
 typealias ObjectID = Long
+
+typealias CraftList = HashMap<String, Craft>
 
 fun String?.toObjectID(): ObjectID {
     return this?.toLong() ?: throw RuntimeException("no string value for ObjectID")
@@ -50,11 +54,13 @@ object Tile {
 
     // мощеный камень
     const val STONE: Byte = 10
+
     // вспаханная земля
     const val PLOWED: Byte = 11
 
     // лес хвойный
     const val FOREST_PINE: Byte = 13
+
     // лес лиственный
     const val FOREST_LEAF: Byte = 15
 
@@ -63,10 +69,13 @@ object Tile {
 
     // газон
     const val GRASS: Byte = 17
+
     // пустошь
     const val HEATH: Byte = 18
+
     // болота
     const val MOOR: Byte = 21
+
     // топь
     const val SWAMP: Byte = 23
     const val SWAMP2: Byte = 25
@@ -74,20 +83,25 @@ object Tile {
 
     // глина
     const val CLAY: Byte = 29
+
     // вытоптанная земля
     const val DIRT: Byte = 30
+
     // песок
     const val SAND: Byte = 32
 
     // деревянный пол
     const val FLOOR_WOOD: Byte = 34
+
     // каменный пол
     const val FLOOR_STONE: Byte = 36
+
     // пол в шахте
     const val FLOOR_MINE: Byte = 38
 
     // пещеры
     const val CAVE: Byte = 42
+
     // горы
     const val MOUNTAIN: Byte = 46
 }

@@ -5,6 +5,8 @@ import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.references.INVENTORY
 import com.origin.model.GameObject
 import com.origin.model.Player
+import com.origin.model.craft.ItemWithCount
+import com.origin.model.craft.RequiredList
 import com.origin.model.item.Item
 import com.origin.model.item.ItemFactory
 import com.origin.model.`object`.container.Container

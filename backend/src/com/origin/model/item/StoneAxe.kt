@@ -11,7 +11,8 @@ class StoneAxe(record: InventoryRecord) : Item(record) {
 
             CraftFactory.add(
                 name = "Stone Axe",
-                produce = StoneAxe::class.java,
+                icon = "/items/stone_axe.png",
+                produce = mapOf(StoneAxe::class.java to 1),
                 requiredItems = mapOf(
                     Stone::class.java to 1,
                     Branch::class.java to 2

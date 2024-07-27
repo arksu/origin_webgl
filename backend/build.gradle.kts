@@ -75,19 +75,18 @@ dependencies {
 
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client:$mariadbJavaClientVersion")
     jooqGenerator("org.mariadb.jdbc:mariadb-java-client:$mariadbJavaClientVersion")
-
-//    implementation 'com.typesafe:config:1.4.2'
 }
-//
-//task mapgen(type: JavaExec) {
-//    classpath = sourceSets.main.runtimeClasspath
-//    main = 'com.origin.utils.MapGenerator'
-//}
-//task mapimport(type: JavaExec) {
-//    classpath = sourceSets.main.runtimeClasspath
-//    main = 'com.origin.utils.MapImporter'
-//}
-//
+
+tasks.register<JavaExec>("mapgen") {
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.origin.generator.MapGenerator")
+}
+
+tasks.register<JavaExec>("mapimport") {
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.origin.MapImporter")
+}
+
 //jar {
 //    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 //

@@ -1,7 +1,9 @@
 package com.origin.net
 
+import com.origin.CraftList
 import com.origin.ObjectID
 import com.origin.model.*
+import com.origin.model.craft.Craft
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.item.Item
@@ -230,3 +232,25 @@ class TimeUpdate(
     // moon value
     val mv: Int
 ) : ServerMessage(TIME_UPDATE.n)
+
+class CraftData(craft: Craft) {
+    private val name = craft.name
+
+//    private val produced = craft.produce.map {
+//        CraftItemData(it)
+//    }
+//    private val required = craft.requiredItems.map {
+//        CraftItemData(it)
+//    }
+//
+//    class CraftItemData(it: ItemWithCount) {
+//        private val icon = it.item.icon
+//        private val count = it.count
+//    }
+}
+
+class CraftListPacket(c: CraftList) : ServerMessage(CRAFT_LIST.n) {
+    private val list: List<CraftData> = c.map {
+        CraftData(it.value)
+    }
+}
