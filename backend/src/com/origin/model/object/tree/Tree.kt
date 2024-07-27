@@ -76,7 +76,7 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
         if (bough > 0) {
             items.add("Take bough")
         }
-        return ContextMenu(this, items)
+        return if (items.isNotEmpty()) ContextMenu(this, items) else null
     }
 
     override suspend fun executeContextMenuItem(player: Player, selected: String) {
@@ -86,11 +86,15 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
                 player.action = ChopTree(player, this)
             }
 
-            "Take branch" -> {
+            "Take branch" -> if (branch > 0) {
                 player.action = TakeBranch(player, this)
             }
 
-            "Take bark" -> {
+            "Take bark" -> if (bark > 0) {
+            }
+
+            "Take bough" -> if (bough > 0) {
+
             }
         }
     }

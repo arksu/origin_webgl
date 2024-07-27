@@ -932,11 +932,12 @@
       }
     ]
   },
-  "stone": {
+  "boulder": {
     "offset": [68, 98],
     "layers": [
       {
-        "img": "obj/stone/stone.png"
+        "interactive": true,
+        "img": "obj/boulder/boulder.png"
       }
     ]
   },

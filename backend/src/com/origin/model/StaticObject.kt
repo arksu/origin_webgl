@@ -25,7 +25,7 @@ abstract class StaticObject(val record: ObjectRecord) : GameObject(
         return Rect(4)
     }
 
-    fun saveData() {
+    open fun saveData() {
         DatabaseConfig.dsl
             .update(OBJECT)
             .set(OBJECT.DATA, record.data)

@@ -19,7 +19,7 @@ class TakeBranch(val player: Player, val tree: Tree) : Action(player) {
                 tree.branch--
             }
             // finished ?
-            return !success
+            return !success || tree.branch == 0
         }
         return true
     }

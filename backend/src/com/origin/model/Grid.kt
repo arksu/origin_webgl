@@ -10,6 +10,7 @@ import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.jooq.tables.references.GRID
 import com.origin.jooq.tables.references.OBJECT
 import com.origin.model.`object`.ObjectsFactory
+import com.origin.model.`object`.Boulder
 import com.origin.model.`object`.tree.Apple
 import com.origin.model.`object`.tree.Birch
 import com.origin.model.`object`.tree.Fir
@@ -366,11 +367,13 @@ class Grid(
                 Tile.FOREST_LEAF -> {
                     if (Rnd.next(170) == 0) generateObject(Birch::class.java, pos)
                     if (Rnd.next(320) == 0) generateObject(Apple::class.java, pos)
+                    if (Rnd.next(450) == 0) generateObject(Boulder::class.java, pos)
                 }
 
                 Tile.FOREST_PINE -> {
                     if (Rnd.next(130) == 0) generateObject(Fir::class.java, pos)
                     if (Rnd.next(270) == 0) generateObject(Pine::class.java, pos)
+                    if (Rnd.next(450) == 0) generateObject(Boulder::class.java, pos)
                 }
             }
         }
