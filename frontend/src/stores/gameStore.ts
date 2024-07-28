@@ -31,7 +31,7 @@ export const useGameStore = defineStore('game', {
     time: undefined as TimeUpdate | undefined,
 
     craft: {
-      isOpened: true as Boolean,
+      isOpened: false as Boolean,
       list: [] as CraftData[]
     }
 

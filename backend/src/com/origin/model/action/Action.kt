@@ -6,10 +6,7 @@ import com.origin.model.HumanMessage
 import com.origin.model.Player
 import com.origin.net.ActionProgress
 import com.origin.util.WorkerScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -51,7 +48,16 @@ abstract class Action(
      * условие для начала действия или его продолжения
      */
     open fun condition(): Boolean {
-        return minimumStaminaRequired == 0 || me.status.stamina >= minimumStaminaRequired
+        return if (minimumStaminaRequired == 0) {
+            true
+        } else if (me.status.stamina < minimumStaminaRequired) {
+            if (me is Player) runBlocking {
+                me.systemSay("Not enough stamina for this action")
+            }
+            return false
+        } else {
+            true
+        }
     }
 
     /**

@@ -407,19 +407,19 @@ export default class Render {
   }
 
   public coordGame2ScreenAbs(x: number, y: number): Coord {
-    const {sx, sy} = this.getPlayerCoord();
+    const { sx, sy } = this.getPlayerCoord()
 
-    const cx = x / Tile.TILE_SIZE;
-    const cy = y / Tile.TILE_SIZE;
+    const cx = x / Tile.TILE_SIZE
+    const cy = y / Tile.TILE_SIZE
     const ax = cx * Tile.TILE_WIDTH_HALF - cy * Tile.TILE_WIDTH_HALF
     const ay = cx * Tile.TILE_HEIGHT_HALF + cy * Tile.TILE_HEIGHT_HALF
 
 
     // центр экрана с учетом отступа перетаскиванием
-    const offsetX = this.app.renderer.width / 2 + this.offset.x;
-    const offsetY = this.app.renderer.height / 2 + this.offset.y;
-    console.log("coord", ax, ay)
-    console.log("offx=" + offsetX + " offy=" + offsetY)
+    const offsetX = this.app.renderer.width / 2 + this.offset.x
+    const offsetY = this.app.renderer.height / 2 + this.offset.y
+    console.log('coord', ax, ay)
+    console.log('offx=' + offsetX + ' offy=' + offsetY)
     return [offsetX - (sx - ax) * this.scale, offsetY - (sy - ay) * this.scale]
   }
 
@@ -658,8 +658,8 @@ export default class Render {
         this.toggleInventory()
         break
       case 'c':
-        // e.preventDefault()
-        // this.store.craft.isOpened = !this.store.craft.isOpened
+        e.preventDefault()
+        this.store.craft.isOpened = !this.store.craft.isOpened
         break
       case 'Enter':
         document.getElementById('inputChat')?.focus()
