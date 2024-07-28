@@ -59,7 +59,7 @@ class Player(
     /**
      * вещь, которую держим в данный момент в руке
      */
-    var hand: Hand? = null
+    var hand: Hand? = Hand.load(this)
         private set
 
     /**
@@ -107,7 +107,7 @@ class Player(
         if (msg.btn == ClientButton.LEFT) {
             // если что-то держим в руке надо дропнуть это
             if (hand != null) {
-//                dropHandItem()
+                dropHandItem()
             } else {
                 val cmd = commandToExecuteByMapClick
                 if (cmd != null) {
@@ -126,7 +126,7 @@ class Player(
     }
 
     private suspend fun onObjectClick(msg: PlayerMessage.ObjectClick) {
-        logger.debug("objectClick $msg")
+        logger.debug("objectClick {}", msg)
 
         if (contextMenu != null) {
             clearContextMenu()
@@ -284,6 +284,10 @@ class Player(
         }
     }
 
+    private suspend fun dropHandItem() {
+        // TODO dropHandItem
+    }
+
     suspend fun systemSay(text: String) {
         session.send(CreatureSay(id, "System", text, ChatChannel.SYSTEM))
     }
@@ -295,8 +299,9 @@ class Player(
     private suspend fun onConnected() {
         World.addPlayer(this)
         sendTimeUpdate()
-        val message = CraftListPacket(crafts)
-        session.send(message)
+        session.send(CraftListPacket(crafts))
+
+        hand?.let { session.send(HandUpdate(it)) }
     }
 
     private suspend fun onDisconnected() {

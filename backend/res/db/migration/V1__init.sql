@@ -56,7 +56,9 @@ create table if not exists inventory
     count        int          not null comment 'количество в стаке',
     last_tick    bigint       not null comment 'время последнего апдейта объекта',
     data         varchar(255) null default null comment 'внутренние данные объекта в json формате',
-    deleted      bool         not null
+    deleted      bool         not null,
+    -- не может быть в одном и том же инвентаре быть в одном и том же месте несколько вещей
+    unique (inventory_id, x, y)
 );
 
 create table if not exists object

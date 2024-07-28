@@ -117,7 +117,6 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
 
     override suspend fun afterSpawn() {
         super.afterSpawn()
-//        status.startRegeneration()
         updateVisibleObjects(true)
         broadcastStatusUpdate()
     }
