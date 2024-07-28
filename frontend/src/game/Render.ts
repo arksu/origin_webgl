@@ -1,5 +1,5 @@
-import type { FederatedPointerEvent } from 'pixi.js'
 import * as PIXI from 'pixi.js'
+import { type FederatedPointerEvent } from 'pixi.js'
 import { utils } from '@pixi/core'
 import type GameData from '@/net/GameData'
 import Grid from '@/game/Grid'
@@ -673,6 +673,11 @@ export default class Render {
 
   onMouseRightClick(_e: MouseEvent) {
     // TODO
+  }
+
+  setCursor(c: string) {
+    // TODO set actual cursor
+    this.canvas.style.cursor = 'url(\'https://pixijs.com/assets/bunny.png\'),auto'
   }
 
   /**

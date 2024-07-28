@@ -20,7 +20,7 @@ class Boulder(record: ObjectRecord) : StaticObject(record) {
     }
 
     override fun getBoundRect(): Rect {
-        return Rect(6)
+        return Rect(10)
     }
 
     var stone = record.data?.toInt() ?: (Rnd.next(15) + 61)

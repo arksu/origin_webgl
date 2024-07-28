@@ -19,4 +19,5 @@ sealed class PlayerMessage {
     class InventoryRightItemClick(val id: ObjectID, val inventoryId: ObjectID)
 
     class Craft(val name: String)
+    class Action(val name: String)
 }

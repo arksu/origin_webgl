@@ -37,6 +37,7 @@ enum class ClientPacket(val n: String) {
     ITEM_RIGHT_CLICK("itemrclick"),
     CONTEXT_MENU_SELECT("cmselect"),
     CRAFT("craft"),
+    ACTION("action")
 }
 
 enum class ServerPacket(val n: String) {
@@ -54,7 +55,8 @@ enum class ServerPacket(val n: String) {
     PLAYER_HAND("ph"),
     CREATURE_SAY("cs"),
     TIME_UPDATE("tu"),
-    CRAFT_LIST("cl")
+    CRAFT_LIST("cl"),
+    CURSOR("cu"),
 }
 
 class MapGridData(grid: Grid, flag: Type) : ServerMessage(MAP_DATA.n) {
@@ -254,3 +256,5 @@ class CraftListPacket(c: CraftList) : ServerMessage(CRAFT_LIST.n) {
         CraftData(it.value)
     }
 }
+
+class CursorPacket(val c: Cursor) : ServerMessage(CURSOR.n)

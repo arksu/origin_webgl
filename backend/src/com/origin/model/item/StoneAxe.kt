@@ -4,7 +4,7 @@ import com.origin.jooq.tables.records.InventoryRecord
 import com.origin.model.craft.Craft
 import com.origin.model.craft.CraftFactory
 
-class StoneAxe(record: InventoryRecord) : Item(record) {
+class StoneAxe(record: InventoryRecord) : Axe(record) {
     companion object {
         init {
             @Suppress("UNCHECKED_CAST")

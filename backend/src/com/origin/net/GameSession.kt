@@ -120,6 +120,11 @@ class GameSession(
                 val name = request.getString("name")
                 player.send(PlayerMessage.Craft(name))
             }
+
+            ACTION.n -> {
+                val name = request.getString("name")
+                player.send(PlayerMessage.Action(name))
+            }
         }
     }
 

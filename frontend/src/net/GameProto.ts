@@ -2,8 +2,10 @@ import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameClient from '@/net/GameClient'
 import {
   type ActionProgressData,
-  type ContextMenuData, type CraftList,
+  type ContextMenuData,
+  type CraftList,
   type CreatureSay,
+  type Cursor,
   type HandData,
   type InventoryUpdate,
   type MapGridData,
@@ -226,6 +228,11 @@ export default class GameProto {
         const pkt = <CraftList>data
         store.craft.list = pkt.list
         break
+      }
+
+      case ServerPacket.CURSOR : {
+        const pkt = <Cursor>data
+        this.render.setCursor(pkt.c)
       }
     }
   }

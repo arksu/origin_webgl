@@ -9,6 +9,7 @@ export enum ClientPacket {
   ITEM_RIGHT_CLICK = 'itemrclick',
   CONTEXT_MENU_SELECT = 'cmselect',
   CRAFT = 'craft',
+  ACTION = 'action',
 }
 
 export enum ServerPacket {
@@ -27,6 +28,7 @@ export enum ServerPacket {
   CREATURE_SAY = 'cs',
   TIME_UPDATE = 'tu',
   CRAFT_LIST = 'cl',
+  CURSOR = 'cu',
   FILE_CHANGED = 'fc',
 }
 
@@ -190,4 +192,8 @@ export interface CraftData {
 
 export interface CraftList {
   readonly list: CraftData[]
+}
+
+export interface Cursor {
+  readonly c: string
 }

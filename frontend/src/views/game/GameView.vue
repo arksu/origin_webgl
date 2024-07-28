@@ -8,7 +8,7 @@ import GameClient from '@/net/GameClient'
 import GameButton from '@/components/GameButton.vue'
 import Render from '@/game/Render'
 import GameData from '@/net/GameData'
-import { type AuthorizeTokenResponse } from '@/net/packets'
+import { type AuthorizeTokenResponse, ClientPacket } from '@/net/packets'
 import Chat from '@/views/game/Chat.vue'
 import Inventory from '@/views/game/Inventory.vue'
 import Hand from '@/views/game/Hand.vue'
@@ -125,13 +125,20 @@ export default defineComponent({
       render?.toggleInventory()
     }
 
+    const liftAction = () => {
+      GameClient.instance?.send(ClientPacket.ACTION, {
+        name: 'lift'
+      })
+    }
+
     return {
       isActive,
       mouseX,
       mouseY,
       gameStore,
       toggleCraftWindow,
-      toggleInventory
+      toggleInventory,
+      liftAction
     }
   }
 })
@@ -164,13 +171,23 @@ export default defineComponent({
 
     <div style="right: 0; bottom: 0; position: absolute">
 
+      <!--  Lift  -->
+      <game-button
+        back-color="#315B5E"
+        border-color="#25484B"
+        font-color="#142628"
+        tooltip="Lift object"
+        @click="liftAction">
+        <i class="fas fa-arrow-up-from-bracket"></i>
+      </game-button>
+
       <!--  Craft  -->
       <game-button
-        tooltip="Craft"
-        @click="toggleCraftWindow"
-        font-color="#142628"
+        back-color="#315B5E"
         border-color="#25484B"
-        back-color="#315B5E">
+        font-color="#142628"
+        tooltip="Craft"
+        @click="toggleCraftWindow">
         <i class="fas fa-tools"></i>
       </game-button>
 

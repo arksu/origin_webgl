@@ -47,7 +47,7 @@ class KnownList(private val me: GameObject) {
             knownPlayers[obj.id] = obj
         }
         if (me is Player) {
-            logger.debug("object add {}", obj.pos)
+//            logger.debug("object add {}", obj.pos)
             me.session.send(ObjectAdd(obj))
         }
 

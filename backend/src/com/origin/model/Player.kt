@@ -63,6 +63,18 @@ class Player(
         private set
 
     /**
+     * объект, который переносим над собой
+     */
+    var lift: GameObject? = null
+        private set
+
+    /**
+     * текущий курсор на клиенте
+     */
+    var cursor: Cursor = Cursor.DEFAULT
+        private set
+
+    /**
      * контекстное меню активное в данный момент
      */
     private var contextMenu: ContextMenu? = null
@@ -93,6 +105,7 @@ class Player(
             is PlayerMessage.ChatMessage -> onClientChatMessage(msg)
             is PlayerMessage.ContextMenuItem -> onContextMenuItem(msg)
             is PlayerMessage.Craft -> onCraft(msg)
+            is PlayerMessage.Action -> onAction(msg)
             else -> super.processMessage(msg)
         }
     }
@@ -284,6 +297,13 @@ class Player(
         }
     }
 
+    private suspend fun onAction(msg: PlayerMessage.Action) {
+        // TODO
+        if (msg.name == "lift") {
+            setCursor(Cursor.LIFT)
+        }
+    }
+
     private suspend fun dropHandItem() {
         // TODO dropHandItem
     }
@@ -372,6 +392,13 @@ class Player(
         } else {
             session.send(HandUpdate())
             null
+        }
+    }
+
+    suspend fun setCursor(c: Cursor) {
+        if (cursor != c) {
+            cursor = c
+            session.send(CursorPacket(cursor))
         }
     }
 
