@@ -70,9 +70,6 @@ abstract class Action(
 
         // повторяем циклы задержки и выполнения блока
         do {
-            // если не можем поглотить стамину на очередной цикл действия - выходим из цикла
-            if (staminaConsume > 0 && !me.status.checkAndReduceStamina(staminaConsume)) break
-
             // ждем нужное количество тиков, чтобы выполнить очередное действие/цикл над объектом
             repeat(ticks) { i ->
 //                logger.debug("delay tick $i...")
@@ -80,6 +77,9 @@ abstract class Action(
                 tick++
                 if (tick < ticks) sendProgress()
             }
+
+            // если не можем поглотить стамину на очередной цикл действия - выходим из цикла
+            if (staminaConsume > 0 && !me.status.checkAndReduceStamina(staminaConsume)) break
 
             logger.debug("action run...")
             val isFinished = run()

@@ -9,10 +9,12 @@ import com.origin.TimeController
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHARACTER
+import com.origin.model.action.Action
 import com.origin.model.craft.CraftFactory
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.item.Item
+import com.origin.model.item.ItemFactory
 import com.origin.model.`object`.container.ContainerMessage
 import com.origin.move.Move2Object
 import com.origin.move.Move2Point
@@ -57,7 +59,8 @@ class Player(
     /**
      * вещь, которую держим в данный момент в руке
      */
-    private var hand: Hand? = null
+    var hand: Hand? = null
+        private set
 
     /**
      * контекстное меню активное в данный момент
@@ -237,9 +240,47 @@ class Player(
     }
 
     private suspend fun onCraft(msg: PlayerMessage.Craft) {
+        // ищем выбранный крафт в списке доступных
         val craft = crafts[msg.name]
         if (craft != null) {
-            // TODO
+            // проверим что есть все необходимые ингридиенты в инвентаре
+            if (inventory.findAndTakeItem(craft, false) == null) {
+                systemSay("not enough items to craft ${craft.name}")
+                return
+            }
+
+            // craft action
+            action = object : Action(this@Player) {
+                override val ticks = craft.ticks
+                override val staminaConsume = craft.staminaConsume
+                override val minimumStaminaRequired = craft.minimumStaminaRequired
+
+                override suspend fun run(): Boolean {
+                    // ищем и берем вещи из инвентаря. вернет список только если все требуемые вещи есть в полном объеме в инвентаре
+                    val takenItems = inventory.findAndTakeItem(craft, true)
+                    if (takenItems != null) {
+                        // удалим их навсегда из игры, поскольку они используются для крафта вещи
+                        takenItems.forEach {
+                            it.delete()
+                        }
+                        // создаем вещи по рецепту из крафта в нужном количестве
+                        craft.produce.forEach {
+                            var left = it.value
+                            while (left > 0) {
+                                left--
+                                val q: Short = craft.calcQuality(takenItems)
+                                // создаем новую вещь из списка produced крафта
+                                val item = ItemFactory.create(it.key, quality = q)
+                                // пытаемся положить вещь в наш инвентарь, если не удается - прекращаем спавн вещей
+                                if (!inventory.spawnItem(item)) return@forEach
+                            }
+                        }
+                    } else {
+                        systemSay("not enough items to craft ${craft.name}")
+                    }
+                    return true
+                }
+            }
         }
     }
 
@@ -318,7 +359,7 @@ class Player(
         contextMenu = null
     }
 
-    private suspend fun setHand(item: Item?, msg: PlayerMessage.InventoryItemClick) {
+    suspend fun setHand(item: Item?, msg: PlayerMessage.InventoryItemClick) {
         hand = if (item != null) {
             val h = Hand(this, item, msg.x, msg.y, msg.ox, msg.oy)
             session.send(HandUpdate(h))

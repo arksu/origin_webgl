@@ -5,7 +5,8 @@ import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.references.INVENTORY
 import com.origin.model.GameObject
 import com.origin.model.Player
-import com.origin.model.craft.ItemWithCount
+import com.origin.model.PlayerMessage
+import com.origin.model.craft.Craft
 import com.origin.model.craft.RequiredList
 import com.origin.model.item.Item
 import com.origin.model.item.ItemFactory
@@ -82,10 +83,11 @@ class Inventory(private val parent: GameObject) {
      * вернем либо список взятых вещей из инвентаря при этом они будут удалены
      * либо null если не нашли все необходимые вещи
      * @param isTake надо ли забирать из инвентаря вещи, иначе просто проверяем и возвращаем список того что нашли
+     * @return null если не получилось набрать ВСЕ необходимое, список с вещами которые берем если ВСЕ необходимое есть
      */
-    suspend fun findAndTakeItem(list: List<ItemWithCount>, isTake: Boolean = true): List<Item>? {
+    suspend fun findAndTakeItem(craft: Craft, isTake: Boolean): List<Item>? {
         val result = ArrayList<Item>(8)
-        val req = RequiredList(list)
+        val req = RequiredList(craft)
         // идем по всем вещам в инвентаре
         items.forEach {
             // проверим что такая вещь есть в списке требований
@@ -103,8 +105,8 @@ class Inventory(private val parent: GameObject) {
         // список требований удовлетворен - удаляем вещи из инвентаря
         if (isTake) {
             result.forEach {
-                val removedItem = items.remove(it.id)
-                removedItem?.onInventoryRemove()
+                val removedItem = items.remove(it.id) ?: throw RuntimeException("findAndTakeItem remove non existing item ${it.id}")
+                removedItem.onInventoryRemove()
             }
 
             notify()
@@ -164,6 +166,17 @@ class Inventory(private val parent: GameObject) {
      */
     suspend fun spawnItem(item: Item, dropIfNoSpace: Boolean = false): Boolean {
         if (!putItem(item)) {
+            if (parent is Player) {
+                // пробуем положить в руку
+                if (parent.hand == null) {
+                    parent.setHand(
+                        item, PlayerMessage.InventoryItemClick(
+                            item.id, parent.id, 0, 0, 15, 15
+                        )
+                    )
+                    return true
+                }
+            }
             return if (dropIfNoSpace) {
                 // TODO drop down
                 true
