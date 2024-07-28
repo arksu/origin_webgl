@@ -5,12 +5,15 @@ import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.GameObject
 import com.origin.model.ObjectPosition
 import com.origin.model.item.ItemFactory
+import com.origin.model.item.ItemFactory.logger
 
 object ObjectsFactory {
 
     private val map = HashMap<Int, Class<GameObject>>()
     private val reverseMap = HashMap<Class<GameObject>, Int>()
     private val mapNames = HashMap<String, Class<GameObject>>()
+
+    private var maxTypeId = 0
 
     fun add(typeId: Int, clazz: Class<*>) {
         if (map.containsKey(typeId)) throw RuntimeException("object type $typeId is already registered!")
@@ -20,6 +23,7 @@ object ObjectsFactory {
         map[typeId] = clazz as Class<GameObject>
         reverseMap[clazz] = typeId
         mapNames[clazz.simpleName.lowercase()] = clazz
+        if (typeId > maxTypeId) maxTypeId = typeId
     }
 
     fun typeExists(typeId: Int): Boolean {
@@ -71,5 +75,6 @@ object ObjectsFactory {
         for (clazz in objectClasses) {
             Class.forName(clazz.name)
         }
+        logger.debug("object max type id: $maxTypeId")
     }
 }

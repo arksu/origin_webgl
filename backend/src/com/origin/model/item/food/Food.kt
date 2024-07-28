@@ -17,7 +17,7 @@ abstract class Food(record: InventoryRecord) : Item(record) {
 
     override suspend fun executeContextMenuItem(player: Player, selected: String) {
         when (selected) {
-            "Eat" -> {
+            "Eat" -> if (catEat()) {
                 eat()
             }
         }

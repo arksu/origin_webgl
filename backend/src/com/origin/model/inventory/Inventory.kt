@@ -153,6 +153,12 @@ class Inventory(private val parent: GameObject) {
         return false
     }
 
+    suspend fun replace(item: Item) {
+        items.replace(item.id, item) ?: throw RuntimeException("inventory replace item, old is null $item")
+        notify()
+        item.save()
+    }
+
     /**
      * заспавнить вещь в инвентарь, если не влезает кинуть рядом на землю
      */

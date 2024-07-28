@@ -8,12 +8,12 @@ class Apple(record: InventoryRecord) : Food(record) {
     companion object {
         init {
             @Suppress("UNCHECKED_CAST")
-            (ItemFactory.add(15, Apple::class.java as Class<Item>))
+            ItemFactory.add(15, Apple::class.java as Class<Item>, "/items/apple.png")
         }
     }
 
-    override fun icon(): String {
-        return if (record.data == "1") "/items/apple_core.png" else "/items/apple.png"
+    override fun getIcon(): String {
+        return if (record.data == "1") "/items/apple_core.png" else super.getIcon()
     }
 
     override fun catEat(): Boolean {

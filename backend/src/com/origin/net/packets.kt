@@ -150,9 +150,9 @@ class InventoryItemData(item: Item) {
     private val y = item.y
     private val w = item.width
     private val h = item.height
-    private val q = item.q
+    private val q = item.quality
 
-    private val icon = item.icon()
+    private val icon = item.getIcon()
 }
 
 class InventoryUpdate(inventory: Inventory) : ServerMessage(INVENTORY_UPDATE.n) {
@@ -178,7 +178,7 @@ class HandUpdate : ServerMessage {
 
     // взять "в руку" предмет, следует за курсором
     constructor(hand: Hand) : super(PLAYER_HAND.n) {
-        icon = hand.item.icon()
+        icon = hand.item.getIcon()
         mx = hand.mouseX
         my = hand.mouseY
     }
@@ -236,17 +236,15 @@ class TimeUpdate(
 class CraftData(craft: Craft) {
     private val name = craft.name
 
-//    private val produced = craft.produce.map {
-//        CraftItemData(it)
-//    }
-//    private val required = craft.requiredItems.map {
+    private val produced = craft.produce.map {
+        CraftItemData(",", it.value)
+    }
+
+    //    private val required = craft.requiredItems.map {
 //        CraftItemData(it)
 //    }
 //
-//    class CraftItemData(it: ItemWithCount) {
-//        private val icon = it.item.icon
-//        private val count = it.count
-//    }
+    class CraftItemData(val icon: String, val count: Int)
 }
 
 class CraftListPacket(c: CraftList) : ServerMessage(CRAFT_LIST.n) {

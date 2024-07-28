@@ -6,11 +6,7 @@ class Branch(record: InventoryRecord) : Item(record) {
     companion object {
         init {
             @Suppress("UNCHECKED_CAST")
-            (ItemFactory.add(18, Branch::class.java as Class<Item>))
+            ItemFactory.add(18, Branch::class.java as Class<Item>, "/items/branch.png")
         }
-    }
-
-    override fun icon(): String {
-        return "/items/branch.png"
     }
 }

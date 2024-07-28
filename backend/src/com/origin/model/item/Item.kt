@@ -16,12 +16,16 @@ abstract class Item(val record: InventoryRecord) {
 
     open val width = 1
     open val height = 1
-    abstract fun icon(): String
+
+    open fun getIcon(): String {
+        return ItemFactory.getIcon(record.type)
+    }
 
     val typeId: Int get() = record.type
     val x: Int get() = record.x
     val y: Int get() = record.y
-    val q: Short get() = record.quality
+    val quality: Short get() = record.quality
+    val count = record.count
 
     var inventory: Inventory? = null
 
@@ -75,6 +79,8 @@ abstract class Item(val record: InventoryRecord) {
     fun save() {
         DatabaseConfig.dsl
             .update(INVENTORY)
+            .set(INVENTORY.TYPE, record.type)
+            .set(INVENTORY.INVENTORY_ID, record.inventoryId)
             .set(INVENTORY.X, record.x)
             .set(INVENTORY.Y, record.y)
             .set(INVENTORY.QUALITY, record.quality)

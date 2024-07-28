@@ -2,6 +2,7 @@ package com.origin
 
 import com.origin.config.DatabaseConfig
 import com.origin.config.ServerConfig
+import com.origin.generator.MapGenerator
 import com.origin.model.item.ItemFactory
 import com.origin.model.`object`.ObjectsFactory
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -18,11 +19,11 @@ object ServerLauncher {
         if (args.isNotEmpty()) {
             when (args[0]) {
                 "-mapgen" -> {
-//                    MapGenerator.run()
+                    MapGenerator.run()
                 }
 
                 "-mapimport" -> {
-//                    MapImporter.run()
+                    MapImporter.run()
                 }
 
                 "-run" -> {

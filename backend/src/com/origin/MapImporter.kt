@@ -14,6 +14,9 @@ import javax.imageio.ImageIO
 object MapImporter {
     @JvmStatic
     fun main(args: Array<String>) {
+        System.setProperty("org.jooq.no-logo", "true")
+        System.setProperty("org.jooq.no-tips", "true")
+
         run()
     }
 

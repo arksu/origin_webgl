@@ -6,11 +6,7 @@ class Stone(record: InventoryRecord) : Item(record) {
     companion object {
         init {
             @Suppress("UNCHECKED_CAST")
-            (ItemFactory.add(17, Stone::class.java as Class<Item>))
+            ItemFactory.add(17, Stone::class.java as Class<Item>, "/items/stone.png")
         }
-    }
-
-    override fun icon(): String {
-        return "/items/stone.png"
     }
 }

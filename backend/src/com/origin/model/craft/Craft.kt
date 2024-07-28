@@ -10,7 +10,6 @@ class Craft(
     val requiredSkills: Collection<Skill>
 )
 
-
 data class ItemWithCount(
     val itemTypeId: Int,
     var count: Int = 1
