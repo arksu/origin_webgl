@@ -7,6 +7,7 @@ import com.origin.model.craft.Craft
 import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.item.Item
+import com.origin.model.item.ItemFactory
 import com.origin.net.ServerPacket.*
 
 /**
@@ -34,7 +35,8 @@ enum class ClientPacket(val n: String) {
     INVENTORY_CLOSE("invclose"),
     ITEM_CLICK("itemclick"),
     ITEM_RIGHT_CLICK("itemrclick"),
-    CONTEXT_MENU_SELECT("cmselect")
+    CONTEXT_MENU_SELECT("cmselect"),
+    CRAFT("craft"),
 }
 
 enum class ServerPacket(val n: String) {
@@ -237,13 +239,13 @@ class CraftData(craft: Craft) {
     private val name = craft.name
 
     private val produced = craft.produce.map {
-        CraftItemData(",", it.value)
+        CraftItemData(ItemFactory.getIcon(it.key), it.value)
     }
 
-    //    private val required = craft.requiredItems.map {
-//        CraftItemData(it)
-//    }
-//
+    private val required = craft.requiredItems.map {
+        CraftItemData(ItemFactory.getIcon(it.key), it.value)
+    }
+
     class CraftItemData(val icon: String, val count: Int)
 }
 

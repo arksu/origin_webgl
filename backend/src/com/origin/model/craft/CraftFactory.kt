@@ -8,10 +8,10 @@ object CraftFactory {
     private val map = HashMap<String, Craft>()
 
     fun add(
-        name: String, icon: String,
+        name: String,
         produce: Map<Class<*>, Int>, requiredItems: Map<Class<*>, Int>, requiredSkills: Collection<Skill>
     ) {
-        map[name] = Craft(name, icon, produce, requiredItems, requiredSkills)
+        map[name] = Craft(name, produce, requiredItems, requiredSkills)
     }
 
     /**

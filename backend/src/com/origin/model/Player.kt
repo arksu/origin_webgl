@@ -2,7 +2,10 @@
 
 package com.origin.model
 
-import com.origin.*
+import com.origin.OPEN_DISTANCE
+import com.origin.ObjectID
+import com.origin.TILE_SIZE
+import com.origin.TimeController
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHARACTER
@@ -86,6 +89,7 @@ class Player(
             is PlayerMessage.InventoryClose -> onInventoryClose(msg)
             is PlayerMessage.ChatMessage -> onClientChatMessage(msg)
             is PlayerMessage.ContextMenuItem -> onContextMenuItem(msg)
+            is PlayerMessage.Craft -> onCraft(msg)
             else -> super.processMessage(msg)
         }
     }
@@ -232,6 +236,13 @@ class Player(
         }
     }
 
+    private suspend fun onCraft(msg: PlayerMessage.Craft) {
+        val craft = crafts[msg.name]
+        if (craft != null) {
+            // TODO
+        }
+    }
+
     suspend fun systemSay(text: String) {
         session.send(CreatureSay(id, "System", text, ChatChannel.SYSTEM))
     }
@@ -243,7 +254,8 @@ class Player(
     private suspend fun onConnected() {
         World.addPlayer(this)
         sendTimeUpdate()
-        session.send(CraftListPacket(crafts))
+        val message = CraftListPacket(crafts)
+        session.send(message)
     }
 
     private suspend fun onDisconnected() {

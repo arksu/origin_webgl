@@ -115,6 +115,11 @@ class GameSession(
                 val item = request.getString("item")
                 player.send(PlayerMessage.ContextMenuItem(item))
             }
+
+            CRAFT.n -> {
+                val name = request.getString("name")
+                player.send(PlayerMessage.Craft(name))
+            }
         }
     }
 

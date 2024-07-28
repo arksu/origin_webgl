@@ -7,7 +7,8 @@ export enum ClientPacket {
   INVENTORY_CLOSE = 'invclose',
   ITEM_CLICK = 'itemclick',
   ITEM_RIGHT_CLICK = 'itemrclick',
-  CONTEXT_MENU_SELECT = 'cmselect'
+  CONTEXT_MENU_SELECT = 'cmselect',
+  CRAFT = 'craft',
 }
 
 export enum ServerPacket {

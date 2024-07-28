@@ -12,7 +12,8 @@ object ItemFactory {
     private val map = HashMap<Int, Class<Item>>()
     private val reverseMap = HashMap<Class<Item>, Int>()
     private val mapNames = HashMap<String, Class<Item>>()
-    private val iconMap = HashMap<Int, String>()
+    private val iconMapByTypeId = HashMap<Int, String>()
+    private val iconMapByClass = HashMap<Class<Item>, String>()
 
     private var maxTypeId = 0
 
@@ -24,7 +25,8 @@ object ItemFactory {
         map[typeId] = clazz as Class<Item>
         reverseMap[clazz] = typeId
         mapNames[clazz.simpleName.lowercase()] = clazz
-        iconMap[typeId] = icon
+        iconMapByTypeId[typeId] = icon
+        iconMapByClass[clazz] = icon
         if (typeId > maxTypeId) maxTypeId = typeId
     }
 
@@ -33,7 +35,11 @@ object ItemFactory {
     }
 
     fun getIcon(typeId: Int): String {
-        return iconMap[typeId] ?: throw RuntimeException("item icon $typeId not found!")
+        return iconMapByTypeId[typeId] ?: throw RuntimeException("item icon $typeId not found!")
+    }
+
+    fun getIcon(clazz: Class<*>): String {
+        return iconMapByClass[clazz] ?: throw RuntimeException("item icon ${clazz.simpleName} not found!")
     }
 
     fun create(record: InventoryRecord): Item {

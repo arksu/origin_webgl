@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { RouteNames } from '@/router/routeNames'
 import router from '@/router'
 import GameClient from '@/net/GameClient'
-import type { ContextMenuData, HandData, InventoryUpdate, TimeUpdate } from '@/net/packets'
+import type { ContextMenuData, CraftData, HandData, InventoryUpdate, TimeUpdate } from '@/net/packets'
 
 export const useGameStore = defineStore('game', {
   state: () => ({
@@ -29,6 +29,11 @@ export const useGameStore = defineStore('game', {
     } as PlayerStatus,
 
     time: undefined as TimeUpdate | undefined,
+
+    craft: {
+      isOpened: true as Boolean,
+      list: [] as CraftData[]
+    }
 
   }),
   getters: {

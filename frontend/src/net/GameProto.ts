@@ -2,7 +2,7 @@ import type GameResponseDTO from '@/net/GameResponseDTO'
 import type GameClient from '@/net/GameClient'
 import {
   type ActionProgressData,
-  type ContextMenuData,
+  type ContextMenuData, type CraftList,
   type CreatureSay,
   type HandData,
   type InventoryUpdate,
@@ -219,6 +219,12 @@ export default class GameProto {
 
       case ServerPacket.TIME_UPDATE : {
         store.time = <TimeUpdate>data
+        break
+      }
+
+      case ServerPacket.CRAFT_LIST : {
+        const pkt = <CraftList>data
+        store.craft.list = pkt.list
         break
       }
     }

@@ -8,7 +8,7 @@ import GameClient from '@/net/GameClient'
 import GameButton from '@/components/GameButton.vue'
 import Render from '@/game/Render'
 import GameData from '@/net/GameData'
-import type { AuthorizeTokenResponse } from '@/net/packets'
+import { type AuthorizeTokenResponse } from '@/net/packets'
 import Chat from '@/views/game/Chat.vue'
 import Inventory from '@/views/game/Inventory.vue'
 import Hand from '@/views/game/Hand.vue'
@@ -17,13 +17,14 @@ import { mouse } from '@/game/Mouse'
 import ActionHourGlass from '@/views/game/ActionHourGlass.vue'
 import Stats from '@/views/game/status/PlayerStats.vue'
 import DayTime from '@/views/game/DayTime.vue'
+import Craft from '@/views/game/Craft.vue'
 
 /**
  * игровой вид, рендер и весь UI для игры
  */
 export default defineComponent({
   name: 'GameView',
-  components: { DayTime, Stats, ActionHourGlass, ContextMenu, Hand, GameButton, Chat, Inventory },
+  components: { Craft, DayTime, Stats, ActionHourGlass, ContextMenu, Hand, GameButton, Chat, Inventory },
   setup() {
     const isActive = ref(false)
     const authStore = useAuthStore()
@@ -117,7 +118,7 @@ export default defineComponent({
 
     const toggleCraftWindow = () => {
       console.log('toggleCraftWindow')
-      // gameStore.craft.isOpened = !gameStore.craft.isOpened;
+      gameStore.craft.isOpened = !gameStore.craft.isOpened
     }
 
     const toggleInventory = () => {
@@ -147,10 +148,14 @@ export default defineComponent({
     <stats />
     <chat />
     <action-hour-glass />
-    <day-time/>
+    <day-time />
 
     <!-- inventories-->
     <inventory v-for="i in gameStore.inventories" :key="i.id" :inventory="i" />
+
+    <craft v-if="gameStore.craft.isOpened" @close="toggleCraftWindow">
+    </craft>
+
 
     <context-menu />
 
@@ -158,6 +163,16 @@ export default defineComponent({
     <hand v-if="gameStore.hand !== undefined" :hand="gameStore.hand" :left="mouseX" :top="mouseY" />
 
     <div style="right: 0; bottom: 0; position: absolute">
+
+      <!--  Craft  -->
+      <game-button
+        tooltip="Craft"
+        @click="toggleCraftWindow"
+        font-color="#142628"
+        border-color="#25484B"
+        back-color="#315B5E">
+        <i class="fas fa-tools"></i>
+      </game-button>
 
       <!--  Inventory  -->
       <game-button

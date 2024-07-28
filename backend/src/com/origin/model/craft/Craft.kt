@@ -4,7 +4,6 @@ import com.origin.model.Skill
 
 class Craft(
     val name: String,
-    val icon: String,
     val produce: Map<Class<*>, Int>,
     val requiredItems: Map<Class<*>, Int>,
     val requiredSkills: Collection<Skill>
