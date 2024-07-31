@@ -121,6 +121,8 @@ class Player(
             // если что-то держим в руке надо дропнуть это
             if (hand != null) {
                 dropHandItem()
+            } else if (cursor != Cursor.DEFAULT) {
+                setCursor(Cursor.DEFAULT)
             } else {
                 val cmd = commandToExecuteByMapClick
                 if (cmd != null) {
@@ -149,8 +151,13 @@ class Player(
         if (obj != null) {
             // если дистанция между объектом и местом клика меньше порога - считаем что попали в объект
             if (obj.pos.point.dist(Vec2i(msg.x, msg.y)) < 8) {
-                // пока просто движемся к объекту
-                goAndOpenObject(obj)
+                if (cursor == Cursor.LIFT) {
+                    setCursor(Cursor.DEFAULT)
+                    if (lift == null) goAndLiftObject(obj)
+                } else {
+                    // пока просто движемся к объекту
+                    goAndOpenObject(obj)
+                }
             } else if (hand == null) {
                 startMove(Move2Point(this, msg.x, msg.y))
             }
@@ -175,8 +182,27 @@ class Player(
         }
     }
 
+    private suspend fun goAndLiftObject(obj: GameObject) {
+        // проверим расстояние от меня до объекта
+        val myRect = getBoundRect().clone().move(pos.point)
+        val objRect = obj.getBoundRect().clone().move(obj.pos.point)
+        val (mx, my) = myRect.min(objRect)
+        logger.debug("goAndLiftObject min $mx $my")
+        // TODO : проверка hand - положить вещь в инвентарь, или наполнить его (дрова, вода и тд)
+        if (mx <= OPEN_DISTANCE && my <= OPEN_DISTANCE) {
+            // TODO LIFT
+        } else {
+            startMove(
+                Move2Object(this, obj) {
+                    // TODO LIFT
+                }
+            )
+        }
+    }
+
     private suspend fun onItemClick(msg: PlayerMessage.InventoryItemClick) {
         if (contextMenu != null) clearContextMenu()
+        if (cursor != Cursor.DEFAULT) setCursor(Cursor.DEFAULT)
 
         // держим в руке что-то?
         val h = hand
@@ -213,6 +239,7 @@ class Player(
 
     private suspend fun onItemRightClick(msg: PlayerMessage.InventoryRightItemClick) {
         if (contextMenu != null) clearContextMenu()
+        if (cursor != Cursor.DEFAULT) setCursor(Cursor.DEFAULT)
 
         if (msg.inventoryId == id) {
             contextMenu = inventory.items[msg.id]?.getContextMenu(this)

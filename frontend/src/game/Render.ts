@@ -676,9 +676,8 @@ export default class Render {
   }
 
   setCursor(c: string) {
-    // TODO set actual cursor by CSS
-    
-    this.canvas.style.cursor = 'url(\'https://pixijs.com/assets/bunny.png\'),auto'
+    // TODO offset coord
+    this.canvas.style.cursor = 'url(\'/assets/cursor/' + c + '.png\') 15 5,auto'
   }
 
   /**

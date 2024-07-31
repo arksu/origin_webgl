@@ -257,4 +257,6 @@ class CraftListPacket(c: CraftList) : ServerMessage(CRAFT_LIST.n) {
     }
 }
 
-class CursorPacket(val c: Cursor) : ServerMessage(CURSOR.n)
+class CursorPacket(cursor: Cursor) : ServerMessage(CURSOR.n) {
+    private val c: String = cursor.name.lowercase()
+}
