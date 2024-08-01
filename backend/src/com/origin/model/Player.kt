@@ -188,15 +188,23 @@ class Player(
         val objRect = obj.getBoundRect().clone().move(obj.pos.point)
         val (mx, my) = myRect.min(objRect)
         logger.debug("goAndLiftObject min $mx $my")
-        // TODO : проверка hand - положить вещь в инвентарь, или наполнить его (дрова, вода и тд)
         if (mx <= OPEN_DISTANCE && my <= OPEN_DISTANCE) {
-            // TODO LIFT
+            setLift(obj)
         } else {
             startMove(
                 Move2Object(this, obj) {
-                    // TODO LIFT
+                    setLift(obj)
                 }
             )
+        }
+    }
+
+    private suspend fun setLift(obj: GameObject?) {
+        lift = obj
+        // TODO отправить на клиент пакет на лифт объекта,
+        //  перемещающий объект в список переносимых игроком
+        if (obj != null) {
+            obj.getGridSafety().send(GridMessage.RemoveObject(obj))
         }
     }
 
