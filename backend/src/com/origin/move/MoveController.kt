@@ -105,7 +105,7 @@ abstract class MoveController(val me: MovingObject) {
             // сколько осталось идти до конечной точки
             val left = me.pos.dist(toX, toY)
 
-//            logger.warn("MOVE ($toX $toY) -> ($nx $ny) me ${me.pos}")
+            logger.warn("MOVE ($toX $toY) -> ($left) me ${me.pos}")
             // проверим коллизию при движении в новую точку
             val c = checkCollision(toX, toY, dist, null, true)
 
@@ -115,6 +115,7 @@ abstract class MoveController(val me: MovingObject) {
                 val actualLeft = me.pos.dist(toX, toY)
                 val ad = abs(actualLeft - left)
                 logger.debug("ad=$ad left=$left actualLeft=$actualLeft")
+                // TODO : collide with zero rect
                 when {
                     // расстояние до конечной точки при котором считаем что уже дошли куда надо
                     actualLeft <= 1.0 -> {

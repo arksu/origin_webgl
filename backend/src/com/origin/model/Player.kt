@@ -200,6 +200,9 @@ class Player(
     }
 
     private suspend fun setLift(obj: GameObject?) {
+        if (obj !is Liftable) {
+            throw IllegalStateException("set lift with non liftable object")
+        }
         lift = obj
         // TODO отправить на клиент пакет на лифт объекта,
         //  перемещающий объект в список переносимых игроком
