@@ -15,6 +15,7 @@ class Craft(
 ) {
     fun calcQuality(items: Collection<Item>): Short {
         // TODO: рассчитаем качество создаваемой вещи
+        
         return 10
     }
 }
