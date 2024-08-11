@@ -200,7 +200,7 @@ class Player(
     }
 
     private suspend fun setLift(obj: GameObject?) {
-        if (obj !is Liftable) {
+        if (obj != null && obj !is Liftable) {
             throw IllegalStateException("set lift with non liftable object")
         }
         lift = obj
