@@ -47,6 +47,7 @@ enum class ServerPacket(val n: String) {
     OBJECT_DELETE("od"),
     OBJECT_MOVE("om"),
     OBJECT_STOP("os"),
+    OBJECT_LIFT_DOWN("ld"),
     STATUS_UPDATE("su"),
     ACTION_PROGRESS("ap"),
     CONTEXT_MENU("cm"),
@@ -259,4 +260,36 @@ class CraftListPacket(c: CraftList) : ServerMessage(CRAFT_LIST.n) {
 
 class CursorPacket(cursor: Cursor) : ServerMessage(CURSOR.n) {
     private val c: String = cursor.name.lowercase()
+}
+
+class LiftDown(obj : GameObject) : ServerMessage(OBJECT_LIFT_DOWN.n)  {
+    // copy from object add
+    private val id = obj.id
+    private val x = obj.pos.x
+    private val y = obj.pos.y
+
+    /**
+     * heading
+     */
+    private val h = obj.pos.heading
+
+    /**
+     * class name of object
+     */
+    private val c: String = obj.javaClass.simpleName
+
+    /**
+     * type id
+     */
+    private val t = if (obj is StaticObject) obj.type else 0
+
+    /**
+     * path to resource
+     */
+    private val r = obj.getResourcePath()
+
+    /**
+     * appearance
+     */
+    private val a = null
 }
