@@ -203,15 +203,22 @@ class Player(
         if (obj != null && obj !is Liftable) {
             throw IllegalStateException("set lift with non liftable object")
         }
+        val oldLift = lift
         lift = obj
-        // TODO отправить на клиент пакет на лифт объекта,
-        //  перемещающий объект в список переносимых игроком
         if (obj != null) {
             // убрать из грида объект, теперь игрок на него отвечает (хэндлит его, обновляет его координаты в базе)
+            // TODO
             obj.getGridSafety().send(GridMessage.RemoveObject(obj))
+
+            // отправить на клиент пакет на лифт объекта,
+            // перемещающий объект в список переносимых игроком
+            LiftObject(obj, true, this)
         } else {
-            // Положить на землю объект который переносили (вернуть его в грид)
-            // LiftDown packet
+            // должны явно что-то положить на землю, был объект который перетаскивали
+            if (oldLift != null) {
+                // Положить на землю объект который переносили (вернуть его в грид)
+                LiftObject(oldLift, false, this)
+            }
         }
     }
 

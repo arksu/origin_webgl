@@ -262,7 +262,15 @@ class CursorPacket(cursor: Cursor) : ServerMessage(CURSOR.n) {
     private val c: String = cursor.name.lowercase()
 }
 
-class LiftDown(obj : GameObject) : ServerMessage(OBJECT_LIFT_DOWN.n)  {
+/**
+ * поднять/опустить объект (прилинковка на клиенте)
+ */
+class LiftObject(obj: GameObject, isLift: Boolean, owner: GameObject) : ServerMessage(OBJECT_LIFT_DOWN.n) {
+    // флаг поднятия или опускания объекта
+    private val l = if (isLift) 1 else 0
+    private val oid = owner.id
+
+
     // copy from object add
     private val id = obj.id
     private val x = obj.pos.x
