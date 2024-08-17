@@ -268,9 +268,9 @@ class CursorPacket(cursor: Cursor) : ServerMessage(CURSOR.n) {
 class LiftObject(obj: GameObject, isLift: Boolean, owner: GameObject) : ServerMessage(OBJECT_LIFT_DOWN.n) {
     // флаг поднятия или опускания объекта
     private val l = if (isLift) 1 else 0
+    // owner id - ид родителя. который перетаскивает объект
     private val oid = owner.id
-
-
+    
     // copy from object add
     private val id = obj.id
     private val x = obj.pos.x
