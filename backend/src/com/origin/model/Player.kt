@@ -206,18 +206,18 @@ class Player(
         val oldLift = lift
         lift = obj
         if (obj != null) {
-            // убрать из грида объект, теперь игрок на него отвечает (хэндлит его, обновляет его координаты в базе)
-            // TODO
+            // убрать из грида объект, теперь игрок на него отвечает (хэндлит его, обновляет его координаты в базе, спавнится вместе с ним)
+            // TODO целиком удаляет из грида, из known list, и с клиента
             obj.getGridSafety().send(GridMessage.RemoveObject(obj))
 
             // отправить на клиент пакет на лифт объекта,
             // перемещающий объект в список переносимых игроком
-            LiftObject(obj, true, this)
+            session.send(LiftObject(obj, true, this))
         } else {
             // должны явно что-то положить на землю, был объект который перетаскивали
             if (oldLift != null) {
                 // Положить на землю объект который переносили (вернуть его в грид)
-                LiftObject(oldLift, false, this)
+                session.send(LiftObject(oldLift, false, this))
             }
         }
     }

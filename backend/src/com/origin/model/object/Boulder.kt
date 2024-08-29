@@ -8,6 +8,9 @@ import com.origin.model.action.ChipStone
 import com.origin.util.Rect
 import com.origin.util.Rnd
 
+/**
+ * булыжник, огромный камень, откалывать кусочки от него
+ */
 class Boulder(record: ObjectRecord) : StaticObject(record) {
     companion object {
         init {

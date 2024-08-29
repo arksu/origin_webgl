@@ -20,7 +20,9 @@ sealed class BroadcastEvent {
         val moveType: MoveType,
     ) : BroadcastEvent()
 
+    // объект остановил движение
     class Stopped(val obj: GameObject) : BroadcastEvent()
+    // объект изменился, надо отправить на клиент целиком инфу о нем, чтобы на клиенте перестроить его рендер и тд
     class Changed(val obj: GameObject) : BroadcastEvent()
     class ChatMessage(val obj: GameObject, val channel: ChatChannel, val text: String) : BroadcastEvent()
 }

@@ -271,6 +271,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
     }
 
     fun getGridSafety(): Grid {
+        // объект может быть не заспавнен. тогда там будет null
         return grid ?: throw IllegalStateException("grid is null")
     }
 

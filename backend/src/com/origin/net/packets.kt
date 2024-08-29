@@ -47,7 +47,7 @@ enum class ServerPacket(val n: String) {
     OBJECT_DELETE("od"),
     OBJECT_MOVE("om"),
     OBJECT_STOP("os"),
-    OBJECT_LIFT_DOWN("ld"),
+    OBJECT_LIFT("ld"),
     STATUS_UPDATE("su"),
     ACTION_PROGRESS("ap"),
     CONTEXT_MENU("cm"),
@@ -265,12 +265,12 @@ class CursorPacket(cursor: Cursor) : ServerMessage(CURSOR.n) {
 /**
  * поднять/опустить объект (прилинковка на клиенте)
  */
-class LiftObject(obj: GameObject, isLift: Boolean, owner: GameObject) : ServerMessage(OBJECT_LIFT_DOWN.n) {
+class LiftObject(obj: GameObject, isLift: Boolean, owner: GameObject) : ServerMessage(OBJECT_LIFT.n) {
     // флаг поднятия или опускания объекта
     private val l = if (isLift) 1 else 0
     // owner id - ид родителя. который перетаскивает объект
     private val oid = owner.id
-    
+
     // copy from object add
     private val id = obj.id
     private val x = obj.pos.x
