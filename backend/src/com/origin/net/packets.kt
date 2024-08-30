@@ -37,7 +37,8 @@ enum class ClientPacket(val n: String) {
     ITEM_RIGHT_CLICK("itemrclick"),
     CONTEXT_MENU_SELECT("cmselect"),
     CRAFT("craft"),
-    ACTION("action")
+    ACTION("action"),
+    KEY_DOWN("kd"),
 }
 
 enum class ServerPacket(val n: String) {

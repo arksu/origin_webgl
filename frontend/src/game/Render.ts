@@ -668,6 +668,12 @@ export default class Render {
         this.scale = 1
         this.updateScale()
         break
+
+      default:
+        this.client.send(ClientPacket.KEY_DOWN, {
+         k: e.key,
+        })
+        break
     }
   }
 

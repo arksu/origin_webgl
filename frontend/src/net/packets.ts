@@ -2,6 +2,7 @@ export enum ClientPacket {
   OBJECT_CLICK = 'oc',
   OBJECT_RIGHT_CLICK = 'orc',
   MAP_CLICK = 'mc',
+  KEY_DOWN = 'kd',
   CHAT = 'chat',
   OPEN_MY_INVENTORY = 'openmyinv',
   INVENTORY_CLOSE = 'invclose',

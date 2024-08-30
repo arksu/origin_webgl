@@ -6,6 +6,7 @@ import com.origin.util.ClientButton
 sealed class PlayerMessage {
     class Connected
     class Disconnected
+    class KeyDown(val key: String)
     class MapClick(val btn: ClientButton, val flags: Int, val x: Int, val y: Int)
     class ObjectClick(val id: ObjectID, val flags: Int, val x: Int, val y: Int)
     class ObjectRightClick(val id: ObjectID)

@@ -125,6 +125,11 @@ class GameSession(
                 val name = request.getString("name")
                 player.send(PlayerMessage.Action(name))
             }
+
+            KEY_DOWN.n -> {
+                val key = request.getString("k").lowercase()
+                player.send(PlayerMessage.KeyDown(key))
+            }
         }
     }
 

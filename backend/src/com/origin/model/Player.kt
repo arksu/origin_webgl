@@ -95,6 +95,7 @@ class Player(
         when (msg) {
             is PlayerMessage.Connected -> onConnected()
             is PlayerMessage.Disconnected -> onDisconnected()
+            is PlayerMessage.KeyDown -> onKeyDown(msg)
             is PlayerMessage.MapClick -> onMapClick(msg)
             is PlayerMessage.ObjectClick -> onObjectClick(msg)
             is PlayerMessage.ObjectRightClick -> onObjectRightClick(msg.id)
@@ -107,6 +108,12 @@ class Player(
             is PlayerMessage.Craft -> onCraft(msg)
             is PlayerMessage.Action -> onAction(msg)
             else -> super.processMessage(msg)
+        }
+    }
+
+    private suspend fun onKeyDown(msg: PlayerMessage.KeyDown) {
+        if (msg.key == "escape") {
+            setCursor(Cursor.DEFAULT)
         }
     }
 

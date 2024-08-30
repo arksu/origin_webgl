@@ -115,11 +115,10 @@ abstract class MoveController(val me: MovingObject) {
                 val actualLeft = me.pos.dist(toX, toY)
                 val ad = abs(actualLeft - left)
                 logger.debug("ad=$ad left=$left actualLeft=$actualLeft")
-                // TODO : collide with zero rect
                 when {
                     // расстояние до конечной точки при котором считаем что уже дошли куда надо
                     actualLeft <= 1.0 -> {
-                        true
+                        implementation(c, left, speed, moveType)
                     }
                     // в ходе обсчета коллизии мы сдвинулись. но сдвинулись на малое расстояние
                     abs(ad) < 0.35 -> {
