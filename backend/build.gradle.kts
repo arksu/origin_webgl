@@ -87,22 +87,15 @@ tasks.register<JavaExec>("mapimport") {
     mainClass.set("com.origin.MapImporter")
 }
 
-//jar {
-//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-//
-//    manifest {
-//        def manifestClasspath =
-//                configurations.compileClasspath.collect { it.name }.join(' ')
-//
-//        attributes 'Implementation-Title': 'origin',
-//                'Main-Class': 'com.origin.ServerLauncher',
-//                'Class-Path': manifestClasspath
-//    }
-//
-//    from {
-//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-//    }
-//}
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "com.origin.ServerLauncher"
+        attributes["Implementation-Title"] = "origin"
+        attributes["Implementation-Vendor"] = "arksu"
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+}
 
 buildscript {
     dependencies {
