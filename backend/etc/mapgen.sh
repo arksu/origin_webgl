@@ -1,2 +1,2 @@
 #!/bin/sh
-java -Xmx1g -jar ./lib/backend.jar -mapgen
+java -Xmx1g -jar ./backend.jar -mapgen

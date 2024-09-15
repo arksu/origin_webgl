@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 val ktorVersion = "2.3.12" // https://kotlinlang.org/
 val slf4jVersion = "2.0.13" // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 val flywayVersion = "10.15.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
@@ -15,6 +13,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     id("org.flywaydb.flyway") version "10.15.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
     id("nu.studer.jooq") version "9.0" // https://plugins.gradle.org/plugin/nu.studer.jooq
+    id("com.github.johnrengelman.shadow") version "8.1.1" // https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
 }
 
 idea {
@@ -87,14 +86,31 @@ tasks.register<JavaExec>("mapimport") {
     mainClass.set("com.origin.MapImporter")
 }
 
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "com.origin.ServerLauncher"
-        attributes["Implementation-Title"] = "origin"
-        attributes["Implementation-Vendor"] = "arksu"
+application {
+    mainClass.set("com.origin.ServerLauncher")
+}
+
+tasks {
+    jar { enabled = false }
+    distZip { enabled = false }
+    distTar { enabled = false }
+    startScripts { enabled = false }
+    build {
+        dependsOn(shadowJar)
     }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    shadowJar {
+        archiveClassifier.set("") // Optional, if you want to specify the output classifier
+
+        // Configures the task to merge service files in META-INF/services
+        mergeServiceFiles()
+
+        manifest {
+            attributes(
+                "Implementation-Title" to "origin",
+                "Implementation-Vendor" to "arksu"
+            )
+        }
+    }
 }
 
 buildscript {
@@ -112,7 +128,7 @@ flyway {
     password = "origin"
     schemas = arrayOf("origin")
     cleanDisabled = false
-    locations = arrayOf("filesystem:res/db/migration")
+    locations = arrayOf("classpath:db/migration")
 }
 
 jooq {

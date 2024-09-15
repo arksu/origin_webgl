@@ -16,7 +16,7 @@ for Origin MMO game
 - install JVM 8+
 - install MariaDB database for your platform
 - start MariaDB server
-- create a database into your MariaDB server named 'origin' 
+- create a database into your MariaDB server named 'origin'
 - by default server configured for database name `origin`, db user `origin` and password `origin`, you can change this in `server.conf` file
 - game server is configured to start by default on [8010](http://localhost:8010) port.
 
@@ -34,6 +34,9 @@ Local port 3406 will be redirected -> to container port 3306 (to avoid conflicts
 ### OR Setup database locally
 If you can't use docker or prefer native apps
 - Install MariaDB 10+
+```shell
+mysql_secure_installation
+```
 - create database `origin`
 - create user `origin`
 - set password `origin` for this user
@@ -45,6 +48,7 @@ You can use this SQL:
 CREATE DATABASE origin;
 CREATE USER 'origin'@'localhost' IDENTIFIED BY 'origin';
 GRANT ALL PRIVILEGES ON origin.* TO origin@localhost;
+FLUSH PRIVILEGES;
 ```
 See [server.conf](/backend/config/server.conf)
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PID_FILE=process
-JAR_FILE=./lib/backend.jar
+JAR_FILE=./backend.jar
 
 rm -f ./$PID_FILE.pid
 java -server \

@@ -21,7 +21,9 @@ object DatabaseConfig {
     }
 
     fun flywayMigrate() {
+
         val flyway = Flyway.configure()
+            .validateMigrationNaming(true)
             .executeInTransaction(true)
             .dataSource(ServerConfig.DATABASE_URL, ServerConfig.DATABASE_USER, ServerConfig.DATABASE_PASSWORD)
             .load()
