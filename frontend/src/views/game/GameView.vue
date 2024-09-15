@@ -163,7 +163,6 @@ export default defineComponent({
     <craft v-if="gameStore.craft.isOpened" @close="toggleCraftWindow">
     </craft>
 
-
     <context-menu />
 
     <!-- player hand-->

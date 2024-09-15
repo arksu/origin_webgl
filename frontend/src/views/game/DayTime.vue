@@ -6,9 +6,8 @@ import { useGameStore } from '@/stores/gameStore'
 export default defineComponent({
   name: "DayTime",
   methods: {
-    s() {
-      return s
-    }, pad },
+    pad
+  },
   setup() {
     const store = useGameStore()
 
