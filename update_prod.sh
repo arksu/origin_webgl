@@ -17,3 +17,4 @@ echo "build frontend..."
 cd $APP_HOME/$FRONT
 npm run build
 rsync -avz --progress -e "ssh" $APP_HOME/$FRONT/dist/ ssh.ark.su:/usr/local/origin/www/
+rsync -avz --progress -e "ssh" $APP_HOME/$FRONT/assets/ ssh.ark.su:/usr/local/origin/www/assets/

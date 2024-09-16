@@ -14,31 +14,31 @@ export default defineConfig({
     }
   },
   build: {
-    assetsDir: 'assets',
+    assetsDir: 'js',
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id) {
-            const p = id.split('node_modules/')[1]
-            if (p) {
-              if (p.includes('vue')) {
-                return 'vue'
-              } else if (p.includes('pixi.js/lib/scene')) {
-                return 'pixi-0'
-              } else if (p.includes('pixi.js/lib/rendering')) {
-                return 'pixi-1'
-              } else if (p.includes('@pixi')) {
-                return 'pixi-2'
-              } else if (p.includes('pixi.js')) {
-                return 'pixi'
-              } else {
-                return 'ext'
-              }
-            }
-          }
-
-          return 'vendor'
-        }
+        // manualChunks: (id) => {
+        //   if (id) {
+        //     const p = id.split('node_modules/')[1]
+        //     if (p) {
+        //       if (p.includes('vue')) {
+        //         return 'vue'
+        //       } else if (p.includes('pixi.js/lib/scene')) {
+        //         return 'pixi-0'
+        //       } else if (p.includes('pixi.js/lib/rendering')) {
+        //         return 'pixi-1'
+        //       } else if (p.includes('@pixi')) {
+        //         return 'pixi-2'
+        //       } else if (p.includes('pixi.js')) {
+        //         return 'pixi'
+        //       } else {
+        //         return 'ext'
+        //       }
+        //     }
+        //   }
+        //
+        //   return 'vendor'
+        // }
       }
     }
   },

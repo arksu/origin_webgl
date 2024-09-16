@@ -13,7 +13,7 @@ export default defineComponent({
 
 <template>
   <div class="error-message" v-if="authStore.lastError">
-    {{ authStore.lastError }}
+    {{ authStore.lastError.substring(0, 150) }}
   </div>
 </template>
 
