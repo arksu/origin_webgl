@@ -618,8 +618,13 @@ export default class Render {
   }
 
   private onResize() {
+    this.canvas.width = window.innerWidth
+    this.canvas.height = window.innerHeight
     const w = this.app.screen.width
     const h = this.app.screen.height
+
+    console.log('app w=' + w + ' h=' + h + ' window w=' + window.innerWidth + ' h=' + window.innerHeight)
+
     // this.app.renderer.resize(w, h)
 
     this.screenContainer.width = w
@@ -671,7 +676,7 @@ export default class Render {
 
       default:
         this.client.send(ClientPacket.KEY_DOWN, {
-         k: e.key,
+          k: e.key
         })
         break
     }

@@ -160,8 +160,7 @@ export default defineComponent({
     <!-- inventories-->
     <inventory v-for="i in gameStore.inventories" :key="i.id" :inventory="i" />
 
-    <craft v-if="gameStore.craft.isOpened" @close="toggleCraftWindow">
-    </craft>
+    <craft v-if="gameStore.craft.isOpened" @close="toggleCraftWindow" />
 
     <context-menu />
 

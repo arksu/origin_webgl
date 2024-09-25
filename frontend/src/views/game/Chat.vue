@@ -2,6 +2,7 @@
 import { defineComponent, ref } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
 import { ClientPacket } from '@/net/packets'
+import Render from '@/game/Render'
 
 export default defineComponent({
   name: 'Chat',
@@ -63,7 +64,6 @@ export default defineComponent({
                v-on:keyup.prevent="keyup">
         <span class="submit-logo" @click="chatSubmit">
           <i class="fa-regular fa-paper-plane"></i>
-<!--          <input class="fa-solid fa-paper-plane" type="submit" value="&#xf1d8;">-->
         </span>
       </div>
     </form>
@@ -98,7 +98,6 @@ export default defineComponent({
   background-color: #7b917eb3;
   padding: 0.3em 0.8em;
   pointer-events: auto;
-  //width: 100%;
   white-space: nowrap;
   display: flex;
   justify-content: space-between;
@@ -123,7 +122,6 @@ export default defineComponent({
 }
 
 .submit-logo {
-  //width: 15%;
   font-size: large;
   color: #264a44;
   cursor: pointer;

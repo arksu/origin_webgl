@@ -45,6 +45,10 @@ body {
     background-color: #453225;
 }
 
+body, html {
+    overflow: hidden
+}
+
 canvas {
     background-color: #4b3932;
     position: absolute;
