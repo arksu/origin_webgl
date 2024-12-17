@@ -11,7 +11,7 @@ object DatabaseConfig {
         val hikariConfig = HikariConfig().apply {
             jdbcUrl = ServerConfig.DATABASE_URL
             username = ServerConfig.DATABASE_USER
-            password = ServerConfig.DATABASE_USER
+            password = ServerConfig.DATABASE_PASSWORD
             driverClassName = "org.mariadb.jdbc.Driver"
             maximumPoolSize = ServerConfig.DATABASE_MAX_POOL_SIZE
         }
