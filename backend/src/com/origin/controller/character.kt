@@ -8,7 +8,7 @@ import com.origin.jooq.tables.references.CHARACTER
 import com.origin.toObjectID
 import com.origin.util.generateString
 import io.ktor.http.*
-import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*

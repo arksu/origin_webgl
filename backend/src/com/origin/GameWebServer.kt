@@ -8,7 +8,7 @@ import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.*
 import io.ktor.server.plugins.cors.routing.CORS
@@ -19,7 +19,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 object GameWebServer {
     val logger: Logger = LoggerFactory.getLogger(GameWebServer::class.java)
@@ -46,7 +46,7 @@ object GameWebServer {
             }
             install(WebSockets) {
                 // websockets config options
-                pingPeriod = Duration.ofSeconds(15)
+                pingPeriod = 15.seconds
             }
             install(ContentNegotiation) {
                 gson {

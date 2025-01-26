@@ -7,7 +7,6 @@ import com.origin.jooq.tables.records.AccountRecord
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import io.ktor.util.pipeline.*
 
 /**
  * REST Api для авторизации и операций с персонажами (до игровое состояние)
@@ -32,7 +31,7 @@ fun ApplicationCall.getAccountSsid(): String {
     }
 }
 
-inline fun PipelineContext<Unit, ApplicationCall>.withAccount(block: (account: AccountRecord) -> Unit) {
+suspend fun RoutingContext.withAccount(block: suspend (account: AccountRecord) -> Unit) {
     val accountSsid = call.getAccountSsid()
     val account = GameWebServer.accountCache.get(accountSsid) ?: throw AuthorizationException()
     // TODO: если не нашли аккаунт в кэше надо поискать еще в базе по ssid

@@ -1,4 +1,4 @@
-val ktorVersion = "2.3.13" // https://github.com/ktorio/ktor/releases
+val ktorVersion = "3.0.3" // https://github.com/ktorio/ktor/releases
 val slf4jVersion = "2.0.16" // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 val flywayVersion = "10.22.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
 val mariadbJavaClientVersion = "3.5.1" // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
