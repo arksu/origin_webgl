@@ -1,17 +1,17 @@
-val ktorVersion = "2.3.12" // https://kotlinlang.org/
-val slf4jVersion = "2.0.13" // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-val flywayVersion = "10.15.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
-val mariadbJavaClientVersion = "3.4.0" // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
-val jooqVersion = "3.19.10" // https://mvnrepository.com/artifact/org.jooq/jooq
+val ktorVersion = "2.3.13" // https://github.com/ktorio/ktor/releases
+val slf4jVersion = "2.0.16" // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+val flywayVersion = "10.22.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
+val mariadbJavaClientVersion = "3.5.1" // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+val jooqVersion = "3.19.18" // https://mvnrepository.com/artifact/org.jooq/jooq
 
 plugins {
-    val kotlinVersion = "2.0.0" // https://github.com/JetBrains/kotlin/releases
+    val kotlinVersion = "2.1.0" // https://github.com/JetBrains/kotlin/releases
 
     java
     idea
     application
     kotlin("jvm") version kotlinVersion
-    id("org.flywaydb.flyway") version "10.15.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
+    id("org.flywaydb.flyway") version "10.22.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
     id("nu.studer.jooq") version "9.0" // https://plugins.gradle.org/plugin/nu.studer.jooq
     id("com.github.johnrengelman.shadow") version "8.1.1" // https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
 }
@@ -68,7 +68,7 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.11.0") // https://mvnrepository.com/artifact/com.google.code.gson/gson
 
-    implementation("com.zaxxer:HikariCP:5.1.0") // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation("com.zaxxer:HikariCP:6.2.1") // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     runtimeOnly("org.flywaydb:flyway-mysql:$flywayVersion")
 
@@ -115,8 +115,8 @@ tasks {
 
 buildscript {
     dependencies {
-        classpath("org.flywaydb:flyway-mysql:10.15.0")
-        classpath("org.mariadb.jdbc:mariadb-java-client:3.4.0")
+        classpath("org.flywaydb:flyway-mysql:10.22.0")
+        classpath("org.mariadb.jdbc:mariadb-java-client:3.5.1")
     }
 }
 
