@@ -103,7 +103,7 @@ export default class Render {
   private readonly store = useGameStore()
 
   public constructor(data: GameData) {
-    console.info('pixi start')
+    console.info('pixi start v'+ PIXI.VERSION)
     this.gameData = data
 
     // создаем канвас для рендера
