@@ -6,8 +6,8 @@ import com.origin.error.*
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
-import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.*
@@ -35,11 +35,11 @@ object GameWebServer {
     fun start() {
         logger.info("start game server [${ServerConfig.SERVER_PORT}]...")
 
-        val server = embeddedServer(CIO, port = ServerConfig.SERVER_PORT) {
+        val server = embeddedServer(Netty, port = ServerConfig.SERVER_PORT) {
             install(DefaultHeaders)
             install(CallLogging)
             install(StatusPages) {
-                statusPages()
+                exceptionHandler()
             }
             install(CORS) {
                 cors()
@@ -74,7 +74,7 @@ fun CORSConfig.cors() {
     anyHost()
 }
 
-fun StatusPagesConfig.statusPages() {
+fun StatusPagesConfig.exceptionHandler() {
     exception<UserNotFoundException> { call, _ ->
         call.respond(HttpStatusCode.Forbidden, "User not found")
     }
