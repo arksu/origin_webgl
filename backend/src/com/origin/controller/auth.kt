@@ -9,7 +9,6 @@ import com.origin.jooq.tables.references.ACCOUNT
 import com.origin.util.generateString
 import com.origin.util.scrypt.SCryptUtil
 import com.origin.util.transactionResultWrapper
-import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
