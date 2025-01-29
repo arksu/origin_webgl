@@ -53,7 +53,7 @@ object World {
 
     suspend fun disconnectAllCharacters() {
         players.values.forEach {
-            it.session.kick()
+            it.session?.kick()
         }
     }
 

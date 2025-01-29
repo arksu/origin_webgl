@@ -4,7 +4,7 @@ import com.origin.GameWebServer.logger
 import com.origin.jooq.tables.references.ACCOUNT
 import com.origin.jooq.tables.references.CHARACTER
 import com.origin.net.GameRequestDTO
-import com.origin.net.GameSession
+import com.origin.net.GameSocket
 import com.origin.util.MapDeserializerDoubleAsIntFix.gsonDeserializer
 import com.origin.util.transactionResultWrapper
 import io.ktor.server.plugins.*
@@ -16,14 +16,14 @@ import org.jooq.DSLContext
 import java.util.*
 
 /**
- * список игровых коннектов к серверу
+ * список открытых игровых коннектов к серверу
  */
-val gameSessions: MutableSet<GameSession> = Collections.synchronizedSet(LinkedHashSet())
+val gameSockets: MutableSet<GameSocket> = Collections.synchronizedSet(LinkedHashSet())
 
 fun Route.websockets(dsl: DSLContext) {
 
     webSocket("game") {
-        var session: GameSession? = null
+        var session: GameSocket? = null
 
         logger.debug("ws connected")
 
@@ -39,7 +39,7 @@ fun Route.websockets(dsl: DSLContext) {
                         if (request.target == "token") {
                             try {
                                 val token = request.data["token"] as String
-                                val localSession = dsl.transactionResultWrapper { trx ->
+                                val localSocket = dsl.transactionResultWrapper { trx ->
                                     // ищем аккаунт по токену
                                     val account = trx.selectFrom(ACCOUNT)
                                         .where(ACCOUNT.WS_TOKEN.eq(token))
@@ -52,23 +52,23 @@ fun Route.websockets(dsl: DSLContext) {
                                         .fetchOne() ?: throw BadRequestException("Character not found")
 
                                     // создаем игровую сессию
-                                    GameSession(this, token, account, character)
+                                    GameSocket(this, token, account, character)
                                 }
-                                session = localSession
+                                session = localSocket
 
                                 // кикнуть таких же персонажей этого юзера
                                 // (можно заходить в игру своими разными персонажами одновременно)
-                                gameSessions.forEach { s ->
-                                    if (s.character.id == localSession.character.id) {
+                                gameSockets.forEach { gameSocket ->
+                                    if (gameSocket.character.id == localSocket.character.id) {
                                         runBlocking {
-                                            s.kick()
+                                            gameSocket.kick()
                                         }
                                     }
                                 }
                                 // добавляем в список активных сессий
-                                gameSessions += localSession
+                                gameSockets += localSocket
 
-                                localSession.connected(request)
+                                localSocket.connected(request)
                             } catch (e: Throwable) {
                                 logger.error("session process token error ${e.message}", e)
                                 close(
@@ -100,7 +100,7 @@ fun Route.websockets(dsl: DSLContext) {
             logger.debug("ws disconnected")
             if (session != null) {
                 session.disconnected()
-                gameSessions -= session
+                gameSockets -= session
             }
         }
     }

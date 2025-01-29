@@ -31,7 +31,12 @@ class Player(
     /**
      * персонаж игрока (сущность хранимая в БД)
      */
-    val character: CharacterRecord, val session: GameSession
+    val character: CharacterRecord,
+
+    /**
+     * игровая сессия (сокет), если null - значит игрок в мире, но отвязан от сокета (detached)
+     */
+    var session: GameSocket?
 ) : Human(
     character.id, ObjectPosition(
         initX = character.x,
@@ -219,12 +224,12 @@ class Player(
 
             // отправить на клиент пакет на лифт объекта,
             // перемещающий объект в список переносимых игроком
-            session.send(LiftObject(obj, true, this))
+            sendToSession(LiftObject(obj, true, this))
         } else {
             // должны явно что-то положить на землю, был объект который перетаскивали
             if (oldLift != null) {
                 // Положить на землю объект который переносили (вернуть его в грид)
-                session.send(LiftObject(oldLift, false, this))
+                sendToSession(LiftObject(oldLift, false, this))
             }
         }
     }
@@ -277,14 +282,14 @@ class Player(
             contextMenu = obj?.inventory?.items?.get(msg.id)?.getContextMenu(this)
         }
         if (contextMenu != null) {
-            session.send(ContextMenuData(contextMenu))
+            sendToSession(ContextMenuData(contextMenu))
         }
     }
 
     private suspend fun onInventoryClose(msg: PlayerMessage.InventoryClose) {
         // это требование закрыть мой инвентарь?
         if (msg.id == id) {
-            session.send(InventoryClose(id))
+            sendToSession(InventoryClose(id))
         } else {
             openedObjectsList.close(msg.id)
         }
@@ -303,7 +308,7 @@ class Player(
         if (msg.channel == ChatChannel.GENERAL) {
             if (knownList.isKnownObject(msg.obj)) {
                 val title = if (msg.obj is Player) msg.obj.character.name else "unk"
-                session.send(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
+                sendToSession(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
             }
         }
     }
@@ -365,7 +370,7 @@ class Player(
     }
 
     suspend fun systemSay(text: String) {
-        session.send(CreatureSay(id, "System", text, ChatChannel.SYSTEM))
+        sendToSession(CreatureSay(id, "System", text, ChatChannel.SYSTEM))
     }
 
     /**
@@ -375,9 +380,9 @@ class Player(
     private suspend fun onConnected() {
         World.addPlayer(this)
         sendTimeUpdate()
-        session.send(CraftListPacket(crafts))
+        sendToSession(CraftListPacket(crafts))
 
-        hand?.let { session.send(HandUpdate(it)) }
+        hand?.let { sendToSession(HandUpdate(it)) }
     }
 
     private suspend fun onDisconnected() {
@@ -393,12 +398,12 @@ class Player(
 
     override suspend fun loadGrids() {
         super.loadGrids()
-        session.send(MapGridConfirm())
+        sendToSession(MapGridConfirm())
     }
 
     override suspend fun onGridChanged() {
         super.onGridChanged()
-        session.send(MapGridConfirm())
+        sendToSession(MapGridConfirm())
     }
 
     /**
@@ -418,7 +423,7 @@ class Player(
             contextMenu = obj?.openContextMenu(this)
             // если у объекта есть контекстное меню
             if (contextMenu != null) {
-                session.send(ContextMenuData(contextMenu!!))
+                sendToSession(ContextMenuData(contextMenu!!))
             } else {
                 if (obj != null) {
                     goAndOpenObject(obj)
@@ -436,17 +441,17 @@ class Player(
     }
 
     private suspend fun clearContextMenu() {
-        session.send(ContextMenuData(null))
+        sendToSession(ContextMenuData(null))
         contextMenu = null
     }
 
     suspend fun setHand(item: Item?, msg: PlayerMessage.InventoryItemClick) {
         hand = if (item != null) {
             val h = Hand(this, item, msg.x, msg.y, msg.ox, msg.oy)
-            session.send(HandUpdate(h))
+            sendToSession(HandUpdate(h))
             h
         } else {
-            session.send(HandUpdate())
+            sendToSession(HandUpdate())
             null
         }
     }
@@ -454,7 +459,7 @@ class Player(
     suspend fun setCursor(c: Cursor) {
         if (cursor != c) {
             cursor = c
-            session.send(CursorPacket(cursor))
+            sendToSession(CursorPacket(cursor))
         }
     }
 
@@ -519,14 +524,14 @@ class Player(
     override fun broadcastStatusUpdate() {
         val pkt = status.getPacket()
         runBlocking(IO) {
-            session.send(pkt)
+            sendToSession(pkt)
         }
 
         // TODO broadcast my status to party members
     }
 
     suspend fun sendTimeUpdate() {
-        session.send(
+        sendToSession(
             TimeUpdate(
                 t = TimeController.tickCount,
                 h = TimeController.getGameHour(),
@@ -538,5 +543,9 @@ class Player(
                 mv = 0 // TODO
             )
         )
+    }
+
+    suspend fun sendToSession(message: ServerMessage) {
+        session?.send(message)
     }
 }

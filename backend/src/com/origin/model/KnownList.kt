@@ -48,7 +48,7 @@ class KnownList(private val me: GameObject) {
         }
         if (me is Player) {
 //            logger.debug("object add {}", obj.pos)
-            me.session.send(ObjectAdd(obj))
+            me.sendToSession(ObjectAdd(obj))
         }
 
         return true
@@ -65,7 +65,7 @@ class KnownList(private val me: GameObject) {
                 knownPlayers.remove(obj.id)
             }
             if (me is Player) {
-                me.session.send(ObjectDel(obj))
+                me.sendToSession(ObjectDel(obj))
             }
         }
         return result
@@ -82,7 +82,7 @@ class KnownList(private val me: GameObject) {
     suspend fun clear() {
         if (me is Player) {
             for (o in knownObjects.values) {
-                me.session.send(ObjectDel(o))
+                me.sendToSession(ObjectDel(o))
             }
         }
         knownObjects.clear()

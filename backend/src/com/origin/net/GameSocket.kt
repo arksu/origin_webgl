@@ -19,14 +19,14 @@ import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class GameSession(
+class GameSocket(
     private val connect: DefaultWebSocketSession,
     private val token: String,
     val account: AccountRecord,
     val character: CharacterRecord,
 ) {
     companion object {
-        val logger: Logger = LoggerFactory.getLogger(GameSession::class.java)
+        val logger: Logger = LoggerFactory.getLogger(GameSocket::class.java)
 
         /**
          * для сериализации пакетов (отправка клиенту)
