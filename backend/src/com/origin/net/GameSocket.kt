@@ -3,6 +3,7 @@ package com.origin.net
 import com.google.gson.Gson
 import com.origin.config.DatabaseConfig
 import com.origin.config.ServerConfig
+import com.origin.controller.gameSockets
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHAT_HISTORY
@@ -16,6 +17,7 @@ import com.origin.util.getClientButton
 import com.origin.util.getLong
 import com.origin.util.getString
 import io.ktor.websocket.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -135,11 +137,29 @@ class GameSocket(
     }
 
     suspend fun connected(request: GameRequestDTO) {
+        // есть ли открытые сокеты на этого игрока (персонажа)
+        val existSockets = gameSockets.filter { s ->
+            s.character.id == character.id
+        }
+        existSockets.forEach {
+            runBlocking {
+                // кикнуть таких же персонажей этого юзера
+                // (можно заходить в игру своими разными персонажами одновременно)
+                it.kick()
+            }
+        }
+
         ack(request, AuthorizeTokenResponse(character.id, ServerConfig.PROTO_VERSION))
 
         val existPlayer = World.findPlayer(character.id)
         player = if (existPlayer != null) {
-//            if (existPlayer.socket != null)
+            var cnt = 20
+            while (existPlayer.socket != null && cnt > 0) {
+                delay(50)
+                cnt--
+            }
+            logger.debug("wait exist player [${character.id}] cnt=$cnt")
+            if (cnt == 0) throw RuntimeException("existPlayer.socket != null")
             val result = existPlayer.sendAndWaitAck(PlayerMessage.Attach(this))
             if (!result) {
                 throw RuntimeException("Failed to attach existing player")
@@ -159,7 +179,9 @@ class GameSocket(
 
     suspend fun disconnected() {
         isDisconnected = true
-        player.send(PlayerMessage.Disconnected())
+        if (player.socket == this) {
+            player.send(PlayerMessage.Disconnected())
+        }
     }
 
     /**

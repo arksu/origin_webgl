@@ -56,20 +56,10 @@ fun Route.websockets(dsl: DSLContext) {
                                 }
                                 session = localSocket
 
-                                // кикнуть таких же персонажей этого юзера
-                                // (можно заходить в игру своими разными персонажами одновременно)
-                                val exist = gameSockets.filter { s ->
-                                    s.character.id == localSocket.character.id
-                                }
-                                exist.forEach {
-                                    runBlocking {
-                                        it.kick()
-                                    }
-                                }
+                                localSocket.connected(request)
+
                                 // добавляем в список активных сессий
                                 gameSockets += localSocket
-
-                                localSocket.connected(request)
                             } catch (e: Throwable) {
                                 logger.error("session process token error ${e.message}", e)
                                 close(
