@@ -392,10 +392,18 @@ class Player(
         hand?.let { sendToSession(HandUpdate(it)) }
     }
 
-    private fun onAttach(msg: PlayerMessage.Attach): Boolean {
+    private suspend fun onAttach(msg: PlayerMessage.Attach): Boolean {
         // не можем подключить новый сокет к игроку если у нас уже есть активный сокет
         if (socket != null) return false
         socket = msg.socket
+
+        grids.forEach {
+            sendToSession(MapGridData(it, MapGridData.Type.ADD))
+        }
+        sendToSession(MapGridConfirm())
+        knownList.resendObjectAdd()
+        broadcastStatusUpdate()
+        // смотри afterSpawn()!!!
         return true
     }
 

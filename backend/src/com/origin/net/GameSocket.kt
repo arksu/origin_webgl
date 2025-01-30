@@ -154,11 +154,14 @@ class GameSocket(
         val existPlayer = World.findPlayer(character.id)
         player = if (existPlayer != null) {
             var cnt = 20
+            // ждем пока сокет освободится
             while (existPlayer.socket != null && cnt > 0) {
                 delay(50)
                 cnt--
             }
             logger.debug("wait exist player [${character.id}] cnt=$cnt")
+            // если не дождались - упадем. не может быть ситуации когда игрок в мире у него есть активный сокет,
+            // т.к. выше мы кикнули все сокеты с нашего перса
             if (cnt == 0) throw RuntimeException("existPlayer.socket != null")
             val result = existPlayer.sendAndWaitAck(PlayerMessage.Attach(this))
             if (!result) {

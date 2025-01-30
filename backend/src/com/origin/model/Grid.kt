@@ -198,11 +198,11 @@ class Grid(
             }
 
             activeObjects.add(human)
-            if (human is Player) {
-                human.sendToSession(MapGridData(this, MapGridData.Type.ADD))
-            }
 
             TimeController.addActiveGrid(this)
+        }
+        if (human is Player) {
+            human.sendToSession(MapGridData(this, MapGridData.Type.ADD))
         }
     }
 

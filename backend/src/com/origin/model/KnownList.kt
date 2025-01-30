@@ -47,11 +47,18 @@ class KnownList(private val me: GameObject) {
             knownPlayers[obj.id] = obj
         }
         if (me is Player) {
-//            logger.debug("object add {}", obj.pos)
             me.sendToSession(ObjectAdd(obj))
         }
 
         return true
+    }
+
+    suspend fun resendObjectAdd() {
+        if (me is Player) {
+            knownObjects.forEach {
+                me.sendToSession(ObjectAdd(it.value))
+            }
+        }
     }
 
     /**

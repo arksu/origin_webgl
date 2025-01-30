@@ -93,7 +93,7 @@ abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, 
     protected open suspend fun loadGrids() {
         // грузить гриды можем только если ничего еще не было загружено
         if (!grids.isEmpty()) {
-            throw RuntimeException("activateGrids - grids is not empty")
+            throw RuntimeException("loadGrids - grids is not empty")
         }
         val gr = getGridSafety()
         // гриды рядом
