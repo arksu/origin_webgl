@@ -36,7 +36,7 @@ class Player(
     /**
      * игровая сессия (сокет), если null - значит игрок в мире, но отвязан от сокета (detached)
      */
-    var session: GameSocket?
+    var socket: GameSocket?
 ) : Human(
     character.id, ObjectPosition(
         initX = character.x,
@@ -96,10 +96,17 @@ class Player(
      */
     private var lastOnlineStoreTime = System.currentTimeMillis()
 
+    /**
+     * обратный отсчет на отключение от мира (в тиках регенерации)
+     */
+    @Volatile
+    private var detachWorldCountdown: Int = 0
+
     override suspend fun processMessage(msg: Any) {
         when (msg) {
             is PlayerMessage.Connected -> onConnected()
             is PlayerMessage.Disconnected -> onDisconnected()
+            is PlayerMessage.Attach -> msg.run { onAttach(msg) }
             is PlayerMessage.KeyDown -> onKeyDown(msg)
             is PlayerMessage.MapClick -> onMapClick(msg)
             is PlayerMessage.ObjectClick -> onObjectClick(msg)
@@ -385,15 +392,19 @@ class Player(
         hand?.let { sendToSession(HandUpdate(it)) }
     }
 
-    private suspend fun onDisconnected() {
-        World.removePlayer(this)
+    private fun onAttach(msg: PlayerMessage.Attach): Boolean {
+        // не можем подключить новый сокет к игроку если у нас уже есть активный сокет
+        if (socket != null) return false
+        socket = msg.socket
+        return true
+    }
 
-        if (isSpawned) {
-            openedObjectsList.closeAll()
-            // удалить объект из грида
-            remove()
-        }
-        save()
+    private fun onDisconnected() {
+        // отвязываемся от игрового сокета
+        socket = null
+
+        // запускаем таймер на отключение от мира
+        detachWorldCountdown = 10
     }
 
     override suspend fun loadGrids() {
@@ -513,6 +524,29 @@ class Player(
             .execute()
     }
 
+    suspend fun updateRegeneration() {
+        status.regeneration()
+        // если сокет уже отвязан и есть таймер обратного отсчета
+        if (socket == null && detachWorldCountdown > 0) {
+            detachWorldCountdown--
+            // если обратный отсчет закончился
+            if (detachWorldCountdown <= 0) {
+                detachWorld()
+            }
+        }
+    }
+
+    private suspend fun detachWorld() {
+        World.removePlayer(this)
+
+        if (isSpawned) {
+            openedObjectsList.closeAll()
+            // удалить объект из грида
+            remove()
+        }
+        save()
+    }
+
     override fun getBoundRect(): Rect {
         return Rect.PLAYER_RECT
     }
@@ -540,12 +574,12 @@ class Player(
                 mm = TimeController.getGameMonth(),
                 nv = TimeController.getNightValue(),
                 sv = TimeController.getSunValue(),
-                mv = 0 // TODO
+                mv = 0 // TODO moon value
             )
         )
     }
 
     suspend fun sendToSession(message: ServerMessage) {
-        session?.send(message)
+        socket?.send(message)
     }
 }

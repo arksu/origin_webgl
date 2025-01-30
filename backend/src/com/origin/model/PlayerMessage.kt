@@ -1,11 +1,14 @@
 package com.origin.model
 
 import com.origin.ObjectID
+import com.origin.net.GameSocket
 import com.origin.util.ClientButton
+import com.origin.util.MessageWithAck
 
 sealed class PlayerMessage {
     class Connected
     class Disconnected
+    class Attach(val socket: GameSocket) : MessageWithAck<Boolean>()
     class KeyDown(val key: String)
     class MapClick(val btn: ClientButton, val flags: Int, val x: Int, val y: Int)
     class ObjectClick(val id: ObjectID, val flags: Int, val x: Int, val y: Int)

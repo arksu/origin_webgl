@@ -222,6 +222,7 @@ class ActionProgress(
 ) : ServerMessage(ACTION_PROGRESS.n)
 
 class TimeUpdate(
+    // tickCount
     val t: Long,
     // hour
     val h: Int,

@@ -22,7 +22,7 @@ object TimeController : Thread("TimeController") {
         load()
     }
 
-    private const val KEY = "gameTime"
+    private const val KEY_GAME_TIME = "gameTime"
 
     /**
      * игровых тиков в реальной секунде (на передвижение)
@@ -140,14 +140,14 @@ object TimeController : Thread("TimeController") {
         // т.к. объекты могли быть уже обновлены и новое время у них сохранено. а мы можем получить старое время из базы
         // поэтому ставим заведомо большее игровое время
         // чтобы исключить ситуации когда в контроллере время отстанет от времени в игровых объектах
-        tickCount = GlobalVariables.getLong(KEY) + STORE_TICKS_PERIOD
+        tickCount = GlobalVariables.getLong(KEY_GAME_TIME) + STORE_TICKS_PERIOD
     }
 
     /**
      * сохранить информацию об игровом времени в базу
      */
     private fun store() {
-        GlobalVariables.saveLong(KEY, tickCount)
+        GlobalVariables.saveLong(KEY_GAME_TIME, tickCount)
     }
 
     fun addTicks(value: Long) {
@@ -316,7 +316,7 @@ object TimeController : Thread("TimeController") {
                     playersRegenerateTimeAccum -= PLAYER_REGENERATION_PERIOD
                     if (World.getPlayersCount() > 0) WorkerScope.launch {
                         World.playersIterator().forEach { pe ->
-                            pe.value.status.regeneration()
+                            pe.value.updateRegeneration()
                         }
                     }
                 }

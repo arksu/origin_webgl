@@ -19,6 +19,9 @@ val ACTOR_DISPATCHER = Dispatchers.IO.limitedParallelism(50)
  */
 const val ACTOR_BUFFER_CAPACITY = 512
 
+/**
+ * сообщение с ожиданием результата
+ */
 abstract class MessageWithAck<T> {
     val ack: CompletableDeferred<T> = CompletableDeferred()
 

@@ -10,6 +10,7 @@ import com.origin.model.GameObjectMessage
 import com.origin.model.Player
 import com.origin.model.PlayerMessage
 import com.origin.model.SpawnType.*
+import com.origin.model.World
 import com.origin.net.ClientPacket.*
 import com.origin.util.getClientButton
 import com.origin.util.getLong
@@ -136,12 +137,22 @@ class GameSocket(
     suspend fun connected(request: GameRequestDTO) {
         ack(request, AuthorizeTokenResponse(character.id, ServerConfig.PROTO_VERSION))
 
-        player = Player(character, this)
-        player.postConstruct()
-
-        // пробуем заспавнить игрока в мир
-        val spawnResult = player.sendAndWaitAck(GameObjectMessage.Spawn(listOf(EXACTLY_POINT, NEAR, RANDOM_SAME_REGION)))
-        if (!spawnResult) throw RuntimeException("Failed to spawn player")
+        val existPlayer = World.findPlayer(character.id)
+        player = if (existPlayer != null) {
+//            if (existPlayer.socket != null)
+            val result = existPlayer.sendAndWaitAck(PlayerMessage.Attach(this))
+            if (!result) {
+                throw RuntimeException("Failed to attach existing player")
+            }
+            existPlayer
+        } else {
+            val newPlayer = Player(character, this)
+            newPlayer.postConstruct()
+            // пробуем заспавнить игрока в мир
+            val spawnResult = newPlayer.sendAndWaitAck(GameObjectMessage.Spawn(listOf(EXACTLY_POINT, NEAR, RANDOM_SAME_REGION)))
+            if (!spawnResult) throw RuntimeException("Failed to spawn player")
+            newPlayer
+        }
 
         player.send(PlayerMessage.Connected())
     }

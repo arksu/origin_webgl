@@ -47,13 +47,17 @@ object World {
         players.remove(player.id)
     }
 
+    fun findPlayer(id: ObjectID): Player? {
+        return players[id]
+    }
+
     fun playersIterator(): Iterator<Map.Entry<ObjectID, Player>> {
         return players.iterator()
     }
 
     suspend fun disconnectAllCharacters() {
         players.values.forEach {
-            it.session?.kick()
+            it.socket?.kick()
         }
     }
 
