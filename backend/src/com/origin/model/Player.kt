@@ -229,14 +229,14 @@ class Player(
             // TODO целиком удаляет из грида, из known list, и с клиента
             obj.getGridSafety().send(GridMessage.RemoveObject(obj))
 
-            // отправить на клиент пакет на лифт объекта,
+            // отправить клиенту пакет на лифт объекта,
             // перемещающий объект в список переносимых игроком
-            sendToSession(LiftObject(obj, true, this))
+            sendToSocket(LiftObject(obj, true, this))
         } else {
             // должны явно что-то положить на землю, был объект который перетаскивали
             if (oldLift != null) {
                 // Положить на землю объект который переносили (вернуть его в грид)
-                sendToSession(LiftObject(oldLift, false, this))
+                sendToSocket(LiftObject(oldLift, false, this))
             }
         }
     }
@@ -292,14 +292,14 @@ class Player(
             contextMenu = obj?.inventory?.items?.get(msg.id)?.getContextMenu(this)
         }
         if (contextMenu != null) {
-            sendToSession(ContextMenuData(contextMenu))
+            sendToSocket(ContextMenuData(contextMenu))
         }
     }
 
     private suspend fun onInventoryClose(msg: PlayerMessage.InventoryClose) {
         // это требование закрыть мой инвентарь?
         if (msg.id == id) {
-            sendToSession(InventoryClose(id))
+            sendToSocket(InventoryClose(id))
         } else {
             openedObjectsList.close(msg.id)
         }
@@ -318,7 +318,7 @@ class Player(
         if (msg.channel == ChatChannel.GENERAL) {
             if (knownList.isKnownObject(msg.obj)) {
                 val title = if (msg.obj is Player) msg.obj.character.name else "unk"
-                sendToSession(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
+                sendToSocket(CreatureSay(msg.obj.id, title, msg.text, msg.channel))
             }
         }
     }
@@ -380,7 +380,7 @@ class Player(
     }
 
     suspend fun systemSay(text: String) {
-        sendToSession(CreatureSay(id, "System", text, ChatChannel.SYSTEM))
+        sendToSocket(CreatureSay(id, "System", text, ChatChannel.SYSTEM))
     }
 
     /**
@@ -390,9 +390,9 @@ class Player(
     private suspend fun onConnected() {
         World.addPlayer(this)
         sendTimeUpdate()
-        sendToSession(CraftListPacket(crafts))
+        sendToSocket(CraftListPacket(crafts))
 
-        hand?.let { sendToSession(HandUpdate(it)) }
+        hand?.let { sendToSocket(HandUpdate(it)) }
     }
 
     private suspend fun onAttach(msg: PlayerMessage.Attach): Boolean {
@@ -401,9 +401,9 @@ class Player(
         socket = msg.socket
 
         grids.forEach {
-            sendToSession(MapGridData(it, MapGridData.Type.ADD))
+            sendToSocket(MapGridData(it, MapGridData.Type.ADD))
         }
-        sendToSession(MapGridConfirm())
+        sendToSocket(MapGridConfirm())
         knownList.resendObjectAdd()
         broadcastStatusUpdate()
         // смотри afterSpawn()!!!
@@ -420,12 +420,12 @@ class Player(
 
     override suspend fun loadGrids() {
         super.loadGrids()
-        sendToSession(MapGridConfirm())
+        sendToSocket(MapGridConfirm())
     }
 
     override suspend fun onGridChanged() {
         super.onGridChanged()
-        sendToSession(MapGridConfirm())
+        sendToSocket(MapGridConfirm())
     }
 
     /**
@@ -445,7 +445,7 @@ class Player(
             contextMenu = obj?.openContextMenu(this)
             // если у объекта есть контекстное меню
             if (contextMenu != null) {
-                sendToSession(ContextMenuData(contextMenu!!))
+                sendToSocket(ContextMenuData(contextMenu!!))
             } else {
                 if (obj != null) {
                     goAndOpenObject(obj)
@@ -463,17 +463,17 @@ class Player(
     }
 
     private suspend fun clearContextMenu() {
-        sendToSession(ContextMenuData(null))
+        sendToSocket(ContextMenuData(null))
         contextMenu = null
     }
 
     suspend fun setHand(item: Item?, msg: PlayerMessage.InventoryItemClick) {
         hand = if (item != null) {
             val h = Hand(this, item, msg.x, msg.y, msg.ox, msg.oy)
-            sendToSession(HandUpdate(h))
+            sendToSocket(HandUpdate(h))
             h
         } else {
-            sendToSession(HandUpdate())
+            sendToSocket(HandUpdate())
             null
         }
     }
@@ -481,7 +481,7 @@ class Player(
     suspend fun setCursor(c: Cursor) {
         if (cursor != c) {
             cursor = c
-            sendToSession(CursorPacket(cursor))
+            sendToSocket(CursorPacket(cursor))
         }
     }
 
@@ -569,14 +569,14 @@ class Player(
     override fun broadcastStatusUpdate() {
         val pkt = status.getPacket()
         runBlocking(IO) {
-            sendToSession(pkt)
+            sendToSocket(pkt)
         }
 
         // TODO broadcast my status to party members
     }
 
     suspend fun sendTimeUpdate() {
-        sendToSession(
+        sendToSocket(
             TimeUpdate(
                 t = TimeController.tickCount,
                 h = TimeController.getGameHour(),
@@ -590,7 +590,7 @@ class Player(
         )
     }
 
-    suspend fun sendToSession(message: ServerMessage) {
+    suspend fun sendToSocket(message: ServerMessage) {
         socket?.send(message)
     }
 }

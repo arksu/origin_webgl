@@ -11,6 +11,7 @@ import {
   type MapGridData,
   type ObjectAdd,
   type ObjectDel,
+  type ObjectLift,
   type ObjectMoved,
   type ObjectStopped,
   ServerPacket,
@@ -233,6 +234,19 @@ export default class GameProto {
       case ServerPacket.CURSOR : {
         const pkt = <Cursor>data
         this.render.setCursor(pkt.c)
+        break
+      }
+
+      case ServerPacket.OBJECT_LIFT : {
+        const pkt = <ObjectLift>data
+
+        // up ?
+        if (pkt.l == 1) {
+            // TODO
+        } else {
+          // down
+        }
+        break
       }
     }
   }

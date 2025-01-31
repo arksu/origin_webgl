@@ -30,7 +30,7 @@ class OpenedObjectsList(private val me: Human) {
                 logger.warn("open $obj")
                 map[obj.id] = obj
                 if (me is Player) {
-                    me.sendToSession(InventoryUpdate(inv))
+                    me.sendToSocket(InventoryUpdate(inv))
                 }
                 obj.send(ContainerMessage.OpenBy(me))
                 return true
@@ -49,7 +49,7 @@ class OpenedObjectsList(private val me: Human) {
         val obj = map.remove(id)
         if (obj != null) {
             if (me is Player) {
-                me.sendToSession(InventoryClose(id))
+                me.sendToSocket(InventoryClose(id))
             }
             obj.send(ContainerMessage.CloseBy(me))
         }
@@ -62,7 +62,7 @@ class OpenedObjectsList(private val me: Human) {
         if (map.size > 0) {
             map.values.forEach {
                 if (me is Player) {
-                    me.sendToSession(InventoryClose(it.id))
+                    me.sendToSocket(InventoryClose(it.id))
                 }
                 it.send(ContainerMessage.CloseBy(me))
             }

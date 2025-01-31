@@ -20,6 +20,7 @@ export enum ServerPacket {
   OBJECT_DELETE = 'od',
   OBJECT_MOVE = 'om',
   OBJECT_STOP = 'os',
+  OBJECT_LIFT = 'ol',
   STATUS_UPDATE = 'su',
   CONTEXT_MENU = 'cm',
   ACTION_PROGRESS = 'ap',
@@ -95,6 +96,49 @@ export interface ObjectStopped {
   readonly id: number
   readonly x: number
   readonly y: number
+}
+
+export interface ObjectLift {
+  /**
+   * 0 | 1 - down | up
+   */
+  readonly l : number
+
+  /**
+   * owner id
+   */
+  readonly oid : number
+
+  /**
+   * object id
+   */
+  readonly id : number 
+
+  // все что ниже - копися с object add - нужно когда объект ставим на землю. фактически это спавн
+  x: number
+  y: number
+
+  /**
+   * heading
+   */
+  h: number
+
+  /**
+   * class
+   */
+  c: string
+
+  /**
+   * type id
+   */
+  t: number
+
+  /**
+   * resource path
+   */
+  r: string
+
+  // a?: PcAppearance
 }
 
 export interface ContextMenuData {

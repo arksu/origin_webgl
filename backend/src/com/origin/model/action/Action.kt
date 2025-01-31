@@ -110,11 +110,11 @@ abstract class Action(
             val p = getProgress()
             if (p != null) {
                 logger.debug("progress ${p.first} ${p.second}")
-                me.sendToSession(ActionProgress(p.first, p.second))
+                me.sendToSocket(ActionProgress(p.first, p.second))
             } else {
                 logger.debug("progress $tick ${ticks - 1}")
                 // чтобы прогресс бар в конце доходил до конца надо послать на 1 тик меньше.
-                me.sendToSession(ActionProgress(tick, ticks - 1))
+                me.sendToSocket(ActionProgress(tick, ticks - 1))
             }
         }
     }
@@ -130,7 +130,7 @@ abstract class Action(
         job.cancelAndJoin()
         logger.debug("action was stopped")
 
-        if (me is Player) me.sendToSession(ActionProgress(-1, -1))
+        if (me is Player) me.sendToSocket(ActionProgress(-1, -1))
     }
 
     companion object {

@@ -61,7 +61,7 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
         when (msg) {
             is BroadcastEvent.StartMove -> {
                 if (this is Player && knownList.isKnownObject(msg.obj)) {
-                    sendToSession(ObjectStartMove(msg))
+                    sendToSocket(ObjectStartMove(msg))
                 }
             }
 
@@ -73,13 +73,13 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
                         // удаляем объект из видимых
                         knownList.removeKnownObject(msg.obj)
                     } else {
-                        if (this is Player) sendToSession(ObjectMoved(msg))
+                        if (this is Player) sendToSocket(ObjectMoved(msg))
                     }
                 } else {
                     // объект не знаем. но видим
                     if (isObjectVisibleForMe(msg.obj)) {
                         knownList.addKnownObject(msg.obj)
-                        if (this is Player) sendToSession(ObjectMoved(msg))
+                        if (this is Player) sendToSocket(ObjectMoved(msg))
                     }
                 }
             }
@@ -92,20 +92,20 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
                         // удаляем объект из видимых
                         knownList.removeKnownObject(msg.obj)
                     } else {
-                        if (this is Player) sendToSession(ObjectStopped(msg))
+                        if (this is Player) sendToSocket(ObjectStopped(msg))
                     }
                 } else {
                     // объект не знаем. но видим
                     if (isObjectVisibleForMe(msg.obj)) {
                         knownList.addKnownObject(msg.obj)
-                        if (this is Player) sendToSession(ObjectStopped(msg))
+                        if (this is Player) sendToSocket(ObjectStopped(msg))
                     }
                 }
             }
 
             is BroadcastEvent.Changed -> {
                 if (knownList.isKnownObject(msg.obj)) {
-                    if (this is Player) sendToSession(ObjectAdd(msg.obj))
+                    if (this is Player) sendToSocket(ObjectAdd(msg.obj))
                 }
             }
 

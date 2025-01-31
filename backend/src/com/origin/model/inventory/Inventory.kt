@@ -60,7 +60,7 @@ class Inventory(private val parent: GameObject) {
      * @param toPlayer какому игроку отправить содержимое этого инвентаря
      */
     suspend fun sendInventory(toPlayer: Player) {
-        toPlayer.sendToSession(InventoryUpdate(this))
+        toPlayer.sendToSocket(InventoryUpdate(this))
     }
 
     /**

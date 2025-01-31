@@ -48,7 +48,7 @@ enum class ServerPacket(val n: String) {
     OBJECT_DELETE("od"),
     OBJECT_MOVE("om"),
     OBJECT_STOP("os"),
-    OBJECT_LIFT("ld"),
+    OBJECT_LIFT("ol"),
     STATUS_UPDATE("su"),
     ACTION_PROGRESS("ap"),
     CONTEXT_MENU("cm"),

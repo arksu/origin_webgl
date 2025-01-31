@@ -202,7 +202,7 @@ class Grid(
             TimeController.addActiveGrid(this)
         }
         if (human is Player) {
-            human.sendToSession(MapGridData(this, MapGridData.Type.ADD))
+            human.sendToSocket(MapGridData(this, MapGridData.Type.ADD))
         }
     }
 
@@ -213,7 +213,7 @@ class Grid(
     private suspend fun onDeactivate(human: Human) {
         activeObjects.remove(human)
         if (human is Player) {
-            human.sendToSession(MapGridData(this, MapGridData.Type.REMOVE))
+            human.sendToSocket(MapGridData(this, MapGridData.Type.REMOVE))
         }
         if (!isActive) {
             TimeController.removeActiveGrid(this)
