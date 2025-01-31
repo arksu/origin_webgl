@@ -1,5 +1,3 @@
-@file:OptIn(DelicateCoroutinesApi::class)
-
 package com.origin.model
 
 import com.origin.OPEN_DISTANCE
@@ -23,7 +21,6 @@ import com.origin.util.ClientButton
 import com.origin.util.Rect
 import com.origin.util.SHIFT_KEY
 import com.origin.util.Vec2i
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.runBlocking
 
@@ -159,6 +156,9 @@ class Player(
         }
     }
 
+    /**
+     * клик по объекту на карте
+     */
     private suspend fun onObjectClick(msg: PlayerMessage.ObjectClick) {
         logger.debug("objectClick {}", msg)
 
@@ -241,6 +241,9 @@ class Player(
         }
     }
 
+    /**
+     * клик по вещи в инвентаре
+     */
     private suspend fun onItemClick(msg: PlayerMessage.InventoryItemClick) {
         if (contextMenu != null) clearContextMenu()
         if (cursor != Cursor.DEFAULT) setCursor(Cursor.DEFAULT)
