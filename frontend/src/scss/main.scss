@@ -1,3 +1,7 @@
+@use "forms";
+@use "responsive";
+@use "tooltip";
+
 $mainFontName: BioRhyme;
 $secondFont: Georgia;
 
@@ -58,7 +62,3 @@ canvas {
     margin: 0;
     z-index: -1;
 }
-
-@import "forms";
-@import "responsive";
-@import "tooltip";
