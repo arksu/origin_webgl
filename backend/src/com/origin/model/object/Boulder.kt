@@ -46,7 +46,7 @@ class Boulder(record: ObjectRecord) : StaticObject(record) {
     }
 
     override fun saveData() {
-        record.data = stone.toString()
+        entity.data = stone.toString()
         super.saveData()
     }
 }

@@ -8,17 +8,17 @@ import com.origin.util.Rect
 /**
  * статичный игровой объект (дерево, ящик и тд)
  */
-abstract class StaticObject(val record: ObjectRecord) : GameObject(
-    record.id, ObjectPosition(
-        record.x,
-        record.y,
-        record.level,
-        record.region,
-        record.heading
+abstract class StaticObject(val entity: ObjectRecord) : GameObject(
+    entity.id, ObjectPosition(
+        entity.x,
+        entity.y,
+        entity.level,
+        entity.region,
+        entity.heading
     )
 ) {
-    val type get() = record.type
-    val quality get() = record.quality
+    val type get() = entity.type
+    val quality get() = entity.quality
 
     override fun getBoundRect(): Rect {
         // TODO getBoundRect
@@ -28,24 +28,24 @@ abstract class StaticObject(val record: ObjectRecord) : GameObject(
     open fun saveData() {
         DatabaseConfig.dsl
             .update(OBJECT)
-            .set(OBJECT.DATA, record.data)
-            .where(OBJECT.ID.eq(record.id))
+            .set(OBJECT.DATA, entity.data)
+            .where(OBJECT.ID.eq(entity.id))
             .execute()
     }
 
     override fun save() {
         DatabaseConfig.dsl
             .insertInto(OBJECT)
-            .set(record)
+            .set(entity)
             .returning()
             .fetchSingle()
     }
 
     override fun getHP(): Int {
-        return record.hp
+        return entity.hp
     }
 
     override fun setHP(hp: Int) {
-        record.hp = hp
+        entity.hp = hp
     }
 }

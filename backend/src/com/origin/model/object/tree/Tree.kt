@@ -16,9 +16,9 @@ abstract class Tree(record: ObjectRecord) : StaticObject(record) {
      * если нет данных ставим по дефолту 6 стадию роста
      */
     var stage: Int
-        get() = record.data?.toInt() ?: 6
+        get() = entity.data?.toInt() ?: 6
         set(s) {
-            record.data = s.toString()
+            entity.data = s.toString()
         }
 
     /**

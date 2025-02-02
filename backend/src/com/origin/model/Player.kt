@@ -170,13 +170,13 @@ class Player(
         if (obj != null) {
             // если дистанция между объектом и местом клика меньше порога - считаем что попали в объект
             if (obj.pos.point.dist(Vec2i(msg.x, msg.y)) < 8) {
-                if (cursor == Cursor.LIFT) {
-                    setCursor(Cursor.DEFAULT)
-                    if (lift == null) goAndLiftObject(obj)
-                } else {
+//                if (cursor == Cursor.LIFT) {
+//                    setCursor(Cursor.DEFAULT)
+//                    if (lift == null && obj is Liftable) goAndLiftObject(obj)
+//                } else {
                     // пока просто движемся к объекту
                     goAndOpenObject(obj)
-                }
+//                }
             } else if (hand == null) {
                 startMove(Move2Point(this, msg.x, msg.y))
             }
@@ -246,7 +246,7 @@ class Player(
      */
     private suspend fun onItemClick(msg: PlayerMessage.InventoryItemClick) {
         if (contextMenu != null) clearContextMenu()
-        if (cursor != Cursor.DEFAULT) setCursor(Cursor.DEFAULT)
+        setCursor(Cursor.DEFAULT)
 
         // держим в руке что-то?
         val h = hand
@@ -283,7 +283,7 @@ class Player(
 
     private suspend fun onItemRightClick(msg: PlayerMessage.InventoryRightItemClick) {
         if (contextMenu != null) clearContextMenu()
-        if (cursor != Cursor.DEFAULT) setCursor(Cursor.DEFAULT)
+        setCursor(Cursor.DEFAULT)
 
         if (msg.inventoryId == id) {
             contextMenu = inventory.items[msg.id]?.getContextMenu(this)
@@ -478,7 +478,7 @@ class Player(
         }
     }
 
-    suspend fun setCursor(c: Cursor) {
+    private suspend fun setCursor(c: Cursor) {
         if (cursor != c) {
             cursor = c
             sendToSocket(CursorPacket(cursor))
