@@ -535,6 +535,9 @@ class Player(
             .execute()
     }
 
+    /**
+     * call from outside
+     */
     suspend fun updateRegeneration() {
         status.regeneration()
         // если сокет уже отвязан и есть таймер обратного отсчета

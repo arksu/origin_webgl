@@ -184,17 +184,17 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
         pos.point.y = y
 
         if (isSpawned) {
-            // если координаты грида изменились
+            // если координаты грида изменились (перешли в другой грид)
             if (oldGx != pos.gridX || oldGy != pos.gridY) {
-                val old = grid ?: throw IllegalStateException("old grid is null")
+                val oldGrid = grid ?: throw IllegalStateException("old grid is null")
                 // получим новый грид из мира
                 val newGrid = World.getGrid(pos)
                 grid = newGrid
-                if (this is MovingObject) {
+                if (this is Human) {
                     // уведомим объект о смене грида
                     onGridChanged()
                 }
-                old.objects.remove(this)
+                oldGrid.objects.remove(this)
                 newGrid.objects.add(this)
             }
         }
