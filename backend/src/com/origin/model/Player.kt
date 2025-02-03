@@ -243,24 +243,34 @@ class Player(
         if (obj != null && obj !is Liftable) {
             throw IllegalStateException("set lift with non liftable object")
         }
-        val oldLift = lift
-        if (oldLift != null && obj != null) {
+        val oldLiftObject = lift
+        if (oldLiftObject != null && obj != null) {
             throw IllegalStateException("try set lift when already have lifting object")
+        }
+        if (oldLiftObject == null && obj == null) {
+            throw IllegalStateException("try down lift when no lifting object")
         }
         lift = obj
         if (obj != null) {
             // убрать из грида объект, теперь игрок на него отвечает (хэндлит его, обновляет его координаты в базе, спавнится вместе с ним)
-            // TODO целиком удаляет из грида, из known list, и с клиента
+            // целиком удаляет из грида, из known list, и с клиента
             obj.getGridSafety().send(GridMessage.RemoveObject(obj))
 
             // отправить клиенту пакет на лифт объекта,
             // перемещающий объект в список переносимых игроком
-            sendToSocket(LiftObject(obj, true, this))
+            sendToSocket(LiftPacket(obj, true, this))
         } else {
             // должны явно что-то положить на землю, был объект который перетаскивали
-            if (oldLift != null) {
-                // Положить на землю объект который переносили (вернуть его в грид)
-                sendToSocket(LiftObject(oldLift, false, this))
+            if (oldLiftObject != null) {
+                oldLiftObject.pos.level = pos.level
+                oldLiftObject.pos.region = pos.region
+                oldLiftObject.setXY(pos.x, pos.y)
+                val spawned = oldLiftObject.getGridSafety().sendAndWaitAck(GridMessage.Spawn(oldLiftObject))
+
+                if (spawned) {
+                    // Положить на землю объект который переносили (вернуть его в грид)
+                    sendToSocket(LiftPacket(oldLiftObject, false, this))
+                }
             }
         }
     }

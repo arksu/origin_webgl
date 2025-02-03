@@ -265,9 +265,9 @@ class CursorPacket(cursor: Cursor) : ServerMessage(CURSOR.n) {
 }
 
 /**
- * поднять/опустить объект (прилинковка на клиенте)
+ * поднять/опустить объект игроком (прилинковка на клиенте, несет над собой)
  */
-class LiftObject(obj: GameObject, isLift: Boolean, owner: GameObject) : ServerMessage(OBJECT_LIFT.n) {
+class LiftPacket(obj: GameObject, isLift: Boolean, owner: GameObject) : ServerMessage(OBJECT_LIFT.n) {
     // флаг поднятия или опускания объекта
     private val l = if (isLift) 1 else 0
     // owner id - ид родителя. который перетаскивает объект
@@ -299,7 +299,7 @@ class LiftObject(obj: GameObject, isLift: Boolean, owner: GameObject) : ServerMe
     private val r = obj.getResourcePath()
 
     /**
-     * appearance
+     * appearance...
      */
     private val a = null
 }

@@ -163,7 +163,7 @@ class Grid(
         if (!objects.contains(obj)) {
             objects.add(obj)
 
-            if (isActive) activeObjects.forEach {
+            activeObjects.forEach {
                 it.send(GameObjectMessage.GridObjectAdded(obj))
             }
         }
@@ -176,7 +176,7 @@ class Grid(
         if (objects.remove(obj)) {
             obj.send(GameObjectMessage.RemovedFromGrid())
 
-            if (isActive) activeObjects.forEach {
+            activeObjects.forEach {
                 it.send(GameObjectMessage.GridObjectRemoved(obj))
             }
         }
@@ -238,12 +238,12 @@ class Grid(
     private fun update() {
         // не даем слишком часто апдейтить грид
         if (TimeController.tickCount - record.lastTick < GRID_UPDATE_PERIOD - 2 && record.lastTick != 0L) return
-        val old = record.lastTick
+        val oldLastTick = record.lastTick
         // сразу меняем последний тик
         record.lastTick = TimeController.tickCount
 
         // если еще никогда не апдейтили грид - это первичная инициализация, запустим генерацию объектов в гриде
-        if (old == 0L) {
+        if (oldLastTick == 0L) {
             generateObjects()
         } else {
             // TODO grid update

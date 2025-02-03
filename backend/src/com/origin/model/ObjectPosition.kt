@@ -6,8 +6,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class ObjectPosition {
-    val level: Int
-    val region: Int
+    var level: Int
+    var region: Int
     var heading: Byte
 
     constructor(initX: Int, initY: Int, level: Int, region: Int, heading: Byte) {
