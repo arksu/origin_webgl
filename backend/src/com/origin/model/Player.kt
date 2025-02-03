@@ -13,6 +13,8 @@ import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.item.Item
 import com.origin.model.item.ItemFactory
+import com.origin.model.kind.Liftable
+import com.origin.model.kind.Openable
 import com.origin.model.`object`.container.ContainerMessage
 import com.origin.move.Move2Object
 import com.origin.move.Move2Point
@@ -170,16 +172,35 @@ class Player(
         if (obj != null) {
             // если дистанция между объектом и местом клика меньше порога - считаем что попали в объект
             if (obj.pos.point.dist(Vec2i(msg.x, msg.y)) < 8) {
-//                if (cursor == Cursor.LIFT) {
-//                    setCursor(Cursor.DEFAULT)
-//                    if (lift == null && obj is Liftable) goAndLiftObject(obj)
-//                } else {
-                    // пока просто движемся к объекту
+                if (cursor == Cursor.LIFT) {
+                    if (obj is Liftable) {
+                        setCursor(Cursor.DEFAULT)
+                        goAndLiftObject(obj)
+                    }
+                }
+                // если объект можно открыть
+                else if (obj is Openable) {
                     goAndOpenObject(obj)
-//                }
+                } else {
+                    // просто движемся к объекту
+                    goToObject(obj)
+                }
             } else if (hand == null) {
                 startMove(Move2Point(this, msg.x, msg.y))
             }
+        }
+    }
+
+    private suspend fun goToObject(obj: GameObject) {
+        // проверим расстояние от меня до объекта
+        val myRect = getBoundRect().clone().move(pos.point)
+        val objRect = obj.getBoundRect().clone().move(obj.pos.point)
+        val (mx, my) = myRect.min(objRect)
+        logger.debug("goToObject min $mx $my")
+        if (mx > OPEN_DISTANCE || my > OPEN_DISTANCE) {
+            startMove(
+                Move2Object(this, obj)
+            )
         }
     }
 
@@ -223,6 +244,9 @@ class Player(
             throw IllegalStateException("set lift with non liftable object")
         }
         val oldLift = lift
+        if (oldLift != null && obj != null) {
+            throw IllegalStateException("try set lift when already have lifting object")
+        }
         lift = obj
         if (obj != null) {
             // убрать из грида объект, теперь игрок на него отвечает (хэндлит его, обновляет его координаты в базе, спавнится вместе с ним)

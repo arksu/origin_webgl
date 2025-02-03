@@ -33,7 +33,7 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
     protected val knownList by lazy { KnownList(this) }
 
     /**
-     * список объектов которые "открыли" (есть инвентарь и надо его отобразить на клиенте)
+     * список объектов которые мы "открыли" (есть инвентарь и надо его отобразить на клиенте)
      */
     protected val openedObjectsList by lazy { OpenedObjectsList(this) }
 

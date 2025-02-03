@@ -18,7 +18,7 @@ class OpenedObjectsList(private val me: Human) {
     /**
      * список объектов которые я открыл, можно открыть сразу несколько объектов
      */
-    private val map = HashMap<ObjectID, GameObject>()
+    private val opened = HashMap<ObjectID, GameObject>()
 
     /**
      * открыть объект (инвентарь)
@@ -26,9 +26,9 @@ class OpenedObjectsList(private val me: Human) {
     suspend fun open(obj: GameObject): Boolean {
         val inv = obj.inventory
         if (inv != null)
-            if (!map.containsKey(obj.id)) {
+            if (!opened.containsKey(obj.id)) {
                 logger.warn("open $obj")
-                map[obj.id] = obj
+                opened[obj.id] = obj
                 if (me is Player) {
                     me.sendToSocket(InventoryUpdate(inv))
                 }
@@ -39,14 +39,14 @@ class OpenedObjectsList(private val me: Human) {
     }
 
     fun get(id: ObjectID): GameObject? {
-        return map[id]
+        return opened[id]
     }
 
     /**
      * закрыть объект (инвентарь)
      */
     suspend fun close(id: ObjectID) {
-        val obj = map.remove(id)
+        val obj = opened.remove(id)
         if (obj != null) {
             if (me is Player) {
                 me.sendToSocket(InventoryClose(id))
@@ -59,14 +59,14 @@ class OpenedObjectsList(private val me: Human) {
      * закрыть все объекты с которыми взаимодействовали
      */
     suspend fun closeAll() {
-        if (map.size > 0) {
-            map.values.forEach {
+        if (opened.size > 0) {
+            opened.values.forEach {
                 if (me is Player) {
                     me.sendToSocket(InventoryClose(it.id))
                 }
                 it.send(ContainerMessage.CloseBy(me))
             }
-            map.clear()
+            opened.clear()
         }
     }
 }

@@ -7,11 +7,12 @@ import com.origin.model.Human
 import com.origin.model.Player
 import com.origin.model.StaticObject
 import com.origin.model.inventory.Inventory
+import com.origin.model.kind.Openable
 
 /**
  * контейнеры, которые могут хранить вещи (ящики, шкафы и тд)
  */
-abstract class Container(record: ObjectRecord) : StaticObject(record) {
+abstract class Container(record: ObjectRecord) : StaticObject(record), Openable {
     /**
      * создаем (а значит и загрузим) инвентарь при первом обращении к нему, этого момента его в объекте не будет
      * и из базы он загружен не будет
