@@ -2,9 +2,10 @@ package com.origin.move
 
 import com.origin.ObjectID
 import com.origin.TimeController
-import com.origin.model.*
-import com.origin.util.Vec2i
-import java.util.*
+import com.origin.model.BroadcastEvent
+import com.origin.model.GameObject
+import com.origin.model.MovingObjectMessage
+import com.origin.model.ObjectPosition
 
 abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, pos) {
 
@@ -102,9 +103,4 @@ abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, 
         // по воде движемся в 2 раза медленее
         return if (getMovementType() == MoveType.SWIMMING) s / 2 else s
     }
-
-    /**
-     * сохранить позицию объекта в базу (вызывается периодически в движении)
-     */
-    abstract fun storePositionInDb()
 }

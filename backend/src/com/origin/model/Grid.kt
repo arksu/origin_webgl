@@ -162,6 +162,7 @@ class Grid(
     private suspend fun addObject(obj: GameObject) {
         if (!objects.contains(obj)) {
             objects.add(obj)
+            obj.setGrid(this)
 
             activeObjects.forEach {
                 it.send(GameObjectMessage.GridObjectAdded(obj))
@@ -386,7 +387,6 @@ class Grid(
             @Suppress("UNCHECKED_CAST")
             val obj = ObjectsFactory.create(clazz as Class<GameObject>, pos, data)
 
-            obj.setGrid(this@Grid)
             obj.save()
             // шлем сообщение самому себе на спавн объекта
             // т.к. мы сейчас в корутине

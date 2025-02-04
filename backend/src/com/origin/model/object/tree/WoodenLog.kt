@@ -2,9 +2,9 @@ package com.origin.model.`object`.tree
 
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.ContextMenu
-import com.origin.model.kind.Liftable
 import com.origin.model.Player
 import com.origin.model.StaticObject
+import com.origin.model.kind.Liftable
 import com.origin.model.`object`.ObjectsFactory
 import com.origin.util.Rect
 
@@ -35,6 +35,6 @@ class WoodenLog(record: ObjectRecord) : StaticObject(record), Liftable {
     }
 
     override suspend fun executeContextMenuItem(player: Player, selected: String) {
-        // TODO
+        // TODO Make board
     }
 }

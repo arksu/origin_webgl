@@ -6,6 +6,7 @@ import com.origin.GRID_FULL_SIZE
 import com.origin.ObjectID
 import com.origin.TILE_SIZE
 import com.origin.model.inventory.Inventory
+import com.origin.model.kind.Inner
 import com.origin.move.Collision
 import com.origin.util.*
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +49,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
             logger.warn("game obj actor $this finished")
         }
     }
+    private var actorWasClosed = false
 
     protected open suspend fun processMessage(msg: Any) {
         when (msg) {
@@ -63,7 +65,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
      * отправить сообщение объекту не дожидаясь ответа
      */
     suspend fun send(msg: Any) {
-        actor.send(msg)
+        if (!actorWasClosed) actor.send(msg)
     }
 
     suspend fun <T> sendAndWaitAck(msg: MessageWithAck<T>): T {
@@ -197,6 +199,12 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
                 newGrid.objects.add(this)
             }
         }
+        if (this is Inner) {
+            getInnerObjects()?.forEach {
+                if (it.isSpawned) throw RuntimeException("Inner object could not be spawned!")
+                it.setXY(x, y)
+            }
+        }
     }
 
     /**
@@ -218,6 +226,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
 //            }
 //        }
         // завершаем актора
+        actorWasClosed = true
         actor.close()
     }
 
@@ -228,6 +237,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
      */
     protected open suspend fun onRemovedFromGrid() {
         logger.warn("onRemoved")
+        grid = null
     }
 
     /**
@@ -276,6 +286,12 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
 
     fun setGrid(g: Grid) {
         this.grid = g
+    }
+
+    /**
+     * сохранить позицию объекта в базу (вызывается периодически в движении)
+     */
+    open suspend fun storePositionInDb() {
     }
 
     open fun postConstruct() {

@@ -26,6 +26,7 @@ import com.origin.util.SHIFT_KEY
 import com.origin.util.Vec2i
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class Player(
     /**
@@ -253,24 +254,26 @@ class Player(
         }
         lift = obj
         if (obj != null) {
+            // отправить клиенту пакет на лифт объекта,
+            // перемещающий объект в список переносимых игроком
+            sendToSocket(ObjectAddPacket.build(obj))
+
             // убрать из грида объект, теперь игрок на него отвечает (хэндлит его, обновляет его координаты в базе, спавнится вместе с ним)
             // целиком удаляет из грида, из known list, и с клиента
             obj.getGridSafety().send(GridMessage.RemoveObject(obj))
-
-            // отправить клиенту пакет на лифт объекта,
-            // перемещающий объект в список переносимых игроком
-            sendToSocket(LiftPacket(obj, true, this))
         } else {
             // должны явно что-то положить на землю, был объект который перетаскивали
             if (oldLiftObject != null) {
                 oldLiftObject.pos.level = pos.level
                 oldLiftObject.pos.region = pos.region
                 oldLiftObject.setXY(pos.x, pos.y)
+
+                // при спавне будет отправлен ObjectAdd
                 val spawned = oldLiftObject.getGridSafety().sendAndWaitAck(GridMessage.Spawn(oldLiftObject))
 
                 if (spawned) {
-                    // Положить на землю объект который переносили (вернуть его в грид)
-                    sendToSocket(LiftPacket(oldLiftObject, false, this))
+                    // если удалось положить объект - отправим апдейт себя где уже нет lift
+                    sendToSocket(ObjectAddPacket.build(this))
                 }
             }
         }
@@ -556,7 +559,7 @@ class Player(
     /**
      * сохранение текущей позиции в бд
      */
-    override fun storePositionInDb() {
+    override suspend fun storePositionInDb() {
         logger.warn("storePositionInDb ${pos.x} ${pos.y}")
         character.x = pos.x
         character.y = pos.y
@@ -564,15 +567,25 @@ class Player(
         character.region = pos.region
         character.heading = pos.heading
 
-        DatabaseConfig.dsl
-            .update(CHARACTER)
-            .set(CHARACTER.X, character.x)
-            .set(CHARACTER.Y, character.y)
-            .set(CHARACTER.LEVEL, character.level)
-            .set(CHARACTER.REGION, character.region)
-            .set(CHARACTER.HEADING, character.heading)
-            .where(CHARACTER.ID.eq(character.id))
-            .execute()
+        withContext(IO) {
+            DatabaseConfig.dsl
+                .update(CHARACTER)
+                .set(CHARACTER.X, character.x)
+                .set(CHARACTER.Y, character.y)
+                .set(CHARACTER.LEVEL, character.level)
+                .set(CHARACTER.REGION, character.region)
+                .set(CHARACTER.HEADING, character.heading)
+                .where(CHARACTER.ID.eq(character.id))
+                .execute()
+        }
+
+        val l = lift
+        if (l != null) {
+            l.pos.level = pos.level
+            l.pos.region = pos.region
+            l.setXY(pos.x, pos.y)
+            l.storePositionInDb()
+        }
     }
 
     /**
@@ -594,11 +607,19 @@ class Player(
         World.removePlayer(this)
 
         if (isSpawned) {
-            openedObjectsList.closeAll()
             // удалить объект из грида
             remove()
         }
         save()
+    }
+
+    override suspend fun onRemovedFromGrid() {
+        openedObjectsList.closeAll()
+        val l = lift
+        if (l != null) {
+            getGridSafety().sendAndWaitAck(GridMessage.Spawn(l))
+        }
+        super.onRemovedFromGrid()
     }
 
     override fun getBoundRect(): Rect {
