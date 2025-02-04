@@ -579,13 +579,7 @@ class Player(
                 .execute()
         }
 
-        val l = lift
-        if (l != null) {
-            l.pos.level = pos.level
-            l.pos.region = pos.region
-            l.setXY(pos.x, pos.y)
-            l.storePositionInDb()
-        }
+        super.storePositionInDb()
     }
 
     /**

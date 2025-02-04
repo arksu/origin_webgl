@@ -215,16 +215,6 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
         // учесть телепорт когда грида еще еще нет
         grid?.sendAndWait(GridMessage.RemoveObject(this))
 
-        // если есть что-то вложенное внутри
-        // TODO
-//        if (!lift.isEmpty()) {
-//            lift.values.forEach { _ ->
-//                // TODO remove when lift it.pos.set xy coord
-//                // spawn it
-//                // it.pos.spawn()
-//                // store pos into db
-//            }
-//        }
         // завершаем актора
         actorWasClosed = true
         actor.close()
@@ -292,6 +282,11 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
      * сохранить позицию объекта в базу (вызывается периодически в движении)
      */
     open suspend fun storePositionInDb() {
+        if (this is Inner) {
+            getInnerObjects()?.forEach {
+                it.storePositionInDb()
+            }
+        }
     }
 
     open fun postConstruct() {

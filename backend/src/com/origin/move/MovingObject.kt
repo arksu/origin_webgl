@@ -67,9 +67,13 @@ abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, 
      * удаление объекта
      */
     override suspend fun remove() {
-        // TODO
-//        moveController?.stop()
+        moveController?.stop()
         super.remove()
+    }
+
+    override suspend fun onRemovedFromGrid() {
+        moveController?.stop()
+        super.onRemovedFromGrid()
     }
 
     /**

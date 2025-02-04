@@ -128,13 +128,9 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
         broadcastStatusUpdate()
     }
 
-    override suspend fun remove() {
-        super.remove()
+    override suspend fun onRemovedFromGrid() {
         // deactivate and unload grids
         unloadGrids()
-    }
-
-    override suspend fun onRemovedFromGrid() {
         knownList.clear()
         super.onRemovedFromGrid()
     }
