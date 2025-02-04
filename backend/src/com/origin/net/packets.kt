@@ -8,6 +8,7 @@ import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.item.Item
 import com.origin.model.item.ItemFactory
+import com.origin.model.kind.Inner
 import com.origin.net.ServerPacket.*
 
 /**
@@ -79,13 +80,26 @@ class MapGridData(grid: Grid, flag: Type) : ServerMessage(MAP_DATA.n) {
  * клиент перестраивает карту не сразу, это может занять какое то вермя. при вычислении "слоев" тайлов
  * нужны данные соседних гридов - иначе будут артефакты. поэтому этим сообщением мы говорим что точно отослали
  * все гриды которые должны быть у клиента и можно перестраивать карту. все будет ок
+ * передает вложенные объекты которые прилинкованы к нему в соответствии со слотами (индексами в списке innerList)
  */
 class MapGridConfirm : ServerMessage(MAP_CONFIRMED.n)
 
-class ObjectAdd(obj: GameObject) : ServerMessage(OBJECT_ADD.n) {
+class ObjectAddPacket private constructor(obj: GameObject, innerList: List<ObjectAddPacket>?) : ServerMessage(OBJECT_ADD.n) {
+
+    companion object {
+        fun build(obj: GameObject): ObjectAddPacket {
+            val innerList = if (obj is Inner) {
+                obj.getInnerObjects()?.map { build(it) }
+            } else null
+            return ObjectAddPacket(obj, innerList)
+        }
+    }
+
     private val id = obj.id
     private val x = obj.pos.x
     private val y = obj.pos.y
+
+    private val i = innerList
 
     /**
      * heading
@@ -266,10 +280,16 @@ class CursorPacket(cursor: Cursor) : ServerMessage(CURSOR.n) {
 
 /**
  * поднять/опустить объект игроком (прилинковка на клиенте, несет над собой)
+ *
+ * boat -> player -> crate
+ *
+ *
  */
 class LiftPacket(obj: GameObject, isLift: Boolean, owner: GameObject) : ServerMessage(OBJECT_LIFT.n) {
+
     // флаг поднятия или опускания объекта
     private val l = if (isLift) 1 else 0
+
     // owner id - ид родителя. который перетаскивает объект
     private val oid = owner.id
 

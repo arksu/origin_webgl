@@ -13,6 +13,7 @@ import com.origin.model.inventory.Hand
 import com.origin.model.inventory.Inventory
 import com.origin.model.item.Item
 import com.origin.model.item.ItemFactory
+import com.origin.model.kind.Inner
 import com.origin.model.kind.Liftable
 import com.origin.model.kind.Openable
 import com.origin.model.`object`.container.ContainerMessage
@@ -44,7 +45,7 @@ class Player(
         region = character.region,
         heading = character.heading
     )
-) {
+), Inner {
     /**
      * инвентарь игрока
      */
@@ -273,6 +274,11 @@ class Player(
                 }
             }
         }
+    }
+
+    override fun getInnerObjects(): List<GameObject>? {
+        val l = lift
+        return if (l != null) listOf(l) else null
     }
 
     /**

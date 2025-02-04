@@ -1,7 +1,7 @@
 package com.origin.model
 
 import com.origin.ObjectID
-import com.origin.net.ObjectAdd
+import com.origin.net.ObjectAddPacket
 import com.origin.net.ObjectDel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -47,7 +47,7 @@ class KnownList(private val me: GameObject) {
             knownPlayers[obj.id] = obj
         }
         if (me is Player) {
-            me.sendToSocket(ObjectAdd(obj))
+            me.sendToSocket(ObjectAddPacket.build(obj))
         }
 
         return true
@@ -56,7 +56,7 @@ class KnownList(private val me: GameObject) {
     suspend fun resendObjectAdd() {
         if (me is Player) {
             knownObjects.forEach {
-                me.sendToSocket(ObjectAdd(it.value))
+                me.sendToSocket(ObjectAddPacket.build(it.value))
             }
         }
     }

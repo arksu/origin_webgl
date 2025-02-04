@@ -6,7 +6,7 @@ import com.origin.config.ServerConfig
 import com.origin.model.action.Action
 import com.origin.move.MoveController
 import com.origin.move.MovingObject
-import com.origin.net.ObjectAdd
+import com.origin.net.ObjectAddPacket
 import com.origin.net.ObjectMoved
 import com.origin.net.ObjectStartMove
 import com.origin.net.ObjectStopped
@@ -110,7 +110,7 @@ abstract class Human(id: ObjectID, pos: ObjectPosition) : MovingObject(id, pos) 
 
             is BroadcastEvent.Changed -> {
                 if (knownList.isKnownObject(msg.obj)) {
-                    if (this is Player) sendToSocket(ObjectAdd(msg.obj))
+                    if (this is Player) sendToSocket(ObjectAddPacket.build(msg.obj))
                 }
             }
 
