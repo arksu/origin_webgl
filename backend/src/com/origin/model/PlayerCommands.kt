@@ -45,7 +45,8 @@ object PlayerCommands {
                 val clazz = ObjectsFactory.getClassByName(params[1])
                 if (clazz != null) {
                     val pos = ObjectPosition(x, y, player.pos)
-                    World.getGrid(pos).generateObject(clazz, pos)
+                    val g = World.getGrid(pos)
+                    Grid.generateObject(g, clazz, pos)
                 }
             }
         }

@@ -1,9 +1,6 @@
 package com.origin.model.action
 
-import com.origin.model.BroadcastEvent
-import com.origin.model.ObjectPosition
-import com.origin.model.Player
-import com.origin.model.World
+import com.origin.model.*
 import com.origin.model.`object`.tree.Tree
 import com.origin.model.`object`.tree.WoodenLog
 import kotlin.math.abs
@@ -60,7 +57,8 @@ class ChopTree(
             // спавним бревна
             for (l in 1..tree.logs) {
                 val pos = ObjectPosition(tree.pos.x + (20 * l + 3) * multX, tree.pos.y + (20 * l + 3) * multY, tree.pos)
-                World.getGrid(pos).generateObject(WoodenLog::class.java, pos)
+                val g = World.getGrid(pos)
+                Grid.generateObject(g, WoodenLog::class.java, pos)
             }
 
             // действие завершается

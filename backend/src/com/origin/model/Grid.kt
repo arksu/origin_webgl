@@ -9,8 +9,8 @@ import com.origin.jooq.tables.records.GridRecord
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.jooq.tables.references.GRID
 import com.origin.jooq.tables.references.OBJECT
-import com.origin.model.`object`.ObjectsFactory
 import com.origin.model.`object`.Boulder
+import com.origin.model.`object`.ObjectsFactory
 import com.origin.model.`object`.tree.Apple
 import com.origin.model.`object`.tree.Birch
 import com.origin.model.`object`.tree.Fir
@@ -221,7 +221,7 @@ class Grid(
         }
     }
 
-    fun updateTiles() {
+    private fun updateTiles() {
         val affected = DatabaseConfig.dsl
             .update(GRID)
             .set(GRID.TILES_BLOB, record.tilesBlob)
@@ -366,36 +366,39 @@ class Grid(
             val pos = ObjectPosition(x * TILE_SIZE + ox, y * TILE_SIZE + oy, this.level, this.region, 0)
             when (tilesBlob[x + y * GRID_SIZE]) {
                 Tile.FOREST_LEAF -> {
-                    if (Rnd.next(170) == 0) generateObject(Birch::class.java, pos)
-                    if (Rnd.next(320) == 0) generateObject(Apple::class.java, pos)
-                    if (Rnd.next(450) == 0) generateObject(Boulder::class.java, pos)
+                    if (Rnd.next(170) == 0) generateObject(this, Birch::class.java, pos)
+                    if (Rnd.next(320) == 0) generateObject(this, Apple::class.java, pos)
+                    if (Rnd.next(450) == 0) generateObject(this, Boulder::class.java, pos)
                 }
 
                 Tile.FOREST_PINE -> {
-                    if (Rnd.next(130) == 0) generateObject(Fir::class.java, pos)
-                    if (Rnd.next(270) == 0) generateObject(Pine::class.java, pos)
-                    if (Rnd.next(450) == 0) generateObject(Boulder::class.java, pos)
+                    if (Rnd.next(130) == 0) generateObject(this, Fir::class.java, pos)
+                    if (Rnd.next(270) == 0) generateObject(this, Pine::class.java, pos)
+                    if (Rnd.next(450) == 0) generateObject(this, Boulder::class.java, pos)
                 }
             }
         }
     }
 
-    fun generateObject(clazz: Class<*>, pos: ObjectPosition, data: String? = null) {
-        // запускаем генерацию объекта в корутине
-        // вот тут просиходит ай-ай-ай мы в отдельном потоке запускаем генерацию объектов
-        WorkerScope.launch {
-            @Suppress("UNCHECKED_CAST")
-            val obj = ObjectsFactory.create(clazz as Class<GameObject>, pos, data)
-
-            obj.save()
-            // шлем сообщение самому себе на спавн объекта
-            // т.к. мы сейчас в корутине
-            this@Grid.send(GridMessage.SpawnForce(obj))
-        }
-    }
-
     companion object {
         val logger: Logger = LoggerFactory.getLogger(Grid::class.java)
+
+        /**
+         * сгенерировать объект в грид
+         */
+        fun generateObject(grid: Grid, clazz: Class<*>, pos: ObjectPosition, data: String? = null) {
+            // запускаем генерацию объекта в корутине
+            // вот тут просиходит ай-ай-ай мы в отдельном потоке запускаем генерацию объектов
+            WorkerScope.launch {
+                @Suppress("UNCHECKED_CAST")
+                val obj = ObjectsFactory.create(clazz as Class<GameObject>, pos, data)
+
+                obj.save()
+                // шлем сообщение самому себе на спавн объекта
+                // т.к. мы сейчас в корутине
+                grid.send(GridMessage.SpawnForce(obj))
+            }
+        }
 
         /**
          * загрузить грид из базы
