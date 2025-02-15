@@ -16,6 +16,9 @@ import com.origin.model.item.ItemFactory
 import com.origin.model.kind.Inner
 import com.origin.model.kind.Liftable
 import com.origin.model.kind.Openable
+import com.origin.model.message.GridMessage
+import com.origin.model.message.PlayerMessage
+import com.origin.model.`object`.GameObject
 import com.origin.model.`object`.container.ContainerMessage
 import com.origin.move.Move2Object
 import com.origin.move.Move2Point

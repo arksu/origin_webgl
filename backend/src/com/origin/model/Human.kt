@@ -4,6 +4,9 @@ import com.origin.ObjectID
 import com.origin.TILE_SIZE
 import com.origin.config.ServerConfig
 import com.origin.model.action.Action
+import com.origin.model.message.GridMessage
+import com.origin.model.message.HumanMessage
+import com.origin.model.`object`.GameObject
 import com.origin.move.MoveController
 import com.origin.move.MovingObject
 import com.origin.net.ObjectAddPacket

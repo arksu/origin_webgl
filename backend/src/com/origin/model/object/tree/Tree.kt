@@ -3,7 +3,7 @@ package com.origin.model.`object`.tree
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.ContextMenu
 import com.origin.model.Player
-import com.origin.model.StaticObject
+import com.origin.model.`object`.StaticObject
 import com.origin.model.action.ChopTree
 import com.origin.model.action.TakeBranch
 import com.origin.util.Rect

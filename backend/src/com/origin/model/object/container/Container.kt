@@ -5,7 +5,7 @@ import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.BroadcastEvent
 import com.origin.model.Human
 import com.origin.model.Player
-import com.origin.model.StaticObject
+import com.origin.model.`object`.StaticObject
 import com.origin.model.inventory.Inventory
 import com.origin.model.kind.Openable
 

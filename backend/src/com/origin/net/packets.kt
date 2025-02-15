@@ -9,6 +9,8 @@ import com.origin.model.inventory.Inventory
 import com.origin.model.item.Item
 import com.origin.model.item.ItemFactory
 import com.origin.model.kind.Inner
+import com.origin.model.`object`.GameObject
+import com.origin.model.`object`.StaticObject
 import com.origin.net.ServerPacket.*
 
 /**

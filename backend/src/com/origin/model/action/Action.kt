@@ -2,7 +2,7 @@ package com.origin.model.action
 
 import com.origin.TimeController.GAME_ACTION_PERIOD
 import com.origin.model.Human
-import com.origin.model.HumanMessage
+import com.origin.model.message.HumanMessage
 import com.origin.model.Player
 import com.origin.net.ActionProgress
 import com.origin.util.WorkerScope

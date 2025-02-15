@@ -3,7 +3,6 @@ package com.origin.model.`object`
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.model.ContextMenu
 import com.origin.model.Player
-import com.origin.model.StaticObject
 import com.origin.model.action.ChipStone
 import com.origin.util.Rect
 import com.origin.util.Rnd

@@ -9,7 +9,7 @@ abstract class Food(record: InventoryRecord) : Item(record) {
 
     override fun getContextMenu(player: Player): ContextMenu? {
         val list = LinkedHashSet<String>()
-        if (catEat()) {
+        if (canEat()) {
             list.add("Eat")
         }
         return if (list.isNotEmpty()) ContextMenu(this, list) else null
@@ -17,13 +17,16 @@ abstract class Food(record: InventoryRecord) : Item(record) {
 
     override suspend fun executeContextMenuItem(player: Player, selected: String) {
         when (selected) {
-            "Eat" -> if (catEat()) {
+            "Eat" -> if (canEat()) {
                 eat()
             }
         }
     }
 
-    open fun catEat(): Boolean {
+    /**
+     * может быть съеден?
+     */
+    open fun canEat(): Boolean {
         return true
     }
 

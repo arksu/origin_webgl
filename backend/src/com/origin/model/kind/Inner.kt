@@ -1,6 +1,6 @@
 package com.origin.model.kind
 
-import com.origin.model.GameObject
+import com.origin.model.`object`.GameObject
 
 /**
  * имеет вложенные объекты

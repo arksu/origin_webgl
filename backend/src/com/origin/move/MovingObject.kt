@@ -3,8 +3,8 @@ package com.origin.move
 import com.origin.ObjectID
 import com.origin.TimeController
 import com.origin.model.BroadcastEvent
-import com.origin.model.GameObject
-import com.origin.model.MovingObjectMessage
+import com.origin.model.`object`.GameObject
+import com.origin.model.message.MovingObjectMessage
 import com.origin.model.ObjectPosition
 
 abstract class MovingObject(id: ObjectID, pos: ObjectPosition) : GameObject(id, pos) {

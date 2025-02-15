@@ -1,5 +1,7 @@
-package com.origin.model
+package com.origin.model.message
 
+import com.origin.model.`object`.GameObject
+import com.origin.model.SpawnType
 import com.origin.util.MessageWithAck
 
 sealed class GameObjectMessage {

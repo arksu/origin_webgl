@@ -7,9 +7,9 @@ import com.origin.controller.gameSockets
 import com.origin.jooq.tables.records.AccountRecord
 import com.origin.jooq.tables.records.CharacterRecord
 import com.origin.jooq.tables.references.CHAT_HISTORY
-import com.origin.model.GameObjectMessage
+import com.origin.model.message.GameObjectMessage
 import com.origin.model.Player
-import com.origin.model.PlayerMessage
+import com.origin.model.message.PlayerMessage
 import com.origin.model.SpawnType.*
 import com.origin.model.World
 import com.origin.net.ClientPacket.*

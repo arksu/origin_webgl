@@ -1,8 +1,8 @@
 package com.origin
 
 import com.origin.model.Grid
-import com.origin.model.GridMessage
-import com.origin.model.MovingObjectMessage
+import com.origin.model.message.GridMessage
+import com.origin.model.message.MovingObjectMessage
 import com.origin.model.World
 import com.origin.move.MovingObject
 import com.origin.util.WorkerScope

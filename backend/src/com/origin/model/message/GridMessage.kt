@@ -1,5 +1,8 @@
-package com.origin.model
+package com.origin.model.message
 
+import com.origin.model.BroadcastEvent
+import com.origin.model.`object`.GameObject
+import com.origin.model.Human
 import com.origin.move.CheckCollisionModel
 import com.origin.move.CollisionResult
 import com.origin.move.MoveType

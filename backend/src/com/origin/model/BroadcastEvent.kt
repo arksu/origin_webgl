@@ -1,5 +1,6 @@
 package com.origin.model
 
+import com.origin.model.`object`.GameObject
 import com.origin.move.MoveType
 import com.origin.net.ChatChannel
 

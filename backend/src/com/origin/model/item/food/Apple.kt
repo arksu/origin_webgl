@@ -16,7 +16,8 @@ class Apple(record: InventoryRecord) : Food(record) {
         return if (record.data == "1") "/items/apple_core.png" else super.getIcon()
     }
 
-    override fun catEat(): Boolean {
+    override fun canEat(): Boolean {
+        // 1=значит уже съели. и это огрызок
         return record.data != "1"
     }
 
@@ -25,5 +26,7 @@ class Apple(record: InventoryRecord) : Food(record) {
         record.data = "1"
         save()
         inventory?.notify()
+
+        // TODO FEP, etc...
     }
 }

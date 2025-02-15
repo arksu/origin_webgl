@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.ObjectID
+import com.origin.model.`object`.GameObject
 import com.origin.net.ObjectAddPacket
 import com.origin.net.ObjectDel
 import org.slf4j.Logger

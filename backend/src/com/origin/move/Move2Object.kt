@@ -2,7 +2,7 @@ package com.origin.move
 
 import com.origin.OPEN_DISTANCE
 import com.origin.ObjectID
-import com.origin.model.GameObject
+import com.origin.model.`object`.GameObject
 
 /**
  * движение к объекту и взаимодействие с ним если дошли

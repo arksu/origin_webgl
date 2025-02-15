@@ -1,8 +1,9 @@
-package com.origin.model
+package com.origin.model.`object`
 
 import com.origin.config.DatabaseConfig
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.jooq.tables.references.OBJECT
+import com.origin.model.ObjectPosition
 import com.origin.util.Rect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

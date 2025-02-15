@@ -2,7 +2,6 @@ package com.origin.model.`object`
 
 import com.origin.IdFactory
 import com.origin.jooq.tables.records.ObjectRecord
-import com.origin.model.GameObject
 import com.origin.model.ObjectPosition
 import com.origin.model.item.ItemFactory
 import com.origin.model.item.ItemFactory.logger

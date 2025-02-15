@@ -1,12 +1,15 @@
 @file:OptIn(ObsoleteCoroutinesApi::class)
 
-package com.origin.model
+package com.origin.model.`object`
 
 import com.origin.GRID_FULL_SIZE
 import com.origin.ObjectID
 import com.origin.TILE_SIZE
+import com.origin.model.*
 import com.origin.model.inventory.Inventory
 import com.origin.model.kind.Inner
+import com.origin.model.message.GameObjectMessage
+import com.origin.model.message.GridMessage
 import com.origin.move.Collision
 import com.origin.util.*
 import kotlinx.coroutines.CoroutineScope

@@ -1,4 +1,4 @@
-package com.origin.model
+package com.origin.model.message
 
 sealed class MovingObjectMessage {
     class UpdateMove

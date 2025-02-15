@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.ObjectID
+import com.origin.model.`object`.GameObject
 import com.origin.model.`object`.container.ContainerMessage
 import com.origin.net.InventoryClose
 import com.origin.net.InventoryUpdate

@@ -1,4 +1,4 @@
-package com.origin.model
+package com.origin.model.message
 
 import com.origin.ObjectID
 import com.origin.net.GameSocket

@@ -1,6 +1,6 @@
 package com.origin.move
 
-import com.origin.model.GameObject
+import com.origin.model.`object`.GameObject
 import com.origin.model.Grid
 
 data class CheckCollisionModel(

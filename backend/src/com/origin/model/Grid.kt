@@ -9,7 +9,10 @@ import com.origin.jooq.tables.records.GridRecord
 import com.origin.jooq.tables.records.ObjectRecord
 import com.origin.jooq.tables.references.GRID
 import com.origin.jooq.tables.references.OBJECT
+import com.origin.model.message.GameObjectMessage
+import com.origin.model.message.GridMessage
 import com.origin.model.`object`.Boulder
+import com.origin.model.`object`.GameObject
 import com.origin.model.`object`.ObjectsFactory
 import com.origin.model.`object`.tree.Apple
 import com.origin.model.`object`.tree.Birch

@@ -4,7 +4,7 @@ import com.origin.GRID_FULL_SIZE
 import com.origin.GRID_SIZE
 import com.origin.TILE_SIZE
 import com.origin.Tile
-import com.origin.model.GameObject
+import com.origin.model.`object`.GameObject
 import com.origin.model.Grid
 import com.origin.model.LandLayer
 import com.origin.util.Rect

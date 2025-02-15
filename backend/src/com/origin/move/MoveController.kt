@@ -3,6 +3,8 @@ package com.origin.move
 import com.origin.TimeController
 import com.origin.config.ServerConfig
 import com.origin.model.*
+import com.origin.model.message.GridMessage
+import com.origin.model.`object`.GameObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.math.abs

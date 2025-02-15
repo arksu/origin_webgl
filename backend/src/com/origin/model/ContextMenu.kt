@@ -1,6 +1,7 @@
 package com.origin.model
 
 import com.origin.model.item.Item
+import com.origin.model.`object`.GameObject
 import com.origin.move.Move2Object
 
 /**

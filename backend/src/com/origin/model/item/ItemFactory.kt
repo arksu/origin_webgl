@@ -17,12 +17,11 @@ object ItemFactory {
 
     private var maxTypeId = 0
 
-    fun add(typeId: Int, clazz: Class<*>, icon: String) {
+    fun add(typeId: Int, clazz: Class<Item>, icon: String) {
         if (map.containsKey(typeId)) throw RuntimeException("item type $typeId is already registered!")
         if (ObjectsFactory.typeExists(typeId)) throw RuntimeException("item type $typeId is already registered to object!")
 
-        @Suppress("UNCHECKED_CAST")
-        map[typeId] = clazz as Class<Item>
+        map[typeId] = clazz
         reverseMap[clazz] = typeId
         mapNames[clazz.simpleName.lowercase()] = clazz
         iconMapByTypeId[typeId] = icon

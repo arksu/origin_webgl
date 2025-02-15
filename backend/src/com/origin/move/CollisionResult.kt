@@ -1,6 +1,6 @@
 package com.origin.move
 
-import com.origin.model.GameObject
+import com.origin.model.`object`.GameObject
 
 class CollisionResult(val result: CollisionType, val px: Double, val py: Double, val obj: GameObject?) {
 
