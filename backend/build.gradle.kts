@@ -62,8 +62,6 @@ dependencies {
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     implementation("org.slf4j:slf4j-log4j12:$slf4jVersion")
 
-    implementation("com.google.code.gson:gson:2.11.0") // https://mvnrepository.com/artifact/com.google.code.gson/gson
-
     implementation("com.zaxxer:HikariCP:6.2.1") // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     runtimeOnly("org.flywaydb:flyway-mysql:$flywayVersion")
