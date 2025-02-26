@@ -8,6 +8,8 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
+const val bearerPrefix = "Bearer "
+
 /**
  * REST Api для авторизации и операций с персонажами (до игровое состояние)
  * основная игра идет в Websockets канале
@@ -21,8 +23,6 @@ fun Route.api() {
 }
 
 fun ApplicationCall.getAccountSsid(): String {
-    val bearerPrefix = "Bearer "
-
     val authorizationHeader = this.request.headers[HttpHeaders.Authorization] ?: throw AuthorizationException()
     return if (authorizationHeader.startsWith(bearerPrefix, ignoreCase = true)) {
         authorizationHeader.substring(bearerPrefix.length).trim()
