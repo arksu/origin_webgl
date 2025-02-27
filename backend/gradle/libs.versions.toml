@@ -2,6 +2,13 @@
 [versions]
 kotlin-version = "2.1.0" # https://github.com/JetBrains/kotlin/releases
 ktor-version = "3.0.3" # https://github.com/ktorio/ktor/releases
+slf4j-version = "2.0.16" # https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+flyway-version = "11.3.3" # https://plugins.gradle.org/plugin/org.flywaydb.flyway
+hikaricp-version = "6.2.1" # https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+jooq-version = "3.19.20" # https://mvnrepository.com/artifact/org.jooq/jooq
+jooq-plugin-version = "9.0" #  https://plugins.gradle.org/plugin/nu.studer.jooq
+mariadb-java-client-version = "3.5.2" # https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+shadow-plugin-version = "8.1.1" # https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor-version" }
@@ -13,7 +20,16 @@ ktor-server-default-headers = { module = "io.ktor:ktor-server-default-headers", 
 ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor-version" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor-version" }
 ktor-serialization-gson = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktor-version" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-version" }
+slf4j-log4j12 = { module = "org.slf4j:slf4j-log4j12", version.ref = "slf4j-version" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway-version" }
+flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway-version" }
+hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikaricp-version" }
+mariadb-java-client = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "mariadb-java-client-version" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor-version" }
+flyway = { id = "org.flywaydb.flyway", version.ref = "flyway-version" }
+jooq = { id = "nu.studer.jooq", version.ref = "jooq-plugin-version" }
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow-plugin-version" }

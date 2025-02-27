@@ -1,16 +1,11 @@
-val slf4jVersion = "2.0.16" // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-val flywayVersion = "10.22.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
-val mariadbJavaClientVersion = "3.5.1" // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
-val jooqVersion = "3.19.18" // https://mvnrepository.com/artifact/org.jooq/jooq
-
 plugins {
     java
     idea
     application
     alias(libs.plugins.kotlin.jvm)
-    id("org.flywaydb.flyway") version "10.22.0" // https://plugins.gradle.org/plugin/org.flywaydb.flyway
-    id("nu.studer.jooq") version "9.0" // https://plugins.gradle.org/plugin/nu.studer.jooq
-    id("com.github.johnrengelman.shadow") version "8.1.1" // https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
+    alias(libs.plugins.flyway)
+    alias(libs.plugins.jooq)
+    alias(libs.plugins.shadow)
 }
 
 idea {
@@ -46,7 +41,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
     implementation("org.reflections:reflections:0.10.2")
 
     implementation(libs.ktor.server.core)
@@ -58,16 +53,15 @@ dependencies {
     implementation(libs.ktor.server.default.headers)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.serialization.gson)
+    implementation(libs.slf4j.api)
+    implementation(libs.slf4j.log4j12)
 
-    implementation("org.slf4j:slf4j-api:$slf4jVersion")
-    implementation("org.slf4j:slf4j-log4j12:$slf4jVersion")
+    implementation(libs.hikaricp)
+    implementation(libs.flyway.core)
+    implementation(libs.flyway.mysql)
 
-    implementation("com.zaxxer:HikariCP:6.2.1") // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
-    implementation("org.flywaydb:flyway-core:$flywayVersion")
-    runtimeOnly("org.flywaydb:flyway-mysql:$flywayVersion")
-
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client:$mariadbJavaClientVersion")
-    jooqGenerator("org.mariadb.jdbc:mariadb-java-client:$mariadbJavaClientVersion")
+    runtimeOnly(libs.mariadb.java.client)
+    jooqGenerator(libs.mariadb.java.client)
 }
 
 tasks.register<JavaExec>("mapgen") {
@@ -109,8 +103,8 @@ tasks {
 
 buildscript {
     dependencies {
-        classpath("org.flywaydb:flyway-mysql:10.22.0")
-        classpath("org.mariadb.jdbc:mariadb-java-client:3.5.1")
+        classpath(libs.flyway.mysql)
+        classpath(libs.mariadb.java.client)
     }
 }
 
@@ -126,7 +120,7 @@ flyway {
 }
 
 jooq {
-    version.set(jooqVersion)
+    version.set(libs.versions.jooq.version)
 
     configurations {
         create("main") {
