@@ -1,9 +1,9 @@
 
 [versions]
-kotlin-version = "2.1.0" # https://github.com/JetBrains/kotlin/releases
-ktor-version = "3.0.3" # https://github.com/ktorio/ktor/releases
-slf4j-version = "2.0.16" # https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-flyway-version = "11.3.3" # https://plugins.gradle.org/plugin/org.flywaydb.flyway
+kotlin-version = "2.1.10" # https://github.com/JetBrains/kotlin/releases
+ktor-version = "3.1.1" # https://github.com/ktorio/ktor/releases
+slf4j-version = "2.0.17" # https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+flyway-version = "11.3.4" # https://plugins.gradle.org/plugin/org.flywaydb.flyway
 hikaricp-version = "6.2.1" # https://mvnrepository.com/artifact/com.zaxxer/HikariCP
 jooq-version = "3.19.20" # https://mvnrepository.com/artifact/org.jooq/jooq
 jooq-plugin-version = "9.0" #  https://plugins.gradle.org/plugin/nu.studer.jooq
