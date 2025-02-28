@@ -920,7 +920,7 @@
     "offset": [17, 57],
     "layers": [
       {
-        "img": "man"
+        "spine": "spine/character/spine"
       }
     ]
   },

@@ -4,6 +4,8 @@ import type { ObjectMoved, ObjectStopped } from '@/net/packets'
 import type Render from '@/game/Render'
 import { coordGame2Screen } from '@/game/Tile'
 
+const RENDER_PATH = false
+
 export default class MoveController {
   private readonly render: Render
   private readonly me: GameObject
@@ -78,12 +80,14 @@ export default class MoveController {
     }
 
     // рисуем анимацию движения по серверу
-    const c1 = coordGame2Screen(this.serverX, this.serverY)
-    const c2 = coordGame2Screen(this.toX, this.toY)
-    this.lineView.clear()
-    this.lineView.moveTo(c1[0], c1[1])
-    this.lineView.lineTo(c2[0], c2[1])
-    this.lineView.stroke({ width: 2, color: 0x00ff00 })
+    if (RENDER_PATH) {
+      const c1 = coordGame2Screen(this.serverX, this.serverY)
+      const c2 = coordGame2Screen(this.toX, this.toY)
+      this.lineView.clear()
+      this.lineView.moveTo(c1[0], c1[1])
+      this.lineView.lineTo(c2[0], c2[1])
+      this.lineView.stroke({ width: 2, color: 0x00ff00 })
+    }
   }
 
   /**

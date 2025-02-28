@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import {Spine} from '@esotericsoftware/spine-pixi-v8'
 import { FederatedPointerEvent } from 'pixi.js'
 import type GameObject from '@/game/GameObject'
 import type Coord from '@/util/Coord'
@@ -10,17 +11,23 @@ import { ClientPacket } from '@/net/packets'
 import { getKeyFlags } from '@/util/keyboard'
 
 export interface Layer {
-  img: string
+  // sprite image
+  img?: string
+  // spine animation
+  spine?: string
+  // can click?
   interactive?: boolean
+  // set sprite offset
   offset?: Coord
   z?: number
+  // this is shadow layer? put it on z=-1
   shadow?: boolean
 }
 
 export interface Resource {
+  layers: Layer[]
   size?: Coord
   offset?: Coord
-  layers: Layer[]
 }
 
 /**
@@ -44,6 +51,9 @@ export default class ObjectView {
     this.res = this.getResource(obj.r)
     if (this.res == undefined) {
       this.res = this.getResource('unknown')
+      if (this.res == undefined) {
+        console.error('<unknown> resource not found')
+      }
     }
     this.makeLayers()
     this.onMoved()
@@ -78,19 +88,38 @@ export default class ObjectView {
   }
 
   private addLayer(l: Layer) {
-    let path = l.img
-    // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
-    if (path.includes('.')) path = '/assets/game/' + path
+    // создание спрайтов
+    if (l.img !== undefined) {
+      let path = l.img
+      // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
+      if (path.includes('.')) path = '/assets/game/' + path
 
-    if (!PIXI.Assets.cache.has(path)) {
-      PIXI.Assets.load(path).then((t) => {
-        console.log('loaded', path)
-        // создаем спрайт из текстуры которую загрузили
-        this.makeSprite(t, l)
-      })
-    } else {
-      // создаем спрайт для каждого слоя
-      this.makeSprite(path, l)
+      // ищем в кэеше ассетов
+      if (!PIXI.Assets.cache.has(path)) {
+        // в кэше нет - надо загрузить
+        PIXI.Assets.load(path).then((t) => {
+          console.log('loaded', path)
+          // после загрузки создаем спрайт из текстуры
+          this.makeSprite(t, l)
+        })
+      } else {
+        // спрайти в кэше есть
+        // создаем спрайт для каждого слоя
+        this.makeSprite(path, l)
+      }
+    }
+    if (l.spine !== undefined) {
+      const path = '/assets/game/' +l.spine
+      if (!PIXI.Assets.cache.has(path)) {
+        const data = l.spine+'-data'
+        const atlas = l.spine+'-atlas'
+        PIXI.Assets.add({alias: data, src: path+'.skel'})
+        PIXI.Assets.add({alias: atlas, src: path+'.atlas'})
+        PIXI.Assets.load([data, atlas]).then((spine) => {
+          console.log("spine loaded", spine)
+          this.makeSpine(data, atlas, l)
+        })
+      }
     }
   }
 
@@ -125,6 +154,24 @@ export default class ObjectView {
     this.container.addChild(spr)
   }
 
+  private makeSpine(data : string, atlas : string, l : Layer) {
+    // https://ru.esotericsoftware.com/spine-pixi#Loading-Spine-Assets
+    console.log("makeSpine")
+    const spineAnimation = Spine.from({skeleton: data, atlas : atlas, autoUpdate : true})
+    console.log(spineAnimation)
+
+
+    this.render.app.stage.addChild(spineAnimation)
+    spineAnimation.x = 200
+    spineAnimation.y = 100
+    spineAnimation.zIndex = 100
+    spineAnimation.state.setAnimation(0, "hola", true)
+    spineAnimation.scale = 2
+    spineAnimation.visible = true
+    spineAnimation.renderable = true
+    this.container.addChild(spineAnimation)
+  }
+
   public destroy() {
     if (!this.isDestroyed) {
       for (let i = 0; i < this.sprites.length; i++) {
@@ -150,11 +197,13 @@ export default class ObjectView {
     for (let i = 0; i < this.res.layers.length; i++) {
       if (this.res.layers[i].img == f) {
         const l = this.res.layers[i]
-        let path = l.img
-        // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
-        if (path.includes('.')) path = 'assets/game/' + path + '?' + (+new Date())
+        if (l.img !== undefined) {
+          let path = l.img
+          // если в пути до картинки есть точка (расширение файла) то грузим из ассетов (иначе это элемент атласа)
+          if (path.includes('.')) path = 'assets/game/' + path + '?' + (+new Date())
 
-        this.sprites[i].texture = PIXI.Texture.from(path)
+          this.sprites[i].texture = PIXI.Texture.from(path)
+        }
       }
     }
   }
@@ -168,7 +217,7 @@ export default class ObjectView {
     target.onmousedown = (e: FederatedPointerEvent) => {
       this.onMouseDown(e)
     }
-    target.onmousemove = (e : FederatedPointerEvent) => {
+    target.onmousemove = (e: FederatedPointerEvent) => {
       this.render.onMouseMove(e)
     }
     target.onmouseup = (e: FederatedPointerEvent) => {

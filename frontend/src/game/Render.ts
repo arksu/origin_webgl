@@ -23,7 +23,7 @@ export default class Render {
   /**
    * PIXI application
    */
-  private readonly app: PIXI.Application
+  public readonly app: PIXI.Application
 
   /**
    * загруженные гриды
@@ -173,7 +173,7 @@ export default class Render {
   setup() {
     this.canvas.style.display = 'block'
 
-    this.app.stage.addChild(this.mapGridsContainer)
+   // this.app.stage.addChild(this.mapGridsContainer)
     this.app.stage.addChild(this.screenContainer)
     this.app.stage.addChild(this.objectsContainer)
 

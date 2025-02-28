@@ -9,7 +9,7 @@ import { ClientPacket, type CraftData } from '@/net/packets'
 export default defineComponent({
   name: 'Craft',
   components: { Window },
-  // emits: ['close'],
+  emits: ['close'],
   setup() {
     const store = useGameStore()
     const selected = ref<CraftData | undefined>(undefined)
