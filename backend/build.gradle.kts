@@ -41,9 +41,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
-    implementation("org.reflections:reflections:0.10.2")
-
+    implementation(libs.reflections)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.websockets)
@@ -143,12 +141,12 @@ jooq {
                     }
                     generate.apply {
                         isPojos = true
+                        isRecords = true
                         isImmutablePojos = true
                         isPojosAsKotlinDataClasses = true
                         isKotlinNotNullPojoAttributes = true
                         isKotlinNotNullRecordAttributes = true
                         isDeprecated = false
-                        isRecords = true
                         isFluentSetters = true
                     }
                     target.apply {
