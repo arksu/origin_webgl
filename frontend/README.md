@@ -42,3 +42,13 @@ after each change package.json
 - верх
 - пояс
 - меч
+
+направления движения:
+0 - вверх         n-walk
+1 - верх вправо   ne-walk
+2 - вправо        e-walk
+3 - вправо вниз   se-walk
+4 - низ           s-walk
+5 - лево низ      sw-walk
+6 - лево          w-walk
+7 - верх лево     nw-walk

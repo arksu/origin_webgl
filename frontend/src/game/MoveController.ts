@@ -4,7 +4,7 @@ import type { ObjectMoved, ObjectStopped } from '@/net/packets'
 import type Render from '@/game/Render'
 import { coordGame2Screen } from '@/game/Tile'
 
-const RENDER_PATH = false
+const RENDER_PATH = true
 
 export default class MoveController {
   private readonly render: Render
@@ -109,7 +109,7 @@ export default class MoveController {
       this.me.y = data.y
       console.warn('hard stop ld=' + ld.toFixed(2))
       this.stop()
-      this.render.onObjectMoved(this.me)
+      this.render.onObjectStopped(this.me)
     }
   }
 
@@ -129,6 +129,7 @@ export default class MoveController {
     this.lineView.destroy({ children: true, texture: true })
     this.stopped = true
     this.me.moveController = undefined
+    this.render.onObjectStopped(this.me)
   }
 
   /**
@@ -194,8 +195,11 @@ export default class MoveController {
       }
     }
 
-    this.render.onObjectMoved(this.me)
+    if (!this.stopped) {
+    //console.log("this.render.onObjectMoved")
+    this.render.onObjectMoved(this.me, calcDirection(dx, dy))
     if (this.render.gameData.selectedCharacterId == this.me.id) this.render?.updateMapScalePos()
+    }
   }
 
   private smoothCorrect(targetX: number, targetY: number, smoothing: number) {
@@ -207,4 +211,27 @@ export default class MoveController {
 
 function lerp(start: number, end: number, t: number) {
   return start + (end - start) * t
+}
+
+function calcDirection(dx: number, dy : number ) : number {
+ // If there is no movement, you might want to handle this case specially.
+ if (dx === 0 && dy === 0) {
+  return -1; // or choose a default direction
+}
+
+// Math.atan2 returns the angle relative to the positive x-axis (counterclockwise)
+let angle = Math.atan2(dy, dx);
+
+// We want 0 to represent "up", so shift the angle by 90° (π/2 radians)
+angle += Math.PI / 2;
+
+// Normalize angle to be in [0, 2π)
+if (angle < 0) {
+  angle += 2 * Math.PI;
+}
+
+// Each of the 8 directions spans 45° (π/4 radians).
+// Adding π/8 (half sector) ensures we round to the nearest sector.
+const sector = Math.floor((angle + Math.PI / 8) / (Math.PI / 4)) % 8;
+return sector;
 }

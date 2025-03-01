@@ -2,67 +2,106 @@
   "trees": {
     "autumn_oak": {
       "1": {
-        "offset": [15, 26],
+        "offset": [
+          15,
+          26
+        ],
         "layers": [
           {
             "img": "trees/autumn_oak/01_.png",
-            "offset": [7, 25],
+            "offset": [
+              7,
+              25
+            ],
             "shadow": true
           },
           {
             "img": "trees/autumn_oak/01.png",
-            "offset": [7, 3],
+            "offset": [
+              7,
+              3
+            ],
             "z": 0
           }
         ]
       },
       "2": {
-        "offset": [29, 64],
+        "offset": [
+          29,
+          64
+        ],
         "layers": [
           {
             "img": "trees/autumn_oak/02_.png",
-            "offset": [10, 61],
+            "offset": [
+              10,
+              61
+            ],
             "shadow": true
           },
           {
             "img": "trees/autumn_oak/02.png",
-            "offset": [4, 9],
+            "offset": [
+              4,
+              9
+            ],
             "z": 0
           }
         ]
       },
       "3": {
-        "offset": [54, 108],
+        "offset": [
+          54,
+          108
+        ],
         "layers": [
           {
             "img": "trees/autumn_oak/03_.png",
-            "offset": [20, 98],
+            "offset": [
+              20,
+              98
+            ],
             "shadow": true
           },
           {
             "img": "trees/autumn_oak/03.png",
-            "offset": [5, 8],
+            "offset": [
+              5,
+              8
+            ],
             "z": 0
           }
         ]
       },
       "4": {
-        "offset": [82, 141],
+        "offset": [
+          82,
+          141
+        ],
         "layers": [
           {
             "img": "trees/autumn_oak/04_.png",
-            "offset": [34, 127],
+            "offset": [
+              34,
+              127
+            ],
             "shadow": true
           },
           {
             "img": "trees/autumn_oak/04.png",
-            "offset": [8, 0],
+            "offset": [
+              8,
+              0
+            ],
             "z": 0
           }
         ]
       },
       "5": {
-        "offset": [104, 195],
+        "offset": [
+          104,
+          195
+        ],
         "layers": [
           {
             "img": "trees/autumn_oak/05_.png",
@@ -74,37 +113,58 @@
           },
           {
             "img": "trees/autumn_oak/05.png",
-            "offset": [0, 3],
+            "offset": [
+              0,
+              3
+            ],
             "z": 0
           }
         ]
       },
       "6": {
-        "offset": [137, 200],
+        "offset": [
+          137,
+          200
+        ],
         "layers": [
           {
             "img": "trees/autumn_oak/06_.png",
-            "offset": [52, 188],
+            "offset": [
+              52,
+              188
+            ],
             "shadow": true
           },
           {
             "img": "trees/autumn_oak/06.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           }
         ]
       },
       "stump": {
-        "offset": [45, 18],
+        "offset": [
+          45,
+          18
+        ],
         "layers": [
           {
             "img": "trees/autumn_oak/stump_.png",
-            "offset": [0, 13],
+            "offset": [
+              0,
+              13
+            ],
             "shadow": true
           },
           {
             "img": "trees/autumn_oak/stump.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           }
         ]
@@ -112,107 +172,170 @@
     },
     "birch": {
       "1": {
-        "offset": [16, 26],
+        "offset": [
+          16,
+          26
+        ],
         "layers": [
           {
             "img": "trees/birch/1.png",
-            "offset": [7, 0],
+            "offset": [
+              7,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/birch/1_.png",
-            "offset": [9, 23],
+            "offset": [
+              9,
+              23
+            ],
             "shadow": true
           }
         ]
       },
       "2": {
-        "offset": [22, 49],
+        "offset": [
+          22,
+          49
+        ],
         "layers": [
           {
             "img": "trees/birch/2.png",
-            "offset": [1, 6],
+            "offset": [
+              1,
+              6
+            ],
             "z": 0
           },
           {
             "img": "trees/birch/2_.png",
-            "offset": [11, 48],
+            "offset": [
+              11,
+              48
+            ],
             "shadow": true
           }
         ]
       },
       "3": {
-        "offset": [31, 66],
+        "offset": [
+          31,
+          66
+        ],
         "layers": [
           {
             "img": "trees/birch/3.png",
-            "offset": [4, 1],
+            "offset": [
+              4,
+              1
+            ],
             "z": 0
           },
           {
             "img": "trees/birch/3_.png",
-            "offset": [10, 66],
+            "offset": [
+              10,
+              66
+            ],
             "shadow": true
           }
         ]
       },
       "4": {
-        "offset": [36, 88],
+        "offset": [
+          36,
+          88
+        ],
         "layers": [
           {
             "img": "trees/birch/4.png",
-            "offset": [6, 2],
+            "offset": [
+              6,
+              2
+            ],
             "z": 0
           },
           {
             "img": "trees/birch/4_.png",
-            "offset": [7, 84],
+            "offset": [
+              7,
+              84
+            ],
             "shadow": true
           }
         ]
       },
       "5": {
-        "offset": [59, 124],
+        "offset": [
+          59,
+          124
+        ],
         "layers": [
           {
             "img": "trees/birch/5.png",
-            "offset": [13, 22],
+            "offset": [
+              13,
+              22
+            ],
             "z": 0
           },
           {
             "img": "trees/birch/5_.png",
-            "offset": [18, 117],
+            "offset": [
+              18,
+              117
+            ],
             "shadow": true
           }
         ]
       },
       "6": {
-        "offset": [59, 124],
+        "offset": [
+          59,
+          124
+        ],
         "layers": [
           {
             "interactive": true,
             "img": "trees/birch/6.png",
-            "offset": [7, 0],
+            "offset": [
+              7,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/birch/6_.png",
-            "offset": [18, 117],
+            "offset": [
+              18,
+              117
+            ],
             "shadow": true
           }
         ]
       },
       "stump": {
-        "offset": [34, 16],
+        "offset": [
+          34,
+          16
+        ],
         "layers": [
           {
             "img": "trees/birch/stump.png",
-            "offset": [7, 6],
+            "offset": [
+              7,
+              6
+            ],
             "z": 0
           },
           {
             "img": "trees/birch/stump_.png",
-            "offset": [10, 13],
+            "offset": [
+              10,
+              13
+            ],
             "shadow": true
           }
         ]
@@ -220,107 +343,170 @@
     },
     "apple": {
       "1": {
-        "offset": [5, 14],
+        "offset": [
+          5,
+          14
+        ],
         "layers": [
           {
             "img": "trees/apple/1.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/apple/1_.png",
-            "offset": [0, 12],
+            "offset": [
+              0,
+              12
+            ],
             "shadow": true
           }
         ]
       },
       "2": {
-        "offset": [13, 38],
+        "offset": [
+          13,
+          38
+        ],
         "layers": [
           {
             "img": "trees/apple/2.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/apple/2_.png",
-            "offset": [4, 35],
+            "offset": [
+              4,
+              35
+            ],
             "shadow": true
           }
         ]
       },
       "3": {
-        "offset": [23, 63],
+        "offset": [
+          23,
+          63
+        ],
         "layers": [
           {
             "img": "trees/apple/3.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/apple/3_.png",
-            "offset": [7, 56],
+            "offset": [
+              7,
+              56
+            ],
             "shadow": true
           }
         ]
       },
       "4": {
-        "offset": [29, 80],
+        "offset": [
+          29,
+          80
+        ],
         "layers": [
           {
             "img": "trees/apple/4.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/apple/4_.png",
-            "offset": [6, 75],
+            "offset": [
+              6,
+              75
+            ],
             "shadow": true
           }
         ]
       },
       "5": {
-        "offset": [49, 103],
+        "offset": [
+          49,
+          103
+        ],
         "layers": [
           {
             "img": "trees/apple/5.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/apple/5_.png",
-            "offset": [17, 93],
+            "offset": [
+              17,
+              93
+            ],
             "shadow": true
           }
         ]
       },
       "6": {
-        "offset": [62, 127],
+        "offset": [
+          62,
+          127
+        ],
         "layers": [
           {
             "interactive": true,
             "img": "trees/apple/6.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/apple/6_.png",
-            "offset": [19, 110],
+            "offset": [
+              19,
+              110
+            ],
             "shadow": true
           }
         ]
       },
       "stump": {
-        "offset": [26, 15],
+        "offset": [
+          26,
+          15
+        ],
         "layers": [
           {
             "img": "trees/apple/stump.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/apple/stump_.png",
-            "offset": [1, 6],
+            "offset": [
+              1,
+              6
+            ],
             "shadow": true
           }
         ]
@@ -328,107 +514,170 @@
     },
     "oak": {
       "1": {
-        "offset": [15, 26],
+        "offset": [
+          15,
+          26
+        ],
         "layers": [
           {
             "img": "trees/oak/1.png",
-            "offset": [7, 3],
+            "offset": [
+              7,
+              3
+            ],
             "z": 0
           },
           {
             "img": "trees/oak/1_.png",
-            "offset": [7, 25],
+            "offset": [
+              7,
+              25
+            ],
             "shadow": true
           }
         ]
       },
       "2": {
-        "offset": [29, 64],
+        "offset": [
+          29,
+          64
+        ],
         "layers": [
           {
             "img": "trees/oak/2.png",
-            "offset": [9, 4],
+            "offset": [
+              9,
+              4
+            ],
             "z": 0
           },
           {
             "img": "trees/oak/2_.png",
-            "offset": [10, 61],
+            "offset": [
+              10,
+              61
+            ],
             "shadow": true
           }
         ]
       },
       "3": {
-        "offset": [54, 108],
+        "offset": [
+          54,
+          108
+        ],
         "layers": [
           {
             "img": "trees/oak/3.png",
-            "offset": [5, 8],
+            "offset": [
+              5,
+              8
+            ],
             "z": 0
           },
           {
             "img": "trees/oak/3_.png",
-            "offset": [20, 98],
+            "offset": [
+              20,
+              98
+            ],
             "shadow": true
           }
         ]
       },
       "4": {
-        "offset": [82, 141],
+        "offset": [
+          82,
+          141
+        ],
         "layers": [
           {
             "img": "trees/oak/4.png",
-            "offset": [8, 0],
+            "offset": [
+              8,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/oak/4_.png",
-            "offset": [34, 127],
+            "offset": [
+              34,
+              127
+            ],
             "shadow": true
           }
         ]
       },
       "5": {
-        "offset": [104, 195],
+        "offset": [
+          104,
+          195
+        ],
         "layers": [
           {
             "img": "trees/oak/5.png",
-            "offset": [0, 3],
+            "offset": [
+              0,
+              3
+            ],
             "z": 0
           },
           {
             "img": "trees/oak/5_.png",
-            "offset": [26, 179],
+            "offset": [
+              26,
+              179
+            ],
             "shadow": true
           }
         ]
       },
       "6": {
-        "offset": [137, 200],
+        "offset": [
+          137,
+          200
+        ],
         "layers": [
           {
             "interactive": true,
             "img": "trees/oak/6.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/oak/6_.png",
-            "offset": [52, 188],
+            "offset": [
+              52,
+              188
+            ],
             "shadow": true
           }
         ]
       },
       "stump": {
-        "offset": [45, 18],
+        "offset": [
+          45,
+          18
+        ],
         "layers": [
           {
             "img": "trees/oak/stump.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/oak/stump_.png",
-            "offset": [0, 13],
+            "offset": [
+              0,
+              13
+            ],
             "shadow": true
           }
         ]
@@ -436,46 +685,73 @@
     },
     "maple": {
       "6": {
-        "offset": [82, 160],
+        "offset": [
+          82,
+          160
+        ],
         "layers": [
           {
             "img": "trees/maple/06_.png",
-            "offset": [20, 143],
+            "offset": [
+              20,
+              143
+            ],
             "shadow": true
           },
           {
             "img": "trees/maple/06.png",
-            "offset": [4, 0],
+            "offset": [
+              4,
+              0
+            ],
             "z": 0
           }
         ]
       },
       "06A": {
-        "offset": [82, 160],
+        "offset": [
+          82,
+          160
+        ],
         "layers": [
           {
             "img": "trees/maple/06A_.png",
-            "offset": [20, 143],
+            "offset": [
+              20,
+              143
+            ],
             "shadow": true
           },
           {
             "img": "trees/maple/06A.png",
-            "offset": [4, 0],
+            "offset": [
+              4,
+              0
+            ],
             "z": 0
           }
         ]
       },
       "stump": {
-        "offset": [40, 20],
+        "offset": [
+          40,
+          20
+        ],
         "layers": [
           {
             "img": "trees/maple/stump_.png",
-            "offset": [3, 11],
+            "offset": [
+              3,
+              11
+            ],
             "shadow": true
           },
           {
             "img": "trees/maple/stump.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           }
         ]
@@ -483,16 +759,25 @@
     },
     "yew": {
       "1": {
-        "offset": [19, 35],
+        "offset": [
+          19,
+          35
+        ],
         "layers": [
           {
             "img": "trees/yew/01_.png",
-            "offset": [12, 33],
+            "offset": [
+              12,
+              33
+            ],
             "shadow": true
           },
           {
             "img": "trees/yew/01.png",
-            "offset": [12, 8],
+            "offset": [
+              12,
+              8
+            ],
             "z": 0
           }
         ]
@@ -505,87 +790,138 @@
         "layers": [
           {
             "img": "trees/yew/02_.png",
-            "offset": [17, 70],
+            "offset": [
+              17,
+              70
+            ],
             "shadow": true
           },
           {
             "img": "trees/yew/02.png",
-            "offset": [12, 7],
+            "offset": [
+              12,
+              7
+            ],
             "z": 0
           }
         ]
       },
       "3": {
-        "offset": [47, 105],
+        "offset": [
+          47,
+          105
+        ],
         "layers": [
           {
             "img": "trees/yew/03_.png",
-            "offset": [16, 101],
+            "offset": [
+              16,
+              101
+            ],
             "shadow": true
           },
           {
             "img": "trees/yew/03.png",
-            "offset": [5, 5],
+            "offset": [
+              5,
+              5
+            ],
             "z": 0
           }
         ]
       },
       "4": {
-        "offset": [61, 139],
+        "offset": [
+          61,
+          139
+        ],
         "layers": [
           {
             "img": "trees/yew/04_.png",
-            "offset": [22, 135],
+            "offset": [
+              22,
+              135
+            ],
             "shadow": true
           },
           {
             "img": "trees/yew/04.png",
-            "offset": [9, 5],
+            "offset": [
+              9,
+              5
+            ],
             "z": 0
           }
         ]
       },
       "5": {
-        "offset": [86, 183],
+        "offset": [
+          86,
+          183
+        ],
         "layers": [
           {
             "img": "trees/yew/05_.png",
-            "offset": [31, 173],
+            "offset": [
+              31,
+              173
+            ],
             "shadow": true
           },
           {
             "img": "trees/yew/05.png",
-            "offset": [16, 9],
+            "offset": [
+              16,
+              9
+            ],
             "z": 0
           }
         ]
       },
       "6": {
-        "offset": [115, 214],
+        "offset": [
+          115,
+          214
+        ],
         "layers": [
           {
             "img": "trees/yew/06_.png",
-            "offset": [46, 204],
+            "offset": [
+              46,
+              204
+            ],
             "shadow": true
           },
           {
             "img": "trees/yew/06.png",
-            "offset": [21, 6],
+            "offset": [
+              21,
+              6
+            ],
             "z": 0
           }
         ]
       },
       "stump": {
-        "offset": [39, 22],
+        "offset": [
+          39,
+          22
+        ],
         "layers": [
           {
             "img": "trees/yew/stump_.png",
-            "offset": [15, 20],
+            "offset": [
+              15,
+              20
+            ],
             "shadow": true
           },
           {
             "img": "trees/yew/stump.png",
-            "offset": [17, 11],
+            "offset": [
+              17,
+              11
+            ],
             "z": 0
           }
         ]
@@ -593,16 +929,25 @@
     },
     "mberry": {
       "6": {
-        "offset": [67, 114],
+        "offset": [
+          67,
+          114
+        ],
         "layers": [
           {
             "img": "trees/mberry/06_.png",
-            "offset": [15, 103],
+            "offset": [
+              15,
+              103
+            ],
             "shadow": true
           },
           {
             "img": "trees/mberry/06.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           }
         ]
@@ -610,46 +955,73 @@
     },
     "elm": {
       "6": {
-        "offset": [84, 177],
+        "offset": [
+          84,
+          177
+        ],
         "layers": [
           {
             "img": "trees/elm/06_.png",
-            "offset": [23, 165],
+            "offset": [
+              23,
+              165
+            ],
             "shadow": true
           },
           {
             "img": "trees/elm/06.png",
-            "offset": [16, 0],
+            "offset": [
+              16,
+              0
+            ],
             "z": 0
           }
         ]
       },
       "06A": {
-        "offset": [84, 177],
+        "offset": [
+          84,
+          177
+        ],
         "layers": [
           {
             "img": "trees/elm/06A_.png",
-            "offset": [23, 165],
+            "offset": [
+              23,
+              165
+            ],
             "shadow": true
           },
           {
             "img": "trees/elm/06A.png",
-            "offset": [16, 0],
+            "offset": [
+              16,
+              0
+            ],
             "z": 0
           }
         ]
       },
       "stump": {
-        "offset": [38, 21],
+        "offset": [
+          38,
+          21
+        ],
         "layers": [
           {
             "img": "trees/elm/stump_.png",
-            "offset": [5, 20],
+            "offset": [
+              5,
+              20
+            ],
             "shadow": true
           },
           {
             "img": "trees/elm/stump.png",
-            "offset": [10, 13],
+            "offset": [
+              10,
+              13
+            ],
             "z": 0
           }
         ]
@@ -657,31 +1029,49 @@
     },
     "hazel": {
       "6": {
-        "offset": [86, 153],
+        "offset": [
+          86,
+          153
+        ],
         "layers": [
           {
             "img": "trees/hazel/06_.png",
-            "offset": [26, 139],
+            "offset": [
+              26,
+              139
+            ],
             "shadow": true
           },
           {
             "img": "trees/hazel/06.png",
-            "offset": [12, 9],
+            "offset": [
+              12,
+              9
+            ],
             "z": 0
           }
         ]
       },
       "stump": {
-        "offset": [35, 19],
+        "offset": [
+          35,
+          19
+        ],
         "layers": [
           {
             "img": "trees/hazel/stump_.png",
-            "offset": [10, 21],
+            "offset": [
+              10,
+              21
+            ],
             "shadow": true
           },
           {
             "img": "trees/hazel/stump.png",
-            "offset": [13, 12],
+            "offset": [
+              13,
+              12
+            ],
             "z": 0
           }
         ]
@@ -689,16 +1079,25 @@
     },
     "log": {
       "log": {
-        "offset": [23, 20],
+        "offset": [
+          23,
+          20
+        ],
         "layers": [
           {
             "img": "trees/trees/log_.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "shadow": true
           },
           {
             "img": "trees/trees/log.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           }
         ]
@@ -706,31 +1105,49 @@
     },
     "willow": {
       "6": {
-        "offset": [133, 179],
+        "offset": [
+          133,
+          179
+        ],
         "layers": [
           {
             "img": "trees/willow/06_.png",
-            "offset": [30, 142],
+            "offset": [
+              30,
+              142
+            ],
             "shadow": true
           },
           {
             "img": "trees/willow/06.png",
-            "offset": [28, 13],
+            "offset": [
+              28,
+              13
+            ],
             "z": 0
           }
         ]
       },
       "stump": {
-        "offset": [46, 23],
+        "offset": [
+          46,
+          23
+        ],
         "layers": [
           {
             "img": "trees/willow/stump_.png",
-            "offset": [14, 21],
+            "offset": [
+              14,
+              21
+            ],
             "shadow": true
           },
           {
             "img": "trees/willow/stump.png",
-            "offset": [8, 10],
+            "offset": [
+              8,
+              10
+            ],
             "z": 0
           }
         ]
@@ -738,7 +1155,10 @@
     },
     "fir": {
       "1": {
-        "offset": [3, 11],
+        "offset": [
+          3,
+          11
+        ],
         "layers": [
           {
             "img": "trees/fir/1.png",
@@ -746,13 +1166,19 @@
           },
           {
             "img": "trees/fir/1_.png",
-            "offset": [0, 9],
+            "offset": [
+              0,
+              9
+            ],
             "shadow": true
           }
         ]
       },
       "2": {
-        "offset": [11, 33],
+        "offset": [
+          11,
+          33
+        ],
         "layers": [
           {
             "img": "trees/fir/2.png",
@@ -760,83 +1186,131 @@
           },
           {
             "img": "trees/fir/2_.png",
-            "offset": [3, 31],
+            "offset": [
+              3,
+              31
+            ],
             "shadow": true
           }
         ]
       },
       "3": {
-        "offset": [16, 47],
+        "offset": [
+          16,
+          47
+        ],
         "layers": [
           {
             "img": "trees/fir/3.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/fir/3_.png",
-            "offset": [1, 45],
+            "offset": [
+              1,
+              45
+            ],
             "shadow": true
           }
         ]
       },
       "4": {
-        "offset": [22, 76],
+        "offset": [
+          22,
+          76
+        ],
         "layers": [
           {
             "img": "trees/fir/4.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/fir/4_.png",
-            "offset": [2, 68],
+            "offset": [
+              2,
+              68
+            ],
             "shadow": true
           }
         ]
       },
       "5": {
-        "offset": [33, 109],
+        "offset": [
+          33,
+          109
+        ],
         "layers": [
           {
             "img": "trees/fir/5.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/fir/5_.png",
-            "offset": [9, 96],
+            "offset": [
+              9,
+              96
+            ],
             "shadow": true
           }
         ]
       },
       "6": {
-        "offset": [45, 150],
+        "offset": [
+          45,
+          150
+        ],
         "layers": [
           {
             "interactive": true,
             "img": "trees/fir/6.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/fir/6_.png",
-            "offset": [6, 134],
+            "offset": [
+              6,
+              134
+            ],
             "shadow": true
           }
         ]
       },
       "stump": {
-        "offset": [28, 20],
+        "offset": [
+          28,
+          20
+        ],
         "layers": [
           {
             "img": "trees/fir/stump.png",
-            "offset": [0, 0],
+            "offset": [
+              0,
+              0
+            ],
             "z": 0
           },
           {
             "img": "trees/fir/stump_.png",
-            "offset": [2, 9],
+            "offset": [
+              2,
+              9
+            ],
             "shadow": true
           }
         ]
@@ -844,32 +1318,50 @@
     },
     "pine": {
       "6": {
-        "offset": [92, 291],
+        "offset": [
+          92,
+          291
+        ],
         "layers": [
           {
             "interactive": true,
             "img": "trees/pine/6.png",
-            "offset": [9, 12],
+            "offset": [
+              9,
+              12
+            ],
             "z": 0
           },
           {
             "img": "trees/pine/6_.png",
-            "offset": [33, 281],
+            "offset": [
+              33,
+              281
+            ],
             "shadow": true
           }
         ]
       },
       "stump": {
-        "offset": [54, 34],
+        "offset": [
+          54,
+          34
+        ],
         "layers": [
           {
             "img": "trees/pine/stump.png",
-            "offset": [22, 28],
+            "offset": [
+              22,
+              28
+            ],
             "z": 0
           },
           {
             "img": "trees/pine/stump_.png",
-            "offset": [19, 31],
+            "offset": [
+              19,
+              31
+            ],
             "shadow": true
           }
         ]
@@ -878,54 +1370,107 @@
   },
   "box": {
     "normal": {
-      "offset": [20, 33],
+      "offset": [
+        20,
+        33
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/box/box.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         }
       ]
     },
     "open": {
-      "offset": [26, 47],
+      "offset": [
+        26,
+        47
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/box/box_open.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         }
       ]
     }
   },
   "log": {
-    "offset": [37, 34],
+    "offset": [
+      37,
+      34
+    ],
     "layers": [
       {
         "interactive": true,
         "img": "obj/log/log.png",
-        "offset": [0, 0],
+        "offset": [
+          0,
+          0
+        ],
         "z": 0
       },
       {
         "img": "obj/log/log_.png",
-        "offset": [0, 0],
+        "offset": [
+          0,
+          0
+        ],
         "shadow": true
       }
     ]
   },
   "player": {
-    "offset": [17, 57],
+    "offset": [
+      0,
+      0
+    ],
     "layers": [
       {
-        "spine": "spine/character/spine"
+        "spine": {
+          "file": "spine/character/spine",
+          "scale": 0.16,
+          "skin": "boy",
+          "dirs": {
+            "walk": [
+              "ne-walk",
+              "e-walk",
+              "se-walk",
+              "s-walk",
+              "sw-walk",
+              "w-walk",
+              "nw-walk",
+              "n-walk"
+            ],
+            "idle": [
+              "ne-idle",
+              "e-idle",
+              "se-idle",
+              "s-idle",
+              "sw-idle",
+              "w-idle",
+              "nw-idle",
+              "n-idle"
+            ]
+          }
+        }
       }
     ]
   },
   "unknown": {
-    "offset": [10, 20],
+    "offset": [
+      10,
+      20
+    ],
     "layers": [
       {
         "img": "question.png"
@@ -933,7 +1478,10 @@
     ]
   },
   "boulder": {
-    "offset": [68, 98],
+    "offset": [
+      68,
+      98
+    ],
     "layers": [
       {
         "interactive": true,
@@ -1283,33 +1831,51 @@
   },
   "crate": {
     "empty": {
-      "offset": [32, 28],
+      "offset": [
+        32,
+        28
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/crate/crate_empty.png",
-          "offset": [12, 9],
+          "offset": [
+            12,
+            9
+          ],
           "z": 0
         },
         {
           "img": "obj/crate/crate_empty_.png",
-          "offset": [19, 10],
+          "offset": [
+            19,
+            10
+          ],
           "shadow": true
         }
       ]
     },
     "filled": {
-      "offset": [32, 28],
+      "offset": [
+        32,
+        28
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/crate/crate_filled.png",
-          "offset": [12, 9],
+          "offset": [
+            12,
+            9
+          ],
           "z": 0
         },
         {
           "img": "obj/crate/crate_filled_.png",
-          "offset": [19, 10],
+          "offset": [
+            19,
+            10
+          ],
           "shadow": true
         }
       ]
@@ -1317,46 +1883,73 @@
   },
   "tub": {
     "empty": {
-      "offset": [14, 11],
+      "offset": [
+        14,
+        11
+      ],
       "layers": [
         {
           "img": "obj/tub/ttub_.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "shadow": true
         },
         {
           "img": "obj/tub/ttub.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         }
       ]
     },
     "water": {
-      "offset": [14, 11],
+      "offset": [
+        14,
+        11
+      ],
       "layers": [
         {
           "img": "obj/tub/ttuba_.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "shadow": true
         },
         {
           "img": "obj/tub/ttuba.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         }
       ]
     },
     "tanning": {
-      "offset": [14, 11],
+      "offset": [
+        14,
+        11
+      ],
       "layers": [
         {
           "img": "obj/tub/ttubw_.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "shadow": true
         },
         {
           "img": "obj/tub/ttubw.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         }
       ]
@@ -1364,33 +1957,51 @@
   },
   "big_box": {
     "empty": {
-      "offset": [40, 37],
+      "offset": [
+        40,
+        37
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/big_box/bbox_empty.png",
-          "offset": [13, 15],
+          "offset": [
+            13,
+            15
+          ],
           "z": 0
         },
         {
           "img": "obj/big_box/bbox_shadow.png",
-          "offset": [12, 30],
+          "offset": [
+            12,
+            30
+          ],
           "shadow": true
         }
       ]
     },
     "filled": {
-      "offset": [40, 37],
+      "offset": [
+        40,
+        37
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/big_box/bbox_filled.png",
-          "offset": [13, 15],
+          "offset": [
+            13,
+            15
+          ],
           "z": 0
         },
         {
           "img": "obj/big_box/bbox_.png",
-          "offset": [12, 30],
+          "offset": [
+            12,
+            30
+          ],
           "shadow": true
         }
       ]
@@ -1398,17 +2009,26 @@
   },
   "claim": {
     "claim": {
-      "offset": [9, 51],
+      "offset": [
+        9,
+        51
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/claim/claim.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         },
         {
           "img": "obj/claim/claim_.png",
-          "offset": [0, 43],
+          "offset": [
+            0,
+            43
+          ],
           "shadow": true
         }
       ]
@@ -1416,17 +2036,26 @@
   },
   "oven": {
     "oven": {
-      "offset": [46, 75],
+      "offset": [
+        46,
+        75
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/claim/claim.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         },
         {
           "img": "obj/claim/claim_.png",
-          "offset": [0, 73],
+          "offset": [
+            0,
+            73
+          ],
           "shadow": true
         }
       ]
@@ -1434,17 +2063,26 @@
   },
   "urn": {
     "urn": {
-      "offset": [7, 33],
+      "offset": [
+        7,
+        33
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/urn/urn.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         },
         {
           "img": "obj/urn/urn_.png",
-          "offset": [0, 32],
+          "offset": [
+            0,
+            32
+          ],
           "shadow": true
         }
       ]
@@ -1452,17 +2090,26 @@
   },
   "zpot": {
     "zpot": {
-      "offset": [23, 33],
+      "offset": [
+        23,
+        33
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/zpot/zpot.png",
-          "offset": [11, 10],
+          "offset": [
+            11,
+            10
+          ],
           "z": 0
         },
         {
           "img": "obj/zpot/zpot_.png",
-          "offset": [14, 28],
+          "offset": [
+            14,
+            28
+          ],
           "shadow": true
         }
       ]
@@ -1470,17 +2117,26 @@
   },
   "runestone": {
     "runestone": {
-      "offset": [15, 36],
+      "offset": [
+        15,
+        36
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/runestone/runestone.png",
-          "offset": [7, 7],
+          "offset": [
+            7,
+            7
+          ],
           "z": 0
         },
         {
           "img": "obj/runestone/runestone_.png",
-          "offset": [6, 32],
+          "offset": [
+            6,
+            32
+          ],
           "shadow": true
         }
       ]
@@ -1488,17 +2144,26 @@
   },
   "barrel": {
     "barrel": {
-      "offset": [18, 26],
+      "offset": [
+        18,
+        26
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/barrel/barrel.png",
-          "offset": [7, 0],
+          "offset": [
+            7,
+            0
+          ],
           "z": 0
         },
         {
           "img": "obj/barrel/barrel_.png",
-          "offset": [6, 19],
+          "offset": [
+            6,
+            19
+          ],
           "shadow": true
         }
       ]
@@ -1506,17 +2171,26 @@
   },
   "anvil": {
     "anvil": {
-      "offset": [12, 18],
+      "offset": [
+        12,
+        18
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/anvil/anvil.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         },
         {
           "img": "obj/anvil/anvil_.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "shadow": true
         }
       ]
@@ -1524,34 +2198,52 @@
   },
   "treeplanterspot": {
     "empty": {
-      "offset": [0, 0],
+      "offset": [
+        0,
+        0
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/treeplanterspot/treeplanterspot_empty.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         }
       ]
     },
     "filled": {
-      "offset": [0, 0],
+      "offset": [
+        0,
+        0
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/treeplanterspot/treeplanterspot_filled.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         }
       ]
     },
     "sprouted": {
-      "offset": [0, 0],
+      "offset": [
+        0,
+        0
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/treeplanterspot/treeplanterspot_sprouted.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         }
       ]
@@ -1559,65 +2251,101 @@
   },
   "dframe": {
     "empty": {
-      "offset": [29, 60],
+      "offset": [
+        29,
+        60
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/dframe/dframe_empty.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         },
         {
           "img": "obj/dframe/dframe_.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "shadow": true
         }
       ]
     },
     "raw_hide": {
-      "offset": [29, 60],
+      "offset": [
+        29,
+        60
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/dframe/dframe_raw_hide.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         },
         {
           "img": "obj/dframe/dframe_.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "shadow": true
         }
       ]
     },
     "dried_hide": {
-      "offset": [29, 60],
+      "offset": [
+        29,
+        60
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/dframe/dframe_dried_hide.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         },
         {
           "img": "obj/dframe/dframe_.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "shadow": true
         }
       ]
     },
     "herbs": {
-      "offset": [29, 60],
+      "offset": [
+        29,
+        60
+      ],
       "layers": [
         {
           "interactive": true,
           "img": "obj/dframe/dframe_herbs.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "z": 0
         },
         {
           "img": "obj/dframe/dframe_.png",
-          "offset": [0, 0],
+          "offset": [
+            0,
+            0
+          ],
           "shadow": true
         }
       ]
@@ -1626,575 +2354,2383 @@
   "boat": {
     "0": {
       "fps": 10,
-      "offset": [88, 86],
+      "offset": [
+        88,
+        86
+      ],
       "layers": [
         {
           "frames": [
-            {"img": "obj/boat/0.png", "offset": [18, 58]},
-            {"img": "obj/boat/1.png", "offset": [21, 56]},
-            {"img": "obj/boat/2.png", "offset": [24, 61]},
-            {"img": "obj/boat/3.png", "offset": [24, 62]},
-            {"img": "obj/boat/4.png", "offset": [18, 58]},
-            {"img": "obj/boat/5.png", "offset": [21, 56]},
-            {"img": "obj/boat/6.png", "offset": [24, 61]},
-            {"img": "obj/boat/7.png", "offset": [24, 62]}
+            {
+              "img": "obj/boat/0.png",
+              "offset": [
+                18,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/1.png",
+              "offset": [
+                21,
+                56
+              ]
+            },
+            {
+              "img": "obj/boat/2.png",
+              "offset": [
+                24,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/3.png",
+              "offset": [
+                24,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/4.png",
+              "offset": [
+                18,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/5.png",
+              "offset": [
+                21,
+                56
+              ]
+            },
+            {
+              "img": "obj/boat/6.png",
+              "offset": [
+                24,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/7.png",
+              "offset": [
+                24,
+                62
+              ]
+            }
           ],
           "z": 0
         },
         {
           "frames": [
-            {"img": "obj/boat/8.png", "offset": [52, 74]},
-            {"img": "obj/boat/9.png", "offset": [52, 74]},
-            {"img": "obj/boat/10.png", "offset": [52, 74]},
-            {"img": "obj/boat/11.png", "offset": [52, 74]},
-            {"img": "obj/boat/12.png", "offset": [52, 74]},
-            {"img": "obj/boat/13.png", "offset": [52, 74]},
-            {"img": "obj/boat/14.png", "offset": [52, 74]},
-            {"img": "obj/boat/15.png", "offset": [52, 74]}
+            {
+              "img": "obj/boat/8.png",
+              "offset": [
+                52,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/9.png",
+              "offset": [
+                52,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/10.png",
+              "offset": [
+                52,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/11.png",
+              "offset": [
+                52,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/12.png",
+              "offset": [
+                52,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/13.png",
+              "offset": [
+                52,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/14.png",
+              "offset": [
+                52,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/15.png",
+              "offset": [
+                52,
+                74
+              ]
+            }
           ],
           "z": 2
         },
         {
           "frames": [
-            {"img": "obj/boat/16.png", "offset": [56, 62]},
-            {"img": "obj/boat/17.png", "offset": [56, 62]},
-            {"img": "obj/boat/18.png", "offset": [56, 62]},
-            {"img": "obj/boat/19.png", "offset": [56, 62]},
-            {"img": "obj/boat/20.png", "offset": [56, 62]},
-            {"img": "obj/boat/21.png", "offset": [56, 62]},
-            {"img": "obj/boat/22.png", "offset": [56, 62]},
-            {"img": "obj/boat/23.png", "offset": [56, 62]}
+            {
+              "img": "obj/boat/16.png",
+              "offset": [
+                56,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/17.png",
+              "offset": [
+                56,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/18.png",
+              "offset": [
+                56,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/19.png",
+              "offset": [
+                56,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/20.png",
+              "offset": [
+                56,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/21.png",
+              "offset": [
+                56,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/22.png",
+              "offset": [
+                56,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/23.png",
+              "offset": [
+                56,
+                62
+              ]
+            }
           ],
           "z": 1
         },
-        {"img": "obj/boat/24.png", "offset": [56, 84], "shadow": true}
+        {
+          "img": "obj/boat/24.png",
+          "offset": [
+            56,
+            84
+          ],
+          "shadow": true
+        }
       ]
     },
     "1": {
       "fps": 10,
-      "offset": [88, 86],
+      "offset": [
+        88,
+        86
+      ],
       "layers": [
         {
           "frames": [
-            {"img": "obj/boat/25.png", "offset": [4, 76]},
-            {"img": "obj/boat/26.png", "offset": [7, 78]},
-            {"img": "obj/boat/27.png", "offset": [8, 80]},
-            {"img": "obj/boat/28.png", "offset": [8, 81]},
-            {"img": "obj/boat/29.png", "offset": [4, 76]},
-            {"img": "obj/boat/30.png", "offset": [7, 78]},
-            {"img": "obj/boat/31.png", "offset": [8, 80]},
-            {"img": "obj/boat/32.png", "offset": [8, 81]}
+            {
+              "img": "obj/boat/25.png",
+              "offset": [
+                4,
+                76
+              ]
+            },
+            {
+              "img": "obj/boat/26.png",
+              "offset": [
+                7,
+                78
+              ]
+            },
+            {
+              "img": "obj/boat/27.png",
+              "offset": [
+                8,
+                80
+              ]
+            },
+            {
+              "img": "obj/boat/28.png",
+              "offset": [
+                8,
+                81
+              ]
+            },
+            {
+              "img": "obj/boat/29.png",
+              "offset": [
+                4,
+                76
+              ]
+            },
+            {
+              "img": "obj/boat/30.png",
+              "offset": [
+                7,
+                78
+              ]
+            },
+            {
+              "img": "obj/boat/31.png",
+              "offset": [
+                8,
+                80
+              ]
+            },
+            {
+              "img": "obj/boat/32.png",
+              "offset": [
+                8,
+                81
+              ]
+            }
           ],
           "z": 0
         },
         {
           "frames": [
-            {"img": "obj/boat/33.png", "offset": [50, 77]},
-            {"img": "obj/boat/34.png", "offset": [50, 77]},
-            {"img": "obj/boat/35.png", "offset": [50, 77]},
-            {"img": "obj/boat/36.png", "offset": [50, 77]},
-            {"img": "obj/boat/37.png", "offset": [50, 77]},
-            {"img": "obj/boat/38.png", "offset": [50, 77]},
-            {"img": "obj/boat/39.png", "offset": [50, 77]},
-            {"img": "obj/boat/40.png", "offset": [50, 77]}
+            {
+              "img": "obj/boat/33.png",
+              "offset": [
+                50,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/34.png",
+              "offset": [
+                50,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/35.png",
+              "offset": [
+                50,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/36.png",
+              "offset": [
+                50,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/37.png",
+              "offset": [
+                50,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/38.png",
+              "offset": [
+                50,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/39.png",
+              "offset": [
+                50,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/40.png",
+              "offset": [
+                50,
+                77
+              ]
+            }
           ],
           "z": 2
         },
         {
           "frames": [
-            {"img": "obj/boat/41.png", "offset": [50, 72]},
-            {"img": "obj/boat/42.png", "offset": [50, 72]},
-            {"img": "obj/boat/43.png", "offset": [50, 72]},
-            {"img": "obj/boat/44.png", "offset": [50, 72]},
-            {"img": "obj/boat/45.png", "offset": [50, 72]},
-            {"img": "obj/boat/46.png", "offset": [50, 72]},
-            {"img": "obj/boat/47.png", "offset": [50, 72]},
-            {"img": "obj/boat/48.png", "offset": [50, 72]}
+            {
+              "img": "obj/boat/41.png",
+              "offset": [
+                50,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/42.png",
+              "offset": [
+                50,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/43.png",
+              "offset": [
+                50,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/44.png",
+              "offset": [
+                50,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/45.png",
+              "offset": [
+                50,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/46.png",
+              "offset": [
+                50,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/47.png",
+              "offset": [
+                50,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/48.png",
+              "offset": [
+                50,
+                72
+              ]
+            }
           ],
           "z": 1
         },
-        {"img": "obj/boat/49.png", "offset": [50, 91], "shadow": true}
+        {
+          "img": "obj/boat/49.png",
+          "offset": [
+            50,
+            91
+          ],
+          "shadow": true
+        }
       ]
     },
     "2": {
       "fps": 10,
-      "offset": [90, 86],
+      "offset": [
+        90,
+        86
+      ],
       "layers": [
         {
           "frames": [
-            {"img": "obj/boat/50.png", "offset": [51, 74]},
-            {"img": "obj/boat/51.png", "offset": [46, 73]},
-            {"img": "obj/boat/52.png", "offset": [46, 72]},
-            {"img": "obj/boat/53.png", "offset": [40, 74]},
-            {"img": "obj/boat/54.png", "offset": [51, 74]},
-            {"img": "obj/boat/55.png", "offset": [46, 73]},
-            {"img": "obj/boat/56.png", "offset": [46, 72]},
-            {"img": "obj/boat/57.png", "offset": [40, 74]}
+            {
+              "img": "obj/boat/50.png",
+              "offset": [
+                51,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/51.png",
+              "offset": [
+                46,
+                73
+              ]
+            },
+            {
+              "img": "obj/boat/52.png",
+              "offset": [
+                46,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/53.png",
+              "offset": [
+                40,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/54.png",
+              "offset": [
+                51,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/55.png",
+              "offset": [
+                46,
+                73
+              ]
+            },
+            {
+              "img": "obj/boat/56.png",
+              "offset": [
+                46,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/57.png",
+              "offset": [
+                40,
+                74
+              ]
+            }
           ],
           "z": 0
         },
         {
           "frames": [
-            {"img": "obj/boat/58.png", "offset": [66, 89]},
-            {"img": "obj/boat/59.png", "offset": [66, 89]},
-            {"img": "obj/boat/60.png", "offset": [66, 89]},
-            {"img": "obj/boat/61.png", "offset": [66, 89]},
-            {"img": "obj/boat/62.png", "offset": [66, 89]},
-            {"img": "obj/boat/63.png", "offset": [66, 89]},
-            {"img": "obj/boat/64.png", "offset": [66, 89]},
-            {"img": "obj/boat/65.png", "offset": [66, 89]}
+            {
+              "img": "obj/boat/58.png",
+              "offset": [
+                66,
+                89
+              ]
+            },
+            {
+              "img": "obj/boat/59.png",
+              "offset": [
+                66,
+                89
+              ]
+            },
+            {
+              "img": "obj/boat/60.png",
+              "offset": [
+                66,
+                89
+              ]
+            },
+            {
+              "img": "obj/boat/61.png",
+              "offset": [
+                66,
+                89
+              ]
+            },
+            {
+              "img": "obj/boat/62.png",
+              "offset": [
+                66,
+                89
+              ]
+            },
+            {
+              "img": "obj/boat/63.png",
+              "offset": [
+                66,
+                89
+              ]
+            },
+            {
+              "img": "obj/boat/64.png",
+              "offset": [
+                66,
+                89
+              ]
+            },
+            {
+              "img": "obj/boat/65.png",
+              "offset": [
+                66,
+                89
+              ]
+            }
           ],
           "z": 2
         },
         {
           "frames": [
-            {"img": "obj/boat/66.png", "offset": [66, 58]},
-            {"img": "obj/boat/67.png", "offset": [66, 58]},
-            {"img": "obj/boat/68.png", "offset": [66, 58]},
-            {"img": "obj/boat/69.png", "offset": [66, 58]},
-            {"img": "obj/boat/70.png", "offset": [66, 58]},
-            {"img": "obj/boat/71.png", "offset": [66, 58]},
-            {"img": "obj/boat/72.png", "offset": [66, 58]},
-            {"img": "obj/boat/73.png", "offset": [66, 58]}
+            {
+              "img": "obj/boat/66.png",
+              "offset": [
+                66,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/67.png",
+              "offset": [
+                66,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/68.png",
+              "offset": [
+                66,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/69.png",
+              "offset": [
+                66,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/70.png",
+              "offset": [
+                66,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/71.png",
+              "offset": [
+                66,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/72.png",
+              "offset": [
+                66,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/73.png",
+              "offset": [
+                66,
+                58
+              ]
+            }
           ],
           "z": 1
         },
-        {"img": "obj/boat/74.png", "offset": [64, 66], "shadow": true}
+        {
+          "img": "obj/boat/74.png",
+          "offset": [
+            64,
+            66
+          ],
+          "shadow": true
+        }
       ]
     },
     "3": {
       "fps": 10,
-      "offset": [88, 86],
+      "offset": [
+        88,
+        86
+      ],
       "layers": [
         {
           "frames": [
-            {"img": "obj/boat/75.png", "offset": [29, 69]},
-            {"img": "obj/boat/76.png", "offset": [29, 70]},
-            {"img": "obj/boat/77.png", "offset": [32, 71]},
-            {"img": "obj/boat/78.png", "offset": [32, 72]},
-            {"img": "obj/boat/79.png", "offset": [29, 69]},
-            {"img": "obj/boat/80.png", "offset": [29, 70]},
-            {"img": "obj/boat/81.png", "offset": [32, 71]},
-            {"img": "obj/boat/82.png", "offset": [32, 72]}
+            {
+              "img": "obj/boat/75.png",
+              "offset": [
+                29,
+                69
+              ]
+            },
+            {
+              "img": "obj/boat/76.png",
+              "offset": [
+                29,
+                70
+              ]
+            },
+            {
+              "img": "obj/boat/77.png",
+              "offset": [
+                32,
+                71
+              ]
+            },
+            {
+              "img": "obj/boat/78.png",
+              "offset": [
+                32,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/79.png",
+              "offset": [
+                29,
+                69
+              ]
+            },
+            {
+              "img": "obj/boat/80.png",
+              "offset": [
+                29,
+                70
+              ]
+            },
+            {
+              "img": "obj/boat/81.png",
+              "offset": [
+                32,
+                71
+              ]
+            },
+            {
+              "img": "obj/boat/82.png",
+              "offset": [
+                32,
+                72
+              ]
+            }
           ],
           "z": 0
         },
         {
           "frames": [
-            {"img": "obj/boat/83.png", "offset": [54, 58]},
-            {"img": "obj/boat/84.png", "offset": [54, 58]},
-            {"img": "obj/boat/85.png", "offset": [54, 58]},
-            {"img": "obj/boat/86.png", "offset": [54, 58]},
-            {"img": "obj/boat/87.png", "offset": [54, 58]},
-            {"img": "obj/boat/88.png", "offset": [54, 58]},
-            {"img": "obj/boat/89.png", "offset": [54, 58]},
-            {"img": "obj/boat/90.png", "offset": [54, 58]}
+            {
+              "img": "obj/boat/83.png",
+              "offset": [
+                54,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/84.png",
+              "offset": [
+                54,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/85.png",
+              "offset": [
+                54,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/86.png",
+              "offset": [
+                54,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/87.png",
+              "offset": [
+                54,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/88.png",
+              "offset": [
+                54,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/89.png",
+              "offset": [
+                54,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/90.png",
+              "offset": [
+                54,
+                58
+              ]
+            }
           ],
           "z": 2
         },
         {
           "frames": [
-            {"img": "obj/boat/91.png", "offset": [57, 58]},
-            {"img": "obj/boat/92.png", "offset": [57, 58]},
-            {"img": "obj/boat/93.png", "offset": [57, 58]},
-            {"img": "obj/boat/94.png", "offset": [57, 58]},
-            {"img": "obj/boat/95.png", "offset": [57, 58]},
-            {"img": "obj/boat/96.png", "offset": [57, 58]},
-            {"img": "obj/boat/97.png", "offset": [57, 58]},
-            {"img": "obj/boat/98.png", "offset": [57, 58]}
+            {
+              "img": "obj/boat/91.png",
+              "offset": [
+                57,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/92.png",
+              "offset": [
+                57,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/93.png",
+              "offset": [
+                57,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/94.png",
+              "offset": [
+                57,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/95.png",
+              "offset": [
+                57,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/96.png",
+              "offset": [
+                57,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/97.png",
+              "offset": [
+                57,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/98.png",
+              "offset": [
+                57,
+                58
+              ]
+            }
           ],
           "z": 1
         },
-        {"img": "obj/boat/99.png", "offset": [56, 84], "shadow": true}
+        {
+          "img": "obj/boat/99.png",
+          "offset": [
+            56,
+            84
+          ],
+          "shadow": true
+        }
       ]
     },
     "4": {
       "fps": 10,
-      "offset": [90, 86],
+      "offset": [
+        90,
+        86
+      ],
       "layers": [
         {
           "frames": [
-            {"img": "obj/boat/100.png", "offset": [52, 62]},
-            {"img": "obj/boat/101.png", "offset": [49, 61]},
-            {"img": "obj/boat/102.png", "offset": [46, 56]},
-            {"img": "obj/boat/103.png", "offset": [46, 58]},
-            {"img": "obj/boat/104.png", "offset": [52, 62]},
-            {"img": "obj/boat/105.png", "offset": [49, 61]},
-            {"img": "obj/boat/106.png", "offset": [46, 56]},
-            {"img": "obj/boat/107.png", "offset": [46, 58]}
+            {
+              "img": "obj/boat/100.png",
+              "offset": [
+                52,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/101.png",
+              "offset": [
+                49,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/102.png",
+              "offset": [
+                46,
+                56
+              ]
+            },
+            {
+              "img": "obj/boat/103.png",
+              "offset": [
+                46,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/104.png",
+              "offset": [
+                52,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/105.png",
+              "offset": [
+                49,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/106.png",
+              "offset": [
+                46,
+                56
+              ]
+            },
+            {
+              "img": "obj/boat/107.png",
+              "offset": [
+                46,
+                58
+              ]
+            }
           ],
           "z": 0
         },
         {
           "frames": [
-            {"img": "obj/boat/108.png", "offset": [53, 74]},
-            {"img": "obj/boat/109.png", "offset": [53, 74]},
-            {"img": "obj/boat/110.png", "offset": [53, 74]},
-            {"img": "obj/boat/111.png", "offset": [53, 74]},
-            {"img": "obj/boat/112.png", "offset": [53, 74]},
-            {"img": "obj/boat/113.png", "offset": [53, 74]},
-            {"img": "obj/boat/114.png", "offset": [53, 74]},
-            {"img": "obj/boat/115.png", "offset": [53, 74]}
+            {
+              "img": "obj/boat/108.png",
+              "offset": [
+                53,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/109.png",
+              "offset": [
+                53,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/110.png",
+              "offset": [
+                53,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/111.png",
+              "offset": [
+                53,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/112.png",
+              "offset": [
+                53,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/113.png",
+              "offset": [
+                53,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/114.png",
+              "offset": [
+                53,
+                74
+              ]
+            },
+            {
+              "img": "obj/boat/115.png",
+              "offset": [
+                53,
+                74
+              ]
+            }
           ],
           "z": 2
         },
         {
           "frames": [
-            {"img": "obj/boat/116.png", "offset": [53, 62]},
-            {"img": "obj/boat/117.png", "offset": [53, 62]},
-            {"img": "obj/boat/118.png", "offset": [53, 62]},
-            {"img": "obj/boat/119.png", "offset": [53, 62]},
-            {"img": "obj/boat/120.png", "offset": [53, 62]},
-            {"img": "obj/boat/121.png", "offset": [53, 62]},
-            {"img": "obj/boat/122.png", "offset": [53, 62]},
-            {"img": "obj/boat/123.png", "offset": [53, 62]}
+            {
+              "img": "obj/boat/116.png",
+              "offset": [
+                53,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/117.png",
+              "offset": [
+                53,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/118.png",
+              "offset": [
+                53,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/119.png",
+              "offset": [
+                53,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/120.png",
+              "offset": [
+                53,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/121.png",
+              "offset": [
+                53,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/122.png",
+              "offset": [
+                53,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/123.png",
+              "offset": [
+                53,
+                62
+              ]
+            }
           ],
           "z": 1
         },
-        {"img": "obj/boat/124.png", "offset": [60, 84], "shadow": true}
+        {
+          "img": "obj/boat/124.png",
+          "offset": [
+            60,
+            84
+          ],
+          "shadow": true
+        }
       ]
     },
     "5": {
       "fps": 10,
-      "offset": [90, 86],
+      "offset": [
+        90,
+        86
+      ],
       "layers": [
         {
           "frames": [
-            {"img": "obj/boat/125.png", "offset": [54, 62]},
-            {"img": "obj/boat/126.png", "offset": [54, 46]},
-            {"img": "obj/boat/127.png", "offset": [54, 45]},
-            {"img": "obj/boat/128.png", "offset": [50, 47]},
-            {"img": "obj/boat/129.png", "offset": [54, 62]},
-            {"img": "obj/boat/130.png", "offset": [54, 46]},
-            {"img": "obj/boat/131.png", "offset": [54, 45]},
-            {"img": "obj/boat/132.png", "offset": [50, 47]}
+            {
+              "img": "obj/boat/125.png",
+              "offset": [
+                54,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/126.png",
+              "offset": [
+                54,
+                46
+              ]
+            },
+            {
+              "img": "obj/boat/127.png",
+              "offset": [
+                54,
+                45
+              ]
+            },
+            {
+              "img": "obj/boat/128.png",
+              "offset": [
+                50,
+                47
+              ]
+            },
+            {
+              "img": "obj/boat/129.png",
+              "offset": [
+                54,
+                62
+              ]
+            },
+            {
+              "img": "obj/boat/130.png",
+              "offset": [
+                54,
+                46
+              ]
+            },
+            {
+              "img": "obj/boat/131.png",
+              "offset": [
+                54,
+                45
+              ]
+            },
+            {
+              "img": "obj/boat/132.png",
+              "offset": [
+                50,
+                47
+              ]
+            }
           ],
           "z": 0
         },
         {
           "frames": [
-            {"img": "obj/boat/133.png", "offset": [68, 85]},
-            {"img": "obj/boat/134.png", "offset": [68, 85]},
-            {"img": "obj/boat/135.png", "offset": [68, 85]},
-            {"img": "obj/boat/136.png", "offset": [68, 85]},
-            {"img": "obj/boat/137.png", "offset": [68, 85]},
-            {"img": "obj/boat/138.png", "offset": [68, 85]},
-            {"img": "obj/boat/139.png", "offset": [68, 85]},
-            {"img": "obj/boat/140.png", "offset": [68, 85]}
+            {
+              "img": "obj/boat/133.png",
+              "offset": [
+                68,
+                85
+              ]
+            },
+            {
+              "img": "obj/boat/134.png",
+              "offset": [
+                68,
+                85
+              ]
+            },
+            {
+              "img": "obj/boat/135.png",
+              "offset": [
+                68,
+                85
+              ]
+            },
+            {
+              "img": "obj/boat/136.png",
+              "offset": [
+                68,
+                85
+              ]
+            },
+            {
+              "img": "obj/boat/137.png",
+              "offset": [
+                68,
+                85
+              ]
+            },
+            {
+              "img": "obj/boat/138.png",
+              "offset": [
+                68,
+                85
+              ]
+            },
+            {
+              "img": "obj/boat/139.png",
+              "offset": [
+                68,
+                85
+              ]
+            },
+            {
+              "img": "obj/boat/140.png",
+              "offset": [
+                68,
+                85
+              ]
+            }
           ],
           "z": 2
         },
         {
           "frames": [
-            {"img": "obj/boat/141.png", "offset": [68, 61]},
-            {"img": "obj/boat/142.png", "offset": [68, 61]},
-            {"img": "obj/boat/143.png", "offset": [68, 61]},
-            {"img": "obj/boat/144.png", "offset": [68, 61]},
-            {"img": "obj/boat/145.png", "offset": [68, 61]},
-            {"img": "obj/boat/146.png", "offset": [68, 61]},
-            {"img": "obj/boat/147.png", "offset": [68, 61]},
-            {"img": "obj/boat/148.png", "offset": [68, 61]}
+            {
+              "img": "obj/boat/141.png",
+              "offset": [
+                68,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/142.png",
+              "offset": [
+                68,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/143.png",
+              "offset": [
+                68,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/144.png",
+              "offset": [
+                68,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/145.png",
+              "offset": [
+                68,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/146.png",
+              "offset": [
+                68,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/147.png",
+              "offset": [
+                68,
+                61
+              ]
+            },
+            {
+              "img": "obj/boat/148.png",
+              "offset": [
+                68,
+                61
+              ]
+            }
           ],
           "z": 1
         },
-        {"img": "obj/boat/149.png", "offset": [67, 63], "shadow": true}
+        {
+          "img": "obj/boat/149.png",
+          "offset": [
+            67,
+            63
+          ],
+          "shadow": true
+        }
       ]
     },
     "6": {
       "fps": 10,
-      "offset": [90, 86],
+      "offset": [
+        90,
+        86
+      ],
       "layers": [
         {
           "frames": [
-            {"img": "obj/boat/150.png", "offset": [42, 81]},
-            {"img": "obj/boat/151.png", "offset": [37, 80]},
-            {"img": "obj/boat/152.png", "offset": [36, 78]},
-            {"img": "obj/boat/153.png", "offset": [36, 76]},
-            {"img": "obj/boat/154.png", "offset": [42, 81]},
-            {"img": "obj/boat/155.png", "offset": [37, 80]},
-            {"img": "obj/boat/156.png", "offset": [36, 78]},
-            {"img": "obj/boat/157.png", "offset": [36, 76]}
+            {
+              "img": "obj/boat/150.png",
+              "offset": [
+                42,
+                81
+              ]
+            },
+            {
+              "img": "obj/boat/151.png",
+              "offset": [
+                37,
+                80
+              ]
+            },
+            {
+              "img": "obj/boat/152.png",
+              "offset": [
+                36,
+                78
+              ]
+            },
+            {
+              "img": "obj/boat/153.png",
+              "offset": [
+                36,
+                76
+              ]
+            },
+            {
+              "img": "obj/boat/154.png",
+              "offset": [
+                42,
+                81
+              ]
+            },
+            {
+              "img": "obj/boat/155.png",
+              "offset": [
+                37,
+                80
+              ]
+            },
+            {
+              "img": "obj/boat/156.png",
+              "offset": [
+                36,
+                78
+              ]
+            },
+            {
+              "img": "obj/boat/157.png",
+              "offset": [
+                36,
+                76
+              ]
+            }
           ],
           "z": 0
         },
         {
           "frames": [
-            {"img": "obj/boat/158.png", "offset": [45, 77]},
-            {"img": "obj/boat/159.png", "offset": [45, 77]},
-            {"img": "obj/boat/160.png", "offset": [45, 77]},
-            {"img": "obj/boat/161.png", "offset": [45, 77]},
-            {"img": "obj/boat/162.png", "offset": [45, 77]},
-            {"img": "obj/boat/163.png", "offset": [45, 77]},
-            {"img": "obj/boat/164.png", "offset": [45, 77]},
-            {"img": "obj/boat/165.png", "offset": [45, 77]}
+            {
+              "img": "obj/boat/158.png",
+              "offset": [
+                45,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/159.png",
+              "offset": [
+                45,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/160.png",
+              "offset": [
+                45,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/161.png",
+              "offset": [
+                45,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/162.png",
+              "offset": [
+                45,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/163.png",
+              "offset": [
+                45,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/164.png",
+              "offset": [
+                45,
+                77
+              ]
+            },
+            {
+              "img": "obj/boat/165.png",
+              "offset": [
+                45,
+                77
+              ]
+            }
           ],
           "z": 2
         },
         {
           "frames": [
-            {"img": "obj/boat/166.png", "offset": [49, 72]},
-            {"img": "obj/boat/167.png", "offset": [49, 72]},
-            {"img": "obj/boat/168.png", "offset": [49, 72]},
-            {"img": "obj/boat/169.png", "offset": [49, 72]},
-            {"img": "obj/boat/170.png", "offset": [49, 72]},
-            {"img": "obj/boat/171.png", "offset": [49, 72]},
-            {"img": "obj/boat/172.png", "offset": [49, 72]},
-            {"img": "obj/boat/173.png", "offset": [49, 72]}
+            {
+              "img": "obj/boat/166.png",
+              "offset": [
+                49,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/167.png",
+              "offset": [
+                49,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/168.png",
+              "offset": [
+                49,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/169.png",
+              "offset": [
+                49,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/170.png",
+              "offset": [
+                49,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/171.png",
+              "offset": [
+                49,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/172.png",
+              "offset": [
+                49,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/173.png",
+              "offset": [
+                49,
+                72
+              ]
+            }
           ],
           "z": 1
         },
-        {"img": "obj/boat/174.png", "offset": [55, 91], "shadow": true}
+        {
+          "img": "obj/boat/174.png",
+          "offset": [
+            55,
+            91
+          ],
+          "shadow": true
+        }
       ]
     },
     "7": {
       "fps": 10,
-      "offset": [90, 86],
+      "offset": [
+        90,
+        86
+      ],
       "layers": [
         {
           "frames": [
-            {"img": "obj/boat/175.png", "offset": [48, 72]},
-            {"img": "obj/boat/176.png", "offset": [46, 71]},
-            {"img": "obj/boat/177.png", "offset": [41, 70]},
-            {"img": "obj/boat/178.png", "offset": [41, 69]},
-            {"img": "obj/boat/179.png", "offset": [48, 72]},
-            {"img": "obj/boat/180.png", "offset": [46, 71]},
-            {"img": "obj/boat/181.png", "offset": [41, 70]},
-            {"img": "obj/boat/182.png", "offset": [41, 69]}
+            {
+              "img": "obj/boat/175.png",
+              "offset": [
+                48,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/176.png",
+              "offset": [
+                46,
+                71
+              ]
+            },
+            {
+              "img": "obj/boat/177.png",
+              "offset": [
+                41,
+                70
+              ]
+            },
+            {
+              "img": "obj/boat/178.png",
+              "offset": [
+                41,
+                69
+              ]
+            },
+            {
+              "img": "obj/boat/179.png",
+              "offset": [
+                48,
+                72
+              ]
+            },
+            {
+              "img": "obj/boat/180.png",
+              "offset": [
+                46,
+                71
+              ]
+            },
+            {
+              "img": "obj/boat/181.png",
+              "offset": [
+                41,
+                70
+              ]
+            },
+            {
+              "img": "obj/boat/182.png",
+              "offset": [
+                41,
+                69
+              ]
+            }
           ],
           "z": 0
         },
         {
           "frames": [
-            {"img": "obj/boat/183.png", "offset": [52, 58]},
-            {"img": "obj/boat/184.png", "offset": [52, 58]},
-            {"img": "obj/boat/185.png", "offset": [52, 58]},
-            {"img": "obj/boat/186.png", "offset": [52, 58]},
-            {"img": "obj/boat/187.png", "offset": [52, 58]},
-            {"img": "obj/boat/188.png", "offset": [52, 58]},
-            {"img": "obj/boat/189.png", "offset": [52, 58]},
-            {"img": "obj/boat/190.png", "offset": [52, 58]}
+            {
+              "img": "obj/boat/183.png",
+              "offset": [
+                52,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/184.png",
+              "offset": [
+                52,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/185.png",
+              "offset": [
+                52,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/186.png",
+              "offset": [
+                52,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/187.png",
+              "offset": [
+                52,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/188.png",
+              "offset": [
+                52,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/189.png",
+              "offset": [
+                52,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/190.png",
+              "offset": [
+                52,
+                58
+              ]
+            }
           ],
           "z": 2
         },
         {
           "frames": [
-            {"img": "obj/boat/191.png", "offset": [56, 58]},
-            {"img": "obj/boat/192.png", "offset": [56, 58]},
-            {"img": "obj/boat/193.png", "offset": [56, 58]},
-            {"img": "obj/boat/194.png", "offset": [56, 58]},
-            {"img": "obj/boat/195.png", "offset": [56, 58]},
-            {"img": "obj/boat/196.png", "offset": [56, 58]},
-            {"img": "obj/boat/197.png", "offset": [56, 58]},
-            {"img": "obj/boat/198.png", "offset": [56, 58]}
+            {
+              "img": "obj/boat/191.png",
+              "offset": [
+                56,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/192.png",
+              "offset": [
+                56,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/193.png",
+              "offset": [
+                56,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/194.png",
+              "offset": [
+                56,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/195.png",
+              "offset": [
+                56,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/196.png",
+              "offset": [
+                56,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/197.png",
+              "offset": [
+                56,
+                58
+              ]
+            },
+            {
+              "img": "obj/boat/198.png",
+              "offset": [
+                56,
+                58
+              ]
+            }
           ],
           "z": 1
         },
-        {"img": "obj/boat/199.png", "offset": [56, 84], "shadow": true}
+        {
+          "img": "obj/boat/199.png",
+          "offset": [
+            56,
+            84
+          ],
+          "shadow": true
+        }
       ]
     }
   },
   "fox": {
     "0": {
-      "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/0.png", "offset": [21, 27], "z": 0 }]
+      "offset": [
+        33,
+        47
+      ],
+      "layers": [
+        {
+          "img": "animals/fox/0.png",
+          "offset": [
+            21,
+            27
+          ],
+          "z": 0
+        }
+      ]
     },
     "1": {
-      "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/1.png", "offset": [28, 25], "z": 0 }]
+      "offset": [
+        33,
+        47
+      ],
+      "layers": [
+        {
+          "img": "animals/fox/1.png",
+          "offset": [
+            28,
+            25
+          ],
+          "z": 0
+        }
+      ]
     },
     "2": {
-      "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/2.png", "offset": [14, 30], "z": 0 }]
+      "offset": [
+        33,
+        47
+      ],
+      "layers": [
+        {
+          "img": "animals/fox/2.png",
+          "offset": [
+            14,
+            30
+          ],
+          "z": 0
+        }
+      ]
     },
     "3": {
-      "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/3.png", "offset": [19, 30], "z": 0 }]
+      "offset": [
+        33,
+        47
+      ],
+      "layers": [
+        {
+          "img": "animals/fox/3.png",
+          "offset": [
+            19,
+            30
+          ],
+          "z": 0
+        }
+      ]
     },
     "4": {
-      "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/4.png", "offset": [16, 27], "z": 0 }]
+      "offset": [
+        33,
+        47
+      ],
+      "layers": [
+        {
+          "img": "animals/fox/4.png",
+          "offset": [
+            16,
+            27
+          ],
+          "z": 0
+        }
+      ]
     },
     "5": {
-      "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/5.png", "offset": [17, 30], "z": 0 }]
+      "offset": [
+        33,
+        47
+      ],
+      "layers": [
+        {
+          "img": "animals/fox/5.png",
+          "offset": [
+            17,
+            30
+          ],
+          "z": 0
+        }
+      ]
     },
     "6": {
-      "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/6.png", "offset": [28, 29], "z": 0 }]
+      "offset": [
+        33,
+        47
+      ],
+      "layers": [
+        {
+          "img": "animals/fox/6.png",
+          "offset": [
+            28,
+            29
+          ],
+          "z": 0
+        }
+      ]
     },
     "7": {
-      "offset": [33, 47], 
-      "layers": [{"img": "animals/fox/7.png", "offset": [19, 30], "z": 0 }]
+      "offset": [
+        33,
+        47
+      ],
+      "layers": [
+        {
+          "img": "animals/fox/7.png",
+          "offset": [
+            19,
+            30
+          ],
+          "z": 0
+        }
+      ]
     }
   },
   "deer": {
     "0": {
-      "offset": [33, 45],
-      "layers": [{"img": "animals/deer/0.png", "offset": [19, 2], "z": 0 }]
+      "offset": [
+        33,
+        45
+      ],
+      "layers": [
+        {
+          "img": "animals/deer/0.png",
+          "offset": [
+            19,
+            2
+          ],
+          "z": 0
+        }
+      ]
     },
     "1": {
-      "offset": [33, 45],
-      "layers": [{"img": "animals/deer/1.png", "offset": [19, 3], "z": 0 }]
+      "offset": [
+        33,
+        45
+      ],
+      "layers": [
+        {
+          "img": "animals/deer/1.png",
+          "offset": [
+            19,
+            3
+          ],
+          "z": 0
+        }
+      ]
     },
     "2": {
-      "offset": [33, 45],
-      "layers": [{"img": "animals/deer/2.png", "offset": [12, 3], "z": 0 }]
+      "offset": [
+        33,
+        45
+      ],
+      "layers": [
+        {
+          "img": "animals/deer/2.png",
+          "offset": [
+            12,
+            3
+          ],
+          "z": 0
+        }
+      ]
     },
     "3": {
-      "offset": [33, 45],
-      "layers": [{"img": "animals/deer/3.png", "offset": [16, 5], "z": 0 }]
+      "offset": [
+        33,
+        45
+      ],
+      "layers": [
+        {
+          "img": "animals/deer/3.png",
+          "offset": [
+            16,
+            5
+          ],
+          "z": 0
+        }
+      ]
     },
     "4": {
-      "offset": [33, 45],
-      "layers": [{"img": "animals/deer/4.png", "offset": [12, 2], "z": 0 }]
+      "offset": [
+        33,
+        45
+      ],
+      "layers": [
+        {
+          "img": "animals/deer/4.png",
+          "offset": [
+            12,
+            2
+          ],
+          "z": 0
+        }
+      ]
     },
     "5": {
-      "offset": [33, 45],
-      "layers": [{"img": "animals/deer/5.png", "offset": [8, 3], "z": 0 }]
+      "offset": [
+        33,
+        45
+      ],
+      "layers": [
+        {
+          "img": "animals/deer/5.png",
+          "offset": [
+            8,
+            3
+          ],
+          "z": 0
+        }
+      ]
     },
     "6": {
-      "offset": [33, 45],
-      "layers": [{"img": "animals/deer/6.png", "offset": [21, 11], "z": 0 }]
+      "offset": [
+        33,
+        45
+      ],
+      "layers": [
+        {
+          "img": "animals/deer/6.png",
+          "offset": [
+            21,
+            11
+          ],
+          "z": 0
+        }
+      ]
     },
     "7": {
-      "offset": [33, 45],
-      "layers": [{"img": "animals/deer/7.png", "offset": [15, 5], "z": 0 }]
+      "offset": [
+        33,
+        45
+      ],
+      "layers": [
+        {
+          "img": "animals/deer/7.png",
+          "offset": [
+            15,
+            5
+          ],
+          "z": 0
+        }
+      ]
     }
   },
   "bear": {
     "0": {
-      "offset": [91, 93],
-      "layers": [{"img": "animals/bear/0.png", "offset": [57, 52], "z": 0}]
+      "offset": [
+        91,
+        93
+      ],
+      "layers": [
+        {
+          "img": "animals/bear/0.png",
+          "offset": [
+            57,
+            52
+          ],
+          "z": 0
+        }
+      ]
     },
     "1": {
-      "offset": [91, 93],
-      "layers": [{"img": "animals/bear/1.png", "offset": [68, 46], "z": 0}]
+      "offset": [
+        91,
+        93
+      ],
+      "layers": [
+        {
+          "img": "animals/bear/1.png",
+          "offset": [
+            68,
+            46
+          ],
+          "z": 0
+        }
+      ]
     },
     "2": {
-      "offset": [91, 93],
-      "layers": [{"img": "animals/bear/2.png", "offset": [58, 59], "z": 0}]
+      "offset": [
+        91,
+        93
+      ],
+      "layers": [
+        {
+          "img": "animals/bear/2.png",
+          "offset": [
+            58,
+            59
+          ],
+          "z": 0
+        }
+      ]
     },
     "3": {
-      "offset": [91, 93],
-      "layers": [{"img": "animals/bear/3.png", "offset": [60, 53], "z": 0}]
+      "offset": [
+        91,
+        93
+      ],
+      "layers": [
+        {
+          "img": "animals/bear/3.png",
+          "offset": [
+            60,
+            53
+          ],
+          "z": 0
+        }
+      ]
     },
     "4": {
-      "offset": [91, 93],
-      "layers": [{"img": "animals/bear/4.png", "offset": [51, 52], "z": 0}]
+      "offset": [
+        91,
+        93
+      ],
+      "layers": [
+        {
+          "img": "animals/bear/4.png",
+          "offset": [
+            51,
+            52
+          ],
+          "z": 0
+        }
+      ]
     },
     "5": {
-      "offset": [91, 93],
-      "layers": [{"img": "animals/bear/5.png", "offset": [51, 59], "z": 0}]
+      "offset": [
+        91,
+        93
+      ],
+      "layers": [
+        {
+          "img": "animals/bear/5.png",
+          "offset": [
+            51,
+            59
+          ],
+          "z": 0
+        }
+      ]
     },
     "6": {
-      "offset": [91, 93],
-      "layers": [{"img": "animals/bear/6.png", "offset": [68, 49], "z": 0}]
+      "offset": [
+        91,
+        93
+      ],
+      "layers": [
+        {
+          "img": "animals/bear/6.png",
+          "offset": [
+            68,
+            49
+          ],
+          "z": 0
+        }
+      ]
     },
     "7": {
-      "offset": [91, 93],
-      "layers": [{"img": "animals/bear/7.png", "offset": [54, 53], "z": 0}]
+      "offset": [
+        91,
+        93
+      ],
+      "layers": [
+        {
+          "img": "animals/bear/7.png",
+          "offset": [
+            54,
+            53
+          ],
+          "z": 0
+        }
+      ]
     }
   },
   "aurochs": {
     "0": {
-      "offset": [90, 92],
-      "layers": [{"img": "animals/aurochs/0.png", "offset": [63, 56], "z": 0}]
+      "offset": [
+        90,
+        92
+      ],
+      "layers": [
+        {
+          "img": "animals/aurochs/0.png",
+          "offset": [
+            63,
+            56
+          ],
+          "z": 0
+        }
+      ]
     },
     "1": {
-      "offset": [90, 92],
-      "layers": [{"img": "animals/aurochs/1.png", "offset": [68, 54], "z": 0}]
+      "offset": [
+        90,
+        92
+      ],
+      "layers": [
+        {
+          "img": "animals/aurochs/1.png",
+          "offset": [
+            68,
+            54
+          ],
+          "z": 0
+        }
+      ]
     },
     "2": {
-      "offset": [90, 92],
-      "layers": [{"img": "animals/aurochs/2.png", "offset": [57, 63], "z": 0}]
+      "offset": [
+        90,
+        92
+      ],
+      "layers": [
+        {
+          "img": "animals/aurochs/2.png",
+          "offset": [
+            57,
+            63
+          ],
+          "z": 0
+        }
+      ]
     },
     "3": {
-      "offset": [90, 92],
-      "layers": [{"img": "animals/aurochs/3.png", "offset": [64, 58], "z": 0}]
+      "offset": [
+        90,
+        92
+      ],
+      "layers": [
+        {
+          "img": "animals/aurochs/3.png",
+          "offset": [
+            64,
+            58
+          ],
+          "z": 0
+        }
+      ]
     },
     "4": {
-      "offset": [90, 92],
-      "layers": [{"img": "animals/aurochs/4.png", "offset": [55, 56], "z": 0}]
+      "offset": [
+        90,
+        92
+      ],
+      "layers": [
+        {
+          "img": "animals/aurochs/4.png",
+          "offset": [
+            55,
+            56
+          ],
+          "z": 0
+        }
+      ]
     },
     "5": {
-      "offset": [90, 92],
-      "layers": [{"img": "animals/aurochs/5.png", "offset": [50, 63], "z": 0}]
+      "offset": [
+        90,
+        92
+      ],
+      "layers": [
+        {
+          "img": "animals/aurochs/5.png",
+          "offset": [
+            50,
+            63
+          ],
+          "z": 0
+        }
+      ]
     },
     "6": {
-      "offset": [90, 92],
-      "layers": [{"img": "animals/aurochs/6.png", "offset": [69, 56], "z": 0}]
+      "offset": [
+        90,
+        92
+      ],
+      "layers": [
+        {
+          "img": "animals/aurochs/6.png",
+          "offset": [
+            69,
+            56
+          ],
+          "z": 0
+        }
+      ]
     },
     "7": {
-      "offset": [90, 92],
-      "layers": [{"img": "animals/aurochs/7.png", "offset": [55, 58], "z": 0}]
+      "offset": [
+        90,
+        92
+      ],
+      "layers": [
+        {
+          "img": "animals/aurochs/7.png",
+          "offset": [
+            55,
+            58
+          ],
+          "z": 0
+        }
+      ]
     }
   },
   "mufflon": {
     "0": {
-      "offset": [34, 43],
-      "layers": [{"img": "animals/mufflon/0.png", "offset": [19, 21], "z": 0}]
+      "offset": [
+        34,
+        43
+      ],
+      "layers": [
+        {
+          "img": "animals/mufflon/0.png",
+          "offset": [
+            19,
+            21
+          ],
+          "z": 0
+        }
+      ]
     },
     "1": {
-      "offset": [34, 43],
-      "layers": [{"img": "animals/mufflon/1.png", "offset": [26, 25], "z": 0}]
+      "offset": [
+        34,
+        43
+      ],
+      "layers": [
+        {
+          "img": "animals/mufflon/1.png",
+          "offset": [
+            26,
+            25
+          ],
+          "z": 0
+        }
+      ]
     },
     "2": {
-      "offset": [34, 43],
-      "layers": [{"img": "animals/mufflon/2.png", "offset": [21, 20], "z": 0}]
+      "offset": [
+        34,
+        43
+      ],
+      "layers": [
+        {
+          "img": "animals/mufflon/2.png",
+          "offset": [
+            21,
+            20
+          ],
+          "z": 0
+        }
+      ]
     },
     "3": {
-      "offset": [34, 43],
-      "layers": [{"img": "animals/mufflon/3.png", "offset": [24, 18], "z": 0}]
+      "offset": [
+        34,
+        43
+      ],
+      "layers": [
+        {
+          "img": "animals/mufflon/3.png",
+          "offset": [
+            24,
+            18
+          ],
+          "z": 0
+        }
+      ]
     },
     "4": {
-      "offset": [34, 43],
-      "layers": [{"img": "animals/mufflon/4.png", "offset": [19, 21], "z": 0}]
+      "offset": [
+        34,
+        43
+      ],
+      "layers": [
+        {
+          "img": "animals/mufflon/4.png",
+          "offset": [
+            19,
+            21
+          ],
+          "z": 0
+        }
+      ]
     },
     "5": {
-      "offset": [34, 43],
-      "layers": [{"img": "animals/mufflon/5.png", "offset": [18, 20], "z": 0}]
+      "offset": [
+        34,
+        43
+      ],
+      "layers": [
+        {
+          "img": "animals/mufflon/5.png",
+          "offset": [
+            18,
+            20
+          ],
+          "z": 0
+        }
+      ]
     },
     "6": {
-      "offset": [34, 43],
-      "layers": [{"img": "animals/mufflon/6.png", "offset": [25, 24], "z": 0}]
+      "offset": [
+        34,
+        43
+      ],
+      "layers": [
+        {
+          "img": "animals/mufflon/6.png",
+          "offset": [
+            25,
+            24
+          ],
+          "z": 0
+        }
+      ]
     },
     "7": {
-      "offset": [34, 43],
-      "layers": [{"img": "animals/mufflon/7.png", "offset": [24, 18], "z": 0}]
+      "offset": [
+        34,
+        43
+      ],
+      "layers": [
+        {
+          "img": "animals/mufflon/7.png",
+          "offset": [
+            24,
+            18
+          ],
+          "z": 0
+        }
+      ]
     }
   },
   "sheep": {
     "0": {
-      "offset": [36, 48],
-      "layers": [{"img": "animals/sheep/0.png", "offset": [21, 22], "z": 0}]
+      "offset": [
+        36,
+        48
+      ],
+      "layers": [
+        {
+          "img": "animals/sheep/0.png",
+          "offset": [
+            21,
+            22
+          ],
+          "z": 0
+        }
+      ]
     },
     "1": {
-      "offset": [36, 48],
-      "layers": [{"img": "animals/sheep/1.png", "offset": [28, 25], "z": 0}]
+      "offset": [
+        36,
+        48
+      ],
+      "layers": [
+        {
+          "img": "animals/sheep/1.png",
+          "offset": [
+            28,
+            25
+          ],
+          "z": 0
+        }
+      ]
     },
     "2": {
-      "offset": [36, 48],
-      "layers": [{"img": "animals/sheep/2.png", "offset": [19, 30], "z": 0}]
+      "offset": [
+        36,
+        48
+      ],
+      "layers": [
+        {
+          "img": "animals/sheep/2.png",
+          "offset": [
+            19,
+            30
+          ],
+          "z": 0
+        }
+      ]
     },
     "3": {
-      "offset": [36, 48],
-      "layers": [{"img": "animals/sheep/3.png", "offset": [21, 25], "z": 0}]
+      "offset": [
+        36,
+        48
+      ],
+      "layers": [
+        {
+          "img": "animals/sheep/3.png",
+          "offset": [
+            21,
+            25
+          ],
+          "z": 0
+        }
+      ]
     },
     "4": {
-      "offset": [36, 48],
-      "layers": [{"img": "animals/sheep/4.png", "offset": [19, 22], "z": 0}]
+      "offset": [
+        36,
+        48
+      ],
+      "layers": [
+        {
+          "img": "animals/sheep/4.png",
+          "offset": [
+            19,
+            22
+          ],
+          "z": 0
+        }
+      ]
     },
     "5": {
-      "offset": [36, 48],
-      "layers": [{"img": "animals/sheep/5.png", "offset": [14, 30], "z": 0}]
+      "offset": [
+        36,
+        48
+      ],
+      "layers": [
+        {
+          "img": "animals/sheep/5.png",
+          "offset": [
+            14,
+            30
+          ],
+          "z": 0
+        }
+      ]
     },
     "6": {
-      "offset": [36, 48],
-      "layers": [{"img": "animals/sheep/6.png", "offset": [27, 25], "z": 0}]
+      "offset": [
+        36,
+        48
+      ],
+      "layers": [
+        {
+          "img": "animals/sheep/6.png",
+          "offset": [
+            27,
+            25
+          ],
+          "z": 0
+        }
+      ]
     },
     "7": {
-      "offset": [36, 48],
-      "layers": [{"img": "animals/sheep/7.png", "offset": [19, 25], "z": 0}]
+      "offset": [
+        36,
+        48
+      ],
+      "layers": [
+        {
+          "img": "animals/sheep/7.png",
+          "offset": [
+            19,
+            25
+          ],
+          "z": 0
+        }
+      ]
     }
   }
 }

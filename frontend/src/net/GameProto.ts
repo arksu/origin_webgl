@@ -127,7 +127,7 @@ export default class GameProto {
           } else {
             obj.x = data.x
             obj.y = data.y
-            this.render.onObjectMoved(obj)
+            this.render.onObjectStopped(obj)
           }
         }
 

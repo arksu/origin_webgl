@@ -23,7 +23,7 @@ export default class Render {
   /**
    * PIXI application
    */
-  public readonly app: PIXI.Application
+  private readonly app: PIXI.Application
 
   /**
    * загруженные гриды
@@ -173,7 +173,7 @@ export default class Render {
   setup() {
     this.canvas.style.display = 'block'
 
-   // this.app.stage.addChild(this.mapGridsContainer)
+    this.app.stage.addChild(this.mapGridsContainer)
     this.app.stage.addChild(this.screenContainer)
     this.app.stage.addChild(this.objectsContainer)
 
@@ -355,8 +355,12 @@ export default class Render {
     }
   }
 
-  public onObjectMoved(obj: GameObject) {
-    obj.view?.onMoved()
+  public onObjectMoved(obj: GameObject, dir : number) {
+    obj.view?.onMoved(dir)
+  }
+
+  public onObjectStopped(obj: GameObject) {
+    obj.view?.onStopped()
   }
 
   public sortObjects() {
