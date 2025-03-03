@@ -200,6 +200,7 @@ export default class ObjectView {
     if (l.spine?.skin !== undefined) {
       spineAnimation.skeleton.setSkinByName(l.spine.skin)
     }
+    spineAnimation.state.data.defaultMix = 0.25
 
     // TODO
     spineAnimation.state.setAnimation(0, "s-idle", true)
