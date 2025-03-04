@@ -48,6 +48,6 @@ class ObjectPosition {
     }
 
     override fun toString(): String {
-        return "{pos level=$level $x, $y ${this.hashCode()}}"
+        return "{pos $x, $y level=$level region=$region, heading=$heading}"
     }
 }

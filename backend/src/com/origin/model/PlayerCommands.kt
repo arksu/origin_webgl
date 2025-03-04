@@ -27,6 +27,12 @@ object PlayerCommands {
                 player.commandToExecuteByMapClick = cmd
             }
 
+            "who" -> {
+                World.playersIterator().forEach { (id, p) ->
+                    player.systemSay("player [$id] ${p.character.name} - ${p.pos.toString()}")
+                }
+            }
+
             else -> {
 //                player.session.send(CreatureSay(0, text, SYSTEM))("Unknown command: $cmd")
             }
