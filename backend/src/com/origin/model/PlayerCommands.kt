@@ -33,6 +33,10 @@ object PlayerCommands {
                 }
             }
 
+            "tp" -> {
+                // TODO
+            }
+
             else -> {
 //                player.session.send(CreatureSay(0, text, SYSTEM))("Unknown command: $cmd")
             }
