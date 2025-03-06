@@ -34,7 +34,7 @@ object PlayerCommands {
             }
 
             "tp" -> {
-                // TODO
+                // TODO teleport
             }
 
             else -> {

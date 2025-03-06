@@ -5,6 +5,7 @@
 package com.origin.util
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 
 //val WorkerScope = GlobalScope
 val WorkerScope = CoroutineScope(Dispatchers.Default)
@@ -23,13 +24,13 @@ const val ACTOR_BUFFER_CAPACITY = 512
  * сообщение с ожиданием результата
  */
 abstract class MessageWithAck<T> {
-    val ack: CompletableDeferred<T> = CompletableDeferred()
+    val channel = Channel<T>()
 
     suspend fun run(block: suspend () -> T) {
         try {
-            ack.complete(block())
+            channel.send(block())
         } catch (t: Throwable) {
-            ack.completeExceptionally(t)
+            channel.close(t)
         }
     }
 }

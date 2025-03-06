@@ -278,7 +278,7 @@ object Collision {
             if (needExit) {
                 // logger.warn("needExit")
                 if (isMove) {
-                    obj.setXY(newX.roundToInt(), newY.roundToInt())
+                    obj.setXY(intNewX, intNewY)
                 }
                 return CollisionResult.NONE
             }

@@ -73,7 +73,7 @@ abstract class GameObject(val id: ObjectID, val pos: ObjectPosition) {
 
     suspend fun <T> sendAndWaitAck(msg: MessageWithAck<T>): T {
         actor.send(msg)
-        return msg.ack.await()
+        return msg.channel.receive()
     }
 
     /**
